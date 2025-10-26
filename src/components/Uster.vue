@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full pt-0.5 md:pt-2 px-0.5 md:px-2 space-y-3">
+  <div class="w-full pt-0.5 md:pt-2 px-0.5 md:px-2 space-y-3 uster-component">
     <!-- título mostrado movido a la pestaña del navegador -->
 
     <div class="bg-white rounded shadow p-2 md:p-2 space-y-3">
@@ -52,11 +52,11 @@
       <!-- scanStatus moved below the left list as per UX request -->
 
       <!-- Middle: three columns (left: list, middle: compact preview, right: Nro/Titulo) -->
-      <div class="grid" style="grid-template-columns: 372px 280px 96px; gap: 0.5rem 1ch; align-items: start;">
+      <div class="grid" style="grid-template-columns: 372px 96px 280px; gap: 0.5rem 1ch; align-items: start;">
         <!-- Columna 1: Lista de Ensayos, Botones y Estado -->
         <div class="flex flex-col gap-2">
-          <div>
-            <table class="text-sm border-collapse fixed-table">
+          <div class="scan-container">
+            <table class="text-sm border-collapse fixed-table scan-table">
               <colgroup>
                 <col class="col-ensayo" />
                 <col class="col-par" />
@@ -76,9 +76,10 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="item in scanList" :key="item.testnr" class="hover:bg-gray-50 cursor-pointer"
-                  @click="selectRow(item.testnr)" :class="{ 'bg-indigo-50': selectedTestnr === item.testnr }">
-                  <td class="p-0.5 border text-xs text-center text-xs col-ensayo">{{ item.testnr }}</td>
+                <tr v-for="(item, idx) in scanDisplayList" :key="idx" class="hover:bg-gray-50 cursor-pointer"
+                  @click="item.testnr && selectRow(item.testnr)"
+                  :class="{ 'bg-indigo-50': selectedTestnr === item.testnr }">
+                  <td class="p-0.5 border text-xs text-center text-xs col-ensayo">{{ item.testnr || '' }}</td>
                   <td class="p-0.5 border text-center text-xs col-par"><input type="checkbox" disabled
                       :checked="item.hasPar" /></td>
                   <td class="p-0.5 border text-center text-xs col-tbl"><input type="checkbox" disabled
@@ -102,7 +103,41 @@
           </div>
         </div>
 
-        <!-- Columna 2: Detalle Compacto -->
+        <!-- Columna 2: Nro / Titulo (ahora en el medio) -->
+        <div style="width:96px;">
+          <!-- fixed-height container that shows 10 rows and scrolls when there are more -->
+          <div class="titulo-container">
+            <table class="w-full text-sm border-collapse titulo-table">
+              <thead>
+                <tr class="bg-gray-100 text-gray-700">
+                  <th class="p-0.5 border text-xs text-center" style="width: calc(4ch + 0.75rem);">Nro</th>
+                  <th class="p-0.5 border text-xs text-center" style="width:96px">Titulo</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(r, idx) in tituloList" :key="idx" class="hover:bg-gray-50">
+                  <td class="p-0.5 border text-xs text-center font-mono" style="width: calc(4ch + 0.75rem);">{{ r.nro }}
+                  </td>
+                  <td class="p-0.5 border text-xs text-center" style="width:96px">
+                    <div v-if="r.srcIndex !== null">
+                      <input :id="'titulo-input-' + r.srcIndex" v-model="tblData[r.srcIndex].TITULO" inputmode="decimal"
+                        maxlength="5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+                        @focus="onTituloFocus(r.srcIndex)" @blur="onTituloBlur(r.srcIndex)"
+                        @input="onTituloInput(r.srcIndex, $event)" @keydown.enter.prevent="focusNextTitulo(r.srcIndex)"
+                        @keydown.up.prevent="focusPrevTitulo(r.srcIndex)"
+                        @keydown.down.prevent="focusNextTituloWrap(r.srcIndex)"
+                        :class="['p-0.5 text-xs border truncate text-xs text-center', isFocusedIndex === r.srcIndex ? 'bg-yellow-100' : '']"
+                        style="width:100%; box-sizing: border-box;" />
+                    </div>
+                    <div v-else class="text-xs text-gray-400">—</div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Columna 3: Detalle Compacto (moved to right) -->
         <div>
           <table class="text-sm border-collapse compact-table">
             <colgroup>
@@ -119,37 +154,6 @@
               <tr v-for="c in compactFields" :key="c.code">
                 <td class="p-0.5 border font-medium text-xs col-dato">{{ c.label }}</td>
                 <td class="p-0.5 border font-mono text-xs col-valor">{{ getFieldValueByCode(c.code) }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Columna 3: Nro / Titulo -->
-        <div style="width:96px;">
-          <table class="w-full text-sm border-collapse">
-            <thead>
-              <tr class="bg-gray-100 text-gray-700">
-                <th class="p-0.5 border text-xs text-center" style="width: calc(4ch + 0.75rem);">Nro</th>
-                <th class="p-0.5 border text-xs text-center" style="width:96px">Titulo</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(r, idx) in tituloList" :key="idx" class="hover:bg-gray-50">
-                <td class="p-0.5 border text-xs text-center font-mono" style="width: calc(4ch + 0.75rem);">{{ r.nro }}
-                </td>
-                <td class="p-0.5 border text-xs text-center" style="width:96px">
-                  <input :id="'titulo-input-' + r.srcIndex" v-model="tblData[r.srcIndex].TITULO" inputmode="decimal"
-                    maxlength="5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-                    @focus="onTituloFocus(r.srcIndex)" @blur="onTituloBlur(r.srcIndex)"
-                    @input="onTituloInput(r.srcIndex, $event)" @keydown.enter.prevent="focusNextTitulo(r.srcIndex)"
-                    @keydown.up.prevent="focusPrevTitulo(r.srcIndex)"
-                    @keydown.down.prevent="focusNextTituloWrap(r.srcIndex)"
-                    :class="['p-0.5 text-xs border truncate font-mono text-center', isFocusedIndex === r.srcIndex ? 'bg-yellow-100' : '']"
-                    style="width:100%; box-sizing: border-box;" />
-                </td>
-              </tr>
-              <tr v-if="!tituloList.length">
-                <td class="p-0.5 border text-xs text-center" colspan="2">Sin datos</td>
               </tr>
             </tbody>
           </table>
@@ -599,6 +603,20 @@ const tituloIntegerRe = /^\d{1,2}$/
 // index of the input currently focused (for styling)
 const isFocusedIndex = ref(null)
 
+// Display list for scan (left table) that always shows up to maxRows placeholders
+const scanDisplayList = computed(() => {
+  const out = []
+  const maxRows = 10
+  if (!Array.isArray(scanList.value) || scanList.value.length === 0) {
+    for (let i = 0; i < maxRows; i++) out.push({ testnr: '', hasPar: false, hasTbl: false, imp: null, nomcount: '', maschnr: '' })
+    return out
+  }
+  if (scanList.value.length > maxRows) return scanList.value
+  out.push(...scanList.value)
+  while (out.length < maxRows) out.push({ testnr: '', hasPar: false, hasTbl: false, imp: null, nomcount: '', maschnr: '' })
+  return out
+})
+
 // columns to display (based on mapping order)
 const tblColumns = [
   'TESTNR', 'NO', 'U%_%', 'CVM_%', 'INDICE_%', 'CVM_1M_%', 'CVM_3M_%', 'CVM_10M_%', 'TITULO', 'TITULO_REL_±_%', 'H', 'SH', 'SH_1M', 'SH_3M', 'SH_10M', 'DELG_-30%_KM', 'DELG_-40%_KM', 'DELG_-50%_KM', 'DELG_-60%_KM', 'GRUE_35%_KM', 'GRUE_50%_KM', 'GRUE_70%_KM', 'GRUE_100%_KM', 'NEPS_140%_KM', 'NEPS_200%_KM', 'NEPS_280%_KM', 'NEPS_400%_KM'
@@ -693,15 +711,31 @@ function parseTblText(text) {
 }
 
 // computed list mapping NO -> Nro and TITULO -> Titulo for the selected TESTNR
+// Always return exactly `maxRows` entries: real rows (with srcIndex) first, then placeholders
 const tituloList = computed(() => {
   const out = []
-  if (!tblData.value || !selectedTestnr.value) return out
+  const maxRows = 10
+  if (!tblData.value || !Array.isArray(tblData.value) || !selectedTestnr.value) {
+    // return placeholders when no data/selection
+    for (let i = 0; i < maxRows; i++) out.push({ nro: '', titulo: '', srcIndex: null })
+    return out
+  }
+
+  // collect rows that match the selected TESTNR
+  const matched = []
   for (let i = 0; i < tblData.value.length; i++) {
     const r = tblData.value[i]
-    if ((r['TESTNR'] || '') === String(selectedTestnr.value)) {
-      out.push({ nro: r['NO'] || '', titulo: r['TITULO'] || '', srcIndex: i })
+    if ((r && (r['TESTNR'] || '')) === String(selectedTestnr.value)) {
+      matched.push({ nro: r['NO'] || '', titulo: r['TITULO'] || '', srcIndex: i })
     }
   }
+
+  // If there are more than maxRows, return them all (we'll allow scrolling).
+  if (matched.length > maxRows) return matched
+
+  // otherwise push the actual rows and pad with placeholders up to maxRows
+  for (let i = 0; i < matched.length; i++) out.push(matched[i])
+  while (out.length < maxRows) out.push({ nro: '', titulo: '', srcIndex: null })
   return out
 })
 
@@ -970,7 +1004,11 @@ function formatTimestampToDatetime(value) {
 
 .col-ne,
 .col-maq {
-  width: 72px;
+  width: 60px;
+}
+
+.col-ne {
+  width: 60px;
 }
 
 /* Columnas tabla compacta */
@@ -987,5 +1025,72 @@ table.text-sm,
 table.text-sm th,
 table.text-sm td {
   box-sizing: border-box;
+  /* Use a system sans-serif stack for all table text to improve legibility */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Nro/Titulo small column: fixed visible area for 10 rows and sticky header */
+.titulo-container {
+  /* height = header (approx 2rem) + 10 rows (each about 1.9rem) — adjustable via CSS variables */
+  max-height: calc(var(--titulo-header-h, 2rem) + (var(--titulo-row-h, 1.9rem) * 10));
+  overflow-y: auto;
+  /* prevent horizontal scrollbar caused by small overflows */
+  overflow-x: hidden;
+}
+
+.titulo-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: inherit;
+  /* preserve header background */
+}
+
+.titulo-table tbody tr {
+  /* hint row height to keep 10 visible rows — tweak if necessary */
+  height: var(--titulo-row-h, 1.9rem);
+}
+
+.titulo-table td input {
+  /* make inputs fit well inside the small column */
+  height: calc(var(--titulo-row-h, 1.9rem) - 0.25rem);
+  line-height: 1rem;
+}
+
+.scan-container {
+  /* Scan list (left) fixed area for 10 rows */
+  /* use the same header/row height variables as the Nro/Titulo column
+     so both tables visually align */
+  max-height: calc(var(--titulo-header-h, 2rem) + (var(--titulo-row-h, 1.9rem) * 10));
+  overflow-y: auto;
+  /* prevent horizontal scrollbar caused by column widths or long content */
+  overflow-x: hidden;
+}
+
+.scan-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: inherit;
+}
+
+.scan-table tbody tr {
+  height: var(--titulo-row-h, 1.9rem);
+}
+
+/* Defensive: ensure tables don't force horizontal scroll beyond their containers */
+table.text-sm,
+table.w-full {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+/* set concrete variables so row heights match exactly (including small margin) */
+.uster-component {
+  /* tweak these values if you want slightly larger/smaller rows */
+  --titulo-row-h: 2rem;
+  /* row height used for Nro/Titulo and scan rows */
+  --titulo-header-h: 2rem;
+  /* header height used in calculations */
 }
 </style>
