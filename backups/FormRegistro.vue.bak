@@ -14,8 +14,7 @@
             autocomplete="off" @input="onRoladaInput" placeholder="1234" class="w-[8ch] px-2 py-1 text-sm h-8 border border-gray-300 rounded bg-white
                    focus:bg-yellow-200 focus:ring-2 focus:ring-yellow-400
                    focus:outline-none focus:shadow-sm transition-all duration-200" required
-            @keydown.enter.prevent="handleEnter" @keydown.up.prevent="focusUp('rolada')"
-            @keydown.down.prevent="focusDown('rolada')" />
+            @keydown.enter.prevent="handleEnter" />
           <p v-if="form.rolada.length > 0 && form.rolada.length < 4" class="text-red-500 text-xs mt-0.5">
             La rolada debe tener 4 dígitos
           </p>
@@ -29,8 +28,7 @@
           autocomplete="off" placeholder="U12/1-4760" class="w-[14ch] px-2 py-1 text-sm h-8 border border-gray-300 rounded bg-white
                  focus:bg-yellow-200 focus:ring-2 focus:ring-yellow-400
                  focus:outline-none focus:shadow-sm transition-all duration-200" required
-          @keydown.enter.prevent="handleEnter" @keydown.up.prevent="focusUp('base')"
-          @keydown.down.prevent="focusDown('base')" />
+          @keydown.enter.prevent="handleEnter" />
       </div>
 
       <!-- COLOR -->
@@ -40,8 +38,7 @@
           autocomplete="off" placeholder="561" class="w-[7ch] px-2 py-1 text-sm h-8 border border-gray-300 rounded bg-white
                  focus:bg-yellow-200 focus:ring-2 focus:ring-yellow-400
                  focus:outline-none focus:shadow-sm transition-all duration-200" required
-          @keydown.enter.prevent="handleEnter" @keydown.up.prevent="focusUp('color')"
-          @keydown.down.prevent="focusDown('color')" />
+          @keydown.enter.prevent="handleEnter" />
       </div>
 
       <!-- METROS -->
@@ -51,8 +48,8 @@
           <input id="metros" ref="metrosInput" v-model="metrosRaw" @input="onMetrosInput" type="text"
             inputmode="numeric" autocomplete="off" @focus="metrosTouched = true" placeholder="55.000" class="w-[9ch] px-2 py-1 text-sm h-8 border border-gray-300 rounded bg-white
          focus:bg-yellow-200 focus:ring-2 focus:ring-yellow-400
-         focus:outline-none focus:shadow-sm transition-all duration-200" required @keydown.enter.prevent="handleEnter"
-            @keydown.up.prevent="focusUp('metros')" @keydown.down.prevent="focusDown('metros')" />
+         focus:outline-none focus:shadow-sm transition-all duration-200" required
+            @keydown.enter.prevent="handleEnter" />
           <p v-if="metrosTouched && debouncedError" class="text-red-500 text-xs mt-0.5">
             Los metros no pueden ser nulos ni cero
           </p>
@@ -69,8 +66,7 @@
             placeholder="Opcional" class="w-full px-2 py-1 text-sm h-[4.5rem] border border-gray-300 rounded bg-white
              focus:bg-yellow-200 focus:ring-2 focus:ring-yellow-400
              focus:outline-none focus:shadow-sm transition-all duration-200 resize-none"
-            @keydown.enter.prevent="handleEnter" @keydown.up.prevent="focusUp('observaciones')"
-            @keydown.down.prevent="focusDown('observaciones')"></textarea>
+            @keydown.enter.prevent="handleEnter"></textarea>
         </div>
       </div>
 
@@ -87,22 +83,20 @@
             ]">
             <svg v-if="isResetting" class="animate-spin h-4 w-4 text-gray-700" xmlns="http://www.w3.org/2000/svg"
               fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <circle class="opacity-25" cx="12" cy="12" r="10`" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 01-8 8z"></path>
             </svg>
             <span>{{ isResetting ? 'Cancelando...' : 'Cancelar' }}</span>
           </button>
         </Transition>
         <Transition name="fade-zoom">
-          <button ref="submitButton" type="submit" @keydown.up.prevent="focusUp('submit')" :disabled="isSaving" :class="[
+          <button ref="submitButton" type="submit" :disabled="isSaving" :class="[
             'px-4 py-2 text-sm h-8 rounded flex items-center gap-2',
             isSaving ? 'bg-blue-400 cursor-not-allowed animate-pulse' : 'bg-blue-600 hover:bg-blue-700 text-white'
           ]">
-
-
             <svg v-if="isSaving" class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
               viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <circle class="opacity-25" cx="12" cy="12" r="10`" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 01-8 8z"></path>
             </svg>
             <span>{{ isSaving ? 'Guardando...' : 'Guardar' }}</span>
@@ -115,8 +109,8 @@
 
     <!-- LISTA DE REGISTROS -->
     <div class="overflow-x-auto md:overflow-visible">
-      <ListaRegistros :registros="registros" :edit-index="editIndex" :delegate-edit-to-parent="true"
-        @editar="editarRegistro" @eliminar="eliminarRegistro" />
+      <ListaRegistros :registros="registros" :edit-index="editIndex" :delegate-edit-to-parent="true" @editar="editarRegistro"
+        @eliminar="eliminarRegistro" />
 
     </div>
   </div>
@@ -152,6 +146,7 @@ watch(registros, (val) => {
 
 // — Sidebar auto-hide (sincronizado con localStorage) —
 const isCollapsed = ref(false)
+const hideDelay = 1000
 let hideTimer = null
 
 // Inicializar desde localStorage para evitar estados divergentes entre componentes
@@ -160,9 +155,19 @@ if (storedCollapsed !== null) {
   isCollapsed.value = storedCollapsed === 'true'
 }
 
-// startHideTimer removed (unused)
+function startHideTimer() {
+  clearTimeout(hideTimer)
+  hideTimer = setTimeout(() => {
+    isCollapsed.value = true
+    localStorage.setItem('sidebarCollapsed', 'true')
+  }, hideDelay)
+}
 
-// toggleSidebar removed (unused) — sidebar collapsing handled elsewhere
+function toggleSidebar() {
+  isCollapsed.value = !isCollapsed.value
+  localStorage.setItem('sidebarCollapsed', String(isCollapsed.value))
+  startHideTimer()
+}
 
 onBeforeUnmount(() => {
   clearTimeout(hideTimer)
@@ -186,7 +191,10 @@ const rawMetros = ref('')
 const metrosTouched = ref(false)
 let debounceTimer = null
 
-// metrosModel removed (unused): use rawMetros / metrosRaw directly
+const metrosModel = computed(() => {
+  const clean = metrosRaw.value.replace(/\D/g, '')
+  return Number(clean)
+})
 
 const debouncedError = ref(false)
 
@@ -227,76 +235,6 @@ const nextField = {
   metros: observacionesInput,
   observaciones: submitButton
 }
-
-const prevField = {
-  observaciones: metrosInput,
-  metros: colorInput,
-  color: baseInput,
-  base: roladaInput,
-  rolada: null,
-  submit: observacionesInput
-}
-
-function focusUp(field) {
-  // focus the previous logical field if exists
-  const prevRef = prevField[field]
-  if (!prevRef) return
-  nextTick(() => {
-    try {
-      prevRef.value?.focus()
-    } catch {
-      /* noop */
-    }
-  })
-}
-
-function focusDown(field) {
-  // focus the next logical field if exists
-  const nextRef = nextField[field]
-  if (!nextRef) return
-  nextTick(() => {
-    const el = nextRef.value
-    try {
-      if (el && typeof el.focus === 'function') {
-        el.focus()
-      } else if (el && el.$el && typeof el.$el.focus === 'function') {
-        el.$el.focus()
-      } else {
-        // fallback: small timeout to allow DOM to settle
-        setTimeout(() => {
-          try {
-            if (el && typeof el.focus === 'function') el.focus()
-            else if (el && el.$el && typeof el.$el.focus === 'function') el.$el.focus()
-          } catch { /* noop */ }
-        }, 50)
-      }
-      try { if (el && el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'center' }) } catch { /* noop */ }
-      try {
-        const tag = (el && el.tagName) ? el.tagName.toLowerCase() : (el && el.$el && el.$el.tagName ? el.$el.tagName.toLowerCase() : null)
-        if (tag === 'input' || tag === 'textarea' || tag === 'select') {
-          const target = (el && el.classList) ? el : (el && el.$el ? el.$el : null)
-          if (target && target.classList) {
-            target.classList.add('input-flash')
-            setTimeout(() => target.classList.remove('input-flash'), 900)
-          }
-        }
-      } catch { /* noop */ }
-    } catch {
-      /* noop */
-    }
-  })
-}
-
-// Expose a method so parent can request focusing the rolada input
-function focusRolada() {
-  nextTick(() => {
-    const el = roladaInput.value
-    try { if (el && typeof el.focus === 'function') el.focus() } catch { /* noop */ }
-    try { if (el && el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'center' }) } catch { /* noop */ }
-  })
-}
-
-defineExpose({ focusRolada })
 
 function handleEnter(e) {
   const nextRef = nextField[e.target.id]
@@ -421,11 +359,13 @@ async function cancelarEdicion() {
     resetForm()
 
     await nextTick(() => {
-      const input = roladaInput.value
+      const input = document.querySelector('#input-rolada')
       if (input) {
-        try { input.focus() } catch { /* noop */ }
-        try { input.scrollIntoView({ behavior: 'smooth', block: 'center' }) } catch { /* noop */ }
-        try { input.classList.add('input-flash'); setTimeout(() => input.classList.remove('input-flash'), 2000) } catch { /* noop */ }
+        input.focus()
+        input.scrollIntoView({ behavior: 'smooth', block: 'center' })
+
+        input.classList.add('input-flash')
+        setTimeout(() => input.classList.remove('input-flash'), 2000)
       }
     })
 
@@ -523,79 +463,4 @@ async function submitForm() {
   transition: all 0.3s ease;
 }
 
-.fade-zoom-enter-from {
-  opacity: 0;
-  transform: scale(0.95);
-}
-
-.fade-zoom-leave-to {
-  opacity: 0;
-  transform: scale(0.95);
-}
-
-.fade-slide-enter-active,
-.fade-slide-leave-active {
-  transition: all 0.3s ease;
-}
-
-.fade-slide-enter-from {
-  opacity: 0;
-  transform: translateX(-10px);
-}
-
-.fade-slide-leave-to {
-  opacity: 0;
-  transform: translateX(-10px);
-}
-
-.fade-zoom-enter-active {
-  transition: all 0.3s ease;
-}
-
-.fade-zoom-enter-from {
-  opacity: 0;
-  transform: scale(0.95);
-}
-
-.fade-zoom-leave-to {
-  opacity: 0;
-  transform: scale(0.95);
-}
-
-.fade-slide-enter-active,
-.fade-slide-leave-active {
-  transition: all 0.3s ease;
-}
-
-.fade-slide-enter-from {
-  opacity: 0;
-  transform: translateX(-10px);
-}
-
-.fade-slide-leave-to {
-  opacity: 0;
-  transform: translateX(-10px);
-}
-
-@keyframes inputFlash {
-
-  0%,
-  100% {
-    background-color: transparent;
-  }
-
-  /* empezar y permanecer en tonos amarillos para enfatizar el foco */
-  30% {
-    background-color: #fde68a;
-  }
-
-  60% {
-    background-color: #fef3c7;
-  }
-}
-
-.input-flash {
-  animation: inputFlash 0.9s ease-in-out 0s 1;
-  /* una pasada rápida */
-}
-</style>
+The backup file created. Now apply patch. I'll update FormRegistro.vue to add @keydown.up handlers and focusField function. I'll patch. 
