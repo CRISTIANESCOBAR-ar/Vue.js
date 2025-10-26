@@ -77,3 +77,10 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+/* main.css o base.css */
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}

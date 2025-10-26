@@ -1,24 +1,42 @@
 {
   "name": "carga-datos-vue",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
+    "prebuild": "node scripts/write-version.cjs",
     "build": "vite build",
-    "preview": "vite preview"
+    "test:e2e": "playwright test --project=chromium",
+    "preview": "vite preview",
+    "lint": "eslint \"src/**/*.{js,vue}\"",
+    "lint:fix": "eslint \"src/**/*.{js,vue}\" --fix"
   },
   "dependencies": {
+    "@heroicons/vue": "^2.2.0",
+    "firebase": "^12.4.0",
+    "pinia": "^3.0.3",
     "sweetalert2": "^11.23.0",
     "tippy.js": "^6.3.7",
-    "vue": "^3.5.21"
+    "vue": "^3.5.21",
+    "vue-router": "^4.6.3",
+    "vue-tippy": "^6.7.1",
+    "vue3-select-component": "^0.12.3"
   },
   "devDependencies": {
+    "@eslint/js": "^9.37.0",
+    "@playwright/test": "^1.56.1",
     "@tailwindcss/postcss": "^4.1.13",
     "@vitejs/plugin-vue": "^6.0.1",
     "autoprefixer": "^10.4.21",
+    "eslint": "^9.37.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-vue": "^10.5.1",
     "postcss": "^8.5.6",
+    "prettier": "^3.6.2",
     "tailwindcss": "^4.1.13",
-    "vite": "^7.1.7"
+    "vite": "^7.1.7",
+    "vite-plugin-pwa": "^1.1.0",
+    "vue-eslint-parser": "^10.2.0"
   }
 }
