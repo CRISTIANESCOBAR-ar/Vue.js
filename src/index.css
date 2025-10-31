@@ -1,3 +1,35 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Theme fonts: Inter for UI, Space Grotesk for headings */
+:root {
+	--ui-font: 'Inter', -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+	--heading-font: 'Space Grotesk', var(--ui-font);
+	--mono-font: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', monospace;
+}
+
+html, body {
+	font-family: var(--ui-font);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	color: #0f172a; /* slate-900 */
+}
+
+/* Headings with a slightly tighter tracking for a modern look */
+h1, h2, h3, h4, h5, h6 {
+	font-family: var(--heading-font);
+	font-weight: 600;
+	letter-spacing: -0.01em;
+}
+
+/* Keep monospace for data columns and code blocks */
+.font-mono, code, pre, .col-ensayo, .col-ne, .col-maq {
+	font-family: var(--mono-font);
+}
+
+/* Slight global tuning for a futuristic aesthetic */
+body {
+	letter-spacing: 0.0025em;
+	line-height: 1.45;
+}

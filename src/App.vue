@@ -45,6 +45,8 @@
           @click="setActive('list')" />
         <SidebarItem icon="🧩" label="Uster" :active="active === 'uster'" :collapsed="collapsed"
           @click="setActive('uster')" />
+        <SidebarItem icon="🧪" label="TensoRapid" :active="active === 'tenso'" :collapsed="collapsed"
+          @click="setActive('tenso')" />
         <SidebarItem icon="⚙️" label="Configuración" :active="active === 'config'" :collapsed="collapsed"
           @click="setActive('config')" />
       </nav>
@@ -88,6 +90,9 @@
               :mostrar-editar="true" @eliminar="eliminarRegistro" @actualizar="actualizarRegistro" />
             <div v-else-if="active === 'uster'">
               <Uster />
+            </div>
+            <div v-else-if="active === 'tenso'">
+              <TensoRapid />
             </div>
             <div v-else-if="active === 'config'">
               <div class="max-w-3xl mx-auto bg-white rounded shadow p-4">
@@ -158,6 +163,7 @@ import { registerSW } from 'virtual:pwa-register'
 import FormRegistro from './components/FormRegistro.vue'
 import ListaRegistros from './components/ListaRegistros.vue'
 import Uster from './components/Uster.vue'
+import TensoRapid from './components/TensoRapid.vue'
 import SidebarItem from './components/SidebarItem.vue'
 import Swal from 'sweetalert2'
 import { useRegistroStore } from './stores/registro'
@@ -187,6 +193,7 @@ const mainMargin = computed(() => {
 const headerTitle = computed(() => {
   if (active.value === 'form') return 'Carga de Datos'
   if (active.value === 'list') return 'Registros'
+  if (active.value === 'tenso') return 'TensoRapid'
   if (active.value === 'config') return 'Configuración'
   return 'Carga de Datos'
 })
