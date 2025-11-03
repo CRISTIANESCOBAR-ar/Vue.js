@@ -240,15 +240,22 @@ function onTituloInput(srcIndex, ev) {
     // sanitize: allow only digits and a single dot; allow up to 2 decimal digits
     raw = raw.replace(/[^0-9.]/g, '')
     
+    // Detect if this input event was a deletion (Backspace / Delete).
+    // If so, do NOT auto-insert the decimal separator to allow the user to remove it.
+    const inputType = ev && ev.inputType ? String(ev.inputType) : ''
+    const isDeleting = inputType.startsWith('delete') || inputType.startsWith('history')
+
     // Auto-format: when user types 2 digits without a dot, automatically add the dot
-    // Example: user types "12" → becomes "12."
+    // but skip this auto-insert if the user is deleting (Backspace/Delete).
     const parts = raw.split('.')
-    if (parts.length === 1 && parts[0].length === 2) {
-      // User has typed exactly 2 digits with no dot - add the dot automatically
-      raw = parts[0] + '.'
-    } else if (parts.length === 1) {
-      // Still typing integer part, limit to 2 digits
-      raw = parts[0].slice(0, 2)
+    if (parts.length === 1) {
+      if (!isDeleting && parts[0].length === 2) {
+        // User has typed exactly 2 digits with no dot - add the dot automatically
+        raw = parts[0] + '.'
+      } else {
+        // Still typing integer part, limit to 2 digits
+        raw = parts[0].slice(0, 2)
+      }
     } else {
       // Dot already present, limit integer to 2 and decimal to 2
       const intPart = parts[0].slice(0, 2)
@@ -259,10 +266,15 @@ function onTituloInput(srcIndex, ev) {
     // write sanitized value back to the model (do not touch DOM directly; let Vue update input)
     if (tblData.value && tblData.value[srcIndex]) tblData.value[srcIndex]['TITULO'] = raw
 
-    const max = Number(ev && ev.target && ev.target.maxLength) || 5
-    if (raw.length >= max && raw.length > 0) {
-      // small timeout to ensure the input value is applied before moving focus
-      setTimeout(() => focusNextTitulo(srcIndex), 0)
+    // Auto-advance: if user has completed the format ##.## (5 chars total), move to next input
+    // Check if we have the complete format: 2 digits + dot + 2 digits = 5 characters
+    if (raw.length === 5 && raw.includes('.')) {
+      const dotPos = raw.indexOf('.')
+      // Verify format: 2 digits before dot, 2 digits after dot
+      if (dotPos === 2 && raw.length - dotPos - 1 === 2) {
+        // small timeout to ensure the input value is applied before moving focus
+        setTimeout(() => focusNextTituloWrap(srcIndex), 0)
+      }
     }
   } catch (err) { console.warn('onTituloInput error', err) }
 }
@@ -603,6 +615,41 @@ async function selectRow(testnr) {
   try {
     await loadSelectedFiles()
   } catch (err) { console.warn('selectRow loadSelectedFiles failed', err) }
+
+  // After files are loaded and DOM updated, focus the first enabled TITULO input for editing.
+  try {
+    await nextTick()
+    // Look for inputs with id prefix 'titulo-input-' (guard against SSR/environment without document)
+    let inputs = []
+    if (typeof globalThis !== 'undefined' && globalThis.document && globalThis.document.querySelectorAll) {
+      inputs = Array.from(globalThis.document.querySelectorAll('input[id^="titulo-input-"]'))
+        .filter(i => !i.disabled && i.offsetParent !== null)
+    }
+
+    if (inputs.length > 0) {
+      const first = inputs[0]
+      try {
+        // Determine srcIndex from element id (format: titulo-input-<index>) and mark focused index for styling
+        const m = String(first.id || '').match(/titulo-input-(\d+)/)
+        if (m) {
+          const idx = Number(m[1])
+          isFocusedIndex.value = idx
+        }
+        // Ensure it's scrolled into view and focused
+        if (typeof first.scrollIntoView === 'function') first.scrollIntoView({ block: 'nearest', inline: 'nearest' })
+        first.focus()
+        if (typeof first.select === 'function') first.select()
+  } catch { /* noop */ }
+      return
+    }
+
+    // Fallback: focus the save button if present
+    if (saveButton && saveButton.value) {
+      try { saveButton.value.focus() } catch { /* noop */ }
+    }
+  } catch (err) {
+    console.warn('selectRow focus error', err)
+  }
 }
 
 
@@ -616,6 +663,7 @@ const tituloIntegerRe = /^\d{1,2}$/
 
 // index of the input currently focused (for styling)
 const isFocusedIndex = ref(null)
+
 
 // Display list for scan (left table) that always shows up to maxRows placeholders
 const scanDisplayList = computed(() => {
