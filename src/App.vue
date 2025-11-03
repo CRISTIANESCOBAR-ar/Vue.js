@@ -265,12 +265,25 @@ function applyUpdate() {
   // request the SW to skipWaiting y luego recargar
   ; (async () => {
     try {
+      // Mostrar indicador de progreso mientras se actualiza
+      if (typeof Swal !== 'undefined') {
+        Swal.fire({
+          title: 'Actualizando aplicación...',
+          html: 'Por favor espera mientras se descarga e instala la nueva versión.',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          didOpen: () => {
+            Swal.showLoading()
+          }
+        })
+      }
+
       // if registerSW returned an updater function, use it and wait
       if (typeof updateServiceWorker === 'function') {
         try {
           await updateServiceWorker(true)
           // updateServiceWorker may trigger a reload itself; ensure we reload as fallback
-          try { if (typeof window !== 'undefined') window.location.reload() } catch { /* noop */ }
+          try { if (typeof window !== 'undefined') window.location.reload(true) } catch { /* noop */ }
           return
         } catch {
           // fall through to manual unregister
@@ -290,24 +303,65 @@ function applyUpdate() {
       }
 
       if (typeof window !== 'undefined') {
-        // Attempt to clear CacheStorage to remove stale cached assets (best-effort)
+        // Limpieza agresiva del caché
         try {
+          // 1. Limpiar CacheStorage (Service Worker caches)
           if (window.caches && typeof window.caches.keys === 'function') {
             const keys = await window.caches.keys()
             for (const k of keys) {
               try { await window.caches.delete(k) } catch { /* noop */ }
             }
           }
+
+          // 2. Limpiar localStorage (excepto configuraciones críticas)
+          try {
+            const keysToPreserve = ['oracleConfig', 'userPreferences']
+            const backup = {}
+            keysToPreserve.forEach(key => {
+              const val = window.localStorage.getItem(key)
+              if (val) backup[key] = val
+            })
+            window.localStorage.clear()
+            Object.keys(backup).forEach(key => {
+              window.localStorage.setItem(key, backup[key])
+            })
+          } catch { /* noop */ }
+
+          // 3. Limpiar sessionStorage
+          try {
+            window.sessionStorage.clear()
+          } catch { /* noop */ }
         } catch {
           /* noop */
         }
-        // reload page bypassing caches using a cache-busting query param
-        const url = window.location.pathname + (window.location.search ? window.location.search + '&' : '?') + `_cb=${Date.now()}`
-        window.location.href = url
+
+        // Esperar un momento para asegurar que todo se limpió
+        await new Promise(resolve => setTimeout(resolve, 500))
+
+        // Recargar con cache-busting agresivo
+        // Usar hard reload con timestamp para forzar descarga de nuevos assets
+        const timestamp = Date.now()
+        const url = window.location.pathname + `?_v=${timestamp}&_reload=true`
+        
+        // Forzar recarga completa desde el servidor (bypass de caché)
+        if (window.location.replace) {
+          window.location.replace(url)
+        } else {
+          window.location.href = url
+        }
       }
     } catch (err) {
       console.warn('applyUpdate fallback failed', err)
-      try { if (typeof window !== 'undefined') window.location.reload() } catch { /* noop */ }
+      // Si todo falla, intenta hard reload
+      try { 
+        if (typeof window !== 'undefined') {
+          if (window.location.reload) {
+            window.location.reload(true) // hard reload
+          } else {
+            window.location.href = window.location.href + '?_reload=' + Date.now()
+          }
+        }
+      } catch { /* noop */ }
     }
   })()
 }
@@ -343,9 +397,19 @@ async function checkForUpdates(opts = { notifyOnFailure: false }) {
     }
     // Si es nueva versión
     isLatest.value = false
-    // Nueva versión detectada: aplicar actualización automáticamente para evitar que el usuario tenga que hacer un hard refresh.
-    await Swal.fire({ toast: true, position: 'top-end', icon: 'info', title: 'Nueva versión encontrada — aplicando actualización...', showConfirmButton: false, timer: 1400 })
-    applyUpdate()
+    // Nueva versión detectada: aplicar actualización automáticamente
+    Swal.fire({
+      title: 'Nueva versión disponible',
+      html: 'Descargando actualización...<br><div class="mt-3"><div class="animate-spin inline-block w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full"></div></div>',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      showConfirmButton: false,
+      didOpen: () => {
+        Swal.showLoading()
+      }
+    })
+    // Dar tiempo para que se muestre el modal antes de aplicar la actualización
+    setTimeout(() => applyUpdate(), 500)
   } catch (err) {
     console.warn('checkForUpdates error', err)
     // If the check was initiated by the user, show a modal error. For automatic background checks, avoid modal noise.
