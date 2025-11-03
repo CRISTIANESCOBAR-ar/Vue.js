@@ -176,7 +176,6 @@
 
       <!-- Bottom: TBL import results (full width) -->
       <div v-if="tblData.length" class="mt-4 border-t pt-4 bg-white p-3 rounded">
-        <h4 class="font-medium mb-2">Datos importados desde .TBL — TESTNR: {{ tblTestnr }}</h4>
         <div class="overflow-auto max-h-72 border rounded" style="overflow-x:auto;">
           <table class="w-full text-sm border-collapse tbl-import-table compact-table"
             :style="{ minWidth: tblMinWidth + 'px', tableLayout: 'fixed' }">
