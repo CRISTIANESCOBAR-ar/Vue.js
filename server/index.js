@@ -347,4 +347,77 @@ app.post('/api/uster/upload', async (req, res) => {
   }
 })
 
+/*
+DELETE /api/uster/delete
+Body: { testnr: '...' }
+Deletes all records for a given TESTNR from both USTER_PAR and USTER_TBL tables.
+Response: { success: true, message: '...' }
+*/
+app.delete('/api/uster/delete', async (req, res) => {
+  const payload = req.body || {}
+  const testnr = payload.testnr
+
+  globalThis.console.log('DELETE /api/uster/delete received - TESTNR:', testnr)
+
+  if (!testnr) return res.status(400).json({ error: 'Missing testnr' })
+
+  // If SKIP_DB is set run in dry mode
+  const dryRun =
+    (typeof globalThis !== 'undefined' &&
+      globalThis.process &&
+      globalThis.process.env &&
+      globalThis.process.env.SKIP_DB === 'true') ||
+    payload.dry === true
+
+  let conn
+  let deleteTblSql
+  let deleteParSql
+
+  try {
+    if (dryRun) {
+      return res.json({ success: true, message: `Ensayo ${testnr} eliminado (dry run)`, dryRun: true })
+    }
+
+    await initPool()
+    conn = await getConnection()
+
+    // Start transaction
+    // Delete from USTER_TBL first (child table)
+    deleteTblSql = `DELETE FROM ${SCHEMA_PREFIX}USTER_TBL WHERE TESTNR = :TESTNR`
+    globalThis.console.log('Executing DELETE TBL SQL:', deleteTblSql)
+    const tblResult = await conn.execute(deleteTblSql, { TESTNR: testnr }, { autoCommit: false })
+    globalThis.console.log('TBL rows deleted:', tblResult.rowsAffected)
+
+    // Delete from USTER_PAR (parent table)
+    deleteParSql = `DELETE FROM ${SCHEMA_PREFIX}USTER_PAR WHERE TESTNR = :TESTNR`
+    globalThis.console.log('Executing DELETE PAR SQL:', deleteParSql)
+    const parResult = await conn.execute(deleteParSql, { TESTNR: testnr }, { autoCommit: false })
+    globalThis.console.log('PAR rows deleted:', parResult.rowsAffected)
+
+    await conn.commit()
+    res.json({ 
+      success: true, 
+      message: `Ensayo ${testnr} eliminado correctamente`,
+      deletedTblRows: tblResult.rowsAffected,
+      deletedParRows: parResult.rowsAffected
+    })
+  } catch (err) {
+    globalThis.console.error('Delete error', err)
+    try {
+      if (conn) await conn.rollback()
+    } catch (er2) {
+      globalThis.console.error('rollback failed', er2)
+    }
+
+    const baseError = String(err && err.message ? err.message : err)
+    res.status(500).json({ error: baseError })
+  } finally {
+    try {
+      if (conn) await conn.close()
+    } catch (err2) {
+      globalThis.console.error('close conn err', err2)
+    }
+  }
+})
+
 app.listen(PORT, () => globalThis.console.log(`Server listening on ${PORT}`))

@@ -163,12 +163,17 @@
             </tbody>
           </table>
 
-          <div class="mt-2">
+          <div class="mt-2 flex gap-2">
             <button ref="saveButton" v-if="canSave" @click="saveCurrentTest" :disabled="isSaving"
               @keydown.up.prevent="focusLastTitulo"
               class="px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700 text-sm disabled:opacity-60 focus:outline-none focus:ring-4 focus:ring-indigo-300 focus:ring-offset-2">
               <span v-if="!isSaving">Guardar</span>
               <span v-else>Guardando...</span>
+            </button>
+            <button v-if="selectedTestnr && isTestSaved" @click="deleteCurrentTest" :disabled="isDeleting"
+              class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm disabled:opacity-60 focus:outline-none focus:ring-4 focus:ring-red-300 focus:ring-offset-2">
+              <span v-if="!isDeleting">Eliminar</span>
+              <span v-else>Eliminando...</span>
             </button>
           </div>
         </div>
@@ -926,6 +931,14 @@ const canSave = computed(() => {
   return (selectedTestnr.value && (currentTblRows.value.length > 0 || fileText.value))
 })
 const isSaving = ref(false)
+const isDeleting = ref(false)
+
+// Computed para saber si el ensayo actual está guardado en Oracle
+const isTestSaved = computed(() => {
+  if (!selectedTestnr.value) return false
+  const item = scanList.value.find(x => x.testnr === selectedTestnr.value)
+  return item && item.imp === true
+})
 
 function buildParObject() {
   // Build par object from oracleFields (prefer fileText; fallback to scanList values)
@@ -1061,6 +1074,90 @@ async function saveCurrentTest() {
     } catch { /* ignore */ }
   } finally {
     isSaving.value = false
+  }
+}
+
+async function deleteCurrentTest() {
+  if (!selectedTestnr.value || !isTestSaved.value) return
+
+  // Confirmar antes de eliminar
+  const result = await Swal.fire({
+    title: '¿Eliminar ensayo?',
+    text: `¿Estás seguro de eliminar el ensayo ${selectedTestnr.value} de la base de datos?`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#dc2626',
+    cancelButtonColor: '#6b7280',
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar'
+  })
+
+  if (!result.isConfirmed) return
+
+  if (isDeleting.value) return
+  isDeleting.value = true
+
+  try {
+    // Toast no bloqueante mientras se elimina
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon: 'info',
+      title: 'Eliminando...',
+      showConfirmButton: false,
+      timer: 30000,
+      timerProgressBar: true
+    })
+
+    const backendUrl = (typeof window !== 'undefined' && window.location.hostname === 'localhost') ? 'http://localhost:3001' : ''
+    const endpoint = backendUrl + '/api/uster/delete'
+
+    const fetchWithTimeout = (url, opts = {}, timeout = 30000) => {
+      return new Promise((resolve, reject) => {
+        const timer = setTimeout(() => reject(new Error('Timeout contacting server')), timeout)
+        fetch(url, opts).then(r => { clearTimeout(timer); resolve(r) }).catch(e => { clearTimeout(timer); reject(e) })
+      })
+    }
+
+    const resp = await fetchWithTimeout(endpoint, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ testnr: selectedTestnr.value }),
+      credentials: 'include'
+    }, 30000)
+
+    let data = null
+    try { data = await resp.json() } catch { data = null }
+    if (!resp.ok) throw new Error(data && data.error ? data.error : (data && data.message) || `HTTP ${resp.status}`)
+
+    // Actualizar el estado en scanList: quitar el icono de guardado
+    const deletedItem = scanList.value.find(item => item.testnr === selectedTestnr.value)
+    if (deletedItem) {
+      deletedItem.imp = false
+      await nextTick()
+    }
+
+    // Toast de éxito
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon: 'success',
+      title: `Ensayo ${selectedTestnr.value} eliminado`,
+      text: data.message || 'Eliminado correctamente',
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true
+    })
+  } catch (err) {
+    console.error('deleteCurrentTest error', err)
+    await Swal.fire({
+      icon: 'error',
+      title: 'Error al eliminar',
+      text: String(err && err.message ? err.message : err),
+      confirmButtonText: 'Cerrar'
+    })
+  } finally {
+    isDeleting.value = false
   }
 }
 
