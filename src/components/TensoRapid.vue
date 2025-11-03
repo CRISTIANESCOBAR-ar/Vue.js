@@ -67,10 +67,32 @@
 			</div>
 		</div>
 
-		<!-- Preview area for selected test -->
+		<!-- Preview area for PAR data -->
+		<div v-show="Object.keys(parsedParData).length"
+			class="max-w-4xl mx-auto bg-white rounded shadow p-4 mt-4">
+			<h5 class="font-medium mb-2">Datos .PAR — TESTNR: {{ parsedParData.TESTNR || tblTestnr }}</h5>
+			<div class="overflow-auto border rounded">
+				<table class="w-full text-sm border-collapse">
+					<thead>
+						<tr class="bg-gray-100 text-gray-700">
+							<th class="p-2 border text-xs text-left">Campo</th>
+							<th class="p-2 border text-xs text-left">Valor</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="field in tensoParFields" :key="field.field">
+							<td class="p-2 border text-xs font-medium">{{ field.field }}</td>
+							<td class="p-2 border text-xs font-mono">{{ parsedParData[field.field] || '' }}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<!-- Preview area for TBL data -->
 		<div v-show="parsedTblData.length"
 			class="max-w-4xl mx-auto bg-white rounded shadow p-4 mt-4">
-			<h5 class="font-medium mb-2">Preview — TESTNR: {{ tblTestnr }}</h5>
+			<h5 class="font-medium mb-2">Datos .TBL — TESTNR: {{ tblTestnr }}</h5>
 			<div class="overflow-auto border rounded">
 				<table class="w-full text-sm border-collapse">
 					<thead>
@@ -134,6 +156,7 @@ async function loadSelectedTensoFiles(testnr) {
 	try {
 		fileText.value = ''
 		tblText.value = ''
+		parsedParData.value = {}
 		// Do not clear parsedTblData here to avoid UI flicker when switching between rows.
 		// parsedTblData will be replaced only after new data is parsed.
 		selectedTblName.value = ''
@@ -147,6 +170,8 @@ async function loadSelectedTensoFiles(testnr) {
 				if (item.parHandle && typeof item.parHandle.getFile === 'function') {
 					const pf = await item.parHandle.getFile()
 					fileText.value = await pf.text()
+					// Parse PAR data
+					parsedParData.value = parseParText(fileText.value)
 				}
 			} catch (err) {
 				console.warn('reading .PAR from scan-list handles failed', err)
@@ -186,6 +211,8 @@ async function loadSelectedTensoFiles(testnr) {
 					try {
 						const f = await handle.getFile()
 						fileText.value = await f.text()
+						// Parse PAR data
+						parsedParData.value = parseParText(fileText.value)
 					} catch (err) {
 						console.warn('reading .PAR selected', err)
 					}
@@ -249,6 +276,60 @@ const tblText = ref('')
 const selectedTblName = ref('')
 const tblTestnr = ref('')
 const parsedTblData = ref([])
+const parsedParData = ref({})
+
+// TensoRapid .PAR file field mapping (row, column as specified)
+const tensoParFields = [
+  { field: 'CATALOG', row: 3, col: 1 },
+  { field: 'TESTNR', row: 8, col: 5 },
+  { field: 'TIME', row: 9, col: 5 },
+  { field: 'SORTIMENT', row: 10, col: 5 },
+  { field: 'ARTICLE', row: 11, col: 5 },
+  { field: 'MASCHNR', row: 12, col: 5 },
+  { field: 'MATCLASS', row: 13, col: 8 },
+  { field: 'NOMCOUNT', row: 14, col: 5 },
+  { field: 'NOMTWIST', row: 15, col: 5 },
+  { field: 'USCODE', row: 17, col: 8 },
+  { field: 'LABORANT', row: 18, col: 5 },
+  { field: 'COMMENT', row: 19, col: 5 },
+  { field: 'LOTE', row: 20, col: 5 },
+  { field: 'TUNAME', row: 24, col: 5 },
+  { field: 'GROUPS', row: 25, col: 5 },
+  { field: 'WITHIN', row: 26, col: 5 },
+  { field: 'TOTAL', row: 27, col: 5 },
+  { field: 'UNSPOOLGROUPS', row: 29, col: 5 },
+  { field: 'LENGTH', row: 30, col: 5 },
+  { field: 'EXTSPEED', row: 31, col: 5 },
+  { field: 'PRETENSION', row: 32, col: 5 },
+  { field: 'CLAMPPRESSURE', row: 33, col: 5 },
+  { field: 'CYCLEFORCELL', row: 34, col: 5 },
+  { field: 'CYCLEFORCEUL', row: 35, col: 5 },
+  { field: 'NMBOFFORCECYCLES', row: 36, col: 5 },
+  { field: 'CYCLELONGLL', row: 37, col: 5 },
+  { field: 'CYCLELONGUL', row: 38, col: 5 },
+  { field: 'NMBOFELONGCYCLES', row: 39, col: 5 },
+  { field: 'FORCEF1REL', row: 40, col: 5 },
+  { field: 'ELONGATIONE1REL', row: 41, col: 5 },
+  { field: 'EVALTIMEREL', row: 42, col: 5 },
+  { field: 'PRELOADCYCLESREL', row: 43, col: 5 },
+  { field: 'FORCEF1RET', row: 44, col: 5 },
+  { field: 'ELONGATIONE1RET', row: 45, col: 5 },
+  { field: 'EVALTIMERET', row: 46, col: 5 },
+  { field: 'PRELOADCYCLESRET', row: 47, col: 5 }
+]
+
+// Parse .PAR file and extract all fields according to tensoParFields mapping
+function parseParText(text) {
+  const data = {}
+  if (!text) return data
+  
+  for (const fieldDef of tensoParFields) {
+    const value = extractTsvCell(text, fieldDef.row, fieldDef.col)
+    data[fieldDef.field] = value != null ? String(value).trim() : ''
+  }
+  
+  return data
+}
 
 // IndexedDB helpers (store handles)
 function openDb() {

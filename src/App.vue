@@ -342,7 +342,7 @@ function applyUpdate() {
         // Usar hard reload con timestamp para forzar descarga de nuevos assets
         const timestamp = Date.now()
         const url = window.location.pathname + `?_v=${timestamp}&_reload=true`
-        
+
         // Forzar recarga completa desde el servidor (bypass de caché)
         if (window.location.replace) {
           window.location.replace(url)
@@ -353,7 +353,7 @@ function applyUpdate() {
     } catch (err) {
       console.warn('applyUpdate fallback failed', err)
       // Si todo falla, intenta hard reload
-      try { 
+      try {
         if (typeof window !== 'undefined') {
           if (window.location.reload) {
             window.location.reload(true) // hard reload

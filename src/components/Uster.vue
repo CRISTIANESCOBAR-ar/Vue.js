@@ -181,17 +181,20 @@
           <div class="mt-3 bg-gray-50 rounded p-2 border border-gray-200">
             <div class="flex flex-col gap-1.5 text-xs">
               <label class="flex items-center gap-1.5 cursor-pointer hover:bg-gray-100 p-1 rounded">
-                <input type="checkbox" v-model="filterShowAll" @change="() => { if (filterShowAll) { filterShowNotSaved = false; filterShowSaved = false; clearSelection(); } }"
+                <input type="checkbox" v-model="filterShowAll"
+                  @change="() => { if (filterShowAll) { filterShowNotSaved = false; filterShowSaved = false; clearSelection(); } }"
                   class="w-3.5 h-3.5" />
                 <span class="text-gray-700">Mostrar todos</span>
               </label>
               <label class="flex items-center gap-1.5 cursor-pointer hover:bg-gray-100 p-1 rounded">
-                <input type="checkbox" v-model="filterShowNotSaved" @change="() => { if (filterShowNotSaved) { filterShowAll = false; filterShowSaved = false; clearSelection(); } }"
+                <input type="checkbox" v-model="filterShowNotSaved"
+                  @change="() => { if (filterShowNotSaved) { filterShowAll = false; filterShowSaved = false; clearSelection(); } }"
                   class="w-3.5 h-3.5" />
                 <span class="text-gray-700">No guardados</span>
               </label>
               <label class="flex items-center gap-1.5 cursor-pointer hover:bg-gray-100 p-1 rounded">
-                <input type="checkbox" v-model="filterShowSaved" @change="() => { if (filterShowSaved) { filterShowAll = false; filterShowNotSaved = false; clearSelection(); } }"
+                <input type="checkbox" v-model="filterShowSaved"
+                  @change="() => { if (filterShowSaved) { filterShowAll = false; filterShowNotSaved = false; clearSelection(); } }"
                   class="w-3.5 h-3.5" />
                 <span class="text-gray-700">Guardados</span>
               </label>
@@ -265,7 +268,7 @@ function onTituloInput(srcIndex, ev) {
     raw = raw.replace(',', '.')
     // sanitize: allow only digits and a single dot; allow up to 2 decimal digits
     raw = raw.replace(/[^0-9.]/g, '')
-    
+
     // Detect if this input event was a deletion (Backspace / Delete).
     // If so, do NOT auto-insert the decimal separator to allow the user to remove it.
     const inputType = ev && ev.inputType ? String(ev.inputType) : ''
@@ -288,7 +291,7 @@ function onTituloInput(srcIndex, ev) {
       const decPart = (parts[1] || '').slice(0, 2)
       raw = intPart + '.' + decPart
     }
-    
+
     // write sanitized value back to the model (do not touch DOM directly; let Vue update input)
     if (tblData.value && tblData.value[srcIndex]) tblData.value[srcIndex]['TITULO'] = raw
 
@@ -674,7 +677,7 @@ async function selectRow(testnr) {
         if (typeof first.scrollIntoView === 'function') first.scrollIntoView({ block: 'nearest', inline: 'nearest' })
         first.focus()
         if (typeof first.select === 'function') first.select()
-  } catch { /* noop */ }
+      } catch { /* noop */ }
       return
     }
 
@@ -738,12 +741,12 @@ const scanDisplayList = computed(() => {
 // Computed para mostrar el estado de la lista según el filtro activo
 const scanStatusDisplay = computed(() => {
   if (!scanStatus.value) return '';
-  
+
   // Si no hay escaneo realizado, mostrar el mensaje original
   if (!scanList.value.length) return scanStatus.value;
-  
+
   const total = scanList.value.length;
-  
+
   if (filterShowAll.value) {
     return `Encontrados ${total} ensayos (mostrando todos)`;
   } else if (filterShowNotSaved.value) {
@@ -753,7 +756,7 @@ const scanStatusDisplay = computed(() => {
     const saved = scanList.value.filter(item => item.testnr && item.imp === true).length;
     return `Encontrados ${total} ensayos (${saved} guardados)`;
   }
-  
+
   return scanStatus.value;
 });
 
