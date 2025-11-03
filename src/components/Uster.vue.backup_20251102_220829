@@ -168,9 +168,8 @@
               class="px-3 py-1 bg-yellow-600 text-white rounded hover:bg-yellow-700 text-sm">Cargar
               seleccionados</button>
             <button @click="clearCache" class="px-3 py-1 bg-gray-200 rounded text-sm">Limpiar cache</button>
-            <button ref="saveButton" v-if="canSave" @click="saveCurrentTest" :disabled="isSaving"
-              @keydown.up.prevent="focusLastTitulo"
-              class="px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700 text-sm disabled:opacity-60 focus:outline-none focus:ring-4 focus:ring-indigo-300 focus:ring-offset-2">
+            <button v-if="canSave" @click="saveCurrentTest" :disabled="isSaving"
+              class="px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700 text-sm disabled:opacity-60">
               <span v-if="!isSaving">Guardar</span>
               <span v-else>Guardando...</span>
             </button>
@@ -202,6 +201,44 @@
             </tbody>
           </table>
         </div>
+
+        <div class="mt-3">
+          <h5 class="font-medium">Layout de importación (campo → columna)</h5>
+          <table class="w-full text-sm border-collapse mt-2">
+            <thead>
+              <tr>
+                <th class="p-1 border">Campo</th>
+                <th class="p-1 border">Columna</th>
+                <th class="p-1 border">Observaciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="f in tblFields" :key="f.name">
+                <td class="p-1 border font-medium">{{ f.name }}</td>
+                <td class="p-1 border">{{ f.col }}</td>
+                <td class="p-1 border text-xs text-gray-600">{{ f.note || '' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- Detalle completo de campos extraídos (.PAR) movido hacia abajo -->
+      <div v-if="fileText" class="mt-4 border-t pt-4 bg-white p-3 rounded">
+        <h4 class="font-medium mb-2">Preview detallado para Oracle — campos extraídos (.PAR)</h4>
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="text-left">
+              <th class="p-1 border">Campo</th>
+              <th class="p-1 border">Valor extraído</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="f in oracleFields" :key="f.field">
+              <td class="p-1 border font-medium">{{ f.field }}</td>
+              <td class="p-1 border font-mono">{{ getCell(f.row, f.col) }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
@@ -213,7 +250,6 @@ import Swal from 'sweetalert2'
 
 // refs and state
 const folderInput = ref(null)
-const saveButton = ref(null)
 const selectedFolderName = ref('')
 const scanList = ref([])
 const selectedTestnr = ref('')
@@ -738,14 +774,11 @@ async function parseTblText(text) {
       // Always set TESTNR from the currently selected TESTNR (TBL files don't include TESTNR column)
       obj['TESTNR'] = selectedTestnr.value ? String(selectedTestnr.value) : ''
 
-      // Mapear cada campo usando tblFields (que define el índice correcto de columna)
-      // Esto permite omitir columnas 8 y 16 correctamente
-      for (const field of tblFields) {
-        if (field.col === null) continue // Skip TESTNR (ya lo asignamos arriba)
-        
-        // col es 1-based, pero el array cols es 0-based
-        const colIndex = field.col - 1
-        obj[field.name] = (cols[colIndex] != null) ? String(cols[colIndex]).trim() : ''
+      // Map incoming columns to tblColumns starting at index 1 (skip TESTNR header)
+      for (let j = 0; j < cols.length && (j + 1) < tblColumns.length; j++) {
+        const colName = tblColumns[j + 1]
+        // trim whitespace so empty cells don't become "     " strings
+        obj[colName] = cols[j] != null ? String(cols[j]).trim() : ''
       }
 
       // ensure SEQNO is sequential starting at 1
@@ -952,16 +985,7 @@ async function saveCurrentTest() {
   if (isSaving.value) return
   isSaving.value = true
   try {
-    // Toast no bloqueante mientras se guarda
-    Swal.fire({
-      toast: true,
-      position: 'top-end',
-      icon: 'info',
-      title: 'Guardando...',
-      showConfirmButton: false,
-      timer: 30000,
-      timerProgressBar: true
-    })
+    Swal.fire({ title: 'Guardando...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } })
 
     const backendUrl = (typeof window !== 'undefined' && window.location.hostname === 'localhost') ? 'http://localhost:3001' : ''
     const endpoint = backendUrl + '/api/uster/upload'
@@ -990,29 +1014,12 @@ async function saveCurrentTest() {
       await nextTick();
     }
 
-    // Toast de éxito que desaparece automáticamente
-    Swal.fire({
-      toast: true,
-      position: 'top-end',
-      icon: 'success',
-      title: `Ensayo ${par.TESTNR} guardado`,
-      text: `${data.inserted || tblRows.length} filas`,
-      showConfirmButton: false,
-      timer: 3000,
-      timerProgressBar: true
-    })
+    await Swal.fire({ icon: 'success', title: 'Guardado', text: `Se guardaron ${data.inserted || tblRows.length} filas` })
   } catch (err) {
     console.error('saveCurrentTest error', err)
-    // Para errores sí mostramos un modal (no toast) para que el usuario pueda leer el detalle
-    try { 
-      await Swal.fire({ 
-        icon: 'error', 
-        title: 'Error al guardar', 
-        text: String(err && err.message ? err.message : err),
-        confirmButtonText: 'Cerrar'
-      }) 
-    } catch { /* ignore */ }
+    try { await Swal.fire({ icon: 'error', title: 'Error al guardar', text: String(err && err.message ? err.message : err) }) } catch { /* ignore */ }
   } finally {
+    try { Swal.close() } catch { /* ignore */ }
     isSaving.value = false
   }
 }
@@ -1089,23 +1096,12 @@ function focusNextTitulo(srcIndex) {
   const list = tituloList.value || []
   const pos = list.findIndex(x => x.srcIndex === srcIndex)
   if (pos === -1) return
-  
+  const next = list[pos + 1]
   // validate and normalize current before moving
   const ok = validateAndNormalizeTitulo(srcIndex)
   if (!ok) return
-  
-  // Buscar el siguiente input válido (con srcIndex !== null)
-  let nextValidIndex = -1
-  for (let i = pos + 1; i < list.length; i++) {
-    if (list[i].srcIndex !== null) {
-      nextValidIndex = i
-      break
-    }
-  }
-  
-  if (nextValidIndex !== -1) {
-    // Hay un siguiente input válido: enfocarlo
-    const next = list[nextValidIndex]
+  if (next) {
+    // focus next input
     nextTick(() => {
       if (typeof window !== 'undefined' && window.document) {
         const el = window.document.getElementById('titulo-input-' + next.srcIndex)
@@ -1116,10 +1112,11 @@ function focusNextTitulo(srcIndex) {
       }
     })
   } else {
-    // No hay más inputs: saltar al botón Guardar si existe
+    // no next: blur current input to ensure validation
     nextTick(() => {
-      if (saveButton.value && canSave.value && !isSaving.value) {
-        saveButton.value.focus()
+      if (typeof window !== 'undefined' && window.document) {
+        const el = window.document.getElementById('titulo-input-' + srcIndex)
+        if (el) el.blur()
       }
     })
   }
@@ -1129,21 +1126,10 @@ function focusNextTituloWrap(srcIndex) {
   const list = tituloList.value || []
   const pos = list.findIndex(x => x.srcIndex === srcIndex)
   if (pos === -1 || list.length === 0) return
+  const next = list[pos + 1] || list[0]
   const ok = validateAndNormalizeTitulo(srcIndex)
   if (!ok) return
-  
-  // Buscar el siguiente input válido (con srcIndex !== null)
-  let nextValidIndex = -1
-  for (let i = pos + 1; i < list.length; i++) {
-    if (list[i].srcIndex !== null) {
-      nextValidIndex = i
-      break
-    }
-  }
-  
-  if (nextValidIndex !== -1) {
-    // Hay un siguiente input válido: enfocarlo
-    const next = list[nextValidIndex]
+  if (next) {
     nextTick(() => {
       if (typeof window !== 'undefined' && window.document) {
         const el = window.document.getElementById('titulo-input-' + next.srcIndex)
@@ -1151,13 +1137,6 @@ function focusNextTituloWrap(srcIndex) {
           el.focus()
           try { el.select && el.select() } catch (err) { console.warn('select error', err) }
         }
-      }
-    })
-  } else {
-    // No hay más inputs válidos: saltar al botón Guardar si existe
-    nextTick(() => {
-      if (saveButton.value && canSave.value && !isSaving.value) {
-        saveButton.value.focus()
       }
     })
   }
@@ -1174,31 +1153,6 @@ function focusPrevTitulo(srcIndex) {
     nextTick(() => {
       if (typeof window !== 'undefined' && window.document) {
         const el = window.document.getElementById('titulo-input-' + prev.srcIndex)
-        if (el) {
-          el.focus()
-          try { el.select && el.select() } catch (err) { console.warn('select error', err) }
-        }
-      }
-    })
-  }
-}
-
-function focusLastTitulo() {
-  const list = tituloList.value || []
-  // Buscar el último input válido (con srcIndex !== null)
-  let lastValidIndex = -1
-  for (let i = list.length - 1; i >= 0; i--) {
-    if (list[i].srcIndex !== null) {
-      lastValidIndex = i
-      break
-    }
-  }
-  
-  if (lastValidIndex !== -1) {
-    const last = list[lastValidIndex]
-    nextTick(() => {
-      if (typeof window !== 'undefined' && window.document) {
-        const el = window.document.getElementById('titulo-input-' + last.srcIndex)
         if (el) {
           el.focus()
           try { el.select && el.select() } catch (err) { console.warn('select error', err) }

@@ -45,6 +45,47 @@ const PORT =
 // Simple health
 app.get('/api/health', (req, res) => res.json({ ok: true }))
 
+app.post('/api/uster/status', async (req, res) => {
+  const { testnrs } = req.body
+
+  if (!Array.isArray(testnrs) || testnrs.length === 0) {
+    return res.status(400).json({ error: 'testnrs must be a non-empty array' })
+  }
+
+  let conn
+  try {
+    await initPool()
+    conn = await getConnection()
+
+    // Use a bind variable for each TESTNR to prevent SQL injection
+    const binds = testnrs.reduce((acc, val, i) => {
+      acc[`tnr${i}`] = val
+      return acc
+    }, {})
+    const bindNames = Object.keys(binds)
+      .map((b) => `:${b}`)
+      .join(',')
+
+    const sql = `SELECT TESTNR FROM ${SCHEMA_PREFIX}USTER_PAR WHERE TESTNR IN (${bindNames})`
+    const result = await conn.execute(sql, binds)
+
+    // Oracle devuelve filas como arrays por defecto. row[0] es la primera columna (TESTNR)
+    const existing = result.rows.map((row) => row[0])
+    res.json({ existing })
+  } catch (err) {
+    globalThis.console.error('Status check error', err)
+    res.status(500).json({ error: 'Failed to check status' })
+  } finally {
+    if (conn) {
+      try {
+        await conn.close()
+      } catch (e) {
+        globalThis.console.error('close conn err', e)
+      }
+    }
+  }
+})
+
 /*
 Request body shape:
 {
