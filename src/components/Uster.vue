@@ -1477,9 +1477,12 @@ table.text-sm td {
 }
 
 .titulo-table td input {
-  /* make inputs fit well inside the small column (match row height) */
-  height: calc(var(--titulo-row-h, 2rem) - 0.25rem);
+  /* Ajustar altura del input considerando padding (p-0.5 = 2px) y border (1px*2 = 2px)
+     Total extras: 2px + 2px + 1px + 1px = 6px (0.375rem)
+     Para que la fila total sea 2rem, el input debe ser: 2rem - 0.375rem = 1.625rem */
+  height: 1.625rem;
   line-height: 1rem;
+  box-sizing: border-box;
 }
 
 .scan-container {
