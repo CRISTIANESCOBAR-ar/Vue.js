@@ -181,17 +181,17 @@
           <div class="mt-3 bg-gray-50 rounded p-2 border border-gray-200">
             <div class="flex flex-col gap-1.5 text-xs">
               <label class="flex items-center gap-1.5 cursor-pointer hover:bg-gray-100 p-1 rounded">
-                <input type="checkbox" v-model="filterShowAll" @change="() => { if (filterShowAll) { filterShowNotSaved = false; filterShowSaved = false; } }"
+                <input type="checkbox" v-model="filterShowAll" @change="() => { if (filterShowAll) { filterShowNotSaved = false; filterShowSaved = false; clearSelection(); } }"
                   class="w-3.5 h-3.5" />
                 <span class="text-gray-700">Mostrar todos</span>
               </label>
               <label class="flex items-center gap-1.5 cursor-pointer hover:bg-gray-100 p-1 rounded">
-                <input type="checkbox" v-model="filterShowNotSaved" @change="() => { if (filterShowNotSaved) { filterShowAll = false; filterShowSaved = false; } }"
+                <input type="checkbox" v-model="filterShowNotSaved" @change="() => { if (filterShowNotSaved) { filterShowAll = false; filterShowSaved = false; clearSelection(); } }"
                   class="w-3.5 h-3.5" />
                 <span class="text-gray-700">No guardados</span>
               </label>
               <label class="flex items-center gap-1.5 cursor-pointer hover:bg-gray-100 p-1 rounded">
-                <input type="checkbox" v-model="filterShowSaved" @change="() => { if (filterShowSaved) { filterShowAll = false; filterShowNotSaved = false; } }"
+                <input type="checkbox" v-model="filterShowSaved" @change="() => { if (filterShowSaved) { filterShowAll = false; filterShowNotSaved = false; clearSelection(); } }"
                   class="w-3.5 h-3.5" />
                 <span class="text-gray-700">Guardados</span>
               </label>
@@ -634,6 +634,15 @@ onMounted(() => {
     } catch (err) { console.warn('onMounted load snapshot error', err) }
   })()
 })
+
+// Función para limpiar la selección actual (deseleccionar ensayo y limpiar datos)
+function clearSelection() {
+  selectedTestnr.value = ''
+  fileText.value = ''
+  tblData.value = []
+  tblTestnr.value = ''
+  isFocusedIndex.value = null
+}
 
 async function selectRow(testnr) {
   // Select the TESTNR and load associated files (PAR/TBL) so preview and Save are available.
