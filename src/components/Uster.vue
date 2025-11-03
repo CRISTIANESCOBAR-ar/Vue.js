@@ -1707,10 +1707,11 @@ table.text-sm td {
 }
 
 .scan-container {
-  /* Scan list (left) fixed area for 10 rows */
+  /* Scan list (left) fixed area for exactly 10 rows */
   /* use the same header/row height variables as the Nro/Titulo column
      so both tables visually align */
-  max-height: calc(var(--titulo-header-h, 2rem) + (var(--titulo-row-h, 1.9rem) * 10) + 0.25rem);
+  /* Restamos 2px para evitar que se vea parte de la fila 11 */
+  height: calc(var(--titulo-header-h, 2rem) + (var(--titulo-row-h, 1.9rem) * 10) + 0.25rem - 2px);
   overflow-y: auto;
   /* prevent horizontal scrollbar caused by column widths or long content */
   overflow-x: hidden;
