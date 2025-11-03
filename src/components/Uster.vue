@@ -100,7 +100,7 @@
           </div>
 
           <div class="text-sm text-gray-600">
-            {{ scanStatus }}
+            {{ scanStatusDisplay }}
           </div>
         </div>
 
@@ -724,6 +724,28 @@ const scanDisplayList = computed(() => {
   }
 
   return items;
+});
+
+// Computed para mostrar el estado de la lista según el filtro activo
+const scanStatusDisplay = computed(() => {
+  if (!scanStatus.value) return '';
+  
+  // Si no hay escaneo realizado, mostrar el mensaje original
+  if (!scanList.value.length) return scanStatus.value;
+  
+  const total = scanList.value.length;
+  
+  if (filterShowAll.value) {
+    return `Encontrados ${total} ensayos (mostrando todos)`;
+  } else if (filterShowNotSaved.value) {
+    const notSaved = scanList.value.filter(item => item.testnr && item.imp !== true).length;
+    return `Encontrados ${total} ensayos (${notSaved} no guardados)`;
+  } else if (filterShowSaved.value) {
+    const saved = scanList.value.filter(item => item.testnr && item.imp === true).length;
+    return `Encontrados ${total} ensayos (${saved} guardados)`;
+  }
+  
+  return scanStatus.value;
 });
 
 // columns to display (based on mapping order)
