@@ -55,6 +55,26 @@
       <div class="grid uster-grid" style="grid-template-columns: 372px 96px 280px;">
         <!-- Columna 1: Lista de Ensayos, Botones y Estado -->
         <div class="flex flex-col gap-2">
+          <!-- Filtros de visualización -->
+          <div class="bg-gray-50 rounded p-2 border border-gray-200">
+            <div class="flex flex-col gap-1.5 text-xs">
+              <label class="flex items-center gap-1.5 cursor-pointer hover:bg-gray-100 p-1 rounded">
+                <input type="checkbox" v-model="filterShowAll" @change="() => { if (filterShowAll) { filterShowNotSaved = false; filterShowSaved = false; } }"
+                  class="w-3.5 h-3.5" />
+                <span class="text-gray-700">Mostrar todos los ensayos</span>
+              </label>
+              <label class="flex items-center gap-1.5 cursor-pointer hover:bg-gray-100 p-1 rounded">
+                <input type="checkbox" v-model="filterShowNotSaved" @change="() => { if (filterShowNotSaved) { filterShowAll = false; filterShowSaved = false; } }"
+                  class="w-3.5 h-3.5" />
+                <span class="text-gray-700">Mostrar no guardados en Oracle</span>
+              </label>
+              <label class="flex items-center gap-1.5 cursor-pointer hover:bg-gray-100 p-1 rounded">
+                <input type="checkbox" v-model="filterShowSaved" @change="() => { if (filterShowSaved) { filterShowAll = false; filterShowNotSaved = false; } }"
+                  class="w-3.5 h-3.5" />
+                <span class="text-gray-700">Mostrar guardados en Oracle</span>
+              </label>
+            </div>
+          </div>
           <div class="scan-container">
             <table class="text-sm border-collapse fixed-table scan-table">
               <colgroup>
@@ -224,6 +244,11 @@ const folderPath = ref('')
 const hasPersistedHandle = ref(false)
 const folderPathFull = ref('')
 const isAbsolutePath = ref(false)
+
+// Filtros para la lista de ensayos
+const filterShowAll = ref(false)
+const filterShowNotSaved = ref(true) // Por defecto mostrar no guardados
+const filterShowSaved = ref(false)
 
 function getTestnrFromName(name) {
   if (!name) return null
@@ -673,6 +698,17 @@ const scanDisplayList = computed(() => {
   // Clonamos cada item para asegurar que Vue detecte cualquier cambio en sus propiedades
   if (Array.isArray(scanList.value)) {
     items = scanList.value.map(item => ({ ...item }));
+  }
+
+  // Aplicar filtros según los checkboxes seleccionados
+  if (filterShowAll.value) {
+    // Mostrar todos, no filtrar
+  } else if (filterShowNotSaved.value) {
+    // Mostrar solo los no guardados (imp !== true)
+    items = items.filter(item => item.testnr && item.imp !== true);
+  } else if (filterShowSaved.value) {
+    // Mostrar solo los guardados (imp === true)
+    items = items.filter(item => item.testnr && item.imp === true);
   }
 
   // Si la lista es más grande que maxRows, la mostramos completa y el scroll se activará.
