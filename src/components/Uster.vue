@@ -55,26 +55,6 @@
       <div class="grid uster-grid" style="grid-template-columns: 372px 96px 280px;">
         <!-- Columna 1: Lista de Ensayos, Botones y Estado -->
         <div class="flex flex-col gap-2">
-          <!-- Filtros de visualización -->
-          <div class="bg-gray-50 rounded p-2 border border-gray-200">
-            <div class="flex flex-col gap-1.5 text-xs">
-              <label class="flex items-center gap-1.5 cursor-pointer hover:bg-gray-100 p-1 rounded">
-                <input type="checkbox" v-model="filterShowAll" @change="() => { if (filterShowAll) { filterShowNotSaved = false; filterShowSaved = false; } }"
-                  class="w-3.5 h-3.5" />
-                <span class="text-gray-700">Mostrar todos los ensayos</span>
-              </label>
-              <label class="flex items-center gap-1.5 cursor-pointer hover:bg-gray-100 p-1 rounded">
-                <input type="checkbox" v-model="filterShowNotSaved" @change="() => { if (filterShowNotSaved) { filterShowAll = false; filterShowSaved = false; } }"
-                  class="w-3.5 h-3.5" />
-                <span class="text-gray-700">Mostrar no guardados en Oracle</span>
-              </label>
-              <label class="flex items-center gap-1.5 cursor-pointer hover:bg-gray-100 p-1 rounded">
-                <input type="checkbox" v-model="filterShowSaved" @change="() => { if (filterShowSaved) { filterShowAll = false; filterShowNotSaved = false; } }"
-                  class="w-3.5 h-3.5" />
-                <span class="text-gray-700">Mostrar guardados en Oracle</span>
-              </label>
-            </div>
-          </div>
           <div class="scan-container">
             <table class="text-sm border-collapse fixed-table scan-table">
               <colgroup>
@@ -195,6 +175,27 @@
               <span v-if="!isDeleting">Eliminar</span>
               <span v-else>Eliminando...</span>
             </button>
+          </div>
+
+          <!-- Filtros de visualización -->
+          <div class="mt-3 bg-gray-50 rounded p-2 border border-gray-200">
+            <div class="flex flex-col gap-1.5 text-xs">
+              <label class="flex items-center gap-1.5 cursor-pointer hover:bg-gray-100 p-1 rounded">
+                <input type="checkbox" v-model="filterShowAll" @change="() => { if (filterShowAll) { filterShowNotSaved = false; filterShowSaved = false; } }"
+                  class="w-3.5 h-3.5" />
+                <span class="text-gray-700">Mostrar todos</span>
+              </label>
+              <label class="flex items-center gap-1.5 cursor-pointer hover:bg-gray-100 p-1 rounded">
+                <input type="checkbox" v-model="filterShowNotSaved" @change="() => { if (filterShowNotSaved) { filterShowAll = false; filterShowSaved = false; } }"
+                  class="w-3.5 h-3.5" />
+                <span class="text-gray-700">No guardados</span>
+              </label>
+              <label class="flex items-center gap-1.5 cursor-pointer hover:bg-gray-100 p-1 rounded">
+                <input type="checkbox" v-model="filterShowSaved" @change="() => { if (filterShowSaved) { filterShowAll = false; filterShowNotSaved = false; } }"
+                  class="w-3.5 h-3.5" />
+                <span class="text-gray-700">Guardados</span>
+              </label>
+            </div>
           </div>
         </div>
       </div>
