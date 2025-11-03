@@ -176,7 +176,7 @@
 
       <!-- Bottom: TBL import results (full width) -->
       <div v-if="tblData.length" class="mt-4 bg-white p-3 rounded">
-        <div class="overflow-auto max-h-72 border rounded" style="overflow-x:auto;">
+        <div class="overflow-auto max-h-72 rounded" style="overflow-x:auto;">
           <table class="w-full text-sm border-collapse tbl-import-table compact-table"
             :style="{ minWidth: tblMinWidth + 'px', tableLayout: 'fixed' }">
             <colgroup>
