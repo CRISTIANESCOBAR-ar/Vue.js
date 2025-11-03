@@ -742,7 +742,7 @@ async function parseTblText(text) {
       // Esto permite omitir columnas 8 y 16 correctamente
       for (const field of tblFields) {
         if (field.col === null) continue // Skip TESTNR (ya lo asignamos arriba)
-        
+
         // col es 1-based, pero el array cols es 0-based
         const colIndex = field.col - 1
         obj[field.name] = (cols[colIndex] != null) ? String(cols[colIndex]).trim() : ''
@@ -1004,13 +1004,13 @@ async function saveCurrentTest() {
   } catch (err) {
     console.error('saveCurrentTest error', err)
     // Para errores sí mostramos un modal (no toast) para que el usuario pueda leer el detalle
-    try { 
-      await Swal.fire({ 
-        icon: 'error', 
-        title: 'Error al guardar', 
+    try {
+      await Swal.fire({
+        icon: 'error',
+        title: 'Error al guardar',
         text: String(err && err.message ? err.message : err),
         confirmButtonText: 'Cerrar'
-      }) 
+      })
     } catch { /* ignore */ }
   } finally {
     isSaving.value = false
@@ -1089,11 +1089,11 @@ function focusNextTitulo(srcIndex) {
   const list = tituloList.value || []
   const pos = list.findIndex(x => x.srcIndex === srcIndex)
   if (pos === -1) return
-  
+
   // validate and normalize current before moving
   const ok = validateAndNormalizeTitulo(srcIndex)
   if (!ok) return
-  
+
   // Buscar el siguiente input válido (con srcIndex !== null)
   let nextValidIndex = -1
   for (let i = pos + 1; i < list.length; i++) {
@@ -1102,7 +1102,7 @@ function focusNextTitulo(srcIndex) {
       break
     }
   }
-  
+
   if (nextValidIndex !== -1) {
     // Hay un siguiente input válido: enfocarlo
     const next = list[nextValidIndex]
@@ -1131,7 +1131,7 @@ function focusNextTituloWrap(srcIndex) {
   if (pos === -1 || list.length === 0) return
   const ok = validateAndNormalizeTitulo(srcIndex)
   if (!ok) return
-  
+
   // Buscar el siguiente input válido (con srcIndex !== null)
   let nextValidIndex = -1
   for (let i = pos + 1; i < list.length; i++) {
@@ -1140,7 +1140,7 @@ function focusNextTituloWrap(srcIndex) {
       break
     }
   }
-  
+
   if (nextValidIndex !== -1) {
     // Hay un siguiente input válido: enfocarlo
     const next = list[nextValidIndex]
@@ -1193,7 +1193,7 @@ function focusLastTitulo() {
       break
     }
   }
-  
+
   if (lastValidIndex !== -1) {
     const last = list[lastValidIndex]
     nextTick(() => {
