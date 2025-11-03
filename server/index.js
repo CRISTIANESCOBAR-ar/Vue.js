@@ -375,7 +375,11 @@ app.delete('/api/uster/delete', async (req, res) => {
 
   try {
     if (dryRun) {
-      return res.json({ success: true, message: `Ensayo ${testnr} eliminado (dry run)`, dryRun: true })
+      return res.json({
+        success: true,
+        message: `Ensayo ${testnr} eliminado (dry run)`,
+        dryRun: true
+      })
     }
 
     await initPool()
@@ -395,8 +399,8 @@ app.delete('/api/uster/delete', async (req, res) => {
     globalThis.console.log('PAR rows deleted:', parResult.rowsAffected)
 
     await conn.commit()
-    res.json({ 
-      success: true, 
+    res.json({
+      success: true,
       message: `Ensayo ${testnr} eliminado correctamente`,
       deletedTblRows: tblResult.rowsAffected,
       deletedParRows: parResult.rowsAffected

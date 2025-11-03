@@ -239,15 +239,23 @@ function onTituloInput(srcIndex, ev) {
     raw = raw.replace(',', '.')
     // sanitize: allow only digits and a single dot; allow up to 2 decimal digits
     raw = raw.replace(/[^0-9.]/g, '')
-    // keep only first dot and limit integer/decimal lengths (int: up to 2, dec: up to 2)
+    
+    // Auto-format: when user types 2 digits without a dot, automatically add the dot
+    // Example: user types "12" → becomes "12."
     const parts = raw.split('.')
-    if (parts.length === 1) {
+    if (parts.length === 1 && parts[0].length === 2) {
+      // User has typed exactly 2 digits with no dot - add the dot automatically
+      raw = parts[0] + '.'
+    } else if (parts.length === 1) {
+      // Still typing integer part, limit to 2 digits
       raw = parts[0].slice(0, 2)
     } else {
+      // Dot already present, limit integer to 2 and decimal to 2
       const intPart = parts[0].slice(0, 2)
       const decPart = (parts[1] || '').slice(0, 2)
       raw = intPart + '.' + decPart
     }
+    
     // write sanitized value back to the model (do not touch DOM directly; let Vue update input)
     if (tblData.value && tblData.value[srcIndex]) tblData.value[srcIndex]['TITULO'] = raw
 
