@@ -915,10 +915,12 @@ async function loadSelectedFiles() {
   } catch (err) { console.warn('loadSelectedFiles error', err) }
 }
 
-async function updateTblFileWithTitulos() {
+async function updateTblFileWithTitulos(testnr) {
   try {
-    // Encontrar el handle del archivo .TBL actual
-    const it = scanList.value.find(x => String(x.testnr) === String(selectedTestnr.value))
+    // Determinar el TESTNR objetivo: usar el pasado como argumento para evitar problemas de selección
+    const targetTestnr = testnr || selectedTestnr.value
+    // Encontrar el handle del archivo .TBL para el TESTNR objetivo
+    const it = scanList.value.find(x => String(x.testnr) === String(targetTestnr))
     if (!it || !it.tblHandle) {
       console.warn('No se encontró el handle del archivo .TBL')
       return false
@@ -942,11 +944,14 @@ async function updateTblFileWithTitulos() {
     const lineEnding = currentText.includes('\r\n') ? '\r\n' : '\n'
 
     // Actualizar las líneas de datos (empiezan en índice 5, línea 6 en 1-based)
+    // Solo procesar las filas de tblData que correspondan al TESTNR objetivo
+    let writeCount = 0
     for (let i = 0; i < tblData.value.length; i++) {
       const row = tblData.value[i]
-      const lineIndex = 5 + i // Las filas de datos empiezan en la línea 6 (índice 5)
+      if (!row || String(row['TESTNR'] || '') !== String(targetTestnr)) continue
+      const lineIndex = 5 + (row.SEQNO != null ? (Number(row.SEQNO) - 1) : i) // Las filas de datos empiezan en la línea 6 (índice 5)
 
-      if (lineIndex >= lines.length) break
+      if (lineIndex >= lines.length) continue
 
       const titulo = row['TITULO'] || ''
       if (titulo === '') continue // Si no hay título, no modificar
@@ -965,6 +970,7 @@ async function updateTblFileWithTitulos() {
       if (cols.length > 8) {
         cols[8] = formattedTitulo
         lines[lineIndex] = cols.join('\t')
+        writeCount++
       }
     }
 
@@ -972,12 +978,15 @@ async function updateTblFileWithTitulos() {
     const newContent = lines.join(lineEnding)
 
     // Escribir de vuelta al archivo usando File System Access API
-    const writable = await it.tblHandle.createWritable()
-    await writable.write(newContent)
-    await writable.close()
-
-    console.log('Archivo .TBL actualizado exitosamente con los valores de Titulo')
-    return true
+    if (writeCount > 0) {
+      const writable = await it.tblHandle.createWritable()
+      await writable.write(newContent)
+      await writable.close()
+      console.log('Archivo .TBL actualizado exitosamente con los valores de Titulo (escritas:', writeCount, ')')
+      return true
+    }
+    // nothing to write
+    return false
   } catch (err) {
     console.error('Error al actualizar el archivo .TBL:', err)
     return false
@@ -1166,15 +1175,42 @@ async function saveCurrentTest() {
       // Forzar a Vue a esperar la actualización del DOM
       await nextTick();
     }
-
     // Actualizar el archivo .TBL con los valores de Titulo editados
     try {
-      const tblUpdated = await updateTblFileWithTitulos()
+      const tblUpdated = await updateTblFileWithTitulos(par.TESTNR)
       if (tblUpdated) {
         console.log('Archivo .TBL actualizado con éxito')
       }
     } catch (err) {
       console.warn('No se pudo actualizar el archivo .TBL (esto es normal en modo fallback):', err)
+    }
+
+    // Limpieza de inputs de TITULO para el ensayo guardado: evitar que los valores persistan en memoria
+    try {
+      for (let i = 0; i < tblData.value.length; i++) {
+        const r = tblData.value[i]
+        if (r && String(r['TESTNR'] || '') === String(par.TESTNR)) {
+          // limpiar solo el campo TITULO en memoria (no tocar el archivo en disco aquí)
+          tblData.value[i] = { ...tblData.value[i], 'TITULO': '' }
+        }
+      }
+    } catch (err) {
+      console.warn('No se pudo limpiar TITULO tras guardar:', err)
+    }
+
+    // Seleccionar el siguiente ensayo no guardado de la lista (si existe)
+    try {
+      // buscar el siguiente que no esté marcado como imp (guardado)
+      const nextItem = scanList.value.find(item => item.testnr && item.testnr !== par.TESTNR && item.imp !== true)
+      if (nextItem && nextItem.testnr) {
+        // seleccionar el siguiente ensayo
+        await selectRow(nextItem.testnr)
+      } else {
+        // si no hay siguiente no guardado, limpiar la selección actual
+        clearSelection()
+      }
+    } catch (err) {
+      console.warn('Error seleccionando siguiente ensayo tras guardar:', err)
     }
 
     // Toast de éxito que desaparece automáticamente

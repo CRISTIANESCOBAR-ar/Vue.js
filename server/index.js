@@ -565,7 +565,7 @@ app.post('/api/tensorapid/upload', async (req, res) => {
       NOMTWIST: safeNumber(par.NOMTWIST),
       USCODE: par.USCODE || null,
       LABORANT: par.LABORANT || null,
-  COMMENT_TEXT: par.COMMENT_TEXT || par.COMMENT || null,
+      COMMENT_TEXT: par.COMMENT_TEXT || par.COMMENT || null,
       LOTE: par.LOTE || null,
       TUNAME: par.TUNAME || null,
       GROUPS: safeNumber(par.GROUPS),

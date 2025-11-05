@@ -35,15 +35,25 @@ async function run() {
       IF col_exists > 0 THEN
         EXECUTE IMMEDIATE 'UPDATE ${process.env.SCHEMA_PREFIX || ''}TENSORAPID_PAR SET COMMENT_TEXT = "COMMENT" WHERE COMMENT_TEXT IS NULL';
       END IF;
-    END;`;
+    END;`
 
-    await conn.execute(copySql, [process.env.SCHEMA_PREFIX ? process.env.SCHEMA_PREFIX.replace(/\.$/, '') : null], { autoCommit: true })
+    await conn.execute(
+      copySql,
+      [process.env.SCHEMA_PREFIX ? process.env.SCHEMA_PREFIX.replace(/\.$/, '') : null],
+      { autoCommit: true }
+    )
 
-    console.log('✓ Migration script executed (columns added/copied where possible). Review results before dropping original column.')
+    console.log(
+      '✓ Migration script executed (columns added/copied where possible). Review results before dropping original column.'
+    )
   } catch (err) {
     console.error('Migration failed:', err)
   } finally {
-    try { await conn.close() } catch { /* noop */ }
+    try {
+      await conn.close()
+    } catch {
+      /* noop */
+    }
   }
 }
 
