@@ -45,6 +45,76 @@ const PORT =
 // Simple health
 app.get('/api/health', (req, res) => res.json({ ok: true }))
 
+/*
+GET /api/uster/list
+Query params: page (default 1), limit (default 50), sortBy (default 'TESTNR'), sortOrder (default 'DESC')
+Response: { records: [...], total: N, page: N, limit: N }
+*/
+app.get('/api/uster/list', async (req, res) => {
+  const page = parseInt(req.query.page) || 1
+  const limit = Math.min(parseInt(req.query.limit) || 50, 100) // max 100
+  const sortBy = req.query.sortBy || 'TESTNR'
+  const sortOrder = (req.query.sortOrder || 'DESC').toUpperCase()
+  
+  // Validate sortBy to prevent SQL injection
+  const allowedSortFields = ['TESTNR', 'NOMCOUNT', 'MASCHNR', 'LOTE', 'LABORANT', 'TIME_STAMP', 'CREATED_AT']
+  const sortField = allowedSortFields.includes(sortBy) ? sortBy : 'TESTNR'
+  const order = sortOrder === 'ASC' ? 'ASC' : 'DESC'
+  
+  const offset = (page - 1) * limit
+  
+  let conn
+  try {
+    await initPool()
+    conn = await getConnection()
+    
+    // Get total count
+    const countSql = `SELECT COUNT(*) as total FROM ${SCHEMA_PREFIX}USTER_PAR`
+    const countResult = await conn.execute(countSql)
+    const total = countResult.rows[0][0]
+    
+    // Get paginated records
+    const sql = `
+      SELECT TESTNR, NOMCOUNT, MASCHNR, LOTE, LABORANT, TIME_STAMP, CREATED_AT
+      FROM ${SCHEMA_PREFIX}USTER_PAR
+      ORDER BY ${sortField} ${order}
+      OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
+    `
+    
+    const result = await conn.execute(sql, { offset, limit })
+    
+    // Convert rows to objects
+    const records = result.rows.map(row => ({
+      TESTNR: row[0],
+      NOMCOUNT: row[1],
+      MASCHNR: row[2],
+      LOTE: row[3],
+      LABORANT: row[4],
+      TIME_STAMP: row[5],
+      CREATED_AT: row[6]
+    }))
+    
+    res.json({
+      records,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit)
+    })
+  } catch (err) {
+    globalThis.console.error('List USTER records error', err)
+    res.status(500).json({ error: 'Failed to fetch records' })
+  } finally {
+    if (conn) {
+      try {
+        await conn.close()
+      } catch (e) {
+        globalThis.console.error('close conn err', e)
+      }
+    }
+  }
+})
+
 app.post('/api/uster/status', async (req, res) => {
   const { testnrs } = req.body
 
