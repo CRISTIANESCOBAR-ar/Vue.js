@@ -43,6 +43,8 @@
           @click="setActive('form')" />
         <SidebarItem icon="📋" label="Registros" :active="active === 'list'" :collapsed="collapsed"
           @click="setActive('list')" />
+        <SidebarItem icon="📑" label="Resumen" :active="active === 'resumen'" :collapsed="collapsed"
+          @click="setActive('resumen')" />
         <SidebarItem icon="🧩" label="Uster" :active="active === 'uster'" :collapsed="collapsed"
           @click="setActive('uster')" />
         <SidebarItem icon="🧪" label="TensoRapid" :active="active === 'tenso'" :collapsed="collapsed"
@@ -88,6 +90,9 @@
             <FormRegistro ref="formRegistroRef" v-if="active === 'form'" :registros="registros" />
             <ListaRegistros v-else-if="active === 'list'" :registros="registros" :edit-index="editIndex"
               :mostrar-editar="true" @eliminar="eliminarRegistro" @actualizar="actualizarRegistro" />
+            <div v-else-if="active === 'resumen'">
+              <ResumenEnsayos />
+            </div>
             <div v-else-if="active === 'uster'">
               <Uster />
             </div>
@@ -170,6 +175,7 @@ import ListaRegistros from './components/ListaRegistros.vue'
 import Uster from './components/Uster.vue'
 import TensoRapid from './components/TensoRapid.vue'
 import SidebarItem from './components/SidebarItem.vue'
+import ResumenEnsayos from './components/ResumenEnsayos.vue'
 import Swal from 'sweetalert2'
 import { useRegistroStore } from './stores/registro'
 

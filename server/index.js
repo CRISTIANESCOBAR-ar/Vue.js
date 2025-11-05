@@ -86,6 +86,39 @@ app.post('/api/uster/status', async (req, res) => {
   }
 })
 
+// GET /api/uster/list
+// Returns a list of recent USTER_PAR rows with a subset of columns used by the UI
+app.get('/api/uster/list', async (req, res) => {
+  let conn
+  try {
+    await initPool()
+    conn = await getConnection()
+
+    const sql = `SELECT TESTNR, NOMCOUNT, MASCHNR, LOTE, LABORANT FROM ${SCHEMA_PREFIX}USTER_PAR ORDER BY TESTNR DESC FETCH FIRST 200 ROWS ONLY`
+    const result = await conn.execute(sql, [], { outFormat: undefined })
+
+    // result.rows is an array of arrays by default: [ [TESTNR, NOMCOUNT, MASCHNR, LOTE, LABORANT], ... ]
+    const rows = (result.rows || []).map((r) => ({
+      TESTNR: r[0],
+      NOMCOUNT: r[1],
+      MASCHNR: r[2],
+      LOTE: r[3],
+      LABORANT: r[4]
+    }))
+
+    res.json({ rows })
+  } catch (err) {
+    globalThis.console.error('List uster error', err)
+    res.status(500).json({ error: String(err && err.message ? err.message : err) })
+  } finally {
+    try {
+      if (conn) await conn.close()
+    } catch (err2) {
+      globalThis.console.error('close conn err', err2)
+    }
+  }
+})
+
 /*
 Request body shape:
 {
