@@ -20,6 +20,7 @@
               <th class="px-3 py-2 text-left text-xs font-medium text-gray-500">MASCHNR</th>
               <th class="px-3 py-2 text-left text-xs font-medium text-gray-500">LOTE</th>
               <th class="px-3 py-2 text-left text-xs font-medium text-gray-500">LABORANT</th>
+              <th class="px-3 py-2 text-left text-xs font-medium text-gray-500">TIME</th>
               <th class="px-3 py-2 text-right text-xs font-medium text-gray-500">Acciones</th>
             </tr>
           </thead>
@@ -30,6 +31,7 @@
               <td class="px-3 py-2 text-sm">{{ r.MASCHNR }}</td>
               <td class="px-3 py-2 text-sm">{{ r.LOTE }}</td>
               <td class="px-3 py-2 text-sm">{{ r.LABORANT }}</td>
+              <td class="px-3 py-2 text-sm">{{ formatTime(r.TIME_STAMP) }}</td>
               <td class="px-3 py-2 text-sm text-right">
                 <button @click="confirmDelete(r.TESTNR)" class="px-2 py-1 bg-red-600 text-white rounded text-xs">Eliminar</button>
               </td>
@@ -49,6 +51,38 @@ const rows = ref([])
 const loading = ref(false)
 
 const backendUrl = typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:3001' : ''
+
+/**
+ * Format TIME_STAMP to dd/mm/yy hh:mm format
+ * Input format: "1761445626 26.10.2025 03:27" or similar
+ * Output format: "26/10/25 03:27"
+ */
+function formatTime(timeStamp) {
+  if (!timeStamp) return ''
+  
+  // The TIME_STAMP format appears to be: "timestamp DD.MM.YYYY HH:MM"
+  // We need to extract the date and time parts and reformat them
+  const parts = String(timeStamp).trim().split(' ')
+  
+  // If we have at least 3 parts (timestamp, date, time)
+  if (parts.length >= 3) {
+    const datePart = parts[1] // "26.10.2025"
+    const timePart = parts[2] // "03:27"
+    
+    // Parse the date part (DD.MM.YYYY)
+    const dateComponents = datePart.split('.')
+    if (dateComponents.length === 3) {
+      const day = dateComponents[0]
+      const month = dateComponents[1]
+      const year = dateComponents[2].slice(-2) // Get last 2 digits of year
+      
+      return `${day}/${month}/${year} ${timePart}`
+    }
+  }
+  
+  // If format doesn't match expected pattern, return original value
+  return timeStamp
+}
 
 async function loadRows() {
   loading.value = true

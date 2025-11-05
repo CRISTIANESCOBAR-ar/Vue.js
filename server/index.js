@@ -94,16 +94,17 @@ app.get('/api/uster/list', async (req, res) => {
     await initPool()
     conn = await getConnection()
 
-    const sql = `SELECT TESTNR, NOMCOUNT, MASCHNR, LOTE, LABORANT FROM ${SCHEMA_PREFIX}USTER_PAR ORDER BY TESTNR DESC FETCH FIRST 200 ROWS ONLY`
+    const sql = `SELECT TESTNR, NOMCOUNT, MASCHNR, LOTE, LABORANT, TIME_STAMP FROM ${SCHEMA_PREFIX}USTER_PAR ORDER BY TESTNR DESC FETCH FIRST 200 ROWS ONLY`
     const result = await conn.execute(sql, [], { outFormat: undefined })
 
-    // result.rows is an array of arrays by default: [ [TESTNR, NOMCOUNT, MASCHNR, LOTE, LABORANT], ... ]
+    // result.rows is an array of arrays by default: [ [TESTNR, NOMCOUNT, MASCHNR, LOTE, LABORANT, TIME_STAMP], ... ]
     const rows = (result.rows || []).map((r) => ({
       TESTNR: r[0],
       NOMCOUNT: r[1],
       MASCHNR: r[2],
       LOTE: r[3],
-      LABORANT: r[4]
+      LABORANT: r[4],
+      TIME_STAMP: r[5]
     }))
 
     res.json({ rows })
