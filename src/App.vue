@@ -52,8 +52,8 @@
       </nav>
     </aside>
 
-  <!-- Mobile / tablet header (visible under 1024px) -->
-  <header class="lg:hidden fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-3 py-1 bg-white">
+    <!-- Mobile / tablet header (visible under 1024px) -->
+    <header class="lg:hidden fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-3 py-1 bg-white">
       <button aria-label="Toggle menú" :aria-expanded="String(sidebarVisible)"
         class="bg-blue-600 text-white p-0.5 rounded shadow w-9 h-9 flex items-center justify-center"
         @click.stop.prevent="mobileToggle">
@@ -151,8 +151,7 @@
         <span v-if="appCommitSha"> ({{ appCommitSha }})</span>
         <span v-if="appBuildTime"> · Publicado: {{ new Date(appBuildTime).toLocaleString() }}</span>
         <!-- Developer helper: ejecutar prueba simulada de responsive en desarrollo -->
-        <button v-if="isDev"
-          @click="runResponsiveSimTest"
+        <button v-if="isDev" @click="runResponsiveSimTest"
           class="ml-4 px-2 py-1 text-xs bg-gray-800 text-white rounded hover:bg-gray-700">
           Simular responsive
         </button>
