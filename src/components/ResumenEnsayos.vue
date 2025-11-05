@@ -74,9 +74,17 @@ function formatTime(timeStamp) {
     if (dateComponents.length === 3) {
       const day = dateComponents[0]
       const month = dateComponents[1]
-      const year = dateComponents[2].slice(-2) // Get last 2 digits of year
+      const year = dateComponents[2]
       
-      return `${day}/${month}/${year} ${timePart}`
+      // Validate that components are numeric
+      if (!day || !month || !year || isNaN(day) || isNaN(month) || isNaN(year)) {
+        return timeStamp
+      }
+      
+      // Get last 2 digits of year
+      const yearShort = year.slice(-2)
+      
+      return `${day}/${month}/${yearShort} ${timePart}`
     }
   }
   
