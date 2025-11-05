@@ -178,11 +178,12 @@ async function fetchRecords() {
   error.value = null
 
   try {
-    const queryParams = `page=${currentPage.value}&limit=${pageLimit.value}&sortBy=${sortBy.value}&sortOrder=${sortOrder.value}`
+    const queryParams = `page=${encodeURIComponent(currentPage.value)}&limit=${encodeURIComponent(pageLimit.value)}&sortBy=${encodeURIComponent(sortBy.value)}&sortOrder=${encodeURIComponent(sortOrder.value)}`
     const response = await fetch(`${API_BASE}/api/uster/list?${queryParams}`)
 
     if (!response.ok) {
-      throw new Error(`Error al cargar registros: ${response.status}`)
+      const errorText = await response.text().catch(() => 'Unknown error')
+      throw new Error(`Error al cargar registros: ${response.status} - ${errorText}`)
     }
 
     const data = await response.json()
@@ -242,8 +243,15 @@ async function deleteRecord(testnr) {
     })
 
     if (!response.ok) {
-      const errorData = await response.json()
-      throw new Error(errorData.error || 'Error al eliminar el registro')
+      let errorMessage = 'Error al eliminar el registro'
+      try {
+        const errorData = await response.json()
+        errorMessage = errorData.error || errorMessage
+      } catch {
+        // If response is not JSON, use the default error message
+        errorMessage = `${errorMessage} (${response.status})`
+      }
+      throw new Error(errorMessage)
     }
 
     await Swal.fire({
