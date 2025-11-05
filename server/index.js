@@ -63,6 +63,28 @@ app.get('/api/uster/list', async (req, res) => {
   
   const offset = (page - 1) * limit
   
+  // Check if SKIP_DB mode is enabled
+  const skipDb = (typeof globalThis !== 'undefined' &&
+    globalThis.process &&
+    globalThis.process.env &&
+    globalThis.process.env.SKIP_DB === 'true')
+  
+  if (skipDb) {
+    // Return mock data for testing
+    const mockRecords = [
+      { TESTNR: '00001', NOMCOUNT: 30, MASCHNR: 'M01', LOTE: 'L001', LABORANT: 'Juan Pérez' },
+      { TESTNR: '00002', NOMCOUNT: 40, MASCHNR: 'M02', LOTE: 'L002', LABORANT: 'María García' },
+      { TESTNR: '00003', NOMCOUNT: 50, MASCHNR: 'M03', LOTE: 'L003', LABORANT: 'Carlos López' }
+    ]
+    return res.json({
+      records: mockRecords,
+      total: mockRecords.length,
+      page,
+      limit,
+      totalPages: 1
+    })
+  }
+  
   let conn
   try {
     await initPool()
