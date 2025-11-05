@@ -113,9 +113,6 @@ app.post('/api/uster/upload', async (req, res) => {
     'tbl.length=',
     tbl.length
   )
-
-  if (!par || !par.TESTNR) return res.status(400).json({ error: 'Missing par.TESTNR' })
-
   // If SKIP_DB is set (or payload.dry === true) run in dry mode and don't attempt DB connection.
   const dryRun =
     (typeof globalThis !== 'undefined' &&
@@ -136,6 +133,7 @@ app.post('/api/uster/upload', async (req, res) => {
       return res.json({ success: true, inserted: tbl.length, dryRun: true })
     }
     await initPool()
+    conn = await getConnection()
     conn = await getConnection()
     // Diagnostic queries: log DB session user and current schema to debug ORA-00942
     try {
@@ -419,6 +417,284 @@ app.delete('/api/uster/delete', async (req, res) => {
       if (conn) await conn.close()
     } catch (err2) {
       globalThis.console.error('close conn err', err2)
+    }
+  }
+})
+
+/*
+POST /api/tensorapid/upload
+Request body shape:
+{
+  par: { TESTNR: '001234', USTER_TESTNR: '005678', CATALOG: '...', ... },
+  tbl: [ { TESTNR: '001234', NO: 1, TIEMPO_ROTURA: 1.23, FUERZA_B: 2.34, ELONGACION: 3.45, TENACIDAD: 4.56, TRABAJO: 5.67 }, ... ]
+}
+Response: { success: true }
+*/
+app.post('/api/tensorapid/upload', async (req, res) => {
+  const payload = req.body || {}
+  const par = payload.par || null
+  const tbl = Array.isArray(payload.tbl) ? payload.tbl : []
+
+  globalThis.console.log(
+    'POST /api/tensorapid/upload received - TESTNR:',
+    par && par.TESTNR,
+    'USTER_TESTNR:',
+    par && par.USTER_TESTNR,
+    'tbl.length=',
+    tbl.length
+  )
+
+  // Additional lightweight diagnostic log: keys and small snippet of par JSON to detect missing fields
+  try {
+    const parKeys = par && typeof par === 'object' ? Object.keys(par) : []
+    let parSnippet = ''
+    try {
+      parSnippet = par ? JSON.stringify(par).slice(0, 1000) : ''
+    } catch (e) {
+      parSnippet = '[could not stringify par]'
+    }
+    globalThis.console.log('POST /api/tensorapid/upload payload summary:', {
+      parKeys,
+      parSnippet,
+      tblLength: tbl.length
+    })
+  } catch (e) {
+    globalThis.console.warn('Failed to log upload payload summary', e)
+  }
+
+  if (!par || !par.TESTNR) return res.status(400).json({ error: 'Missing par.TESTNR' })
+  if (!par.USTER_TESTNR) return res.status(400).json({ error: 'Missing par.USTER_TESTNR' })
+
+  // If SKIP_DB is set (or payload.dry === true) run in dry mode and don't attempt DB connection.
+  const dryRun =
+    (typeof globalThis !== 'undefined' &&
+      globalThis.process &&
+      globalThis.process.env &&
+      globalThis.process.env.SKIP_DB === 'true') ||
+    payload.dry === true
+  let conn
+  let mergeSql
+  let deleteSql
+  let insertSql
+  let bindsArray
+  let parBinds
+  try {
+    if (dryRun) {
+      return res.json({ success: true, inserted: tbl.length, dryRun: true })
+    }
+    await initPool()
+    conn = await getConnection()
+
+    // Start transaction
+    // Upsert into TENSORAPID_PAR using MERGE
+    // Use only the exact .PAR fields from the specification
+    mergeSql = `MERGE INTO ${SCHEMA_PREFIX}TENSORAPID_PAR t
+    USING (SELECT :TESTNR AS TESTNR FROM dual) s
+    ON (t.TESTNR = s.TESTNR)
+    WHEN MATCHED THEN
+      UPDATE SET
+        USTER_TESTNR = :USTER_TESTNR,
+        CATALOG = :CATALOG,
+        TIME = :TIME,
+        SORTIMENT = :SORTIMENT,
+        ARTICLE = :ARTICLE,
+        MASCHNR = :MASCHNR,
+        MATCLASS = :MATCLASS,
+        NOMCOUNT = :NOMCOUNT,
+        NOMTWIST = :NOMTWIST,
+        USCODE = :USCODE,
+        LABORANT = :LABORANT,
+        "COMMENT" = :CMT,
+        LOTE = :LOTE,
+        TUNAME = :TUNAME,
+        GROUPS = :GROUPS,
+        WITHIN = :WITHIN,
+        TOTAL = :TOTAL,
+        UNSPOOLGROUPS = :UNSPOOLGROUPS,
+        LENGTH = :LENGTH,
+        EXTSPEED = :EXTSPEED,
+        PRETENSION = :PRETENSION,
+        CLAMPPRESSURE = :CLAMPPRESSURE,
+        CYCLEFORCELL = :CYCLEFORCELL,
+        CYCLEFORCEUL = :CYCLEFORCEUL,
+        NMBOFFORCECYCLES = :NMBOFFORCECYCLES,
+        CYCLELONGLL = :CYCLELONGLL,
+        CYCLELONGUL = :CYCLELONGUL,
+        NMBOFELONGCYCLES = :NMBOFELONGCYCLES,
+        FORCEF1REL = :FORCEF1REL,
+        ELONGATIONE1REL = :ELONGATIONE1REL,
+        EVALTIMEREL = :EVALTIMEREL,
+        PRELOADCYCLESREL = :PRELOADCYCLESREL,
+        FORCEF1RET = :FORCEF1RET,
+        ELONGATIONE1RET = :ELONGATIONE1RET,
+        EVALTIMERET = :EVALTIMERET,
+        PRELOADCYCLESRET = :PRELOADCYCLESRET,
+        UPDATED_AT = SYSTIMESTAMP
+    WHEN NOT MATCHED THEN
+      INSERT (TESTNR, USTER_TESTNR, CATALOG, TIME, SORTIMENT, ARTICLE, MASCHNR, MATCLASS, 
+              NOMCOUNT, NOMTWIST, USCODE, LABORANT, "COMMENT", LOTE, TUNAME, GROUPS, WITHIN, 
+              TOTAL, UNSPOOLGROUPS, LENGTH, EXTSPEED, PRETENSION, CLAMPPRESSURE, CYCLEFORCELL, 
+              CYCLEFORCEUL, NMBOFFORCECYCLES, CYCLELONGLL, CYCLELONGUL, NMBOFELONGCYCLES, 
+              FORCEF1REL, ELONGATIONE1REL, EVALTIMEREL, PRELOADCYCLESREL, FORCEF1RET, 
+              ELONGATIONE1RET, EVALTIMERET, PRELOADCYCLESRET)
+      VALUES (:TESTNR, :USTER_TESTNR, :CATALOG, :TIME, :SORTIMENT, :ARTICLE, :MASCHNR, :MATCLASS, 
+              :NOMCOUNT, :NOMTWIST, :USCODE, :LABORANT, :CMT, :LOTE, :TUNAME, :GROUPS, :WITHIN, 
+              :TOTAL, :UNSPOOLGROUPS, :LENGTH, :EXTSPEED, :PRETENSION, :CLAMPPRESSURE, :CYCLEFORCELL, 
+              :CYCLEFORCEUL, :NMBOFFORCECYCLES, :CYCLELONGLL, :CYCLELONGUL, :NMBOFELONGCYCLES, 
+              :FORCEF1REL, :ELONGATIONE1REL, :EVALTIMEREL, :PRELOADCYCLESREL, :FORCEF1RET, 
+              :ELONGATIONE1RET, :EVALTIMERET, :PRELOADCYCLESRET)`
+
+    // Helper function to safely convert to number or null (avoid NaN)
+    const safeNumber = (val) => {
+      if (val == null || val === '') return null
+      const num = Number(val)
+      return isNaN(num) ? null : num
+    }
+
+    // Map directly to .PAR field names (no aliases or compatibility columns)
+    parBinds = {
+      TESTNR: par.TESTNR,
+      USTER_TESTNR: par.USTER_TESTNR,
+      CATALOG: par.CATALOG || null,
+      TIME: par.TIME || null,
+      SORTIMENT: par.SORTIMENT || null,
+      ARTICLE: par.ARTICLE || null,
+      MASCHNR: par.MASCHNR || null,
+      MATCLASS: par.MATCLASS || null,
+      NOMCOUNT: safeNumber(par.NOMCOUNT),
+      NOMTWIST: safeNumber(par.NOMTWIST),
+      USCODE: par.USCODE || null,
+      LABORANT: par.LABORANT || null,
+      CMT: par.COMMENT || null,
+      LOTE: par.LOTE || null,
+      TUNAME: par.TUNAME || null,
+      GROUPS: safeNumber(par.GROUPS),
+      WITHIN: safeNumber(par.WITHIN),
+      TOTAL: safeNumber(par.TOTAL),
+      UNSPOOLGROUPS: safeNumber(par.UNSPOOLGROUPS),
+      LENGTH: safeNumber(par.LENGTH),
+      EXTSPEED: safeNumber(par.EXTSPEED),
+      PRETENSION: safeNumber(par.PRETENSION),
+      CLAMPPRESSURE: safeNumber(par.CLAMPPRESSURE),
+      CYCLEFORCELL: safeNumber(par.CYCLEFORCELL),
+      CYCLEFORCEUL: safeNumber(par.CYCLEFORCEUL),
+      NMBOFFORCECYCLES: safeNumber(par.NMBOFFORCECYCLES),
+      CYCLELONGLL: safeNumber(par.CYCLELONGLL),
+      CYCLELONGUL: safeNumber(par.CYCLELONGUL),
+      NMBOFELONGCYCLES: safeNumber(par.NMBOFELONGCYCLES),
+      FORCEF1REL: safeNumber(par.FORCEF1REL),
+      ELONGATIONE1REL: safeNumber(par.ELONGATIONE1REL),
+      EVALTIMEREL: safeNumber(par.EVALTIMEREL),
+      PRELOADCYCLESREL: safeNumber(par.PRELOADCYCLESREL),
+      FORCEF1RET: safeNumber(par.FORCEF1RET),
+      ELONGATIONE1RET: safeNumber(par.ELONGATIONE1RET),
+      EVALTIMERET: safeNumber(par.EVALTIMERET),
+      PRELOADCYCLESRET: safeNumber(par.PRELOADCYCLESRET)
+    }
+
+    globalThis.console.log('Executing TENSORAPID MERGE SQL for TESTNR:', par.TESTNR)
+    await conn.execute(mergeSql, parBinds, { autoCommit: false })
+
+    // Insert TBL rows: delete existing rows for this TESTNR and insert provided rows
+    deleteSql = `DELETE FROM ${SCHEMA_PREFIX}TENSORAPID_TBL WHERE TESTNR = :TESTNR`
+    await conn.execute(deleteSql, { TESTNR: par.TESTNR }, { autoCommit: false })
+
+    if (tbl.length > 0) {
+      insertSql = `INSERT INTO ${SCHEMA_PREFIX}TENSORAPID_TBL (TESTNR, HUSO_ENSAYOS, HUSO_NUMBER, TIEMPO_ROTURA, FUERZA_B, ELONGACION, TENACIDAD, TRABAJO)
+                   VALUES (:TESTNR, :HUSO_ENSAYOS, :HUSO_NUMBER, :TIEMPO_ROTURA, :FUERZA_B, :ELONGACION, :TENACIDAD, :TRABAJO)`
+
+      bindsArray = tbl.map((row) => {
+        return {
+          TESTNR: row.TESTNR || par.TESTNR,
+          HUSO_ENSAYOS: row.HUSO_ENSAYOS || row.NE_TITULO || row.NE || null,
+          HUSO_NUMBER: safeNumber(row.HUSO_NUMBER || row.NO || row.NO_), // HUSO_NUMBER es el número extraído
+          TIEMPO_ROTURA: safeNumber(row.TIEMPO_ROTURA),
+          FUERZA_B: safeNumber(row.FUERZA_B),
+          ELONGACION: safeNumber(row.ELONGACION),
+          TENACIDAD: safeNumber(row.TENACIDAD),
+          TRABAJO: safeNumber(row.TRABAJO)
+        }
+      })
+
+      globalThis.console.log(`Executing TENSORAPID INSERT TBL SQL: ${tbl.length} rows`)
+      await conn.executeMany(insertSql, bindsArray, { autoCommit: false })
+    }
+
+    await conn.commit()
+    res.json({ success: true, inserted: tbl.length })
+  } catch (err) {
+    globalThis.console.error('TensoRapid upload error', err)
+    try {
+      if (conn) await conn.rollback()
+    } catch (er2) {
+      globalThis.console.error('rollback failed', er2)
+    }
+
+    const baseError = String(err && err.message ? err.message : err)
+    res.status(500).json({ error: baseError })
+  } finally {
+    try {
+      if (conn) await conn.close()
+    } catch (err2) {
+      globalThis.console.error('close conn err', err2)
+    }
+  }
+})
+
+/*
+POST /api/tensorapid/status
+Request body shape:
+{
+  testnrs: ['001234', '001235', ...]
+}
+Response: { 
+  existing: ['001234', ...],
+  details: { '001234': { usterTestnr: '05410' }, ... }
+}
+*/
+app.post('/api/tensorapid/status', async (req, res) => {
+  const { testnrs } = req.body
+
+  if (!Array.isArray(testnrs) || testnrs.length === 0) {
+    return res.status(400).json({ error: 'testnrs must be a non-empty array' })
+  }
+
+  let conn
+  try {
+    await initPool()
+    conn = await getConnection()
+
+    const binds = testnrs.reduce((acc, val, i) => {
+      acc[`tnr${i}`] = val
+      return acc
+    }, {})
+    const bindNames = Object.keys(binds)
+      .map((b) => `:${b}`)
+      .join(',')
+
+    const sql = `SELECT TESTNR, USTER_TESTNR FROM ${SCHEMA_PREFIX}TENSORAPID_PAR WHERE TESTNR IN (${bindNames})`
+    const result = await conn.execute(sql, binds)
+
+    const existing = []
+    const details = {}
+    result.rows.forEach((row) => {
+      const testnr = row[0]
+      const usterTestnr = row[1]
+      existing.push(testnr)
+      details[testnr] = { usterTestnr: usterTestnr || null }
+    })
+
+    res.json({ existing, details })
+  } catch (err) {
+    globalThis.console.error('TensoRapid status check error', err)
+    res.status(500).json({ error: 'Failed to check status' })
+  } finally {
+    if (conn) {
+      try {
+        await conn.close()
+      } catch (e) {
+        globalThis.console.error('close conn err', e)
+      }
     }
   }
 })

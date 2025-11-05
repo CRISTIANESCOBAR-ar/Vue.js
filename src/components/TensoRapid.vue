@@ -21,35 +21,103 @@
 			</div>
 		</div>
 
+		<!-- Filtros: Todos / No guardados / Guardados -->
+		<div class="mt-3 flex items-center gap-4">
+			<label class="inline-flex items-center text-sm">
+				<input type="radio" name="tenso-filter" v-model="filterMode" value="all" class="mr-2" />
+				<span>Todos</span>
+			</label>
+			<label class="inline-flex items-center text-sm">
+				<input type="radio" name="tenso-filter" v-model="filterMode" value="not" class="mr-2" />
+				<span>No guardados</span>
+			</label>
+			<label class="inline-flex items-center text-sm">
+				<input type="radio" name="tenso-filter" v-model="filterMode" value="saved" class="mr-2" />
+				<span>Guardados</span>
+			</label>
+		</div>
+
 		<div class="mt-4">
 			<div class="scan-container max-h-64 overflow-y-auto">
 				<table class="text-sm border-collapse fixed-table scan-table w-full">
 					<colgroup>
-						<col />
-						<col />
-						<col />
-						<col />
-						<col />
+						<col style="width: 80px" />
+						<col style="width: 50px" />
+						<col style="width: 50px" />
+						<col style="width: 50px" />
+						<col style="width: 60px" />
+						<col style="width: 60px" />
+						<col style="width: 120px" />
+						<col style="width: 80px" />
 					</colgroup>
-					<thead>
-						<tr class="bg-gray-100 text-gray-700">
+					<thead class="sticky top-0 bg-gray-100 z-10">
+						<tr class="text-gray-700">
 							<th class="p-1 border text-xs text-center">Ensayo</th>
 							<th class="p-1 border text-xs text-center">.PAR</th>
 							<th class="p-1 border text-xs text-center">.TBL</th>
+							<th class="p-1 border text-xs text-center">Estado</th>
 							<th class="p-1 border text-xs text-center">Ne</th>
 							<th class="p-1 border text-xs text-center">Maq.</th>
+							<th class="p-1 border text-xs text-center">USTER</th>
+							<th class="p-1 border text-xs text-center">Acción</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr v-for="(item, idx) in tensoDisplayList" :key="idx" class="hover:bg-gray-50 cursor-pointer"
-							@click="onSelect(item.testnr)">
+							:class="{ 'bg-blue-50': selectedTensoTestnr === item.testnr }"
+							@click="loadTensoTestFiles(item.testnr)">
 							<td class="p-1 border text-xs text-center">{{ item.testnr || '' }}</td>
 							<td class="p-1 border text-center text-xs"><input type="checkbox" disabled
 									:checked="item.hasPar" /></td>
 							<td class="p-1 border text-center text-xs"><input type="checkbox" disabled
 									:checked="item.hasTbl" /></td>
+							<td class="p-1 border text-center text-xs">
+								<span v-if="item.saved === true" title="Guardado en la base de datos">
+									<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-600 mx-auto"
+										fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+										<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+									</svg>
+								</span>
+							</td>
 							<td class="p-1 border text-center text-xs font-mono">{{ item.nomcount || '' }}</td>
 							<td class="p-1 border text-center text-xs font-mono">{{ item.maschnr || '' }}</td>
+							<td class="p-1 border text-center text-xs" @click.stop>
+								<input v-if="item.testnr" 
+									type="text" 
+									v-model="item.usterTestnr" 
+									:placeholder="item.saved ? '05410' : ''"
+									maxlength="5" 
+									inputmode="numeric"
+									:disabled="item.saved && !item.isEditing"
+									:ref="el => setInputRef(el, item.testnr)"
+									@input="formatUsterTestnr(item, $event)"
+									@keydown.enter="focusSaveButton(item)"
+									:class="[
+										'w-full px-1 py-0.5 text-xs text-center border rounded focus:outline-none focus:ring-1 focus:ring-blue-400 font-mono',
+										item.saved && !item.isEditing ? 'bg-gray-100 cursor-not-allowed' : ''
+									]" />
+							</td>
+							<td class="p-1 border text-center text-xs" @click.stop>
+								<!-- Botón Editar (solo si está guardado y no está editando) -->
+								<button v-if="item.testnr && item.saved && !item.isEditing" @click="startEditing(item)"
+									class="px-2 py-0.5 bg-blue-600 text-white rounded hover:bg-blue-700 text-xs">
+									Editar
+								</button>
+								<!-- Botones Guardar y Cancelar (si está editando o no está guardado) -->
+								<div v-else-if="item.testnr && item.usterTestnr" class="flex gap-1 justify-center">
+									<button @click="saveToOracle(item)"
+										:disabled="isSaving"
+										:ref="el => setSaveButtonRef(el, item.testnr)"
+										class="px-2 py-0.5 bg-indigo-600 text-white rounded hover:bg-indigo-700 text-xs disabled:opacity-50">
+										{{ isSaving ? 'Guardando...' : 'Guardar' }}
+									</button>
+									<button v-if="item.isEditing" @click="cancelEditing(item)"
+										:disabled="isSaving"
+										class="px-2 py-0.5 bg-gray-500 text-white rounded hover:bg-gray-600 text-xs disabled:opacity-50">
+										Cancelar
+									</button>
+								</div>
+							</td>
 						</tr>
 					</tbody>
 				</table>
@@ -67,9 +135,9 @@
 			</div>
 		</div>
 
-		<!-- Preview area for PAR data -->
-		<div v-show="Object.keys(parsedParData).length"
-			class="max-w-4xl mx-auto bg-white rounded shadow p-4 mt-4">
+		<!-- Preview area for PAR data - COMENTADO: Solo se muestra TBL -->
+		<!-- 
+		<div v-show="Object.keys(parsedParData).length" class="max-w-4xl mx-auto bg-white rounded shadow p-4 mt-4">
 			<h5 class="font-medium mb-2">Datos .PAR — TESTNR: {{ parsedParData.TESTNR || tblTestnr }}</h5>
 			<div class="overflow-auto border rounded">
 				<table class="w-full text-sm border-collapse">
@@ -88,18 +156,19 @@
 				</table>
 			</div>
 		</div>
+		-->
 
 		<!-- Preview area for TBL data -->
-		<div v-show="parsedTblData.length"
-			class="max-w-4xl mx-auto bg-white rounded shadow p-4 mt-4">
+		<div v-show="parsedTblData.length" class="max-w-4xl mx-auto bg-white rounded shadow p-4 mt-4">
 			<h5 class="font-medium mb-2">Datos .TBL — TESTNR: {{ tblTestnr }}</h5>
-			<div class="overflow-auto border rounded">
+			<div class="overflow-auto border rounded max-h-96">
 				<table class="w-full text-sm border-collapse">
-					<thead>
-						<tr class="bg-gray-100 text-gray-700">
+					<thead class="sticky top-0 bg-gray-100">
+						<tr class="text-gray-700">
 							<th class="p-1 border text-xs">#</th>
 							<th class="p-1 border text-xs">TESTNR</th>
-							<th class="p-1 border text-xs">NO.</th>
+							<th class="p-1 border text-xs">No.</th>
+							<th class="p-1 border text-xs bg-blue-50">Huso</th>
 							<th class="p-1 border text-xs">TIEMPO_ROTURA</th>
 							<th class="p-1 border text-xs">FUERZA_B</th>
 							<th class="p-1 border text-xs">ELONGACION</th>
@@ -108,11 +177,16 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr v-for="(r, ri) in parsedTblData" :key="ri">
-							<td class="p-1 border text-xs">{{ ri + 1 }}</td>
-							<td class="p-1 border text-xs font-mono">{{ r[0] || '' }}</td>
-							<td v-for="(c, ci) in r.slice(1, 7)" :key="ci" class="p-1 border text-xs font-mono">{{ c }}
-							</td>
+						<tr v-for="(row, ri) in preparedTblPreview" :key="ri">
+							<td class="p-1 border text-xs text-center">{{ ri + 1 }}</td>
+							<td class="p-1 border text-xs font-mono">{{ row.TESTNR || '' }}</td>
+							<td class="p-1 border text-xs font-mono">{{ row.HUSO_ENSAYOS || '' }}</td>
+							<td class="p-1 border text-xs font-mono bg-blue-50 text-center font-semibold">{{ row.HUSO_NUMBER }}</td>
+							<td class="p-1 border text-xs font-mono text-right">{{ row.TIEMPO_ROTURA || '' }}</td>
+							<td class="p-1 border text-xs font-mono text-right">{{ row.FUERZA_B || '' }}</td>
+							<td class="p-1 border text-xs font-mono text-right">{{ row.ELONGACION || '' }}</td>
+							<td class="p-1 border text-xs font-mono text-right">{{ row.TENACIDAD || '' }}</td>
+							<td class="p-1 border text-xs font-mono text-right">{{ row.TRABAJO || '' }}</td>
 						</tr>
 					</tbody>
 				</table>
@@ -122,33 +196,317 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 
 // UI state
 const tensoFolderInputLocal = ref(null)
 const tensoFolderPathFull = ref('')
 const tensoHasPersistedHandle = ref(false)
 const tensoScanList = ref([])
+const selectedTensoTestnr = ref('')
 const tensoScanStatus = ref('')
 const isScanning = ref(false)
+const isSaving = ref(false)
 const maxRows = 10
 
-// compute display list padded to maxRows
+// filtro UI: 'all' | 'saved' | 'not'
+const filterMode = ref('all')
+
+// Refs para inputs y botones (para auto-focus)
+const inputRefs = ref({})
+const saveButtonRefs = ref({})
+
+// compute display list padded to maxRows and filtered by checkboxes
 const tensoDisplayList = computed(() => {
+	const src = Array.isArray(tensoScanList.value) ? tensoScanList.value.slice() : []
+
+	// aplicar filtros
+	let filtered = []
+	if (src.length === 0) {
+		filtered = []
+	} else if (filterMode.value === 'all') {
+		filtered = src
+	} else {
+		const showSaved = filterMode.value === 'saved'
+		const showNot = filterMode.value === 'not'
+		// si no hay ninguna opción seleccionada, mostrar todo
+		if (!showSaved && !showNot) {
+			filtered = src
+		} else {
+			filtered = src.filter(item => {
+				const saved = !!item.saved
+				return (saved && showSaved) || (!saved && showNot)
+			})
+		}
+	}
+
 	const out = []
-	if (!Array.isArray(tensoScanList.value) || tensoScanList.value.length === 0) {
+	if (filtered.length === 0) {
 		for (let i = 0; i < maxRows; i++) out.push({ testnr: '', hasPar: false, hasTbl: false, nomcount: '', maschnr: '' })
 		return out
 	}
-	if (tensoScanList.value.length >= maxRows) return tensoScanList.value
-	out.push(...tensoScanList.value)
+
+	if (filtered.length >= maxRows) return filtered
+	out.push(...filtered)
 	while (out.length < maxRows) out.push({ testnr: '', hasPar: false, hasTbl: false, nomcount: '', maschnr: '' })
 	return out
 })
 
-async function onSelect(testnr) {
-	if (!testnr) return
-	await loadSelectedTensoFiles(testnr)
+// Handlers para mantener comportamiento de filtros
+// filtros manejados por filterMode (radio)
+
+// (extractHusoNumber removed — logic inlined where needed)
+
+// Formatea el texto de estado según total, savedCount y modo de filtro
+function formatScanStatus(total, savedCount, mode) {
+	if (!total || total === 0) return 'No se encontraron archivos .PAR/.TBL válidos en la carpeta seleccionada'
+	if (mode === 'all') return `Encontrados ${total} ensayos (mostrando todos)`
+	// si no tenemos savedCount, mostrar 'mostrando' genérico
+	if (savedCount == null) {
+		if (mode === 'saved') return `Encontrados ${total} ensayos (mostrando guardados)`
+		if (mode === 'not') return `Encontrados ${total} ensayos (mostrando no guardados)`
+	}
+	const notSaved = total - (savedCount || 0)
+	if (mode === 'saved') return `Encontrados ${total} ensayos (${savedCount} guardados)`
+	if (mode === 'not') return `Encontrados ${total} ensayos (${notSaved} no guardados)`
+	return `Encontrados ${total} ensayos`
+}
+
+// Recalcula y actualiza el texto de estado según la lista actual y el modo de filtro
+function recalcStatus() {
+	const total = Array.isArray(tensoScanList.value) ? tensoScanList.value.length : 0
+	// detectar si tenemos información de saved en la lista
+	const hasSavedInfo = Array.isArray(tensoScanList.value) && tensoScanList.value.some(it => typeof it.saved !== 'undefined')
+	const savedCount = hasSavedInfo ? tensoScanList.value.reduce((acc, it) => acc + (it.saved ? 1 : 0), 0) : null
+	tensoScanStatus.value = formatScanStatus(total, savedCount, filterMode.value)
+}
+
+// Cuando cambia el modo de filtro o la lista de ensayos, actualizar el label inmediatamente
+watch(filterMode, () => recalcStatus())
+watch(tensoScanList, () => recalcStatus(), { deep: true })
+
+// Función para cargar archivos al hacer clic en una fila
+async function loadTensoTestFiles(testnr) {
+	if (!testnr) {
+		console.log('loadTensoTestFiles: testnr vacío')
+		return
+	}
+	console.log('loadTensoTestFiles: cargando archivos para testnr:', testnr)
+	selectedTensoTestnr.value = testnr
+	try {
+		await loadSelectedTensoFiles(testnr)
+		console.log('loadTensoTestFiles: archivos cargados exitosamente')
+	} catch (err) {
+		console.error('loadTensoTestFiles: error al cargar archivos', err)
+	}
+}
+
+async function saveToOracle(item) {
+	if (!item || !item.testnr || !item.usterTestnr) return
+	if (isSaving.value) return
+
+	isSaving.value = true
+	try {
+		// Cargar archivos PAR y TBL para este ensayo
+		await loadSelectedTensoFiles(item.testnr)
+
+		// Verificar que tengamos datos PAR y TBL
+		if (!parsedParData.value || Object.keys(parsedParData.value).length === 0) {
+			throw new Error('No se pudieron cargar los datos del archivo .PAR')
+		}
+		if (!parsedTblData.value || parsedTblData.value.length === 0) {
+			throw new Error('No se pudieron cargar los datos del archivo .TBL')
+		}
+
+		// Agregar el TESTNR de USTER a los datos PAR
+		const parDataToSave = {
+			...parsedParData.value,
+			USTER_TESTNR: item.usterTestnr
+		}
+
+		// Preparar datos TBL - extraer número de huso de la columna Ne (ej: "62/5" -> 62)
+		const tblDataToSave = parsedTblData.value
+			.map((row, index) => {
+				// Extraer número de huso de la columna 1 (formato "62/5", "320/5", etc)
+				const husoEnsayos = row[1] && row[1].trim() !== '' ? row[1].trim() : null
+				let husoNumber = null
+				if (husoEnsayos) {
+					const match = husoEnsayos.match(/^(\d+)\//)
+					if (match && match[1]) {
+						husoNumber = parseInt(match[1], 10)
+					}
+				}
+				// Si no se puede extraer, usar índice+1 como fallback
+				if (!husoNumber || isNaN(husoNumber)) {
+					husoNumber = index + 1
+				}
+
+				return {
+					TESTNR: row[0] || parDataToSave.TESTNR,
+					HUSO_ENSAYOS: husoEnsayos,
+					HUSO_NUMBER: husoNumber,
+					TIEMPO_ROTURA: row[2] && row[2].trim() !== '' ? row[2] : null,
+					FUERZA_B: row[3] && row[3].trim() !== '' ? row[3] : null,
+					ELONGACION: row[4] && row[4].trim() !== '' ? row[4] : null,
+					TENACIDAD: row[5] && row[5].trim() !== '' ? row[5] : null,
+					TRABAJO: row[6] && row[6].trim() !== '' ? row[6] : null
+				}
+			})
+
+		// Toast de progreso
+		if (typeof Swal !== 'undefined') {
+			Swal.fire({
+				toast: true,
+				position: 'top-end',
+				icon: 'info',
+				title: 'Guardando...',
+				showConfirmButton: false,
+				timer: 30000,
+				timerProgressBar: true
+			})
+		}
+
+		// Determinar URL del backend
+		const backendUrl = (typeof window !== 'undefined' && window.location.hostname === 'localhost')
+			? 'http://localhost:3001'
+			: ''
+		const endpoint = backendUrl + '/api/tensorapid/upload'
+
+		// Enviar datos al backend
+		// Log payload summary before sending (helps diagnose missing fields)
+		try {
+			console.log('Saving to backend. payload summary:', {
+				TESTNR: parDataToSave.TESTNR,
+				USTER_TESTNR: parDataToSave.USTER_TESTNR,
+				parKeys: Object.keys(parDataToSave || {}).slice(0, 50),
+				tblCount: tblDataToSave.length,
+				tblFirst: tblDataToSave.length > 0 ? tblDataToSave[0] : null
+			})
+		} catch (e) { console.warn('Could not log payload summary', e) }
+		const response = await fetch(endpoint, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({
+				par: parDataToSave,
+				tbl: tblDataToSave
+			}),
+			credentials: 'include'
+		})
+
+		let data = null
+		try { data = await response.json() } catch { data = null }
+
+		// Log server response for debugging
+		try { console.log('Server response for saveToOracle:', { ok: response.ok, status: response.status, body: data }) } catch (e) { console.warn('Could not log server response', e) }
+
+		if (!response.ok) {
+			throw new Error(data && data.error ? data.error : (data && data.message) || `HTTP ${response.status}`)
+		}
+
+		// Marcar como guardado en la lista y salir del modo edición
+		item.saved = true
+		item.isEditing = false
+
+		// Toast de éxito
+		if (typeof Swal !== 'undefined') {
+			Swal.fire({
+				toast: true,
+				position: 'top-end',
+				icon: 'success',
+				title: `Ensayo ${item.testnr} guardado`,
+				text: `Vinculado con USTER ${item.usterTestnr}`,
+				showConfirmButton: false,
+				timer: 3000,
+				timerProgressBar: true
+			})
+		}
+	} catch (err) {
+		console.error('saveToOracle error', err)
+		// Modal de error
+		if (typeof Swal !== 'undefined') {
+			await Swal.fire({
+				icon: 'error',
+				title: 'Error al guardar',
+				text: String(err && err.message ? err.message : err),
+				confirmButtonText: 'Cerrar'
+			})
+		}
+	} finally {
+		isSaving.value = false
+	}
+}
+
+// Iniciar edición de un ensayo guardado
+function startEditing(item) {
+	if (!item) return
+	// Guardar el valor original por si se cancela
+	item.originalUsterTestnr = item.usterTestnr
+	item.isEditing = true
+}
+
+// Cancelar edición y restaurar valor original
+function cancelEditing(item) {
+	if (!item) return
+	// Restaurar el valor original
+	if (item.originalUsterTestnr !== undefined) {
+		item.usterTestnr = item.originalUsterTestnr
+	}
+	item.isEditing = false
+	item.originalUsterTestnr = undefined
+}
+
+// Guardar referencia al input para poder enfocarlo
+function setInputRef(el, testnr) {
+	if (el) {
+		inputRefs.value[testnr] = el
+	}
+}
+
+// Guardar referencia al botón Guardar para poder enfocarlo
+function setSaveButtonRef(el, testnr) {
+	if (el) {
+		saveButtonRefs.value[testnr] = el
+	}
+}
+
+// Formatear USTER_TESTNR con padding de ceros (5 dígitos) y solo números
+function formatUsterTestnr(item, event) {
+	if (!item) return
+	
+	// Extraer solo números
+	let value = (event.target.value || '').replace(/\D/g, '')
+	
+	// Limitar a 5 caracteres
+	if (value.length > 5) {
+		value = value.slice(0, 5)
+	}
+	
+	// Actualizar el valor (sin padding mientras escribe)
+	item.usterTestnr = value
+	
+	// Si llegó a 5 dígitos, aplicar padding y enfocar botón Guardar
+	if (value.length === 5) {
+		// Padding con ceros a la izquierda
+		item.usterTestnr = value.padStart(5, '0')
+		// Enfocar botón Guardar después de un pequeño delay para que se actualice el DOM
+		setTimeout(() => focusSaveButton(item), 100)
+	}
+}
+
+// Enfocar el botón Guardar para un ensayo específico
+function focusSaveButton(item) {
+	if (!item || !item.testnr) return
+	const button = saveButtonRefs.value[item.testnr]
+	if (button && typeof button.focus === 'function') {
+		button.focus()
+	}
+}
+
+// Helper: formatear USTER_TESTNR a 5 dígitos con padding
+function padUsterTestnr(value) {
+	if (!value) return ''
+	const numStr = String(value).replace(/\D/g, '').slice(0, 5)
+	return numStr ? numStr.padStart(5, '0') : ''
 }
 
 // load .PAR and .TBL for a given testnr using the persisted handle (or fallback input files)
@@ -278,57 +636,86 @@ const tblTestnr = ref('')
 const parsedTblData = ref([])
 const parsedParData = ref({})
 
+// Prepared TBL data as it will be sent to the backend (matching saveToOracle mapping)
+const preparedTblPreview = computed(() => {
+	try {
+		return (parsedTblData.value || []).map((row, index) => {
+			const husoEnsayos = row[1] && row[1].trim() !== '' ? row[1].trim() : ''
+			let husoNumber = null
+			if (husoEnsayos) {
+				const match = husoEnsayos.match(/^(\d+)\//)
+				if (match && match[1]) husoNumber = parseInt(match[1], 10)
+			}
+			if (!husoNumber || isNaN(husoNumber)) husoNumber = index + 1
+
+			return {
+				TESTNR: row[0] || tblTestnr.value,
+				HUSO_ENSAYOS: husoEnsayos,
+				HUSO_NUMBER: husoNumber,
+				TIEMPO_ROTURA: row[2] && row[2].trim() !== '' ? row[2] : '',
+				FUERZA_B: row[3] && row[3].trim() !== '' ? row[3] : '',
+				ELONGACION: row[4] && row[4].trim() !== '' ? row[4] : '',
+				TENACIDAD: row[5] && row[5].trim() !== '' ? row[5] : '',
+				TRABAJO: row[6] && row[6].trim() !== '' ? row[6] : ''
+			}
+		})
+	} catch (err) {
+		console.warn('preparedTblPreview compute error', err)
+		return []
+	}
+})
+
 // TensoRapid .PAR file field mapping (row, column as specified)
 const tensoParFields = [
-  { field: 'CATALOG', row: 3, col: 1 },
-  { field: 'TESTNR', row: 8, col: 5 },
-  { field: 'TIME', row: 9, col: 5 },
-  { field: 'SORTIMENT', row: 10, col: 5 },
-  { field: 'ARTICLE', row: 11, col: 5 },
-  { field: 'MASCHNR', row: 12, col: 5 },
-  { field: 'MATCLASS', row: 13, col: 8 },
-  { field: 'NOMCOUNT', row: 14, col: 5 },
-  { field: 'NOMTWIST', row: 15, col: 5 },
-  { field: 'USCODE', row: 17, col: 8 },
-  { field: 'LABORANT', row: 18, col: 5 },
-  { field: 'COMMENT', row: 19, col: 5 },
-  { field: 'LOTE', row: 20, col: 5 },
-  { field: 'TUNAME', row: 24, col: 5 },
-  { field: 'GROUPS', row: 25, col: 5 },
-  { field: 'WITHIN', row: 26, col: 5 },
-  { field: 'TOTAL', row: 27, col: 5 },
-  { field: 'UNSPOOLGROUPS', row: 29, col: 5 },
-  { field: 'LENGTH', row: 30, col: 5 },
-  { field: 'EXTSPEED', row: 31, col: 5 },
-  { field: 'PRETENSION', row: 32, col: 5 },
-  { field: 'CLAMPPRESSURE', row: 33, col: 5 },
-  { field: 'CYCLEFORCELL', row: 34, col: 5 },
-  { field: 'CYCLEFORCEUL', row: 35, col: 5 },
-  { field: 'NMBOFFORCECYCLES', row: 36, col: 5 },
-  { field: 'CYCLELONGLL', row: 37, col: 5 },
-  { field: 'CYCLELONGUL', row: 38, col: 5 },
-  { field: 'NMBOFELONGCYCLES', row: 39, col: 5 },
-  { field: 'FORCEF1REL', row: 40, col: 5 },
-  { field: 'ELONGATIONE1REL', row: 41, col: 5 },
-  { field: 'EVALTIMEREL', row: 42, col: 5 },
-  { field: 'PRELOADCYCLESREL', row: 43, col: 5 },
-  { field: 'FORCEF1RET', row: 44, col: 5 },
-  { field: 'ELONGATIONE1RET', row: 45, col: 5 },
-  { field: 'EVALTIMERET', row: 46, col: 5 },
-  { field: 'PRELOADCYCLESRET', row: 47, col: 5 }
+	{ field: 'CATALOG', row: 3, col: 1 },
+	{ field: 'TESTNR', row: 8, col: 5 },
+	{ field: 'TIME', row: 9, col: 5 },
+	{ field: 'SORTIMENT', row: 10, col: 5 },
+	{ field: 'ARTICLE', row: 11, col: 5 },
+	{ field: 'MASCHNR', row: 12, col: 5 },
+	{ field: 'MATCLASS', row: 13, col: 8 },
+	{ field: 'NOMCOUNT', row: 14, col: 5 },
+	{ field: 'NOMTWIST', row: 15, col: 5 },
+	{ field: 'USCODE', row: 17, col: 8 },
+	{ field: 'LABORANT', row: 18, col: 5 },
+	{ field: 'COMMENT', row: 19, col: 5 },
+	{ field: 'LOTE', row: 20, col: 5 },
+	{ field: 'TUNAME', row: 24, col: 5 },
+	{ field: 'GROUPS', row: 25, col: 5 },
+	{ field: 'WITHIN', row: 26, col: 5 },
+	{ field: 'TOTAL', row: 27, col: 5 },
+	{ field: 'UNSPOOLGROUPS', row: 29, col: 5 },
+	{ field: 'LENGTH', row: 30, col: 5 },
+	{ field: 'EXTSPEED', row: 31, col: 5 },
+	{ field: 'PRETENSION', row: 32, col: 5 },
+	{ field: 'CLAMPPRESSURE', row: 33, col: 5 },
+	{ field: 'CYCLEFORCELL', row: 34, col: 5 },
+	{ field: 'CYCLEFORCEUL', row: 35, col: 5 },
+	{ field: 'NMBOFFORCECYCLES', row: 36, col: 5 },
+	{ field: 'CYCLELONGLL', row: 37, col: 5 },
+	{ field: 'CYCLELONGUL', row: 38, col: 5 },
+	{ field: 'NMBOFELONGCYCLES', row: 39, col: 5 },
+	{ field: 'FORCEF1REL', row: 40, col: 5 },
+	{ field: 'ELONGATIONE1REL', row: 41, col: 5 },
+	{ field: 'EVALTIMEREL', row: 42, col: 5 },
+	{ field: 'PRELOADCYCLESREL', row: 43, col: 5 },
+	{ field: 'FORCEF1RET', row: 44, col: 5 },
+	{ field: 'ELONGATIONE1RET', row: 45, col: 5 },
+	{ field: 'EVALTIMERET', row: 46, col: 5 },
+	{ field: 'PRELOADCYCLESRET', row: 47, col: 5 }
 ]
 
 // Parse .PAR file and extract all fields according to tensoParFields mapping
 function parseParText(text) {
-  const data = {}
-  if (!text) return data
-  
-  for (const fieldDef of tensoParFields) {
-    const value = extractTsvCell(text, fieldDef.row, fieldDef.col)
-    data[fieldDef.field] = value != null ? String(value).trim() : ''
-  }
-  
-  return data
+	const data = {}
+	if (!text) return data
+
+	for (const fieldDef of tensoParFields) {
+		const value = extractTsvCell(text, fieldDef.row, fieldDef.col)
+		data[fieldDef.field] = value != null ? String(value).trim() : ''
+	}
+
+	return data
 }
 
 // IndexedDB helpers (store handles)
@@ -424,8 +811,81 @@ async function scanTensoDirectory(dirHandle) {
 	} catch (err) { console.warn('scanTensoDirectory error', err) }
 	finally { isScanning.value = false }
 
+	const totalFound = Object.values(map).length
+	// Consultar BD inmediatamente para obtener estado guardado antes de renderizar la lista
+	try {
+		const backendUrl = (typeof window !== 'undefined' && window.location.hostname === 'localhost')
+			? 'http://localhost:3001'
+			: ''
+		const endpoint = backendUrl + '/api/tensorapid/status'
+		const testnrs = Object.values(map).map(it => it.testnr)
+		if (testnrs.length > 0) {
+			const response = await fetch(endpoint, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ testnrs }),
+				credentials: 'include'
+			})
+			if (response.ok) {
+				const data = await response.json()
+				const existingSet = new Set(data.existing || [])
+				const details = data.details || {}
+				// Marcar en el map
+				Object.values(map).forEach(item => {
+					item.saved = existingSet.has(item.testnr)
+					item.isEditing = false // Asegurar que no esté en modo edición
+					item.usterTestnr = padUsterTestnr(details[item.testnr]?.usterTestnr || '')
+				})
+			}
+		}
+	} catch (err) {
+		console.warn('Error checking tensorapid status (pre-assign):', err)
+	}
+
+	// ahora asignar la lista ya con flags de "saved"
 	tensoScanList.value = Object.values(map).sort((a, b) => a.testnr.localeCompare(b.testnr))
-	tensoScanStatus.value = tensoScanList.value.length ? (`Encontrados ${tensoScanList.value.length} ensayos`) : 'No se encontraron archivos .PAR/.TBL válidos en la carpeta seleccionada'
+	// estado inicial con números si están disponibles
+	const savedCnt = Object.values(map).reduce((acc, it) => acc + (it.saved ? 1 : 0), 0)
+	tensoScanStatus.value = formatScanStatus(totalFound, savedCnt, filterMode.value)
+
+	// Verificar cuáles ensayos ya están guardados en la BD
+	if (tensoScanList.value.length > 0) {
+		try {
+			const backendUrl = (typeof window !== 'undefined' && window.location.hostname === 'localhost')
+				? 'http://localhost:3001'
+				: ''
+			const endpoint = backendUrl + '/api/tensorapid/status'
+			const testnrs = tensoScanList.value.map(item => item.testnr)
+
+			const response = await fetch(endpoint, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ testnrs }),
+				credentials: 'include'
+			})
+
+			if (response.ok) {
+				const data = await response.json()
+				const existingSet = new Set(data.existing || [])
+				const details = data.details || {}
+
+				// Marcar ensayos guardados y cargar USTER_TESTNR desde BD
+				tensoScanList.value.forEach(item => {
+					item.saved = existingSet.has(item.testnr)
+					item.isEditing = false // Asegurar que no esté en modo edición
+					item.usterTestnr = padUsterTestnr(details[item.testnr]?.usterTestnr || '')
+				})
+
+				// Actualizar texto de estado con números exactos después de consultar BD
+				const total = tensoScanList.value.length
+				const savedCount = tensoScanList.value.reduce((acc, it) => acc + (it.saved ? 1 : 0), 0)
+				tensoScanStatus.value = formatScanStatus(total, savedCount, filterMode.value)
+			}
+		} catch (err) {
+			console.warn('Error checking tensorapid status:', err)
+		}
+	}
+
 	try { localStorage.setItem('tenso.scanSnapshot', JSON.stringify(tensoScanList.value)) } catch (err) { console.warn('persist snapshot failed', err) }
 }
 
@@ -480,8 +940,70 @@ async function onTensoFolderInputChangeLocal(e) {
 			}
 			if (ln.endsWith('.tbl')) map[t].hasTbl = true
 		}
+		// Consultar BD inmediatamente para obtener estado guardado antes de asignar
+		try {
+			const backendUrl = (typeof window !== 'undefined' && window.location.hostname === 'localhost')
+				? 'http://localhost:3001'
+				: ''
+			const endpoint = backendUrl + '/api/tensorapid/status'
+			const testnrs = Object.values(map).map(it => it.testnr)
+			if (testnrs.length > 0) {
+				const response = await fetch(endpoint, {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ testnrs }),
+					credentials: 'include'
+				})
+				if (response.ok) {
+					const data = await response.json()
+					const existingSet = new Set(data.existing || [])
+					const details = data.details || {}
+					Object.values(map).forEach(item => {
+						item.saved = existingSet.has(item.testnr)
+						item.isEditing = false // Asegurar que no esté en modo edición
+						item.usterTestnr = padUsterTestnr(details[item.testnr]?.usterTestnr || '')
+					})
+				}
+			}
+		} catch (err) { console.warn('Error checking tensorapid status (input pre-assign):', err) }
+
 		tensoScanList.value = Object.values(map).sort((a, b) => a.testnr.localeCompare(b.testnr))
-		tensoScanStatus.value = tensoScanList.value.length ? (`Encontrados ${tensoScanList.value.length} ensayos (input)`) : 'No se encontraron archivos en el input'
+		const totalIn = tensoScanList.value.length
+		const savedCntIn = tensoScanList.value.reduce((acc, it) => acc + (it.saved ? 1 : 0), 0)
+		tensoScanStatus.value = formatScanStatus(totalIn, savedCntIn, filterMode.value)
+
+		// Verificar cuáles ensayos ya están guardados en la BD
+		if (tensoScanList.value.length > 0) {
+			try {
+				const backendUrl = (typeof window !== 'undefined' && window.location.hostname === 'localhost')
+					? 'http://localhost:3001'
+					: ''
+				const endpoint = backendUrl + '/api/tensorapid/status'
+				const testnrs = tensoScanList.value.map(item => item.testnr)
+
+				const response = await fetch(endpoint, {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ testnrs }),
+					credentials: 'include'
+				})
+
+				if (response.ok) {
+					const data = await response.json()
+					const existingSet = new Set(data.existing || [])
+
+					// Marcar ensayos guardados y agregar campo usterTestnr vacío
+					tensoScanList.value.forEach(item => {
+						item.saved = existingSet.has(item.testnr)
+						item.isEditing = false // Asegurar que no esté en modo edición
+						item.usterTestnr = ''
+					})
+				}
+			} catch (err) {
+				console.warn('Error checking tensorapid status:', err)
+			}
+		}
+
 		try { localStorage.setItem('tenso.scanSnapshot', JSON.stringify(tensoScanList.value)) } catch (err) { console.warn('persist snapshot failed', err) }
 	} catch (err) { console.warn('onTensoFolderInputChangeLocal error', err) }
 }
@@ -495,7 +1017,7 @@ onMounted(() => {
 			const parsed = JSON.parse(raw)
 			if (Array.isArray(parsed)) {
 				tensoScanList.value = parsed
-				tensoScanStatus.value = parsed.length ? (`Encontrados ${parsed.length} ensayos (snapshot)`) : 'No hay registros en snapshot'
+				tensoScanStatus.value = formatScanStatus(parsed.length, null, filterMode.value)
 			}
 		}
 	} catch { /* ignore */ }

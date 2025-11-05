@@ -13,7 +13,7 @@
       <div class="flex items-center justify-between px-4 py-3 border-b border-blue-600">
         <h2 class="text-lg font-bold" v-if="!collapsed">Menú</h2>
         <!-- Desktop collapse/expand button -->
-        <button class="hidden md:inline-flex items-center justify-center p-1 rounded hover:bg-blue-700 ml-2"
+        <button class="hidden lg:inline-flex items-center justify-center p-1 rounded hover:bg-blue-700 ml-2"
           :aria-label="collapsed ? 'Abrir menú' : 'Colapsar menú'" @click="desktopToggle" title="Colapsar/abrir menú">
           <template v-if="!collapsed">
             <!-- X icon to collapse -->
@@ -31,7 +31,7 @@
             </svg>
           </template>
         </button>
-        <button class="md:hidden" @click="sidebarVisible = false" aria-label="Cerrar menú móvil">
+        <button class="lg:hidden" @click="sidebarVisible = false" aria-label="Cerrar menú móvil">
           <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
@@ -52,8 +52,8 @@
       </nav>
     </aside>
 
-    <!-- Mobile header -->
-    <header class="md:hidden fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-3 py-1 bg-white">
+  <!-- Mobile / tablet header (visible under 1024px) -->
+  <header class="lg:hidden fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-3 py-1 bg-white">
       <button aria-label="Toggle menú" :aria-expanded="String(sidebarVisible)"
         class="bg-blue-600 text-white p-0.5 rounded shadow w-9 h-9 flex items-center justify-center"
         @click.stop.prevent="mobileToggle">
@@ -150,6 +150,12 @@
         <span v-if="appBuildNumber"> (build #{{ appBuildNumber }})</span>
         <span v-if="appCommitSha"> ({{ appCommitSha }})</span>
         <span v-if="appBuildTime"> · Publicado: {{ new Date(appBuildTime).toLocaleString() }}</span>
+        <!-- Developer helper: ejecutar prueba simulada de responsive en desarrollo -->
+        <button v-if="isDev"
+          @click="runResponsiveSimTest"
+          class="ml-4 px-2 py-1 text-xs bg-gray-800 text-white rounded hover:bg-gray-700">
+          Simular responsive
+        </button>
       </div>
     </footer>
   </div>
@@ -170,6 +176,9 @@ import { useRegistroStore } from './stores/registro'
 
 const store = useRegistroStore()
 const registros = computed(() => store.registros)
+
+// Environment helper (evita usar import.meta directamente en templates)
+const isDev = typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.MODE !== 'production'
 
 const editIndex = ref(null)
 // ref para acceder al método expuesto en FormRegistro (focusRolada)
@@ -662,13 +671,28 @@ function scheduleHideSidebar() {
 }
 
 function scheduleHideSidebarWithDelay(ms = 1000) {
+  // Ajuste automático del retraso por tipo de dispositivo:
+  // - móvil (<768): 1500ms (por defecto usado en llamadas explícitas)
+  // - tablet (768-1023): 3000ms (más tiempo para interacción)
+  // - escritorio (>=1024): 1000ms
+  let delay = ms
+  if (ms === 1000) {
+    try {
+      const w = typeof window !== 'undefined' ? window.innerWidth : windowWidth.value
+      if (w < 768) delay = 1500
+      else if (w >= 768 && w < 1024) delay = 3000
+      else delay = 1000
+    } catch {
+      delay = ms
+    }
+  }
   clearHideTimer()
   hideTimer = setTimeout(() => {
     sidebarVisible.value = false
     try { hideSidebarTooltips() } catch (err) { void err }
     try { hideAll() } catch (err) { void err }
     clearTransient()
-  }, ms)
+  }, delay)
 }
 
 function mobileToggle() {
@@ -767,6 +791,55 @@ function maybeHideSidebar() {
     try { hideAll() } catch (err) { void err }
     clearTransient()
   }
+}
+
+// --- Developer: prueba rápida simulada de flujo responsive ---
+async function runResponsiveSimTest() {
+  // Simula los anchos y registra la secuencia de estados en consola
+  const widths = [360, 800, 1200]
+  const results = []
+  // Helper sleep
+  const sleep = (ms) => new Promise(r => setTimeout(r, ms))
+
+  for (const w of widths) {
+    console.group(`Responsive test — width: ${w}px`)
+    // Abrir el sidebar como lo haría un usuario
+    sidebarVisible.value = true
+    // aproximar collapsed según breakpoint
+    collapsed.value = w >= 1024 ? false : true
+    console.log('opened ->', { sidebarVisible: sidebarVisible.value, collapsed: collapsed.value })
+
+    // Programar auto-hide según la lógica (simulamos llamando a scheduleHideSidebarWithDelay
+    // con el delay correspondiente en lugar de depender de window.innerWidth)
+    let delay
+    if (w < 768) delay = 1500
+    else if (w >= 768 && w < 1024) delay = 3000
+    else delay = 1000
+
+    // Llammos a scheduleHideSidebarWithDelay con el ms calculado para reproducir el comportamiento
+    scheduleHideSidebarWithDelay(delay)
+    console.log(`scheduled auto-hide in ${delay}ms`)
+
+    // esperar más que el delay para observar si se oculta
+    await sleep(delay + 250)
+    console.log('after wait ->', { sidebarVisible: sidebarVisible.value, collapsed: collapsed.value })
+
+    // Simular acción manual del usuario (toggle)
+    sidebarVisible.value = true
+    console.log('manually reopened ->', { sidebarVisible: sidebarVisible.value })
+    await sleep(200)
+    // cerrar manualmente
+    sidebarVisible.value = false
+    console.log('manually closed ->', { sidebarVisible: sidebarVisible.value })
+
+    results.push({ width: w, final: { sidebarVisible: sidebarVisible.value, collapsed: collapsed.value } })
+    console.groupEnd()
+    // pequeño descanso entre pruebas
+    await sleep(300)
+  }
+
+  console.info('Responsive simulation completed', results)
+  try { await Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Prueba responsive completada (ver consola)', showConfirmButton: false, timer: 2000 }) } catch { /* noop */ }
 }
 
 async function eliminarRegistro(idx) {

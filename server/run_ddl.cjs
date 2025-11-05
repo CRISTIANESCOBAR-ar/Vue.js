@@ -1,3 +1,4 @@
+/* eslint-env node */
 /* global console */
 
 const oracledb = require('oracledb')

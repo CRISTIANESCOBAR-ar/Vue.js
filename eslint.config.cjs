@@ -34,5 +34,28 @@ module.exports = [
       'vue/no-mutating-props': 'warn'
     }
   },
+  {
+    // Node/server scripts override
+    files: ['server/**/*.js', 'server/**/*.cjs'],
+    languageOptions: {
+      env: { node: true },
+      parserOptions: {
+        ecmaVersion: 2020,
+        sourceType: 'script'
+      },
+      globals: {
+        require: 'readonly',
+        module: 'readonly',
+        process: 'readonly',
+        console: 'readonly',
+        Buffer: 'readonly',
+        __dirname: 'readonly'
+      }
+    },
+    rules: {
+      // allow unused variables in quick scripts, adjust later if needed
+      'no-unused-vars': ['warn', { args: 'none', varsIgnorePattern: '^_' }]
+    }
+  },
   prettier
 ]
