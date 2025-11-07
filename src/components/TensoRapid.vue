@@ -1,5 +1,7 @@
+
 <template>
-	<div class="max-w-4xl mx-auto bg-white rounded shadow p-4">
+	<div class="w-full">
+		<div class="bg-white rounded shadow p-3 md:p-4 mt-2 mb-4">
 		<h3 class="text-lg font-medium mb-3">TensoRapid</h3>
 
 		<!-- Selector de carpeta -->
@@ -82,16 +84,10 @@
 							<td class="p-1 border text-center text-xs font-mono">{{ item.nomcount || '' }}</td>
 							<td class="p-1 border text-center text-xs font-mono">{{ item.maschnr || '' }}</td>
 							<td class="p-1 border text-center text-xs" @click.stop>
-								<input v-if="item.testnr" 
-									type="text" 
-									v-model="item.usterTestnr" 
-									:placeholder="item.saved ? '05410' : ''"
-									maxlength="5" 
-									inputmode="numeric"
-									:disabled="item.saved && !item.isEditing"
-									:ref="el => setInputRef(el, item.testnr)"
-									@input="formatUsterTestnr(item, $event)"
-									@keydown.enter="focusSaveButton(item)"
+								<input v-if="item.testnr" type="text" v-model="item.usterTestnr"
+									:placeholder="item.saved ? '05410' : ''" maxlength="5" inputmode="numeric"
+									:disabled="item.saved && !item.isEditing" :ref="el => setInputRef(el, item.testnr)"
+									@input="formatUsterTestnr(item, $event)" @keydown.enter="focusSaveButton(item)"
 									:class="[
 										'w-full px-1 py-0.5 text-xs text-center border rounded focus:outline-none focus:ring-1 focus:ring-blue-400 font-mono',
 										item.saved && !item.isEditing ? 'bg-gray-100 cursor-not-allowed' : ''
@@ -105,14 +101,12 @@
 								</button>
 								<!-- Botones Guardar y Cancelar (si está editando o no está guardado) -->
 								<div v-else-if="item.testnr && item.usterTestnr" class="flex gap-1 justify-center">
-									<button @click="saveToOracle(item)"
-										:disabled="isSaving"
+									<button @click="saveToOracle(item)" :disabled="isSaving"
 										:ref="el => setSaveButtonRef(el, item.testnr)"
 										class="px-2 py-0.5 bg-indigo-600 text-white rounded hover:bg-indigo-700 text-xs disabled:opacity-50">
 										{{ isSaving ? 'Guardando...' : 'Guardar' }}
 									</button>
-									<button v-if="item.isEditing" @click="cancelEditing(item)"
-										:disabled="isSaving"
+									<button v-if="item.isEditing" @click="cancelEditing(item)" :disabled="isSaving"
 										class="px-2 py-0.5 bg-gray-500 text-white rounded hover:bg-gray-600 text-xs disabled:opacity-50">
 										Cancelar
 									</button>
@@ -181,7 +175,8 @@
 							<td class="p-1 border text-xs text-center">{{ ri + 1 }}</td>
 							<td class="p-1 border text-xs font-mono">{{ row.TESTNR || '' }}</td>
 							<td class="p-1 border text-xs font-mono">{{ row.HUSO_ENSAYOS || '' }}</td>
-							<td class="p-1 border text-xs font-mono bg-blue-50 text-center font-semibold">{{ row.HUSO_NUMBER }}</td>
+							<td class="p-1 border text-xs font-mono bg-blue-50 text-center font-semibold">{{
+								row.HUSO_NUMBER }}</td>
 							<td class="p-1 border text-xs font-mono text-right">{{ row.TIEMPO_ROTURA || '' }}</td>
 							<td class="p-1 border text-xs font-mono text-right">{{ row.FUERZA_B || '' }}</td>
 							<td class="p-1 border text-xs font-mono text-right">{{ row.ELONGACION || '' }}</td>
@@ -192,11 +187,12 @@
 				</table>
 			</div>
 		</div>
+		</div>
 	</div>
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch } from 'vue'
+import { ref, onMounted, computed, watch, nextTick } from 'vue'
 
 // UI state
 const tensoFolderInputLocal = ref(null)
@@ -407,6 +403,9 @@ async function saveToOracle(item) {
 		item.saved = true
 		item.isEditing = false
 
+		// Enfocar siguiente input vacío en la columna USTER
+		try { await focusNextEmptyUster(item.testnr) } catch (e) { console.warn('focusNextEmptyUster failed', e) }
+
 		// Toast de éxito
 		if (typeof Swal !== 'undefined') {
 			Swal.fire({
@@ -472,18 +471,18 @@ function setSaveButtonRef(el, testnr) {
 // Formatear USTER_TESTNR con padding de ceros (5 dígitos) y solo números
 function formatUsterTestnr(item, event) {
 	if (!item) return
-	
+
 	// Extraer solo números
 	let value = (event.target.value || '').replace(/\D/g, '')
-	
+
 	// Limitar a 5 caracteres
 	if (value.length > 5) {
 		value = value.slice(0, 5)
 	}
-	
+
 	// Actualizar el valor (sin padding mientras escribe)
 	item.usterTestnr = value
-	
+
 	// Si llegó a 5 dígitos, aplicar padding y enfocar botón Guardar
 	if (value.length === 5) {
 		// Padding con ceros a la izquierda
@@ -500,6 +499,68 @@ function focusSaveButton(item) {
 	if (button && typeof button.focus === 'function') {
 		button.focus()
 	}
+}
+
+// Focus the next input in the USTER column that is empty (after saving current)
+async function focusNextEmptyUster(currentTestnr) {
+	try {
+		// wait a tick so any reactive changes (saved flag, filters) are applied
+		await nextTick()
+		const full = Array.isArray(tensoScanList.value) ? tensoScanList.value : []
+		if (full.length === 0) return false
+
+		// Build candidate list (testnr) in the same order as full list, respecting current filter
+		const candidates = full
+			.filter(it => it && it.testnr)
+			.filter(it => {
+				if (filterMode.value === 'not') return !it.saved
+				if (filterMode.value === 'saved') return !!it.saved
+				return true
+			})
+			.filter(it => !it.usterTestnr || String(it.usterTestnr).trim() === '')
+			.map(it => String(it.testnr))
+
+		if (candidates.length === 0) return false
+
+		// Find position of currentTestnr in full list
+		const currentPos = full.findIndex(it => String(it.testnr) === String(currentTestnr))
+		// If currentTestnr itself is a candidate, just pick the next candidate in candidates order
+		const curIdxInCandidates = candidates.indexOf(String(currentTestnr))
+		let targetTestnr = null
+		if (curIdxInCandidates >= 0) {
+			// next candidate (wrap)
+			targetTestnr = candidates[(curIdxInCandidates + 1) % candidates.length]
+		} else {
+			// find first candidate whose index in full list is greater than currentPos
+			let found = null
+			for (const cand of candidates) {
+				const pos = full.findIndex(it => String(it.testnr) === String(cand))
+				if (pos > currentPos) { found = cand; break }
+			}
+			if (!found) found = candidates[0]
+			targetTestnr = found
+		}
+
+		if (!targetTestnr) return false
+		// allow DOM to settle if the row was removed/changed due to filtering
+		await nextTick()
+		const input = inputRefs.value[targetTestnr]
+		if (input && typeof input.focus === 'function') {
+			input.focus()
+			try { input.scrollIntoView({ block: 'center', behavior: 'smooth' }) } catch { /* ignore */ }
+			// add temporary highlight class
+			try {
+				input.classList.add('focus-highlight')
+				setTimeout(() => {
+					try { input.classList.remove('focus-highlight') } catch { /* ignore */ }
+				}, 600)
+			} catch { /* ignore */ }
+			return true
+		}
+	} catch (err) {
+		console.warn('focusNextEmptyUster error', err)
+	}
+	return false
 }
 
 // Helper: formatear USTER_TESTNR a 5 dígitos con padding
@@ -1050,6 +1111,16 @@ onMounted(() => {
 	})()
 })
 </script>
+
+<style scoped>
+.focus-highlight {
+	box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.4);
+	/* soft yellow halo */
+	background-color: #fff8db;
+	/* light yellow background */
+	transition: box-shadow 200ms ease, background-color 200ms ease;
+}
+</style>
 
 <style scoped>
 .scan-container {

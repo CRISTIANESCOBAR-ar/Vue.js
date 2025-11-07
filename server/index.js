@@ -4,6 +4,7 @@ dotenv.config()
 import express from 'express'
 import cors from 'cors'
 import { getConnection, initPool } from './db.js'
+import oracledb from 'oracledb'
 
 const app = express()
 // Build SCHEMA_PREFIX robustly: accept env var with or without trailing dot
@@ -94,17 +95,83 @@ app.get('/api/uster/list', async (req, res) => {
     await initPool()
     conn = await getConnection()
 
-    const sql = `SELECT TESTNR, NOMCOUNT, MASCHNR, LOTE, LABORANT, TIME_STAMP FROM ${SCHEMA_PREFIX}USTER_PAR ORDER BY TESTNR DESC FETCH FIRST 200 ROWS ONLY`
-    const result = await conn.execute(sql, [], { outFormat: undefined })
+    // Safer approach: fetch parent rows, then fetch child TITULO rows and compute AVG_TITULO in JS
+    const sqlPar = `SELECT TESTNR, NOMCOUNT, MASCHNR, LOTE, LABORANT, TIME_STAMP
+      FROM ${SCHEMA_PREFIX}USTER_PAR
+      ORDER BY TESTNR DESC
+      FETCH FIRST 200 ROWS ONLY`
 
-    // result.rows is an array of arrays by default: [ [TESTNR, NOMCOUNT, MASCHNR, LOTE, LABORANT, TIME_STAMP], ... ]
-    const rows = (result.rows || []).map((r) => ({
-      TESTNR: r[0],
-      NOMCOUNT: r[1],
-      MASCHNR: r[2],
-      LOTE: r[3],
-      LABORANT: r[4],
-      TIME_STAMP: r[5]
+    const resultPar = await conn.execute(sqlPar, [], { outFormat: oracledb.OUT_FORMAT_OBJECT })
+    const parRows = resultPar.rows || []
+
+    // Collect TESTNRs to fetch child TITULO rows
+    const testnrs = parRows.map((r) => r.TESTNR).filter(Boolean)
+    let tituloRows = []
+    if (testnrs.length > 0) {
+      const binds = {}
+      const placeholders = testnrs
+        .map((t, i) => {
+          const name = `:tn${i}`
+          binds[`tn${i}`] = t
+          return name
+        })
+        .join(',')
+
+      const sqlTit = `SELECT TESTNR, TITULO FROM ${SCHEMA_PREFIX}USTER_TBL WHERE TESTNR IN (${placeholders})`
+      const resTit = await conn.execute(sqlTit, binds, { outFormat: oracledb.OUT_FORMAT_OBJECT })
+      tituloRows = resTit.rows || []
+    }
+
+    // Helper: normalize and parse TITULO to Number (returns null if cannot parse)
+    function parseTituloToNumber(val) {
+      if (val == null) return null
+      let s = String(val).trim()
+      if (s === '') return null
+      let negative = false
+      const parMatch = s.match(/^\((.*)\)$/)
+      if (parMatch) {
+        negative = true
+        s = parMatch[1]
+      }
+      s = s.replace(/[^0-9.,-]/g, '')
+      if (s === '' || s === '-' || s === '.' || s === ',') return null
+      if (s.indexOf('.') !== -1 && s.indexOf(',') !== -1) {
+        s = s.replace(/\./g, '')
+        s = s.replace(/,/g, '.')
+      } else if (s.indexOf(',') !== -1 && s.indexOf('.') === -1) {
+        s = s.replace(/,/g, '.')
+      } else {
+        s = s.replace(/\.(?=\d{3}(?:\D|$))/g, '')
+      }
+      s = s.replace(/^\+/, '')
+      if (s === '' || s === '-') return null
+      const n = Number(s)
+      if (!Number.isFinite(n)) return null
+      return negative ? -n : n
+    }
+
+    // Group tituloRows by TESTNR and compute average
+    const byTest = {}
+    for (const t of tituloRows) {
+      const k = t.TESTNR
+      const parsed = parseTituloToNumber(t.TITULO)
+      if (parsed == null) continue
+      if (!byTest[k]) byTest[k] = { sum: 0, count: 0 }
+      byTest[k].sum += parsed
+      byTest[k].count += 1
+    }
+
+    const rows = parRows.map((r) => ({
+      TESTNR: r.TESTNR,
+      NOMCOUNT: r.NOMCOUNT,
+      AVG_TITULO:
+        byTest[r.TESTNR] && byTest[r.TESTNR].count
+          ? byTest[r.TESTNR].sum / byTest[r.TESTNR].count
+          : null,
+      MASCHNR: r.MASCHNR,
+      LOTE: r.LOTE,
+      LABORANT: r.LABORANT,
+      TIME_STAMP: r.TIME_STAMP
     }))
 
     res.json({ rows })
@@ -116,6 +183,308 @@ app.get('/api/uster/list', async (req, res) => {
       if (conn) await conn.close()
     } catch (err2) {
       globalThis.console.error('close conn err', err2)
+    }
+  }
+})
+
+// GET /api/uster/tbl?testnr=XXXX
+// Returns rows from USTER_TBL for a given TESTNR
+app.get('/api/uster/tbl', async (req, res) => {
+  const testnr = req.query && req.query.testnr ? String(req.query.testnr) : null
+  if (!testnr) return res.status(400).json({ error: 'Missing testnr query parameter' })
+
+  let conn
+  try {
+    await initPool()
+    conn = await getConnection()
+
+    const sql = `SELECT * FROM ${SCHEMA_PREFIX}USTER_TBL WHERE TESTNR = :TESTNR ORDER BY SEQNO NULLS LAST`
+    const result = await conn.execute(
+      sql,
+      { TESTNR: testnr },
+      { outFormat: oracledb.OUT_FORMAT_OBJECT }
+    )
+    const rows = result.rows || []
+    res.json({ rows })
+  } catch (err) {
+    globalThis.console.error('Error fetching USTER_TBL for', testnr, err)
+    res.status(500).json({ error: String(err && err.message ? err.message : err) })
+  } finally {
+    try {
+      if (conn) await conn.close()
+    } catch (e) {
+      globalThis.console.error('close conn err', e)
+    }
+  }
+})
+
+// Diagnostic endpoint (temporary): return USTER_TBL rows whose TITULO can't be parsed to number
+app.get('/api/uster/bad-titulos', async (req, res) => {
+  let conn
+  try {
+    await initPool()
+    conn = await getConnection()
+
+    const sql = `SELECT TESTNR, TITULO,
+      TRIM(REGEXP_REPLACE(TITULO, '[^0-9\\\.,-]', '')) AS CLEANED
+      FROM ${SCHEMA_PREFIX}USTER_TBL
+      WHERE TRIM(REGEXP_REPLACE(TITULO, '[^0-9\\\.,-]', '')) IS NOT NULL
+        AND NOT REGEXP_LIKE(REPLACE(TRIM(REGEXP_REPLACE(TITULO, '[^0-9\\\.,-]', '')), ',', '.'), '^-?[0-9]+(\\.[0-9]+)?$')
+      FETCH FIRST 500 ROWS ONLY`
+
+    const result = await conn.execute(sql, [], { outFormat: oracledb.OUT_FORMAT_OBJECT })
+    const rows = (result.rows || []).map((r) => ({
+      TESTNR: r.TESTNR,
+      TITULO: r.TITULO,
+      CLEANED: r.CLEANED
+    }))
+    res.json({ rows })
+  } catch (err) {
+    globalThis.console.error('bad-titulos error', err)
+    res.status(500).json({ error: String(err && err.message ? err.message : err) })
+  } finally {
+    try {
+      if (conn) await conn.close()
+    } catch (err2) {
+      globalThis.console.error('close conn err', err2)
+    }
+  }
+})
+
+// GET /api/report/ensayo?testnr=XXXX
+// Returns a consolidated report joining USTER_PAR, aggregates from USTER_TBL and TENSORAPID_TBL
+app.get('/api/report/ensayo', async (req, res) => {
+  const testnr = req.query && req.query.testnr ? String(req.query.testnr) : null
+  if (!testnr) return res.status(400).json({ error: 'Missing testnr query parameter' })
+
+  let conn
+  try {
+    await initPool()
+    conn = await getConnection()
+
+    // 1) Fetch USTER_PAR row
+    const parSql = `SELECT TESTNR, TIME_STAMP, MASCHNR, NOMCOUNT FROM ${SCHEMA_PREFIX}USTER_PAR WHERE TESTNR = :TESTNR`
+    const parRes = await conn.execute(
+      parSql,
+      { TESTNR: testnr },
+      { outFormat: oracledb.OUT_FORMAT_OBJECT }
+    )
+    const parRow = (parRes.rows || [])[0] || null
+
+    // Helper to parse MASCHNR like "003 LIM" -> { number: 3, rest: 'LIM', formatted: '3 LIM' }
+    function parseMaschnr(ms) {
+      if (ms == null) return { number: null, rest: '', formatted: ms }
+      const s = String(ms).trim()
+      const m = s.match(/^0*(\d+)(?:\s*(.*))?$/)
+      if (!m) return { number: null, rest: '', formatted: s }
+      const num = parseInt(m[1], 10)
+      const rest = (m[2] || '').trim()
+      return { number: num, rest, formatted: rest ? `${num} ${rest}` : String(num) }
+    }
+
+    // 2) Aggregate from USTER_TBL (averages)
+    const usterTblSql = `SELECT
+      AVG(CVM_PERCENT) AS CVM_PERCENT_AVG,
+      AVG(DELG_MINUS30_KM) AS DELG_MINUS30_KM_AVG,
+      AVG(DELG_MINUS40_KM) AS DELG_MINUS40_KM_AVG,
+      AVG(DELG_MINUS50_KM) AS DELG_MINUS50_KM_AVG,
+      AVG(GRUE_35_KM) AS GRUE_35_KM_AVG,
+      AVG(GRUE_50_KM) AS GRUE_50_KM_AVG,
+      AVG(NEPS_140_KM) AS NEPS_140_KM_AVG,
+      AVG(NEPS_280_KM) AS NEPS_280_KM_AVG
+      FROM ${SCHEMA_PREFIX}USTER_TBL WHERE TESTNR = :TESTNR`
+    const usterTblRes = await conn.execute(
+      usterTblSql,
+      { TESTNR: testnr },
+      { outFormat: oracledb.OUT_FORMAT_OBJECT }
+    )
+    const usterAgg = (usterTblRes.rows || [])[0] || {}
+
+    // 3) TITULO average from USTER_TBL: fetch TITULO rows and parse to numbers in JS
+    const tituloSql = `SELECT TITULO FROM ${SCHEMA_PREFIX}USTER_TBL WHERE TESTNR = :TESTNR`
+    const tituloRes = await conn.execute(
+      tituloSql,
+      { TESTNR: testnr },
+      { outFormat: oracledb.OUT_FORMAT_OBJECT }
+    )
+    const tituloRows = tituloRes.rows || []
+
+    function parseTituloToNumber(val) {
+      if (val == null) return null
+      let s = String(val).trim()
+      if (s === '') return null
+      let negative = false
+      const parMatch = s.match(/^\((.*)\)$/)
+      if (parMatch) {
+        negative = true
+        s = parMatch[1]
+      }
+      s = s.replace(/[^0-9.,-]/g, '')
+      if (s === '' || s === '-' || s === '.' || s === ',') return null
+      if (s.indexOf('.') !== -1 && s.indexOf(',') !== -1) {
+        s = s.replace(/\./g, '')
+        s = s.replace(/,/g, '.')
+      } else if (s.indexOf(',') !== -1 && s.indexOf('.') === -1) {
+        s = s.replace(/,/g, '.')
+      } else {
+        s = s.replace(/\.(?=\d{3}(?:\D|$))/g, '')
+      }
+      s = s.replace(/^\+/, '')
+      if (s === '' || s === '-') return null
+      const n = Number(s)
+      if (!Number.isFinite(n)) return null
+      return negative ? -n : n
+    }
+
+    let tituloSum = 0
+    let tituloCount = 0
+    for (const r of tituloRows) {
+      const n = parseTituloToNumber(r.TITULO)
+      if (n != null) {
+        tituloSum += n
+        tituloCount += 1
+      }
+    }
+    const tituloAvg = tituloCount ? tituloSum / tituloCount : null
+
+    // 4) TENSORAPID aggregates: find TENSORAPID_PAR rows that reference this USTER TESTNR
+    const tensorParSql = `SELECT TESTNR FROM ${SCHEMA_PREFIX}TENSORAPID_PAR WHERE USTER_TESTNR = :USTER_TESTNR`
+    const tensorParRes = await conn.execute(
+      tensorParSql,
+      { USTER_TESTNR: testnr },
+      { outFormat: oracledb.OUT_FORMAT_OBJECT }
+    )
+    const tensorParRows = tensorParRes.rows || []
+    const tensorTestnrs = tensorParRows.map((r) => r.TESTNR).filter(Boolean)
+
+    let tensorAgg = {}
+    if (tensorTestnrs.length > 0) {
+      const binds = {}
+      const placeholders = tensorTestnrs
+        .map((t, i) => {
+          binds[`tn${i}`] = t
+          return `:tn${i}`
+        })
+        .join(',')
+      const tensorTblSql = `SELECT AVG(FUERZA_B) AS FUERZA_B_AVG, AVG(ELONGACION) AS ELONGACION_AVG, AVG(TENACIDAD) AS TENACIDAD_AVG, AVG(FUERZA_B) AS TRABAJO_B_AVG FROM ${SCHEMA_PREFIX}TENSORAPID_TBL WHERE TESTNR IN (${placeholders})`
+      const tensorTblRes = await conn.execute(tensorTblSql, binds, {
+        outFormat: oracledb.OUT_FORMAT_OBJECT
+      })
+      tensorAgg = (tensorTblRes.rows || [])[0] || {}
+    }
+
+    // Helpers for formatting numbers and dates according to the requested spec
+    function fmtNumber(val, decimals) {
+      if (val == null || val === '') return null
+      const n = Number(val)
+      if (!Number.isFinite(n)) return null
+      if (typeof decimals === 'number') {
+        // return Number rounded to given decimals (not string)
+        return Number(n.toFixed(decimals))
+      }
+      return n
+    }
+
+    function padTestnr(t) {
+      if (t == null) return null
+      const s = String(t)
+      return s.padStart(5, '0')
+    }
+
+    function formatNe(val) {
+      if (val == null || val === '') return null
+      const n = Number(val)
+      if (!Number.isFinite(n)) return null
+      // If has decimals, format with comma (12.5 -> "12,5")
+      // If integer, return as integer (12 -> 12)
+      if (n % 1 !== 0) {
+        return String(n).replace('.', ',')
+      }
+      return n
+    }
+
+    function formatDateShort(dt) {
+      if (dt == null) return null
+
+      try {
+        let d = dt
+
+        // If it's already a Date object from Oracle, use it directly
+        if (d instanceof Date) {
+          if (Number.isNaN(d.getTime())) return null
+          // Use UTC methods to avoid timezone issues
+          const dd = String(d.getUTCDate()).padStart(2, '0')
+          const mm = String(d.getUTCMonth() + 1).padStart(2, '0')
+          const yy = String(d.getUTCFullYear()).slice(-2)
+          return `${dd}/${mm}/${yy}`
+        }
+
+        // If it's a string, try to parse it
+        if (typeof d === 'string') {
+          const str = String(d).trim()
+
+          // If already in dd/mm/yyyy or dd/mm/yy format, extract and reformat
+          const ddmmyyyyMatch = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})/)
+          if (ddmmyyyyMatch) {
+            const dd = ddmmyyyyMatch[1].padStart(2, '0')
+            const mm = ddmmyyyyMatch[2].padStart(2, '0')
+            const yyyy = ddmmyyyyMatch[3]
+            const yy = yyyy.length === 4 ? yyyy.slice(-2) : yyyy
+            return `${dd}/${mm}/${yy}`
+          }
+
+          // Try parsing as ISO date
+          const parsed = new Date(str)
+          if (!Number.isNaN(parsed.getTime())) {
+            const dd = String(parsed.getUTCDate()).padStart(2, '0')
+            const mm = String(parsed.getUTCMonth() + 1).padStart(2, '0')
+            const yy = String(parsed.getUTCFullYear()).slice(-2)
+            return `${dd}/${mm}/${yy}`
+          }
+        }
+      } catch (err) {
+        globalThis.console.warn('formatDateShort error:', err, 'for value:', dt)
+      }
+
+      return null
+    }
+
+    // Build the report object following your exact mapping and formatting
+    const report = {
+      Ensayo: padTestnr(testnr), // TESTNR formatted as 5 digits
+      Fecha: parRow ? formatDateShort(parRow.TIME_STAMP) : null, // dd/mm/yy
+      OE: parRow ? parseMaschnr(parRow.MASCHNR).formatted : null, // e.g. '3 LIM'
+      Ne: parRow ? formatNe(parRow.NOMCOUNT) : null,
+
+      // From USTER_TBL, averages with 2 decimals
+      'CVm %': fmtNumber(usterAgg.CVM_PERCENT_AVG, 2),
+      'Delg -30%': fmtNumber(usterAgg.DELG_MINUS30_KM_AVG, 2),
+      'Delg -40%': fmtNumber(usterAgg.DELG_MINUS40_KM_AVG, 2),
+      'Delg -50%': fmtNumber(usterAgg.DELG_MINUS50_KM_AVG, 2),
+      'Grue +35%': fmtNumber(usterAgg.GRUE_35_KM_AVG, 2),
+      'Grue +50%': fmtNumber(usterAgg.GRUE_50_KM_AVG, 2),
+      'Neps +140%': fmtNumber(usterAgg.NEPS_140_KM_AVG, 2),
+      'Neps +280%': fmtNumber(usterAgg.NEPS_280_KM_AVG, 2),
+
+      // From TENSORAPID_TBL: integers (no decimals) for fuerza/trabajo and 2 decimals for elongacion/tenacidad
+      'Fuerza B': fmtNumber(tensorAgg.FUERZA_B_AVG, 0),
+      'Elong. %': fmtNumber(tensorAgg.ELONGACION_AVG, 2),
+      'Tenac.': fmtNumber(tensorAgg.TENACIDAD_AVG, 2),
+      'Trabajo B': fmtNumber(tensorAgg.FUERZA_B_AVG, 0),
+
+      // TITULO average (USTER_TBL) with 2 decimals
+      Titulo: fmtNumber(tituloAvg, 2)
+    }
+
+    res.json({ report })
+  } catch (err) {
+    globalThis.console.error('report ensayo error', err)
+    res.status(500).json({ error: String(err && err.message ? err.message : err) })
+  } finally {
+    try {
+      if (conn) await conn.close()
+    } catch (e) {
+      globalThis.console.error('close conn err', e)
     }
   }
 })
@@ -599,7 +968,7 @@ app.post('/api/tensorapid/upload', async (req, res) => {
       NOMTWIST: safeNumber(par.NOMTWIST),
       USCODE: par.USCODE || null,
       LABORANT: par.LABORANT || null,
-  COMMENT_TEXT: par.COMMENT_TEXT || par.COMMENT || null,
+      COMMENT_TEXT: par.COMMENT_TEXT || par.COMMENT || null,
       LOTE: par.LOTE || null,
       TUNAME: par.TUNAME || null,
       GROUPS: safeNumber(par.GROUPS),
@@ -733,4 +1102,395 @@ app.post('/api/tensorapid/status', async (req, res) => {
   }
 })
 
+// GET /api/tensorapid/by-uster/:uster
+// Returns TENSORAPID_PAR rows for a given USTER_TESTNR
+app.get('/api/tensorapid/by-uster/:uster', async (req, res) => {
+  const uster = req.params && req.params.uster ? String(req.params.uster) : null
+  if (!uster) return res.status(400).json({ error: 'Missing uster param' })
+  let conn
+  try {
+    await initPool()
+    conn = await getConnection()
+    const sql = `SELECT TESTNR, USTER_TESTNR, CATALOG, TIME FROM ${SCHEMA_PREFIX}TENSORAPID_PAR WHERE USTER_TESTNR = :USTER`
+    const r = await conn.execute(sql, { USTER: uster }, { outFormat: oracledb.OUT_FORMAT_OBJECT })
+    const rows = r.rows || []
+    res.json({ rows })
+  } catch (err) {
+    globalThis.console.error('tensorapid by-uster error', err)
+    res.status(500).json({ error: String(err && err.message ? err.message : err) })
+  } finally {
+    try {
+      if (conn) await conn.close()
+    } catch (e) {
+      globalThis.console.error('close conn err', e)
+    }
+  }
+})
+
+// GET /api/tensorapid/tbl?testnr=XXXX
+// Returns rows from TENSORAPID_TBL for a given TESTNR
+app.get('/api/tensorapid/tbl', async (req, res) => {
+  const testnr = req.query && req.query.testnr ? String(req.query.testnr) : null
+  if (!testnr) return res.status(400).json({ error: 'Missing testnr query parameter' })
+
+  let conn
+  try {
+    await initPool()
+    conn = await getConnection()
+
+    const sql = `SELECT * FROM ${SCHEMA_PREFIX}TENSORAPID_TBL WHERE TESTNR = :TESTNR ORDER BY HUSO_NUMBER NULLS LAST`
+    const result = await conn.execute(
+      sql,
+      { TESTNR: testnr },
+      { outFormat: oracledb.OUT_FORMAT_OBJECT }
+    )
+    const rows = result.rows || []
+    res.json({ rows })
+  } catch (err) {
+    globalThis.console.error('Error fetching TENSORAPID_TBL for', testnr, err)
+    res.status(500).json({ error: String(err && err.message ? err.message : err) })
+  } finally {
+    try {
+      if (conn) await conn.close()
+    } catch (e) {
+      globalThis.console.error('close conn err', e)
+    }
+  }
+})
+
+// GET /api/report/informe-completo
+// Returns a consolidated report for ALL TESTNRs from USTER_PAR with aggregates from USTER_TBL and TENSORAPID_TBL
+app.get('/api/report/informe-completo', async (req, res) => {
+  let conn
+  try {
+    await initPool()
+    conn = await getConnection()
+
+    // Helper to parse MASCHNR like "003 LIM" -> "3 LIM"
+    function parseMaschnr(ms) {
+      if (ms == null) return null
+      const s = String(ms).trim()
+      const m = s.match(/^0*(\d+)(?:\s*(.*))?$/)
+      if (!m) return s
+      const num = parseInt(m[1], 10)
+      const rest = (m[2] || '').trim()
+      return rest ? `${num} ${rest}` : String(num)
+    }
+
+    // Helper to parse TITULO to number
+    function parseTituloToNumber(val) {
+      if (val == null) return null
+      let s = String(val).trim()
+      if (s === '') return null
+      let negative = false
+      const parMatch = s.match(/^\((.*)\)$/)
+      if (parMatch) {
+        negative = true
+        s = parMatch[1]
+      }
+      s = s.replace(/[^0-9.,-]/g, '')
+      if (s === '' || s === '-' || s === '.' || s === ',') return null
+      if (s.indexOf('.') !== -1 && s.indexOf(',') !== -1) {
+        s = s.replace(/\./g, '')
+        s = s.replace(/,/g, '.')
+      } else if (s.indexOf(',') !== -1 && s.indexOf('.') === -1) {
+        s = s.replace(/,/g, '.')
+      } else {
+        s = s.replace(/\.(?=\d{3}(?:\D|$))/g, '')
+      }
+      s = s.replace(/^\+/, '')
+      if (s === '' || s === '-') return null
+      const n = Number(s)
+      if (!Number.isFinite(n)) return null
+      return negative ? -n : n
+    }
+
+    function fmtNumber(val, decimals) {
+      if (val == null || val === '') return null
+      const n = Number(val)
+      if (!Number.isFinite(n)) return null
+      if (typeof decimals === 'number') {
+        return Number(n.toFixed(decimals))
+      }
+      return n
+    }
+
+    function padTestnr(t) {
+      if (t == null) return null
+      const s = String(t)
+      return s.padStart(5, '0')
+    }
+
+    function formatNe(val) {
+      if (val == null || val === '') return null
+      const n = Number(val)
+      if (!Number.isFinite(n)) return null
+      // If has decimals, format with comma (12.5 -> "12,5")
+      // If integer, return as integer (12 -> 12)
+      if (n % 1 !== 0) {
+        return String(n).replace('.', ',')
+      }
+      return n
+    }
+
+    function formatDateShort(dt) {
+      if (dt == null) return null
+
+      try {
+        let d = dt
+
+        // If it's already a Date object from Oracle, use it directly
+        if (d instanceof Date) {
+          if (Number.isNaN(d.getTime())) return null
+          // Use UTC methods to avoid timezone issues
+          const dd = String(d.getUTCDate()).padStart(2, '0')
+          const mm = String(d.getUTCMonth() + 1).padStart(2, '0')
+          const yy = String(d.getUTCFullYear()).slice(-2)
+          return `${dd}/${mm}/${yy}`
+        }
+
+        // If it's a string, try to parse it
+        if (typeof d === 'string') {
+          const str = String(d).trim()
+
+          // If already in dd/mm/yyyy or dd/mm/yy format, extract and reformat
+          const ddmmyyyyMatch = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})/)
+          if (ddmmyyyyMatch) {
+            const dd = ddmmyyyyMatch[1].padStart(2, '0')
+            const mm = ddmmyyyyMatch[2].padStart(2, '0')
+            const yyyy = ddmmyyyyMatch[3]
+            const yy = yyyy.length === 4 ? yyyy.slice(-2) : yyyy
+            return `${dd}/${mm}/${yy}`
+          }
+
+          // Try parsing as ISO date
+          const parsed = new Date(str)
+          if (!Number.isNaN(parsed.getTime())) {
+            const dd = String(parsed.getUTCDate()).padStart(2, '0')
+            const mm = String(parsed.getUTCMonth() + 1).padStart(2, '0')
+            const yy = String(parsed.getUTCFullYear()).slice(-2)
+            return `${dd}/${mm}/${yy}`
+          }
+        }
+      } catch (err) {
+        globalThis.console.warn('formatDateShort error:', err, 'for value:', dt)
+      }
+
+      return null
+    }
+
+    // 1) Fetch all USTER_PAR rows (descending by TESTNR, limit to recent 200)
+    const parSql = `SELECT TESTNR, TIME_STAMP, MASCHNR, NOMCOUNT
+      FROM ${SCHEMA_PREFIX}USTER_PAR
+      ORDER BY TESTNR DESC
+      FETCH FIRST 200 ROWS ONLY`
+    const parRes = await conn.execute(parSql, [], { outFormat: oracledb.OUT_FORMAT_OBJECT })
+    const parRows = parRes.rows || []
+
+    if (parRows.length === 0) {
+      return res.json({ rows: [] })
+    }
+
+    const testnrs = parRows.map((r) => r.TESTNR).filter(Boolean)
+
+    // 2) Fetch USTER_TBL aggregates for all TESTNRs in one query
+    const binds = {}
+    const placeholders = testnrs
+      .map((t, i) => {
+        binds[`tn${i}`] = t
+        return `:tn${i}`
+      })
+      .join(',')
+
+    const usterTblSql = `SELECT TESTNR,
+      AVG(CVM_PERCENT) AS CVM_PERCENT_AVG,
+      AVG(DELG_MINUS30_KM) AS DELG_MINUS30_KM_AVG,
+      AVG(DELG_MINUS40_KM) AS DELG_MINUS40_KM_AVG,
+      AVG(DELG_MINUS50_KM) AS DELG_MINUS50_KM_AVG,
+      AVG(GRUE_35_KM) AS GRUE_35_KM_AVG,
+      AVG(GRUE_50_KM) AS GRUE_50_KM_AVG,
+      AVG(NEPS_140_KM) AS NEPS_140_KM_AVG,
+      AVG(NEPS_280_KM) AS NEPS_280_KM_AVG
+      FROM ${SCHEMA_PREFIX}USTER_TBL
+      WHERE TESTNR IN (${placeholders})
+      GROUP BY TESTNR`
+    const usterTblRes = await conn.execute(usterTblSql, binds, {
+      outFormat: oracledb.OUT_FORMAT_OBJECT
+    })
+    const usterAggRows = usterTblRes.rows || []
+
+    // Build map: TESTNR -> aggregates
+    const usterAggMap = {}
+    usterAggRows.forEach((row) => {
+      usterAggMap[row.TESTNR] = row
+    })
+
+    // 3) Fetch TITULO rows for all TESTNRs and compute average per TESTNR
+    const tituloSql = `SELECT TESTNR, TITULO FROM ${SCHEMA_PREFIX}USTER_TBL WHERE TESTNR IN (${placeholders})`
+    const tituloRes = await conn.execute(tituloSql, binds, {
+      outFormat: oracledb.OUT_FORMAT_OBJECT
+    })
+    const tituloRows = tituloRes.rows || []
+
+    const tituloMap = {}
+    tituloRows.forEach((row) => {
+      const testnr = row.TESTNR
+      const n = parseTituloToNumber(row.TITULO)
+      if (n != null) {
+        if (!tituloMap[testnr]) tituloMap[testnr] = { sum: 0, count: 0 }
+        tituloMap[testnr].sum += n
+        tituloMap[testnr].count += 1
+      }
+    })
+
+    // 4) Fetch TENSORAPID_PAR linkages for all USTER TESTNRs
+    const tensorParSql = `SELECT USTER_TESTNR, TESTNR FROM ${SCHEMA_PREFIX}TENSORAPID_PAR WHERE USTER_TESTNR IN (${placeholders})`
+    const tensorParRes = await conn.execute(tensorParSql, binds, {
+      outFormat: oracledb.OUT_FORMAT_OBJECT
+    })
+    const tensorParRows = tensorParRes.rows || []
+
+    // Build map: USTER_TESTNR -> [TESTNR list]
+    const tensorLinkMap = {}
+    tensorParRows.forEach((row) => {
+      const uster = row.USTER_TESTNR
+      const tensor = row.TESTNR
+      if (!tensorLinkMap[uster]) tensorLinkMap[uster] = []
+      tensorLinkMap[uster].push(tensor)
+    })
+
+    // Collect all TENSORAPID TESTNRs
+    const allTensorTestnrs = [...new Set(tensorParRows.map((r) => r.TESTNR).filter(Boolean))]
+
+    // 5) Fetch TENSORAPID_TBL aggregates for all linked TESTNRs
+    let tensorAggMap = {}
+    if (allTensorTestnrs.length > 0) {
+      const tensorBinds = {}
+      const tensorPlaceholders = allTensorTestnrs
+        .map((t, i) => {
+          tensorBinds[`tt${i}`] = t
+          return `:tt${i}`
+        })
+        .join(',')
+
+      const tensorTblSql = `SELECT TESTNR,
+        AVG(FUERZA_B) AS FUERZA_B_AVG,
+        AVG(ELONGACION) AS ELONGACION_AVG,
+        AVG(TENACIDAD) AS TENACIDAD_AVG,
+        AVG(TRABAJO) AS TRABAJO_AVG
+        FROM ${SCHEMA_PREFIX}TENSORAPID_TBL
+        WHERE TESTNR IN (${tensorPlaceholders})
+        GROUP BY TESTNR`
+      const tensorTblRes = await conn.execute(tensorTblSql, tensorBinds, {
+        outFormat: oracledb.OUT_FORMAT_OBJECT
+      })
+      const tensorAggRows = tensorTblRes.rows || []
+
+      tensorAggRows.forEach((row) => {
+        tensorAggMap[row.TESTNR] = row
+      })
+    }
+
+    // 6) Build the report rows
+    const reportRows = parRows.map((parRow) => {
+      const testnr = parRow.TESTNR
+      const usterAgg = usterAggMap[testnr] || {}
+      const tituloData = tituloMap[testnr]
+      const tituloAvg = tituloData ? tituloData.sum / tituloData.count : null
+
+      // Get linked TENSORAPID TESTNRs
+      const linkedTensorTestnrs = tensorLinkMap[testnr] || []
+
+      // Aggregate TENSORAPID values across linked TESTNRs
+      let fuerzaSum = 0,
+        fuerzaCount = 0
+      let elongSum = 0,
+        elongCount = 0
+      let tenacSum = 0,
+        tenacCount = 0
+      let trabajoSum = 0,
+        trabajoCount = 0
+
+      linkedTensorTestnrs.forEach((tt) => {
+        const agg = tensorAggMap[tt]
+        if (agg) {
+          if (agg.FUERZA_B_AVG != null) {
+            fuerzaSum += agg.FUERZA_B_AVG
+            fuerzaCount += 1
+          }
+          if (agg.ELONGACION_AVG != null) {
+            elongSum += agg.ELONGACION_AVG
+            elongCount += 1
+          }
+          if (agg.TENACIDAD_AVG != null) {
+            tenacSum += agg.TENACIDAD_AVG
+            tenacCount += 1
+          }
+          if (agg.TRABAJO_AVG != null) {
+            trabajoSum += agg.TRABAJO_AVG
+            trabajoCount += 1
+          }
+        }
+      })
+
+      return {
+        Ensayo: padTestnr(testnr),
+        Fecha: formatDateShort(parRow.TIME_STAMP),
+        OE: parseMaschnr(parRow.MASCHNR),
+        Ne: formatNe(parRow.NOMCOUNT),
+        'CVm %': fmtNumber(usterAgg.CVM_PERCENT_AVG, 2),
+        'Delg -30%': fmtNumber(usterAgg.DELG_MINUS30_KM_AVG, 2),
+        'Delg -40%': fmtNumber(usterAgg.DELG_MINUS40_KM_AVG, 2),
+        'Delg -50%': fmtNumber(usterAgg.DELG_MINUS50_KM_AVG, 2),
+        'Grue +35%': fmtNumber(usterAgg.GRUE_35_KM_AVG, 2),
+        'Grue +50%': fmtNumber(usterAgg.GRUE_50_KM_AVG, 2),
+        'Neps +140%': fmtNumber(usterAgg.NEPS_140_KM_AVG, 2),
+        'Neps +280%': fmtNumber(usterAgg.NEPS_280_KM_AVG, 2),
+        'Fuerza B': fuerzaCount ? fmtNumber(fuerzaSum / fuerzaCount, 0) : null,
+        'Elong. %': elongCount ? fmtNumber(elongSum / elongCount, 2) : null,
+        'Tenac.': tenacCount ? fmtNumber(tenacSum / tenacCount, 2) : null,
+        'Trabajo B': trabajoCount ? fmtNumber(trabajoSum / trabajoCount, 0) : null,
+        Titulo: fmtNumber(tituloAvg, 2)
+      }
+    })
+
+    res.json({ rows: reportRows })
+  } catch (err) {
+    globalThis.console.error('informe completo error', err)
+    res.status(500).json({ error: String(err && err.message ? err.message : err) })
+  } finally {
+    try {
+      if (conn) await conn.close()
+    } catch (e) {
+      globalThis.console.error('close conn err', e)
+    }
+  }
+})
+
+// Print registered routes (helps debugging 'Cannot GET /...')
+function printRegisteredRoutes() {
+  try {
+    const routes = []
+    if (app && app._router && app._router.stack) {
+      app._router.stack.forEach((middleware) => {
+        if (middleware.route) {
+          const methods = Object.keys(middleware.route.methods).join(',').toUpperCase()
+          routes.push(`${methods} ${middleware.route.path}`)
+        } else if (middleware.name === 'router' && middleware.handle && middleware.handle.stack) {
+          middleware.handle.stack.forEach((handler) => {
+            if (handler.route) {
+              const methods = Object.keys(handler.route.methods).join(',').toUpperCase()
+              routes.push(`${methods} ${handler.route.path}`)
+            }
+          })
+        }
+      })
+    }
+    globalThis.console.log('Registered routes:\n' + routes.join('\n'))
+  } catch (e) {
+    globalThis.console.warn('Failed to list routes', e)
+  }
+}
+
+printRegisteredRoutes()
 app.listen(PORT, () => globalThis.console.log(`Server listening on ${PORT}`))

@@ -141,6 +141,11 @@
                   publicada
                   y, si hay una versión nueva, se te ofrecerá actualizar (actualización via Service Worker si está
                   disponible).</p>
+
+                <!-- Vista previa de fuentes — componente de ayuda para elegir tipografías -->
+                <div class="mt-4">
+                  <FontSelector />
+                </div>
               </div>
             </div>
           </div>
@@ -176,6 +181,7 @@ import Uster from './components/Uster.vue'
 import TensoRapid from './components/TensoRapid.vue'
 import SidebarItem from './components/SidebarItem.vue'
 import ResumenEnsayos from './components/ResumenEnsayos.vue'
+import FontSelector from './components/FontSelector.vue'
 import Swal from 'sweetalert2'
 import { useRegistroStore } from './stores/registro'
 
