@@ -5,7 +5,8 @@
   <!-- Contenido principal -->
   <div class="w-full p-1 md:p-4 space-y-3">
     <!-- FORMULARIO -->
-    <form @submit.prevent="submitForm" class="bg-white rounded-2xl shadow-xl p-4 md:p-5 space-y-4 border border-slate-200">
+    <form @submit.prevent="submitForm"
+      class="bg-white rounded-2xl shadow-xl p-4 md:p-5 space-y-4 border border-slate-200">
       <!-- ROLADA -->
       <div class="flex flex-col md:flex-row md:items-center md:gap-3">
         <label for="rolada" class="mb-1 md:mb-0 w-[7rem] text-sm font-semibold text-slate-700">Rolada</label>

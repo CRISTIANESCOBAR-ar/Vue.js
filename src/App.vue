@@ -153,18 +153,25 @@
         <!-- version moved to global footer -->
       </div>
     </main>
-    <!-- Global footer -->
-    <footer class="w-full border-t bg-white/50 dark:bg-gray-50 py-2">
+    <!-- Global footer (compact) -->
+    <footer class="w-full bg-transparent py-0">
       <div class="max-w-6xl mx-auto px-4 text-center text-xs text-gray-500">
+        <!-- Footer: versión oculta para ahorrar espacio visual. En modo desarrollo se mantiene el helper -->
+        <!--
+          Mantengo comentado el bloque de versión/build para pruebas futuras.
+          Para reactivar simplemente quitar estos comentarios HTML.
+
         <span v-if="appVersion">v{{ appVersion }}</span>
         <span v-if="appBuildNumber"> (build #{{ appBuildNumber }})</span>
         <span v-if="appCommitSha"> ({{ appCommitSha }})</span>
         <span v-if="appBuildTime"> · Publicado: {{ new Date(appBuildTime).toLocaleString() }}</span>
-        <!-- Developer helper: ejecutar prueba simulada de responsive en desarrollo -->
+        -->
+        <!-- Botón dev 'Simular responsive' comentado para ahorrar espacio visual; activar si se necesitan pruebas.
         <button v-if="isDev" @click="runResponsiveSimTest"
           class="ml-4 px-2 py-1 text-xs bg-gray-800 text-white rounded hover:bg-gray-700">
           Simular responsive
         </button>
+        -->
       </div>
     </footer>
   </div>

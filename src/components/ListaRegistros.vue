@@ -15,7 +15,8 @@
 
         <!-- Selector de registros por página -->
         <div class="flex items-center gap-3">
-          <label for="pageSize" class="text-sm font-medium text-slate-700 whitespace-nowrap">Registros por página</label>
+          <label for="pageSize" class="text-sm font-medium text-slate-700 whitespace-nowrap">Registros por
+            página</label>
           <select id="pageSize" v-model.number="pageSize"
             class="px-3 py-2 pr-8 border border-slate-300 rounded-lg bg-white text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200">
             <option :value="5">5 registros</option>
@@ -27,9 +28,10 @@
       </div>
 
       <!-- Vista móvil (ahora decidida por isCardView) -->
-      <div v-if="isCardView" class="h-[70vh] overflow-y-auto border border-slate-200 rounded-xl">
+      <div v-if="isCardView" class="h-[70vh] overflow-y-auto _minimal-scroll border border-slate-200 rounded-xl">
         <div class="space-y-3 py-3 px-2">
-          <div v-for="item in paginatedRegs" :key="item.__idx" class="border border-slate-200 rounded-xl p-4 shadow-sm bg-white hover:shadow-md transition-shadow duration-200">
+          <div v-for="item in paginatedRegs" :key="item.__idx"
+            class="border border-slate-200 rounded-xl p-4 shadow-sm bg-white hover:shadow-md transition-shadow duration-200">
             <template v-if="editingRealIndex(getRealIndex(item)) === true">
               <div class="text-sm flex gap-2 items-center min-w-0">
                 <label class="w-20 md:w-24 font-semibold text-slate-700">Rolada</label>
@@ -69,19 +71,24 @@
               <div class="flex justify-end gap-2 mt-3">
                 <button @click="saveEdit(getRealIndex(item))"
                   class="px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-colors duration-200">Guardar</button>
-                <button @click="cancelEdit()" class="px-3 py-2 bg-slate-500 text-white rounded-lg hover:bg-slate-600 font-medium transition-colors duration-200">Cancelar</button>
+                <button @click="cancelEdit()"
+                  class="px-3 py-2 bg-slate-500 text-white rounded-lg hover:bg-slate-600 font-medium transition-colors duration-200">Cancelar</button>
               </div>
             </template>
             <template v-else>
               <div class="text-sm text-slate-700"><strong class="font-semibold">Rolada:</strong> {{ item.rolada }}</div>
               <div class="text-sm text-slate-700"><strong class="font-semibold">Base:</strong> {{ item.base }}</div>
               <div class="text-sm text-slate-700"><strong class="font-semibold">Color:</strong> {{ item.color }}</div>
-              <div class="text-sm text-slate-700"><strong class="font-semibold">Metros:</strong> {{ formatMetros(item.metros) }}</div>
-              <div class="text-sm text-slate-700"><strong class="font-semibold">Observaciones:</strong> {{ item.observaciones }}</div>
+              <div class="text-sm text-slate-700"><strong class="font-semibold">Metros:</strong> {{
+                formatMetros(item.metros) }}</div>
+              <div class="text-sm text-slate-700"><strong class="font-semibold">Observaciones:</strong> {{
+                item.observaciones }}</div>
               <div class="flex justify-end gap-2 mt-2">
-                <button @click="handleEditClick(getRealIndex(item), item)" class="text-blue-600 text-sm hover:underline font-medium"
+                <button @click="handleEditClick(getRealIndex(item), item)"
+                  class="text-blue-600 text-sm hover:underline font-medium"
                   v-tippy="'Editar este registro'">Editar</button>
-                <button @click="emit('eliminar', getRealIndex(item))" class="text-red-600 text-sm hover:underline font-medium"
+                <button @click="emit('eliminar', getRealIndex(item))"
+                  class="text-red-600 text-sm hover:underline font-medium"
                   v-tippy="'Eliminar este registro'">Eliminar</button>
               </div>
             </template>
@@ -94,9 +101,9 @@
 
       <!-- Vista tabla (compact o desktop) -->
       <div v-else class="overflow-x-auto mt-3">
-        <div ref="listScrollRef" class="list-scroll overflow-y-auto border border-slate-200 rounded-xl">
+        <div ref="listScrollRef" class="list-scroll overflow-y-auto _minimal-scroll border border-slate-200 rounded-xl">
           <div ref="tableSentinel" class="table-sentinel" aria-hidden="true"></div>
-          <table ref="tableRef" class="registro-table table-auto w-full border-collapse text-sm">
+          <table ref="tableRef" class="registro-table table-auto w-full border-collapse text-xs">
             <colgroup>
               <!-- Rolada: mostrar 4 dígitos (+padding). Ajustado a 8ch para asegurar visibilidad -->
               <col style="width:8ch" />
@@ -111,12 +118,13 @@
               <!-- Acciones: espacio para iconos/buttons -->
               <col style="width:80px" />
             </colgroup>
-            <thead class="bg-gradient-to-r from-slate-50 to-slate-100 text-sm">
+            <thead class="bg-gradient-to-r from-slate-50 to-slate-100 text-xs">
               <tr>
                 <th @click="setSort('rolada')"
-                  class="sticky top-0 z-10 bg-gradient-to-r from-slate-50 to-slate-100 px-3 py-3 text-left cursor-pointer select-none border-b border-slate-200">
+                  class="sticky top-0 z-10 bg-gradient-to-r from-slate-50 to-slate-100 px-3 py-2 text-left cursor-pointer select-none border-b border-slate-200">
                   <div class="flex items-center gap-1">
-                    <span :class="{ 'font-semibold': sortKey === 'rolada' }" class="text-slate-700 font-semibold">Rolada</span>
+                    <span :class="{ 'font-semibold': sortKey === 'rolada' }"
+                      class="text-slate-700 font-semibold">Rolada</span>
                     <span v-if="sortKey === 'rolada'">
                       <ChevronUpIcon v-if="sortAsc === true" class="w-4 h-4 text-slate-600" />
                       <ChevronDownIcon v-else-if="sortAsc === false" class="w-4 h-4 text-slate-600" />
@@ -126,9 +134,10 @@
                 </th>
 
                 <th @click="setSort('base')"
-                  class="sticky top-0 z-10 bg-gradient-to-r from-slate-50 to-slate-100 px-3 py-3 text-left cursor-pointer select-none border-b border-slate-200">
+                  class="sticky top-0 z-10 bg-gradient-to-r from-slate-50 to-slate-100 px-3 py-2 text-left cursor-pointer select-none border-b border-slate-200">
                   <div class="flex items-center gap-1">
-                    <span :class="{ 'font-semibold': sortKey === 'base' }" class="text-slate-700 font-semibold">Base</span>
+                    <span :class="{ 'font-semibold': sortKey === 'base' }"
+                      class="text-slate-700 font-semibold">Base</span>
                     <span v-if="sortKey === 'base'">
                       <ChevronUpIcon v-if="sortAsc === true" class="w-4 h-4 text-slate-600" />
                       <ChevronDownIcon v-else-if="sortAsc === false" class="w-4 h-4 text-slate-600" />
@@ -138,9 +147,10 @@
                 </th>
 
                 <th @click="setSort('color')"
-                  class="sticky top-0 z-10 bg-gradient-to-r from-slate-50 to-slate-100 px-3 py-3 text-left cursor-pointer select-none border-b border-slate-200">
+                  class="sticky top-0 z-10 bg-gradient-to-r from-slate-50 to-slate-100 px-3 py-2 text-left cursor-pointer select-none border-b border-slate-200">
                   <div class="flex items-center gap-1">
-                    <span :class="{ 'font-semibold': sortKey === 'color' }" class="text-slate-700 font-semibold">Color</span>
+                    <span :class="{ 'font-semibold': sortKey === 'color' }"
+                      class="text-slate-700 font-semibold">Color</span>
                     <span v-if="sortKey === 'color'">
                       <ChevronUpIcon v-if="sortAsc === true" class="w-4 h-4 text-slate-600" />
                       <ChevronDownIcon v-else-if="sortAsc === false" class="w-4 h-4 text-slate-600" />
@@ -150,9 +160,10 @@
                 </th>
 
                 <th @click="setSort('metros')"
-                  class="sticky top-0 z-10 bg-gradient-to-r from-slate-50 to-slate-100 px-3 py-3 text-right cursor-pointer select-none border-b border-slate-200">
+                  class="sticky top-0 z-10 bg-gradient-to-r from-slate-50 to-slate-100 px-3 py-2 text-right cursor-pointer select-none border-b border-slate-200">
                   <div class="flex items-center justify-end gap-1">
-                    <span :class="{ 'font-semibold': sortKey === 'metros' }" class="text-slate-700 font-semibold">Metros</span>
+                    <span :class="{ 'font-semibold': sortKey === 'metros' }"
+                      class="text-slate-700 font-semibold">Metros</span>
                     <span v-if="sortKey === 'metros'">
                       <ChevronUpIcon v-if="sortAsc === true" class="w-4 h-4 text-slate-600" />
                       <ChevronDownIcon v-else-if="sortAsc === false" class="w-4 h-4 text-slate-600" />
@@ -161,8 +172,12 @@
                   </div>
                 </th>
 
-                <th class="sticky top-0 z-10 bg-gradient-to-r from-slate-50 to-slate-100 px-3 py-3 text-left font-semibold text-slate-700 border-b border-slate-200">Observaciones</th>
-                <th class="sticky top-0 z-10 bg-gradient-to-r from-slate-50 to-slate-100 px-3 py-3 text-right font-semibold text-slate-700 border-b border-slate-200">Acciones</th>
+                <th
+                  class="sticky top-0 z-10 bg-gradient-to-r from-slate-50 to-slate-100 px-3 py-2 text-left font-semibold text-slate-700 border-b border-slate-200">
+                  Observaciones</th>
+                <th
+                  class="sticky top-0 z-10 bg-gradient-to-r from-slate-50 to-slate-100 px-3 py-2 text-right font-semibold text-slate-700 border-b border-slate-200">
+                  Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -170,7 +185,7 @@
                 'hover:bg-blue-50/30 transition-colors duration-200',
                 editingRealIndex(getRealIndex(item)) ? 'bg-yellow-100 is-editing' : 'odd:bg-white even:bg-slate-50/30'
               ]">
-                <td class="px-3 py-2 text-slate-700">
+                <td class="px-3 py-[0.3rem] text-slate-700">
                   <template v-if="editingRealIndex(getRealIndex(item)) === true">
                     <input v-model="editModel.rolada" @input="onInlineRoladaInput" inputmode="numeric" maxlength="4"
                       data-field="rolada" :ref="el => setInputRef(el, getRealIndex(item), 'rolada')"
@@ -180,7 +195,7 @@
                     {{ item.rolada }}
                   </template>
                 </td>
-                <td class="px-3 py-2 pr-4 text-slate-700">
+                <td class="px-3 py-[0.3rem] pr-4 text-slate-700">
                   <template v-if="editingRealIndex(getRealIndex(item)) === true">
                     <input v-model="editModel.base" @input="onInlineBaseInput" data-field="base" maxlength="10"
                       :ref="el => setInputRef(el, getRealIndex(item), 'base')"
@@ -190,7 +205,7 @@
                     {{ item.base }}
                   </template>
                 </td>
-                <td class="px-3 py-2 text-slate-700">
+                <td class="px-3 py-[0.3rem] text-slate-700">
                   <template v-if="editingRealIndex(getRealIndex(item)) === true">
                     <input v-model="editModel.color" @input="onInlineColorInput" data-field="color" maxlength="4"
                       :ref="el => setInputRef(el, getRealIndex(item), 'color')"
@@ -200,7 +215,7 @@
                     {{ item.color }}
                   </template>
                 </td>
-                <td class="px-3 py-2 text-right text-slate-700">
+                <td class="px-3 py-[0.3rem] text-right text-slate-700">
                   <template v-if="editingRealIndex(getRealIndex(item)) === true">
                     <input :value="(editModel.metros || editModel.metros === 0) ? formatMetros(editModel.metros) : ''"
                       @input="onInlineMetrosInput" data-field="metros" inputmode="numeric"
@@ -214,7 +229,7 @@
                     {{ formatMetros(item.metros) }}
                   </template>
                 </td>
-                <td class="px-3 py-2 observ-td text-slate-700">
+                <td class="px-3 py-[0.3rem] observ-td text-slate-700">
                   <template v-if="editingRealIndex(getRealIndex(item)) === true">
                     <div class="observ-wrapper w-full">
                       <input v-model="editModel.observaciones" data-field="observaciones"
@@ -226,13 +241,14 @@
                     <div class="observ-wrapper cell-observ">{{ item.observaciones }}</div>
                   </template>
                 </td>
-                <td class="px-2 py-2 text-right whitespace-nowrap actions-td">
+                <td class="px-2 py-[0.3rem] text-right whitespace-nowrap actions-td">
                   <div class="flex flex-col items-end gap-2 actions">
                     <div class="flex items-center gap-3">
                       <div v-if="props.mostrarEditar">
                         <template v-if="editingRealIndex(getRealIndex(item)) !== true">
                           <button @click="handleEditClick(getRealIndex(item), item)"
-                            class="p-1 rounded-lg hover:bg-blue-100 transition-colors duration-150" v-tippy="'Editar registro'">
+                            class="p-1 rounded-lg hover:bg-blue-100 transition-colors duration-150"
+                            v-tippy="'Editar registro'">
                             <img src="/icons/edit.svg" alt="Editar" class="h-5 w-5" />
                           </button>
                         </template>
@@ -246,7 +262,8 @@
                         </template>
                       </div>
                       <button v-if="!editingRealIndex(getRealIndex(item))" @click="emit('eliminar', getRealIndex(item))"
-                        class="p-1 rounded-lg hover:bg-red-100 transition-colors duration-150" v-tippy="'Eliminar registro'">
+                        class="p-1 rounded-lg hover:bg-red-100 transition-colors duration-150"
+                        v-tippy="'Eliminar registro'">
                         <img src="/icons/delete.svg" alt="Eliminar" class="h-5 w-5" />
                       </button>
                     </div>
@@ -256,7 +273,7 @@
                 </td>
               </tr>
               <tr v-if="paginatedRegs.length === 0">
-                <td class="px-3 py-4 text-center text-slate-500" :colspan="6">No hay registros</td>
+                <td class="px-3 py-2 text-center text-slate-500" :colspan="6">No hay registros</td>
               </tr>
             </tbody>
           </table>

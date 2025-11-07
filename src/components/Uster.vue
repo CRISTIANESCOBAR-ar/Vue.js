@@ -1,15 +1,17 @@
 <template>
-  <div class="w-full pt-0.5 md:pt-2 px-0.5 md:px-2 space-y-3 uster-component">
+  <div class="w-full pt-2 px-2 space-y-4 uster-component">
     <!-- título mostrado movido a la pestaña del navegador -->
 
-    <div class="bg-white rounded-2xl shadow-xl p-4 md:p-5 space-y-4 border border-slate-200">
+    <div class="bg-white rounded-2xl shadow-xl px-6 py-5 border border-slate-200 space-y-4">
       <!-- Top: compact carpeta selector on a single line for desktop -->
       <div>
         <div class="flex items-center gap-3">
           <label class="text-sm font-semibold text-slate-700 mr-2 shrink-0">Carpeta de archivos Uster:</label>
 
           <div class="flex-1 min-w-0">
-            <div class="px-3 py-2 border border-slate-300 rounded-lg bg-slate-50 text-sm text-slate-800 truncate" :title="folderPathFull">
+            <div
+              class="px-3 py-2 border border-slate-300 rounded-lg bg-white text-sm text-slate-800 truncate shadow-sm focus-within:ring-2 focus-within:ring-blue-500"
+              :title="folderPathFull">
               {{ folderPathFull || folderPath || selectedFolderName || 'Ninguna carpeta seleccionada' }}
               <span v-if="!isAbsolutePath" class="text-xs text-slate-500 ml-2">(ruta no absoluta disponible por
                 seguridad)</span>
@@ -18,10 +20,17 @@
 
           <div class="flex items-center gap-2">
             <button @click="selectFolder" title="Seleccionar carpeta con archivos de Uster"
-              class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm font-medium transition-colors duration-200 hidden md:inline-flex shadow-sm hover:shadow-md">Seleccionar</button>
+              class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors duration-200 shadow-sm hover:shadow-md hidden md:inline-flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M3 7a2 2 0 012-2h3l2 3h6a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
+              </svg>
+              Seleccionar
+            </button>
 
             <button @click="selectFolder" title="Seleccionar carpeta con archivos de Uster"
-              class="p-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 inline-flex md:hidden transition-colors duration-200 shadow-sm"
+              class="p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg inline-flex md:hidden shadow-sm hover:shadow-md transition-all duration-200"
               aria-label="Seleccionar carpeta">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
@@ -31,14 +40,21 @@
             </button>
 
             <button v-if="hasPersistedHandle" @click="refreshFolder" title="Actualizar archivos de Uster"
-              class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium transition-colors duration-200 hidden md:inline-flex shadow-sm hover:shadow-md">Actualizar</button>
+              class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium transition-colors duration-200 shadow-sm hover:shadow-md hidden md:inline-flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              Actualizar
+            </button>
             <button v-if="hasPersistedHandle" @click="refreshFolder" title="Actualizar archivos de Uster"
-              class="p-2 bg-green-600 text-white rounded-lg hover:bg-green-700 inline-flex md:hidden transition-colors duration-200 shadow-sm"
+              class="p-2 bg-green-600 hover:bg-green-700 text-white rounded-lg inline-flex md:hidden shadow-sm hover:shadow-md transition-all duration-200"
               aria-label="Actualizar carpeta">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M20 12a8 8 0 11-4.906-7.437M20 12h-4" />
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
               </svg>
             </button>
 
@@ -52,10 +68,10 @@
       <!-- scanStatus moved below the left list as per UX request -->
 
       <!-- Middle: three columns (left: list, middle: compact preview, right: Nro/Titulo) -->
-      <div class="grid uster-grid" style="grid-template-columns: 372px 96px 280px;">
+      <div class="grid uster-grid" style="grid-template-columns: 390px 160px 320px;">
         <!-- Columna 1: Lista de Ensayos, Botones y Estado -->
-        <div class="flex flex-col gap-2">
-          <div class="scan-container">
+        <div class="flex flex-col gap-3">
+          <div class="scan-container rounded-xl border border-slate-200 overflow-hidden">
             <table class="text-sm border-collapse fixed-table scan-table">
               <colgroup>
                 <col class="col-ensayo" />
@@ -67,24 +83,38 @@
               </colgroup>
               <thead>
                 <tr class="bg-gradient-to-r from-slate-50 to-slate-100">
-                  <th class="p-1 border border-slate-200 text-xs text-center font-semibold text-slate-700 col-ensayo">Ensayo</th>
-                  <th class="p-1 border border-slate-200 text-center text-xs font-semibold text-slate-700 col-par">.PAR</th>
-                  <th class="p-1 border border-slate-200 text-center text-xs font-semibold text-slate-700 col-tbl">.TBL</th>
-                  <th class="p-1 border border-slate-200 text-center text-xs font-semibold text-slate-700 col-imp">Estado</th>
-                  <th class="p-1 border border-slate-200 text-center text-xs font-semibold text-slate-700 col-ne">Ne</th>
-                  <th class="p-1 border border-slate-200 text-center text-xs font-semibold text-slate-700 col-maq">Maq.</th>
+                  <th
+                    class="px-3 py-3 text-center font-semibold text-slate-700 border-b border-slate-200 text-xs col-ensayo">
+                    Ensayo</th>
+                  <th
+                    class="px-3 py-3 text-center font-semibold text-slate-700 border-b border-slate-200 text-xs col-par">
+                    .PAR</th>
+                  <th
+                    class="px-3 py-3 text-center font-semibold text-slate-700 border-b border-slate-200 text-xs col-tbl">
+                    .TBL</th>
+                  <th
+                    class="px-3 py-3 text-center font-semibold text-slate-700 border-b border-slate-200 text-xs col-imp">
+                    Estado</th>
+                  <th
+                    class="px-3 py-3 text-center font-semibold text-slate-700 border-b border-slate-200 text-xs col-ne">
+                    Ne</th>
+                  <th
+                    class="px-3 py-3 text-center font-semibold text-slate-700 border-b border-slate-200 text-xs col-maq">
+                    Maq.</th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(item, idx) in scanDisplayList" :key="idx" class="hover:bg-blue-50/30 cursor-pointer transition-colors duration-150"
+                <tr v-for="(item, idx) in scanDisplayList" :key="idx"
+                  class="hover:bg-blue-50/30 cursor-pointer transition-colors duration-150"
                   @click="item.testnr && selectRow(item.testnr)"
-                  :class="{ 'bg-indigo-50': selectedTestnr === item.testnr }">
-                  <td class="p-1 border border-slate-200 text-xs text-center text-slate-700 col-ensayo">{{ item.testnr || '' }}</td>
-                  <td class="p-1 border border-slate-200 text-center text-xs col-par"><input type="checkbox" disabled
-                      :checked="item.hasPar" /></td>
-                  <td class="p-1 border border-slate-200 text-center text-xs col-tbl"><input type="checkbox" disabled
-                      :checked="item.hasTbl" /></td>
-                  <td class="p-1 border border-slate-200 text-center text-xs col-imp">
+                  :class="{ 'bg-blue-50': selectedTestnr === item.testnr }">
+                  <td class="px-3 py-2 border-b border-slate-200 text-xs text-center col-ensayo">{{ item.testnr || '' }}
+                  </td>
+                  <td class="px-3 py-2 border-b border-slate-200 text-center text-xs col-par"><input type="checkbox"
+                      disabled :checked="item.hasPar" class="rounded" /></td>
+                  <td class="px-3 py-2 border-b border-slate-200 text-center text-xs col-tbl"><input type="checkbox"
+                      disabled :checked="item.hasTbl" class="rounded" /></td>
+                  <td class="px-3 py-2 border-b border-slate-200 text-center text-xs col-imp">
                     <span v-if="item.imp === true" title="Guardado en la base de datos">
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-600 mx-auto" fill="none"
                         viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -92,38 +122,43 @@
                       </svg>
                     </span>
                   </td>
-                  <td class="p-1 border border-slate-200 text-center font-mono text-xs text-slate-700 col-ne">{{ item.nomcount || '' }}</td>
-                  <td class="p-1 border border-slate-200 text-center font-mono text-xs text-slate-700 col-maq">{{ item.maschnr || '' }}</td>
+                  <td class="px-3 py-2 border-b border-slate-200 text-center font-mono text-xs col-ne">{{ item.nomcount
+                    || '' }}</td>
+                  <td class="px-3 py-2 border-b border-slate-200 text-center font-mono text-xs col-maq">{{ item.maschnr
+                    || '' }}</td>
                 </tr>
               </tbody>
             </table>
           </div>
 
-          <div class="text-sm font-medium text-slate-600">
+          <div class="text-sm text-slate-600 font-medium">
             {{ scanStatusDisplay }}
           </div>
         </div>
 
         <!-- Columna 2: Nro / Titulo (ahora en el medio) -->
-        <div style="width:96px;">
+        <div style="width:160px;">
           <!-- fixed-height container that shows 10 rows and scrolls when there are more -->
-          <div class="titulo-container">
+          <div class="titulo-container rounded-xl border border-slate-200 overflow-hidden">
             <table class="w-full text-sm border-collapse titulo-table">
               <thead>
                 <tr class="bg-gradient-to-r from-slate-50 to-slate-100">
-                  <th class="p-1 border border-slate-200 text-xs text-center font-semibold text-slate-700" style="width: calc(7.8125ch + 1.46484375rem);">Huso</th>
-                  <th class="p-1 border border-slate-200 text-xs text-center font-semibold text-slate-700" style="width:120px">Titulo</th>
+                  <th class="px-3 py-3 text-center font-semibold text-slate-700 border-b border-slate-200 text-xs"
+                    style="width:70px">Huso</th>
+                  <th class="px-3 py-3 text-center font-semibold text-slate-700 border-b border-slate-200 text-xs"
+                    style="width:90px">Titulo</th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(r, idx) in tituloList" :key="idx" class="hover:bg-blue-50/30 transition-colors duration-150">
-                  <td class="p-1 border border-slate-200 text-xs text-center font-mono text-slate-700" style="width: calc(7.8125ch + 1.46484375rem);">
+                <tr v-for="(r, idx) in tituloList" :key="idx"
+                  class="hover:bg-blue-50/30 transition-colors duration-150">
+                  <td class="px-3 py-2 border-b border-slate-200 text-xs text-center font-mono" style="width:70px">
                     <div v-if="r.srcIndex !== null">
                       {{ r.nro }}
                     </div>
                     <div v-else class="text-xs text-slate-400">—</div>
                   </td>
-                  <td class="p-1 border border-slate-200 text-xs text-center" style="width:120px">
+                  <td class="px-1 py-0 border-b border-slate-200 text-xs text-center" style="width:90px">
                     <div v-if="r.srcIndex !== null">
                       <input :id="'titulo-input-' + r.srcIndex" v-model="tblData[r.srcIndex].TITULO" inputmode="decimal"
                         maxlength="5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
@@ -131,8 +166,8 @@
                         @input="onTituloInput(r.srcIndex, $event)" @keydown.enter.prevent="focusNextTitulo(r.srcIndex)"
                         @keydown.up.prevent="focusPrevTitulo(r.srcIndex)"
                         @keydown.down.prevent="focusNextTituloWrap(r.srcIndex)"
-                        :class="['p-1 text-xs border border-slate-300 truncate text-center rounded', isFocusedIndex === r.srcIndex ? 'bg-yellow-100 ring-2 ring-yellow-400' : '']"
-                        style="width:100%; box-sizing: border-box;" />
+                        :class="['w-full box-border rounded-lg px-1 py-1.5 text-sm text-center border border-slate-300 focus:outline-none focus:ring-2 focus:border-blue-500 transition-all', isFocusedIndex === r.srcIndex ? 'bg-yellow-50 ring-2 ring-yellow-400' : 'bg-white hover:bg-slate-50']"
+                        style="box-sizing: border-box;" />
                     </div>
                     <div v-else class="text-xs text-slate-400">—</div>
                   </td>
@@ -144,58 +179,68 @@
 
         <!-- Columna 3: Detalle Compacto (moved to right) -->
         <div>
-          <table class="text-sm border-collapse compact-table compact-dato">
-            <colgroup>
-              <col class="col-dato" />
-              <col class="col-valor" />
-            </colgroup>
-            <thead>
-              <tr class="bg-gradient-to-r from-slate-50 to-slate-100">
-                <th class="p-1 border border-slate-200 text-xs text-left font-semibold text-slate-700 col-dato">Dato</th>
-                <th class="p-1 border border-slate-200 text-xs text-left font-semibold text-slate-700 col-valor">Valor</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="c in compactFields" :key="c.code">
-                <td class="p-1 border border-slate-200 font-medium text-xs text-slate-700 col-dato">{{ c.label }}</td>
-                <td class="p-1 border border-slate-200 font-mono text-xs text-slate-700 col-valor">{{ getFieldValueByCode(c.code) }}</td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="rounded-xl border border-slate-200 overflow-hidden">
+            <table class="text-sm border-collapse compact-table compact-dato w-full">
+              <colgroup>
+                <col class="col-dato" />
+                <col class="col-valor" />
+              </colgroup>
+              <thead>
+                <tr class="bg-gradient-to-r from-slate-50 to-slate-100">
+                  <th
+                    class="px-3 py-3 text-left font-semibold text-slate-700 border-b border-slate-200 text-xs col-dato">
+                    Dato</th>
+                  <th
+                    class="px-3 py-3 text-left font-semibold text-slate-700 border-b border-slate-200 text-xs col-valor">
+                    Valor</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="c in compactFields" :key="c.code" class="hover:bg-blue-50/30 transition-colors duration-150">
+                  <td class="px-3 py-2 border-b border-slate-200 font-medium text-xs col-dato">{{ c.label }}</td>
+                  <td class="px-3 py-2 border-b border-slate-200 font-mono text-xs col-valor">{{
+                    getFieldValueByCode(c.code) }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
           <div class="mt-3 flex gap-2">
             <button ref="saveButton" v-if="canSave" @click="saveCurrentTest" :disabled="isSaving"
               @keydown.up.prevent="focusLastTitulo"
-              class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm font-medium disabled:opacity-60 focus:outline-none focus:ring-4 focus:ring-indigo-300 focus:ring-offset-2 transition-colors duration-200 shadow-sm hover:shadow-md">
+              class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium disabled:opacity-60 disabled:cursor-not-allowed shadow-sm hover:shadow-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2">
               <span v-if="!isSaving">Guardar</span>
               <span v-else>Guardando...</span>
             </button>
             <button v-if="selectedTestnr && isTestSaved" @click="deleteCurrentTest" :disabled="isDeleting"
-              class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm font-medium disabled:opacity-60 focus:outline-none focus:ring-4 focus:ring-red-300 focus:ring-offset-2 transition-colors duration-200 shadow-sm hover:shadow-md">
+              class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium disabled:opacity-60 disabled:cursor-not-allowed shadow-sm hover:shadow-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2">
               <span v-if="!isDeleting">Eliminar</span>
               <span v-else>Eliminando...</span>
             </button>
           </div>
 
           <!-- Filtros de visualización -->
-          <div class="mt-4 bg-slate-50 rounded-lg p-3 border border-slate-200">
+          <div class="mt-3 bg-slate-50 rounded-lg p-3 border border-slate-200">
             <div class="flex flex-col gap-2 text-xs">
-              <label class="flex items-center gap-2 cursor-pointer hover:bg-slate-100 p-1.5 rounded transition-colors duration-150">
+              <label
+                class="flex items-center gap-2 cursor-pointer hover:bg-slate-100 px-2 py-1.5 rounded-lg transition-colors duration-150">
                 <input type="checkbox" v-model="filterShowAll"
                   @change="() => { if (filterShowAll) { filterShowNotSaved = false; filterShowSaved = false; clearSelection(); } }"
-                  class="w-3.5 h-3.5 text-indigo-600 focus:ring-indigo-500" />
+                  class="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-400" />
                 <span class="text-slate-700 font-medium">Mostrar todos</span>
               </label>
-              <label class="flex items-center gap-2 cursor-pointer hover:bg-slate-100 p-1.5 rounded transition-colors duration-150">
+              <label
+                class="flex items-center gap-2 cursor-pointer hover:bg-slate-100 px-2 py-1.5 rounded-lg transition-colors duration-150">
                 <input type="checkbox" v-model="filterShowNotSaved"
                   @change="() => { if (filterShowNotSaved) { filterShowAll = false; filterShowSaved = false; clearSelection(); } }"
-                  class="w-3.5 h-3.5 text-indigo-600 focus:ring-indigo-500" />
+                  class="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-400" />
                 <span class="text-slate-700 font-medium">No guardados</span>
               </label>
-              <label class="flex items-center gap-2 cursor-pointer hover:bg-slate-100 p-1.5 rounded transition-colors duration-150">
+              <label
+                class="flex items-center gap-2 cursor-pointer hover:bg-slate-100 px-2 py-1.5 rounded-lg transition-colors duration-150">
                 <input type="checkbox" v-model="filterShowSaved"
                   @change="() => { if (filterShowSaved) { filterShowAll = false; filterShowNotSaved = false; clearSelection(); } }"
-                  class="w-3.5 h-3.5 text-indigo-600 focus:ring-indigo-500" />
+                  class="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-400" />
                 <span class="text-slate-700 font-medium">Guardados</span>
               </label>
             </div>
@@ -204,8 +249,8 @@
       </div>
 
       <!-- Bottom: TBL import results (full width) -->
-      <div v-if="tblData.length" class="mt-4 bg-white rounded-xl border border-slate-200">
-        <div class="overflow-auto max-h-72 rounded-xl" style="overflow-x:auto;">
+      <div v-if="tblData.length" class="mt-4 rounded-xl border border-slate-200 overflow-hidden">
+        <div class="overflow-auto _minimal-scroll max-h-[70vh]" style="overflow-x:auto;">
           <table class="w-full text-sm border-collapse tbl-import-table compact-table"
             :style="{ minWidth: tblMinWidth + 'px', tableLayout: 'fixed' }">
             <colgroup>
@@ -213,15 +258,18 @@
               <col v-for="(c, ci) in tblColumns" :key="ci" :style="{ width: getColWidth(c) + 'px' }" />
             </colgroup>
             <thead>
-              <tr class="bg-gradient-to-r from-slate-50 to-slate-100">
-                <th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">#</th>
-                <th v-for="c in tblColumns" :key="c" class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">{{ c }}</th>
+              <tr class="bg-gradient-to-r from-slate-50 to-slate-100 sticky top-0 z-20">
+                <th class="px-3 py-3 text-center font-semibold text-slate-700 border-b border-slate-200 text-xs">#</th>
+                <th v-for="c in tblColumns" :key="c"
+                  class="px-3 py-3 text-center font-semibold text-slate-700 border-b border-slate-200 text-xs">{{ c }}
+                </th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(r, idx) in tblData" :key="idx" class="hover:bg-blue-50/30 transition-colors duration-150">
-                <td class="p-1.5 border border-slate-200 text-xs text-slate-700">{{ idx + 1 }}</td>
-                <td v-for="c in tblColumns" :key="c" class="p-1.5 border border-slate-200 font-mono text-xs text-slate-700">{{ r[c] }}</td>
+                <td class="px-3 py-2 border-b border-slate-200 text-xs text-center">{{ idx + 1 }}</td>
+                <td v-for="c in tblColumns" :key="c"
+                  class="px-3 py-2 border-b border-slate-200 font-mono text-xs text-center">{{ r[c] }}</td>
               </tr>
             </tbody>
           </table>
@@ -1591,17 +1639,17 @@ function formatTimestampToDatetime(value) {
 
 /* Anchos fijos para columnas */
 .col-ensayo {
-  width: 84px;
+  width: 63px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Helvetica Neue', monospace;
 }
 
 .col-par,
 .col-tbl {
-  width: 44px;
+  width: 53px;
 }
 
 .col-imp {
-  width: 56px;
+  width: 59px;
 }
 
 .col-ne,
@@ -1609,8 +1657,8 @@ function formatTimestampToDatetime(value) {
   width: 60px;
 }
 
-.col-ne {
-  width: 60px;
+.col-maq {
+  width: 78px;
 }
 
 /* Columnas tabla compacta */
@@ -1633,9 +1681,8 @@ table.text-sm td {
 
 /* Nro/Titulo small column: fixed visible area for 10 rows and sticky header */
 .titulo-container {
-  /* height = header + 10 rows. Add a tiny extra (fudge) to avoid rounded-pixel/border
-     overflow that can cause a scrollbar to appear when there are exactly 10 rows. */
-  max-height: calc(var(--titulo-header-h, 2rem) + (var(--titulo-row-h, 1.9rem) * 10) + 0.25rem);
+  /* height = header + 10 rows. Ajustado con +5px para evitar scrollbar */
+  max-height: calc(var(--titulo-header-h, 2.5rem) + (var(--titulo-row-h, 2rem) * 10) + 5px);
   overflow-y: auto;
   /* prevent horizontal scrollbar caused by small overflows */
   overflow-x: hidden;
@@ -1701,11 +1748,15 @@ table.text-sm td {
 }
 
 .titulo-table td input {
-  /* Ajustar altura del input considerando padding (p-0.5 = 2px) y border (1px*2 = 2px)
-     Total extras: 2px + 2px + 1px + 1px = 6px (0.375rem)
-     Para que la fila total sea 2rem, el input debe ser: 2rem - 0.375rem = 1.625rem */
-  height: 1.625rem;
-  line-height: 1rem;
+  /* Ajustar altura del input para el nuevo diseño con px-2 py-1.5 (0.5rem horizontal, 0.375rem vertical)
+     Fila actual: 2rem (var(--titulo-row-h))
+     Padding vertical del td: py-2 = 0.5rem arriba + 0.5rem abajo = 1rem
+     Espacio disponible para input: 2rem - 1rem = 1rem
+     Con py-1.5 del input (0.375rem × 2 = 0.75rem) + border (2px) + contenido (~0.875rem)
+     Input debe ser: ~1.5rem máximo para no expandir la fila */
+  height: 1.5rem;
+  line-height: 1;
+  padding: 0.25rem 0.5rem !important;
   box-sizing: border-box;
 }
 
@@ -1713,8 +1764,8 @@ table.text-sm td {
   /* Scan list (left) fixed area for exactly 10 rows */
   /* use the same header/row height variables as the Nro/Titulo column
      so both tables visually align */
-  /* Restamos 2px para evitar que se vea parte de la fila 11 */
-  height: calc(var(--titulo-header-h, 2rem) + (var(--titulo-row-h, 1.9rem) * 10) + 0.25rem - 2px);
+  /* Ajustado con +5px para evitar scrollbar */
+  height: calc(var(--titulo-header-h, 2.5rem) + (var(--titulo-row-h, 2rem) * 10) + 5px);
   overflow-y: auto;
   /* prevent horizontal scrollbar caused by column widths or long content */
   overflow-x: hidden;
