@@ -1,104 +1,107 @@
 <template>
   <div class="w-full pt-2 px-2">
-    <main class="w-full bg-white rounded shadow px-2 py-3">
-      <div class="flex flex-col gap-4 mb-4">
+    <main class="w-full bg-white rounded-2xl shadow-xl px-6 py-5 border border-slate-200">
+      <div class="flex flex-col gap-4 mb-5">
         <!-- Top row: título + búsqueda -->
         <div class="flex flex-col sm:flex-row sm:items-center gap-3">
-          <h3 class="text-lg font-medium whitespace-nowrap">Informe Completo de Ensayos</h3>
+          <h3 class="text-2xl font-semibold text-slate-800 whitespace-nowrap">Informe Completo de Ensayos</h3>
           <div class="flex items-center gap-2 flex-1">
             <label for="searchInput" class="sr-only">Buscar ensayos</label>
             <input id="searchInput" v-model="q" @input="onInput" type="search"
               placeholder="Buscar por Ensayo, Fecha, OE, Ne..." aria-label="Buscar ensayos"
-              class="px-3 py-1 border rounded w-full sm:w-64 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              class="px-4 py-2 border border-slate-300 rounded-lg w-full sm:w-64 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" />
             <button v-if="q" @click="clearSearch" title="Limpiar"
-              class="px-2 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm whitespace-nowrap">Limpiar</button>
+              class="px-3 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-sm whitespace-nowrap transition-colors duration-200">Limpiar</button>
           </div>
         </div>
 
         <!-- Bottom row: filtros + acciones -->
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <!-- Filtros de búsqueda -->
-          <div class="flex items-center gap-2 flex-wrap">
-            <span class="text-sm text-gray-600">Buscar en:</span>
-            <label class="inline-flex items-center text-sm">
-              <input type="radio" name="searchField" class="mr-1" v-model="searchField" value="ALL" />
-              <span>Todos</span>
+          <div class="flex items-center gap-3 flex-wrap">
+            <span class="text-sm font-medium text-slate-600">Buscar en:</span>
+            <label class="inline-flex items-center text-sm cursor-pointer">
+              <input type="radio" name="searchField" class="mr-1.5 text-blue-600 focus:ring-blue-500" v-model="searchField" value="ALL" />
+              <span class="text-slate-700">Todos</span>
             </label>
-            <label class="inline-flex items-center text-sm">
-              <input type="radio" name="searchField" class="mr-1" v-model="searchField" value="OE" />
-              <span>OE</span>
+            <label class="inline-flex items-center text-sm cursor-pointer">
+              <input type="radio" name="searchField" class="mr-1.5 text-blue-600 focus:ring-blue-500" v-model="searchField" value="OE" />
+              <span class="text-slate-700">OE</span>
             </label>
-            <label class="inline-flex items-center text-sm">
-              <input type="radio" name="searchField" class="mr-1" v-model="searchField" value="Ne" />
-              <span>Ne</span>
+            <label class="inline-flex items-center text-sm cursor-pointer">
+              <input type="radio" name="searchField" class="mr-1.5 text-blue-600 focus:ring-blue-500" v-model="searchField" value="Ne" />
+              <span class="text-slate-700">Ne</span>
             </label>
           </div>
 
           <!-- Acciones -->
-          <div class="flex items-center gap-2">
-            <span v-if="(debouncedQ || q) && rows.length >= 0" class="text-sm text-gray-600" aria-live="polite">{{
+          <div class="flex items-center gap-3">
+            <span v-if="(debouncedQ || q) && rows.length >= 0" class="text-sm font-medium text-slate-600" aria-live="polite">{{
               filteredRows.length }} coincidencias</span>
             <button @click="loadRows"
-              class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm">Refrescar</button>
+              class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors duration-200 shadow-sm hover:shadow-md">Refrescar</button>
           </div>
         </div>
       </div>
 
-      <div v-if="loading" class="text-sm text-gray-600">Cargando...</div>
+      <div v-if="loading" class="text-sm text-slate-600 py-8 text-center">
+        <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-slate-300 border-t-blue-600"></div>
+        <p class="mt-2">Cargando...</p>
+      </div>
 
       <div v-else>
-        <div v-if="rows.length === 0" class="text-sm text-gray-600">No hay ensayos.</div>
+        <div v-if="rows.length === 0" class="text-sm text-slate-600 py-8 text-center">No hay ensayos.</div>
 
         <div v-else>
-          <div v-if="filteredRows.length === 0" class="text-sm text-gray-600 mb-2">No hay coincidencias para la
-            búsqueda.
+          <div v-if="filteredRows.length === 0" class="text-sm text-slate-600 mb-4 py-4 text-center bg-slate-50 rounded-lg">
+            No hay coincidencias para la búsqueda.
           </div>
 
-          <div class="overflow-auto w-full max-h-[70vh]">
-            <table class="min-w-full w-full table-auto divide-y divide-gray-200 text-xs">
-              <thead class="bg-gray-50 sticky top-0 z-20">
+          <div class="overflow-auto w-full max-h-[70vh] rounded-xl border border-slate-200">
+            <table class="min-w-full w-full table-auto divide-y divide-slate-200 text-xs">
+              <thead class="bg-gradient-to-r from-slate-50 to-slate-100 sticky top-0 z-20">
                 <tr>
-                  <th class="px-2 py-1 text-center">Ensayo</th>
-                  <th class="px-2 py-1 text-center">Fecha</th>
-                  <th class="px-2 py-1 text-center">OE</th>
-                  <th class="px-2 py-1 text-center">Ne</th>
-                  <th class="px-2 py-1 text-center">Titulo</th>
-                  <th class="px-2 py-1 text-center">CVm %</th>
-                  <th class="px-2 py-1 text-center">Delg -30%</th>
-                  <th class="px-2 py-1 text-center">Delg -40%</th>
-                  <th class="px-2 py-1 text-center">Delg -50%</th>
-                  <th class="px-2 py-1 text-center">Grue +35%</th>
-                  <th class="px-2 py-1 text-center">Grue +50%</th>
-                  <th class="px-2 py-1 text-center">Neps +140%</th>
-                  <th class="px-2 py-1 text-center">Neps +280%</th>
-                  <th class="px-2 py-1 text-center">Fuerza B</th>
-                  <th class="px-2 py-1 text-center">Elong. %</th>
-                  <th class="px-2 py-1 text-center">Tenac.</th>
-                  <th class="px-2 py-1 text-center">Trabajo B</th>
-                  <th class="px-2 py-1 text-center">Acciones</th>
+                  <th class="px-3 py-3 text-center font-semibold text-slate-700 border-b border-slate-200">Ensayo</th>
+                  <th class="px-3 py-3 text-center font-semibold text-slate-700 border-b border-slate-200">Fecha</th>
+                  <th class="px-3 py-3 text-center font-semibold text-slate-700 border-b border-slate-200">OE</th>
+                  <th class="px-3 py-3 text-center font-semibold text-slate-700 border-b border-slate-200">Ne</th>
+                  <th class="px-3 py-3 text-center font-semibold text-slate-700 border-b border-slate-200">Titulo</th>
+                  <th class="px-3 py-3 text-center font-semibold text-slate-700 border-b border-slate-200">CVm %</th>
+                  <th class="px-3 py-3 text-center font-semibold text-slate-700 border-b border-slate-200">Delg -30%</th>
+                  <th class="px-3 py-3 text-center font-semibold text-slate-700 border-b border-slate-200">Delg -40%</th>
+                  <th class="px-3 py-3 text-center font-semibold text-slate-700 border-b border-slate-200">Delg -50%</th>
+                  <th class="px-3 py-3 text-center font-semibold text-slate-700 border-b border-slate-200">Grue +35%</th>
+                  <th class="px-3 py-3 text-center font-semibold text-slate-700 border-b border-slate-200">Grue +50%</th>
+                  <th class="px-3 py-3 text-center font-semibold text-slate-700 border-b border-slate-200">Neps +140%</th>
+                  <th class="px-3 py-3 text-center font-semibold text-slate-700 border-b border-slate-200">Neps +280%</th>
+                  <th class="px-3 py-3 text-center font-semibold text-slate-700 border-b border-slate-200">Fuerza B</th>
+                  <th class="px-3 py-3 text-center font-semibold text-slate-700 border-b border-slate-200">Elong. %</th>
+                  <th class="px-3 py-3 text-center font-semibold text-slate-700 border-b border-slate-200">Tenac.</th>
+                  <th class="px-3 py-3 text-center font-semibold text-slate-700 border-b border-slate-200">Trabajo B</th>
+                  <th class="px-3 py-3 text-center font-semibold text-slate-700 border-b border-slate-200">Acciones</th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(row, idx) in filteredRows" :key="idx" class="border-t hover:bg-gray-50">
-                  <td class="px-2 py-1 text-center">{{ row.Ensayo }}</td>
-                  <td class="px-2 py-1 text-center">{{ row.Fecha }}</td>
-                  <td class="px-2 py-1 text-center">{{ row.OE }}</td>
-                  <td class="px-2 py-1 text-center">{{ row.Ne }}</td>
-                  <td class="px-2 py-1 text-center">{{ row.Titulo }}</td>
-                  <td class="px-2 py-1 text-center">{{ row['CVm %'] }}</td>
-                  <td class="px-2 py-1 text-center">{{ row['Delg -30%'] }}</td>
-                  <td class="px-2 py-1 text-center">{{ row['Delg -40%'] }}</td>
-                  <td class="px-2 py-1 text-center">{{ row['Delg -50%'] }}</td>
-                  <td class="px-2 py-1 text-center">{{ row['Grue +35%'] }}</td>
-                  <td class="px-2 py-1 text-center">{{ row['Grue +50%'] }}</td>
-                  <td class="px-2 py-1 text-center">{{ row['Neps +140%'] }}</td>
-                  <td class="px-2 py-1 text-center">{{ row['Neps +280%'] }}</td>
-                  <td class="px-2 py-1 text-center">{{ row['Fuerza B'] }}</td>
-                  <td class="px-2 py-1 text-center">{{ row['Elong. %'] }}</td>
-                  <td class="px-2 py-1 text-center">{{ row['Tenac.'] }}</td>
-                  <td class="px-2 py-1 text-center">{{ row['Trabajo B'] }}</td>
-                  <td class="px-2 py-1 text-center">
-                    <button @click="openDetail(row.Ensayo)" class="text-blue-600 hover:underline text-xs">Ver
+                <tr v-for="(row, idx) in filteredRows" :key="idx" class="border-t border-slate-100 hover:bg-blue-50/30 transition-colors duration-150">
+                  <td class="px-3 py-2.5 text-center text-slate-700">{{ row.Ensayo }}</td>
+                  <td class="px-3 py-2.5 text-center text-slate-700">{{ row.Fecha }}</td>
+                  <td class="px-3 py-2.5 text-center text-slate-700">{{ row.OE }}</td>
+                  <td class="px-3 py-2.5 text-center text-slate-700">{{ row.Ne }}</td>
+                  <td class="px-3 py-2.5 text-center text-slate-700">{{ row.Titulo }}</td>
+                  <td class="px-3 py-2.5 text-center text-slate-700">{{ row['CVm %'] }}</td>
+                  <td class="px-3 py-2.5 text-center text-slate-700">{{ row['Delg -30%'] }}</td>
+                  <td class="px-3 py-2.5 text-center text-slate-700">{{ row['Delg -40%'] }}</td>
+                  <td class="px-3 py-2.5 text-center text-slate-700">{{ row['Delg -50%'] }}</td>
+                  <td class="px-3 py-2.5 text-center text-slate-700">{{ row['Grue +35%'] }}</td>
+                  <td class="px-3 py-2.5 text-center text-slate-700">{{ row['Grue +50%'] }}</td>
+                  <td class="px-3 py-2.5 text-center text-slate-700">{{ row['Neps +140%'] }}</td>
+                  <td class="px-3 py-2.5 text-center text-slate-700">{{ row['Neps +280%'] }}</td>
+                  <td class="px-3 py-2.5 text-center text-slate-700">{{ row['Fuerza B'] }}</td>
+                  <td class="px-3 py-2.5 text-center text-slate-700">{{ row['Elong. %'] }}</td>
+                  <td class="px-3 py-2.5 text-center text-slate-700">{{ row['Tenac.'] }}</td>
+                  <td class="px-3 py-2.5 text-center text-slate-700">{{ row['Trabajo B'] }}</td>
+                  <td class="px-3 py-2.5 text-center">
+                    <button @click="openDetail(row.Ensayo)" class="text-blue-600 hover:text-blue-700 hover:underline text-xs font-medium transition-colors duration-150">Ver
                       detalle</button>
                   </td>
                 </tr>

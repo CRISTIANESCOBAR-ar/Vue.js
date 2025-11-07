@@ -2,22 +2,22 @@
   <div class="w-full" :data-view="windowView">
     <!-- Contenedor visual (similar a Carga de Datos): buscador + selector + lista -->
     <div ref="containerSentinelTop" aria-hidden="true"></div>
-    <div ref="wrapperRef" class="bg-white rounded shadow p-3 md:p-4 mt-2 mb-4">
+    <div ref="wrapperRef" class="bg-white rounded-2xl shadow-xl p-4 md:p-5 mt-2 mb-4 border border-slate-200">
       <!-- Buscador y selector visibles en todas las vistas -->
-      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-5">
         <!-- Buscador -->
         <div class="flex items-center w-full md:max-w-lg">
-          <label for="searchTerm" class="mr-3 text-sm font-medium text-gray-700">Buscar</label>
+          <label for="searchTerm" class="mr-3 text-sm font-semibold text-slate-700">Buscar</label>
           <input id="searchTerm" v-model="searchTerm" type="text"
             placeholder="Filtrar por rolada, base, color, metros u observaciones..."
-            class="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" />
+            class="flex-1 px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200" />
         </div>
 
         <!-- Selector de registros por página -->
         <div class="flex items-center gap-3">
-          <label for="pageSize" class="text-sm text-gray-700 whitespace-nowrap">Registros por página</label>
+          <label for="pageSize" class="text-sm font-medium text-slate-700 whitespace-nowrap">Registros por página</label>
           <select id="pageSize" v-model.number="pageSize"
-            class="px-3 py-2 pr-8 border border-gray-300 rounded-md bg-white text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            class="px-3 py-2 pr-8 border border-slate-300 rounded-lg bg-white text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200">
             <option :value="5">5 registros</option>
             <option :value="10">10 registros</option>
             <option :value="20">20 registros</option>
@@ -27,66 +27,66 @@
       </div>
 
       <!-- Vista móvil (ahora decidida por isCardView) -->
-      <div v-if="isCardView" class="h-[70vh] overflow-y-auto border rounded">
-        <div class="space-y-3 py-3">
-          <div v-for="item in paginatedRegs" :key="item.__idx" class="border rounded p-3 shadow-sm bg-white">
+      <div v-if="isCardView" class="h-[70vh] overflow-y-auto border border-slate-200 rounded-xl">
+        <div class="space-y-3 py-3 px-2">
+          <div v-for="item in paginatedRegs" :key="item.__idx" class="border border-slate-200 rounded-xl p-4 shadow-sm bg-white hover:shadow-md transition-shadow duration-200">
             <template v-if="editingRealIndex(getRealIndex(item)) === true">
               <div class="text-sm flex gap-2 items-center min-w-0">
-                <label class="w-20 md:w-24 font-medium">Rolada</label>
+                <label class="w-20 md:w-24 font-semibold text-slate-700">Rolada</label>
                 <input data-field="rolada" v-model="editModel.rolada" @input="onInlineRoladaInput" inputmode="numeric"
                   maxlength="4" :ref="el => setInputRef(el, getRealIndex(item), 'rolada')"
-                  class="px-1 py-1 border rounded w-[6ch] min-w-0 box-border text-center" />
+                  class="px-2 py-1 border border-slate-300 rounded-lg w-[6ch] min-w-0 box-border text-center focus:ring-2 focus:ring-blue-500" />
               </div>
               <div class="text-sm flex gap-2 items-center mt-2 min-w-0">
-                <label class="w-20 md:w-24 font-medium">Base</label>
+                <label class="w-20 md:w-24 font-semibold text-slate-700">Base</label>
                 <input data-field="base" v-model="editModel.base" @input="onInlineBaseInput" maxlength="10"
                   :ref="el => setInputRef(el, getRealIndex(item), 'base')"
-                  class="px-2 py-1 border rounded w-[10ch] min-w-0" />
+                  class="px-2 py-1 border border-slate-300 rounded-lg w-[10ch] min-w-0 focus:ring-2 focus:ring-blue-500" />
               </div>
               <div class="text-sm flex gap-2 items-center mt-2 min-w-0">
-                <label class="w-20 md:w-24 font-medium">Color</label>
+                <label class="w-20 md:w-24 font-semibold text-slate-700">Color</label>
                 <input data-field="color" v-model="editModel.color" @input="onInlineColorInput" maxlength="4"
                   :ref="el => setInputRef(el, getRealIndex(item), 'color')"
-                  class="px-1 py-1 border rounded w-[6ch] min-w-0 box-border text-center" />
+                  class="px-2 py-1 border border-slate-300 rounded-lg w-[6ch] min-w-0 box-border text-center focus:ring-2 focus:ring-blue-500" />
               </div>
               <div class="text-sm flex gap-2 items-center mt-2 min-w-0">
-                <label class="w-20 md:w-24 font-medium">Metros</label>
+                <label class="w-20 md:w-24 font-semibold text-slate-700">Metros</label>
                 <input data-field="metros"
                   :value="(editModel.metros || editModel.metros === 0) ? formatMetros(editModel.metros) : ''"
                   @input="onInlineMetrosInput" inputmode="numeric"
                   :ref="el => setInputRef(el, getRealIndex(item), 'metros')"
-                  class="px-2 py-1 border rounded w-[6ch] text-right min-w-0" />
+                  class="px-2 py-1 border border-slate-300 rounded-lg w-[6ch] text-right min-w-0 focus:ring-2 focus:ring-blue-500" />
               </div>
               <div class="text-sm flex gap-2 items-center mt-2 min-w-0">
-                <label class="w-20 md:w-24 font-medium">Observaciones</label>
+                <label class="w-20 md:w-24 font-semibold text-slate-700">Observaciones</label>
                 <div class="flex-1 min-w-0">
                   <input data-field="observaciones" v-model="editModel.observaciones"
                     :ref="el => setInputRef(el, getRealIndex(item), 'observaciones')"
-                    class="w-full px-2 py-1 border rounded min-w-0" />
+                    class="w-full px-2 py-1 border border-slate-300 rounded-lg min-w-0 focus:ring-2 focus:ring-blue-500" />
                 </div>
               </div>
 
               <div class="flex justify-end gap-2 mt-3">
                 <button @click="saveEdit(getRealIndex(item))"
-                  class="px-3 py-1 bg-green-100 text-green-800 rounded">Guardar</button>
-                <button @click="cancelEdit()" class="px-3 py-1 bg-gray-100 rounded">Cancelar</button>
+                  class="px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-colors duration-200">Guardar</button>
+                <button @click="cancelEdit()" class="px-3 py-2 bg-slate-500 text-white rounded-lg hover:bg-slate-600 font-medium transition-colors duration-200">Cancelar</button>
               </div>
             </template>
             <template v-else>
-              <div class="text-sm"><strong>Rolada:</strong> {{ item.rolada }}</div>
-              <div class="text-sm"><strong>Base:</strong> {{ item.base }}</div>
-              <div class="text-sm"><strong>Color:</strong> {{ item.color }}</div>
-              <div class="text-sm"><strong>Metros:</strong> {{ formatMetros(item.metros) }}</div>
-              <div class="text-sm"><strong>Observaciones:</strong> {{ item.observaciones }}</div>
+              <div class="text-sm text-slate-700"><strong class="font-semibold">Rolada:</strong> {{ item.rolada }}</div>
+              <div class="text-sm text-slate-700"><strong class="font-semibold">Base:</strong> {{ item.base }}</div>
+              <div class="text-sm text-slate-700"><strong class="font-semibold">Color:</strong> {{ item.color }}</div>
+              <div class="text-sm text-slate-700"><strong class="font-semibold">Metros:</strong> {{ formatMetros(item.metros) }}</div>
+              <div class="text-sm text-slate-700"><strong class="font-semibold">Observaciones:</strong> {{ item.observaciones }}</div>
               <div class="flex justify-end gap-2 mt-2">
-                <button @click="handleEditClick(getRealIndex(item), item)" class="text-blue-600 text-sm hover:underline"
+                <button @click="handleEditClick(getRealIndex(item), item)" class="text-blue-600 text-sm hover:underline font-medium"
                   v-tippy="'Editar este registro'">Editar</button>
-                <button @click="emit('eliminar', getRealIndex(item))" class="text-red-600 text-sm hover:underline"
+                <button @click="emit('eliminar', getRealIndex(item))" class="text-red-600 text-sm hover:underline font-medium"
                   v-tippy="'Eliminar este registro'">Eliminar</button>
               </div>
             </template>
           </div>
-          <div v-if="paginatedRegs.length === 0" class="text-center text-gray-500 text-sm">
+          <div v-if="paginatedRegs.length === 0" class="text-center text-slate-500 text-sm py-8">
             No hay registros
           </div>
         </div>
@@ -94,7 +94,7 @@
 
       <!-- Vista tabla (compact o desktop) -->
       <div v-else class="overflow-x-auto mt-3">
-        <div ref="listScrollRef" class="list-scroll overflow-y-auto border rounded">
+        <div ref="listScrollRef" class="list-scroll overflow-y-auto border border-slate-200 rounded-xl">
           <div ref="tableSentinel" class="table-sentinel" aria-hidden="true"></div>
           <table ref="tableRef" class="registro-table table-auto w-full border-collapse text-sm">
             <colgroup>
@@ -111,101 +111,101 @@
               <!-- Acciones: espacio para iconos/buttons -->
               <col style="width:80px" />
             </colgroup>
-            <thead class="bg-gray-200 text-sm text-gray-800">
+            <thead class="bg-gradient-to-r from-slate-50 to-slate-100 text-sm">
               <tr>
                 <th @click="setSort('rolada')"
-                  class="sticky top-0 z-10 bg-gray-200 px-3 py-2 text-left cursor-pointer select-none">
+                  class="sticky top-0 z-10 bg-gradient-to-r from-slate-50 to-slate-100 px-3 py-3 text-left cursor-pointer select-none border-b border-slate-200">
                   <div class="flex items-center gap-1">
-                    <span :class="{ 'font-semibold': sortKey === 'rolada' }">Rolada</span>
+                    <span :class="{ 'font-semibold': sortKey === 'rolada' }" class="text-slate-700 font-semibold">Rolada</span>
                     <span v-if="sortKey === 'rolada'">
-                      <ChevronUpIcon v-if="sortAsc === true" class="w-4 h-4 text-gray-600" />
-                      <ChevronDownIcon v-else-if="sortAsc === false" class="w-4 h-4 text-gray-600" />
-                      <ArrowsUpDownIcon v-else class="w-4 h-4 text-gray-400" />
+                      <ChevronUpIcon v-if="sortAsc === true" class="w-4 h-4 text-slate-600" />
+                      <ChevronDownIcon v-else-if="sortAsc === false" class="w-4 h-4 text-slate-600" />
+                      <ArrowsUpDownIcon v-else class="w-4 h-4 text-slate-400" />
                     </span>
                   </div>
                 </th>
 
                 <th @click="setSort('base')"
-                  class="sticky top-0 z-10 bg-gray-200 px-3 py-2 text-left cursor-pointer select-none">
+                  class="sticky top-0 z-10 bg-gradient-to-r from-slate-50 to-slate-100 px-3 py-3 text-left cursor-pointer select-none border-b border-slate-200">
                   <div class="flex items-center gap-1">
-                    <span :class="{ 'font-semibold': sortKey === 'base' }">Base</span>
+                    <span :class="{ 'font-semibold': sortKey === 'base' }" class="text-slate-700 font-semibold">Base</span>
                     <span v-if="sortKey === 'base'">
-                      <ChevronUpIcon v-if="sortAsc === true" class="w-4 h-4 text-gray-600" />
-                      <ChevronDownIcon v-else-if="sortAsc === false" class="w-4 h-4 text-gray-600" />
-                      <ArrowsUpDownIcon v-else class="w-4 h-4 text-gray-400" />
+                      <ChevronUpIcon v-if="sortAsc === true" class="w-4 h-4 text-slate-600" />
+                      <ChevronDownIcon v-else-if="sortAsc === false" class="w-4 h-4 text-slate-600" />
+                      <ArrowsUpDownIcon v-else class="w-4 h-4 text-slate-400" />
                     </span>
                   </div>
                 </th>
 
                 <th @click="setSort('color')"
-                  class="sticky top-0 z-10 bg-gray-200 px-3 py-2 text-left cursor-pointer select-none">
+                  class="sticky top-0 z-10 bg-gradient-to-r from-slate-50 to-slate-100 px-3 py-3 text-left cursor-pointer select-none border-b border-slate-200">
                   <div class="flex items-center gap-1">
-                    <span :class="{ 'font-semibold': sortKey === 'color' }">Color</span>
+                    <span :class="{ 'font-semibold': sortKey === 'color' }" class="text-slate-700 font-semibold">Color</span>
                     <span v-if="sortKey === 'color'">
-                      <ChevronUpIcon v-if="sortAsc === true" class="w-4 h-4 text-gray-600" />
-                      <ChevronDownIcon v-else-if="sortAsc === false" class="w-4 h-4 text-gray-600" />
-                      <ArrowsUpDownIcon v-else class="w-4 h-4 text-gray-400" />
+                      <ChevronUpIcon v-if="sortAsc === true" class="w-4 h-4 text-slate-600" />
+                      <ChevronDownIcon v-else-if="sortAsc === false" class="w-4 h-4 text-slate-600" />
+                      <ArrowsUpDownIcon v-else class="w-4 h-4 text-slate-400" />
                     </span>
                   </div>
                 </th>
 
                 <th @click="setSort('metros')"
-                  class="sticky top-0 z-10 bg-gray-200 px-3 py-2 text-right cursor-pointer select-none">
+                  class="sticky top-0 z-10 bg-gradient-to-r from-slate-50 to-slate-100 px-3 py-3 text-right cursor-pointer select-none border-b border-slate-200">
                   <div class="flex items-center justify-end gap-1">
-                    <span :class="{ 'font-semibold': sortKey === 'metros' }">Metros</span>
+                    <span :class="{ 'font-semibold': sortKey === 'metros' }" class="text-slate-700 font-semibold">Metros</span>
                     <span v-if="sortKey === 'metros'">
-                      <ChevronUpIcon v-if="sortAsc === true" class="w-4 h-4 text-gray-600" />
-                      <ChevronDownIcon v-else-if="sortAsc === false" class="w-4 h-4 text-gray-600" />
-                      <ArrowsUpDownIcon v-else class="w-4 h-4 text-gray-400" />
+                      <ChevronUpIcon v-if="sortAsc === true" class="w-4 h-4 text-slate-600" />
+                      <ChevronDownIcon v-else-if="sortAsc === false" class="w-4 h-4 text-slate-600" />
+                      <ArrowsUpDownIcon v-else class="w-4 h-4 text-slate-400" />
                     </span>
                   </div>
                 </th>
 
-                <th class="sticky top-0 z-10 bg-gray-200 px-3 py-2 text-left">Observaciones</th>
-                <th class="sticky top-0 z-10 bg-gray-200 px-3 py-2 text-right">Acciones</th>
+                <th class="sticky top-0 z-10 bg-gradient-to-r from-slate-50 to-slate-100 px-3 py-3 text-left font-semibold text-slate-700 border-b border-slate-200">Observaciones</th>
+                <th class="sticky top-0 z-10 bg-gradient-to-r from-slate-50 to-slate-100 px-3 py-3 text-right font-semibold text-slate-700 border-b border-slate-200">Acciones</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(item, idx) in paginatedRegs" :key="idx" :class="[
-                'odd:bg-white even:bg-gray-50 transition-colors duration-300',
-                editingRealIndex(getRealIndex(item)) ? 'bg-yellow-500 is-editing' : ''
+                'hover:bg-blue-50/30 transition-colors duration-200',
+                editingRealIndex(getRealIndex(item)) ? 'bg-yellow-100 is-editing' : 'odd:bg-white even:bg-slate-50/30'
               ]">
-                <td class=" px-3 py-1">
+                <td class="px-3 py-2 text-slate-700">
                   <template v-if="editingRealIndex(getRealIndex(item)) === true">
                     <input v-model="editModel.rolada" @input="onInlineRoladaInput" inputmode="numeric" maxlength="4"
                       data-field="rolada" :ref="el => setInputRef(el, getRealIndex(item), 'rolada')"
-                      class="w-full px-2 py-1 border rounded" />
+                      class="w-full px-2 py-1 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
                   </template>
                   <template v-else>
                     {{ item.rolada }}
                   </template>
                 </td>
-                <td class="px-3 py-1 pr-4">
+                <td class="px-3 py-2 pr-4 text-slate-700">
                   <template v-if="editingRealIndex(getRealIndex(item)) === true">
                     <input v-model="editModel.base" @input="onInlineBaseInput" data-field="base" maxlength="10"
                       :ref="el => setInputRef(el, getRealIndex(item), 'base')"
-                      class="w-full px-2 py-1 border rounded" />
+                      class="w-full px-2 py-1 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
                   </template>
                   <template v-else>
                     {{ item.base }}
                   </template>
                 </td>
-                <td class="px-3 py-1">
+                <td class="px-3 py-2 text-slate-700">
                   <template v-if="editingRealIndex(getRealIndex(item)) === true">
                     <input v-model="editModel.color" @input="onInlineColorInput" data-field="color" maxlength="4"
                       :ref="el => setInputRef(el, getRealIndex(item), 'color')"
-                      class="w-full px-2 py-1 border rounded" />
+                      class="w-full px-2 py-1 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
                   </template>
                   <template v-else>
                     {{ item.color }}
                   </template>
                 </td>
-                <td class="px-3 py-1 text-right">
+                <td class="px-3 py-2 text-right text-slate-700">
                   <template v-if="editingRealIndex(getRealIndex(item)) === true">
                     <input :value="(editModel.metros || editModel.metros === 0) ? formatMetros(editModel.metros) : ''"
                       @input="onInlineMetrosInput" data-field="metros" inputmode="numeric"
                       :ref="el => setInputRef(el, getRealIndex(item), 'metros')"
-                      class="w-full text-right px-2 py-1 border rounded" />
+                      class="w-full text-right px-2 py-1 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
                     <div
                       v-if="(editModel.metros === null || editModel.metros === undefined || Number(editModel.metros) <= 0)"
                       class="text-[10px] text-red-500 mt-1">Los metros no pueden ser nulos ni cero</div>
@@ -214,49 +214,49 @@
                     {{ formatMetros(item.metros) }}
                   </template>
                 </td>
-                <td class="px-3 py-1 observ-td">
+                <td class="px-3 py-2 observ-td text-slate-700">
                   <template v-if="editingRealIndex(getRealIndex(item)) === true">
                     <div class="observ-wrapper w-full">
                       <input v-model="editModel.observaciones" data-field="observaciones"
                         :ref="el => setInputRef(el, getRealIndex(item), 'observaciones')"
-                        class="w-full px-2 py-1 border rounded" />
+                        class="w-full px-2 py-1 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
                     </div>
                   </template>
                   <template v-else>
                     <div class="observ-wrapper cell-observ">{{ item.observaciones }}</div>
                   </template>
                 </td>
-                <td class="px-2 py-1 text-right whitespace-nowrap actions-td">
+                <td class="px-2 py-2 text-right whitespace-nowrap actions-td">
                   <div class="flex flex-col items-end gap-2 actions">
                     <div class="flex items-center gap-3">
                       <div v-if="props.mostrarEditar">
                         <template v-if="editingRealIndex(getRealIndex(item)) !== true">
                           <button @click="handleEditClick(getRealIndex(item), item)"
-                            class="p-1 rounded hover:bg-blue-100" v-tippy="'Editar registro'">
+                            class="p-1 rounded-lg hover:bg-blue-100 transition-colors duration-150" v-tippy="'Editar registro'">
                             <img src="/icons/edit.svg" alt="Editar" class="h-5 w-5" />
                           </button>
                         </template>
                         <template v-else>
                           <div class="inline-flex items-center gap-2">
                             <button @click="saveEdit(getRealIndex(item))"
-                              class="btn px-2 py-1 rounded bg-green-100 hover:bg-green-200 text-green-800">Guardar</button>
+                              class="btn px-3 py-1.5 rounded-lg bg-green-600 hover:bg-green-700 text-white font-medium transition-colors duration-200">Guardar</button>
                             <button @click="cancelEdit()"
-                              class="btn px-2 py-1 rounded bg-gray-100 hover:bg-gray-200">Cancelar</button>
+                              class="btn px-3 py-1.5 rounded-lg bg-slate-500 hover:bg-slate-600 text-white font-medium transition-colors duration-200">Cancelar</button>
                           </div>
                         </template>
                       </div>
                       <button v-if="!editingRealIndex(getRealIndex(item))" @click="emit('eliminar', getRealIndex(item))"
-                        class="p-1 rounded hover:bg-red-100" v-tippy="'Eliminar registro'">
+                        class="p-1 rounded-lg hover:bg-red-100 transition-colors duration-150" v-tippy="'Eliminar registro'">
                         <img src="/icons/delete.svg" alt="Eliminar" class="h-5 w-5" />
                       </button>
                     </div>
-                    <div class="text-[10px] text-gray-500 leading-tight">
+                    <div class="text-[10px] text-slate-500 leading-tight">
                     </div>
                   </div>
                 </td>
               </tr>
               <tr v-if="paginatedRegs.length === 0">
-                <td class="px-3 py-2 text-center text-gray-500" :colspan="6">No hay registros</td>
+                <td class="px-3 py-4 text-center text-slate-500" :colspan="6">No hay registros</td>
               </tr>
             </tbody>
           </table>

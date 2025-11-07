@@ -5,18 +5,18 @@
   <!-- Contenido principal -->
   <div class="w-full p-1 md:p-4 space-y-3">
     <!-- FORMULARIO -->
-    <form @submit.prevent="submitForm" class="bg-white rounded shadow p-3 md:p-4 space-y-3">
+    <form @submit.prevent="submitForm" class="bg-white rounded-2xl shadow-xl p-4 md:p-5 space-y-4 border border-slate-200">
       <!-- ROLADA -->
       <div class="flex flex-col md:flex-row md:items-center md:gap-3">
-        <label for="rolada" class="mb-1 md:mb-0 w-[7rem] text-sm font-medium text-gray-700">Rolada</label>
+        <label for="rolada" class="mb-1 md:mb-0 w-[7rem] text-sm font-semibold text-slate-700">Rolada</label>
         <div class="flex flex-col">
           <input id="rolada" ref="roladaInput" v-model="form.rolada" type="tel" inputmode="numeric" maxlength="4"
-            autocomplete="off" @input="onRoladaInput" placeholder="1234" class="w-[8ch] px-2 py-1 text-sm h-8 border border-gray-300 rounded bg-white
-                   focus:bg-yellow-200 focus:ring-2 focus:ring-yellow-400
+            autocomplete="off" @input="onRoladaInput" placeholder="1234" class="w-[8ch] px-3 py-2 text-sm h-9 border border-slate-300 rounded-lg bg-white
+                   focus:bg-yellow-100 focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400
                    focus:outline-none focus:shadow-sm transition-all duration-200" required
             @keydown.enter.prevent="handleEnter" @keydown.up.prevent="focusUp('rolada')"
             @keydown.down.prevent="focusDown('rolada')" />
-          <p v-if="form.rolada.length > 0 && form.rolada.length < 4" class="text-red-500 text-xs mt-0.5">
+          <p v-if="form.rolada.length > 0 && form.rolada.length < 4" class="text-red-500 text-xs mt-1">
             La rolada debe tener 4 dígitos
           </p>
         </div>
@@ -24,10 +24,10 @@
 
       <!-- BASE -->
       <div class="flex flex-col md:flex-row md:items-center md:gap-3">
-        <label for="base" class="mb-1 md:mb-0 w-[7rem] text-sm font-medium text-gray-700">Base</label>
+        <label for="base" class="mb-1 md:mb-0 w-[7rem] text-sm font-semibold text-slate-700">Base</label>
         <input id="base" ref="baseInput" v-model="form.base" @input="onBaseInput" type="text" maxlength="10"
-          autocomplete="off" placeholder="U12/1-4760" class="w-[14ch] px-2 py-1 text-sm h-8 border border-gray-300 rounded bg-white
-                 focus:bg-yellow-200 focus:ring-2 focus:ring-yellow-400
+          autocomplete="off" placeholder="U12/1-4760" class="w-[14ch] px-3 py-2 text-sm h-9 border border-slate-300 rounded-lg bg-white
+                 focus:bg-yellow-100 focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400
                  focus:outline-none focus:shadow-sm transition-all duration-200" required
           @keydown.enter.prevent="handleEnter" @keydown.up.prevent="focusUp('base')"
           @keydown.down.prevent="focusDown('base')" />
@@ -35,10 +35,10 @@
 
       <!-- COLOR -->
       <div class="flex flex-col md:flex-row md:items-center md:gap-3">
-        <label for="color" class="mb-1 md:mb-0 w-[7rem] text-sm font-medium text-gray-700">Color</label>
+        <label for="color" class="mb-1 md:mb-0 w-[7rem] text-sm font-semibold text-slate-700">Color</label>
         <input id="color" ref="colorInput" v-model="form.color" @input="onColorInput" type="text" maxlength="4"
-          autocomplete="off" placeholder="561" class="w-[7ch] px-2 py-1 text-sm h-8 border border-gray-300 rounded bg-white
-                 focus:bg-yellow-200 focus:ring-2 focus:ring-yellow-400
+          autocomplete="off" placeholder="561" class="w-[7ch] px-3 py-2 text-sm h-9 border border-slate-300 rounded-lg bg-white
+                 focus:bg-yellow-100 focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400
                  focus:outline-none focus:shadow-sm transition-all duration-200" required
           @keydown.enter.prevent="handleEnter" @keydown.up.prevent="focusUp('color')"
           @keydown.down.prevent="focusDown('color')" />
@@ -46,14 +46,14 @@
 
       <!-- METROS -->
       <div class="flex flex-col md:flex-row md:items-center md:gap-3">
-        <label for="metros" class="mb-1 md:mb-0 w-[7rem] text-sm font-medium text-gray-700">Metros</label>
+        <label for="metros" class="mb-1 md:mb-0 w-[7rem] text-sm font-semibold text-slate-700">Metros</label>
         <div class="flex flex-col">
           <input id="metros" ref="metrosInput" v-model="metrosRaw" @input="onMetrosInput" type="text"
-            inputmode="numeric" autocomplete="off" @focus="metrosTouched = true" placeholder="55.000" class="w-[9ch] px-2 py-1 text-sm h-8 border border-gray-300 rounded bg-white
-         focus:bg-yellow-200 focus:ring-2 focus:ring-yellow-400
+            inputmode="numeric" autocomplete="off" @focus="metrosTouched = true" placeholder="55.000" class="w-[9ch] px-3 py-2 text-sm h-9 border border-slate-300 rounded-lg bg-white
+         focus:bg-yellow-100 focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400
          focus:outline-none focus:shadow-sm transition-all duration-200" required @keydown.enter.prevent="handleEnter"
             @keydown.up.prevent="focusUp('metros')" @keydown.down.prevent="focusDown('metros')" />
-          <p v-if="metrosTouched && debouncedError" class="text-red-500 text-xs mt-0.5">
+          <p v-if="metrosTouched && debouncedError" class="text-red-500 text-xs mt-1">
             Los metros no pueden ser nulos ni cero
           </p>
         </div>
@@ -61,13 +61,13 @@
 
       <!-- OBSERVACIONES -->
       <div class="flex flex-col md:flex-row md:items-start md:gap-3 w-full min-w-0">
-        <label for="observaciones" class="mb-1 md:mb-0 md:w-[7rem] w-full text-sm font-medium text-gray-700">
+        <label for="observaciones" class="mb-1 md:mb-0 md:w-[7rem] w-full text-sm font-semibold text-slate-700">
           Observaciones
         </label>
         <div class="flex-1 min-w-0">
           <textarea id="observaciones" ref="observacionesInput" v-model="form.observaciones" rows="2"
-            placeholder="Opcional" class="w-full px-2 py-1 text-sm h-[4.5rem] border border-gray-300 rounded bg-white
-             focus:bg-yellow-200 focus:ring-2 focus:ring-yellow-400
+            placeholder="Opcional" class="w-full px-3 py-2 text-sm h-[4.5rem] border border-slate-300 rounded-lg bg-white
+             focus:bg-yellow-100 focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400
              focus:outline-none focus:shadow-sm transition-all duration-200 resize-none"
             @keydown.enter.prevent="handleEnter" @keydown.up.prevent="focusUp('observaciones')"
             @keydown.down.prevent="focusDown('observaciones')"></textarea>
@@ -80,12 +80,12 @@
           <button
             v-show="editIndex !== null || form.rolada || form.base || form.color || rawMetros || form.observaciones"
             type="button" @click="cancelarEdicion" :disabled="isResetting" :class="[
-              'px-4 py-2 text-sm h-8 rounded flex items-center gap-2 transition-all duration-200',
+              'px-4 py-2 text-sm h-9 rounded-lg flex items-center gap-2 transition-all duration-200 font-medium shadow-sm',
               isResetting
-                ? 'bg-gray-400 cursor-not-allowed animate-pulse'
-                : 'bg-gray-300 hover:bg-gray-400 text-gray-800'
+                ? 'bg-slate-400 cursor-not-allowed animate-pulse'
+                : 'bg-slate-300 hover:bg-slate-400 text-slate-800 hover:shadow-md'
             ]">
-            <svg v-if="isResetting" class="animate-spin h-4 w-4 text-gray-700" xmlns="http://www.w3.org/2000/svg"
+            <svg v-if="isResetting" class="animate-spin h-4 w-4 text-slate-700" xmlns="http://www.w3.org/2000/svg"
               fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 01-8 8z"></path>
@@ -95,8 +95,8 @@
         </Transition>
         <Transition name="fade-zoom">
           <button ref="submitButton" type="submit" @keydown.up.prevent="focusUp('submit')" :disabled="isSaving" :class="[
-            'px-4 py-2 text-sm h-8 rounded flex items-center gap-2',
-            isSaving ? 'bg-blue-400 cursor-not-allowed animate-pulse' : 'bg-blue-600 hover:bg-blue-700 text-white'
+            'px-4 py-2 text-sm h-9 rounded-lg flex items-center gap-2 font-medium shadow-sm transition-all duration-200',
+            isSaving ? 'bg-blue-400 cursor-not-allowed animate-pulse' : 'bg-blue-600 hover:bg-blue-700 text-white hover:shadow-md'
           ]">
 
 
