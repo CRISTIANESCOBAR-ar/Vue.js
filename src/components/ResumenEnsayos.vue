@@ -277,44 +277,104 @@
                 </thead>
                 <tbody>
                   <tr v-for="(row, idx) in mergedRows" :key="idx"
-                    class="hover:bg-slate-50 transition-colors duration-150">
-                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{ row.NO }}</td>
-                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{ fmtCell(row.TITULO)
-                    }}</td>
-                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{
-                      fmtCell(row.CVM_PERCENT) }}
+                    :class="['transition-colors duration-150', modalLoading ? 'bg-slate-50/50' : 'hover:bg-slate-50']">
+                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">
+                      <template v-if="modalLoading">
+                        <div class="mx-auto w-10 h-4 bg-slate-200/70 rounded animate-pulse"></div>
+                      </template>
+                      <template v-else>{{ row.NO }}</template>
                     </td>
-                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{
-                      fmtCell(row.DELG_MINUS30_KM)
-                    }}</td>
-                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{
-                      fmtCell(row.DELG_MINUS40_KM)
-                    }}</td>
-                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{
-                      fmtCell(row.DELG_MINUS50_KM)
-                    }}</td>
-                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{
-                      fmtCell(row.GRUE_35_KM) }}
+
+                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">
+                      <template v-if="modalLoading">
+                        <div class="mx-auto w-32 h-4 bg-slate-200/70 rounded animate-pulse"></div>
+                      </template>
+                      <template v-else>{{ fmtCell(row.TITULO) }}</template>
                     </td>
-                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{
-                      fmtCell(row.GRUE_50_KM) }}
+
+                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">
+                      <template v-if="modalLoading">
+                        <div class="mx-auto w-14 h-4 bg-slate-200/70 rounded animate-pulse"></div>
+                      </template>
+                      <template v-else>{{ fmtCell(row.CVM_PERCENT) }}</template>
                     </td>
-                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{
-                      fmtCell(row.NEPS_140_KM) }}
+
+                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">
+                      <template v-if="modalLoading">
+                        <div class="mx-auto w-16 h-4 bg-slate-200/70 rounded animate-pulse"></div>
+                      </template>
+                      <template v-else>{{ fmtCell(row.DELG_MINUS30_KM) }}</template>
                     </td>
-                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{
-                      fmtCell(row.NEPS_280_KM) }}
+
+                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">
+                      <template v-if="modalLoading">
+                        <div class="mx-auto w-16 h-4 bg-slate-200/70 rounded animate-pulse"></div>
+                      </template>
+                      <template v-else>{{ fmtCell(row.DELG_MINUS40_KM) }}</template>
                     </td>
-                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{
-                      fmtCell(row.FUERZA_B) }}</td>
-                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{
-                      fmtCell(row.ELONGACION) }}
+
+                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">
+                      <template v-if="modalLoading">
+                        <div class="mx-auto w-16 h-4 bg-slate-200/70 rounded animate-pulse"></div>
+                      </template>
+                      <template v-else>{{ fmtCell(row.DELG_MINUS50_KM) }}</template>
                     </td>
-                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{
-                      fmtCell(row.TENACIDAD) }}
+
+                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">
+                      <template v-if="modalLoading">
+                        <div class="mx-auto w-16 h-4 bg-slate-200/70 rounded animate-pulse"></div>
+                      </template>
+                      <template v-else>{{ fmtCell(row.GRUE_35_KM) }}</template>
                     </td>
-                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{ fmtCell(row.TRABAJO)
-                    }}</td>
+
+                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">
+                      <template v-if="modalLoading">
+                        <div class="mx-auto w-16 h-4 bg-slate-200/70 rounded animate-pulse"></div>
+                      </template>
+                      <template v-else>{{ fmtCell(row.GRUE_50_KM) }}</template>
+                    </td>
+
+                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">
+                      <template v-if="modalLoading">
+                        <div class="mx-auto w-16 h-4 bg-slate-200/70 rounded animate-pulse"></div>
+                      </template>
+                      <template v-else>{{ fmtCell(row.NEPS_140_KM) }}</template>
+                    </td>
+
+                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">
+                      <template v-if="modalLoading">
+                        <div class="mx-auto w-16 h-4 bg-slate-200/70 rounded animate-pulse"></div>
+                      </template>
+                      <template v-else>{{ fmtCell(row.NEPS_280_KM) }}</template>
+                    </td>
+
+                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">
+                      <template v-if="modalLoading">
+                        <div class="mx-auto w-16 h-4 bg-slate-200/70 rounded animate-pulse"></div>
+                      </template>
+                      <template v-else>{{ fmtCell(row.FUERZA_B) }}</template>
+                    </td>
+
+                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">
+                      <template v-if="modalLoading">
+                        <div class="mx-auto w-14 h-4 bg-slate-200/70 rounded animate-pulse"></div>
+                      </template>
+                      <template v-else>{{ fmtCell(row.ELONGACION) }}</template>
+                    </td>
+
+                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">
+                      <template v-if="modalLoading">
+                        <div class="mx-auto w-14 h-4 bg-slate-200/70 rounded animate-pulse"></div>
+                      </template>
+                      <template v-else>{{ fmtCell(row.TENACIDAD) }}</template>
+                    </td>
+
+                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">
+                      <template v-if="modalLoading">
+                        <div class="mx-auto w-14 h-4 bg-slate-200/70 rounded animate-pulse"></div>
+                      </template>
+                      <template v-else>{{ fmtCell(row.TRABAJO) }}</template>
+                    </td>
                   </tr>
 
                   <!-- statistics rows -->
