@@ -209,8 +209,25 @@
       <!-- modal content -->
       <div class="bg-white rounded-2xl shadow-2xl max-w-6xl w-full max-h-[95vh] flex flex-col p-3 z-50 relative"
         role="document">
-        <header class="flex items-center justify-between mb-2 pb-1">
-          <h4 id="modalTitle" class="text-xl font-semibold text-slate-800">{{ modalTitle }}</h4>
+        <!-- Prev/Next floating buttons glued to modal sides, vertically centered -->
+        <button @click="modalPrev" :disabled="modalPrevDisabled" type="button"
+          v-tippy="{ content: 'Anterior — Atajo: ← (ArrowLeft). Esc: Cerrar modal', placement: 'left', theme: 'custom' }"
+          class="absolute left-0 top-1/2 -translate-y-1/2 -ml-5 w-10 h-10 rounded-full bg-white border border-slate-200 shadow-sm flex items-center justify-center text-2xl text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed z-50"
+          aria-label="Anterior ensayo">‹</button>
+
+        <button @click="modalNext" :disabled="modalNextDisabled" type="button"
+          v-tippy="{ content: 'Siguiente — Atajo: → (ArrowRight). Esc: Cerrar modal', placement: 'right', theme: 'custom' }"
+          class="absolute right-0 top-1/2 -translate-y-1/2 -mr-5 w-10 h-10 rounded-full bg-white border border-slate-200 shadow-sm flex items-center justify-center text-2xl text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed z-50"
+          aria-label="Siguiente ensayo">›</button>
+
+        <header class="flex items-start sm:items-center justify-between mb-2 pb-1 gap-3">
+          <div id="modalTitle" class="flex flex-col sm:flex-row sm:items-center gap-2 mx-8">
+            <div class="text-slate-600 text-sm">Fecha: <span class="text-slate-900 text-lg font-semibold ml-1">{{ modalMeta.fechaStr }}</span></div>
+            <div class="text-slate-600 text-sm">Ne: <span class="text-slate-900 text-lg font-semibold ml-1">{{ modalMeta.ne }}</span></div>
+            <div class="text-slate-600 text-sm">OE Nro.: <span class="text-slate-900 text-lg font-semibold ml-1">{{ modalMeta.oe }}</span></div>
+            <div class="text-slate-600 text-sm">Ensayo Uster <span class="text-slate-900 text-lg font-semibold ml-1">{{ modalMeta.u }}</span> y TensoRapid <span class="text-slate-900 text-lg font-semibold ml-1">{{ modalMeta.t }}</span></div>
+          </div>
+
           <button @click="closeModal"
             class="px-4 py-[0.4rem] bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors duration-200 font-medium"
             aria-label="Cerrar detalle">Cerrar</button>
@@ -665,13 +682,15 @@ const mergedRows = ref([])
 const combinedStats = ref({})
 const tensorTestnrs = ref([])
 
-const modalTitle = computed(() => {
+const modalMeta = computed(() => {
   const u = selectedTestnr.value || '—'
   const t = (tensorTestnrs.value && tensorTestnrs.value[0]) || '—'
 
-  // try to find the row that matches the selected ensayo to pull meta (Fecha, OE, Titulo, Ne)
-  const row = (mergedRows.value || []).find(r => String(r?.Ensayo) === String(u)) || (mergedRows.value && mergedRows.value[0]) || {}
-  const rawFecha = row?.Fecha || row?.fecha || ''
+  // Prefer the main report `rows` for meta (it contains Fecha / OE / Ne). Fallback to USTER or merged rows.
+  let meta = (rows.value || []).find(r => String(r?.Ensayo) === String(u)) || null
+  if (!meta) meta = (usterTblRows.value && usterTblRows.value[0]) || (mergedRows.value && mergedRows.value[0]) || {}
+
+  const rawFecha = meta?.Fecha || meta?.fecha || meta?.FECHA || meta?.date || ''
   let fechaStr = '—'
   if (rawFecha) {
     const d = new Date(rawFecha)
@@ -681,15 +700,85 @@ const modalTitle = computed(() => {
       const yy = String(d.getFullYear()).slice(-2)
       fechaStr = `${dd}/${mm}/${yy}`
     } else {
-      fechaStr = String(rawFecha)
+      // try parse dd/mm/yyyy or dd/mm/yy
+      const m = String(rawFecha).match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/)
+      if (m) {
+        const dd = String(m[1]).padStart(2, '0')
+        const mm = String(m[2]).padStart(2, '0')
+        const yy = String(m[3]).length === 4 ? String(m[3]).slice(-2) : String(m[3])
+        fechaStr = `${dd}/${mm}/${yy}`
+      } else {
+        fechaStr = String(rawFecha)
+      }
     }
   }
 
-  const oe = row?.OE ?? row?.Oe ?? row?.oe ?? '—'
-  const ne = row?.Ne ?? row?.NE ?? row?.ne ?? '—'
+  const oe = meta?.OE ?? meta?.Oe ?? meta?.oe ?? '—'
+  const ne = meta?.Ne ?? meta?.NE ?? meta?.ne ?? '—'
 
-  // requested header order: Fecha — Ne — OE Nro. — Ensayo Uster X y TensoRapid X
-  return `Fecha: ${fechaStr} — Ne: ${ne} — OE Nro.: ${oe} — Ensayo Uster ${u} y TensoRapid ${t}`
+  return { fechaStr, oe, ne, u, t }
+})
+
+// Index within the current filtered list for the selected ensayo
+const modalIndex = computed(() => {
+  const u = selectedTestnr.value
+  if (u == null) return -1
+  const list = filteredRows.value || []
+  return list.findIndex(r => String(r?.Ensayo) === String(u))
+})
+
+const modalPrevDisabled = computed(() => modalIndex.value <= 0)
+const modalNextDisabled = computed(() => {
+  const list = filteredRows.value || []
+  return modalIndex.value === -1 || modalIndex.value >= list.length - 1
+})
+
+function modalPrev() {
+  if (modalPrevDisabled.value) return
+  const list = filteredRows.value || []
+  const prev = list[modalIndex.value - 1]
+  const testnr = prev?.Ensayo || prev?.TESTNR || prev?.testnr || prev?.Testnr
+  if (testnr != null) openDetail(testnr)
+}
+
+function modalNext() {
+  if (modalNextDisabled.value) return
+  const list = filteredRows.value || []
+  const nxt = list[modalIndex.value + 1]
+  const testnr = nxt?.Ensayo || nxt?.TESTNR || nxt?.testnr || nxt?.Testnr
+  if (testnr != null) openDetail(testnr)
+}
+
+// Keyboard shortcuts when modal is open: Left = prev, Right = next, Escape = close
+function _handleModalKeydown(e) {
+  try {
+    if (!modalVisible.value) return
+  const active = (typeof window !== 'undefined' && window.document) ? window.document.activeElement?.tagName || '' : ''
+    // don't interfere when typing in inputs/selects/textareas
+    if (['INPUT', 'TEXTAREA', 'SELECT'].includes(String(active).toUpperCase())) return
+
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault()
+      modalPrev()
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault()
+      modalNext()
+    } else if (e.key === 'Escape') {
+      e.preventDefault()
+      closeModal()
+    }
+  } catch {
+    // safe noop on any error
+  }
+}
+
+onMounted(() => {
+  // attach global key listener for modal navigation
+  window.addEventListener('keydown', _handleModalKeydown)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', _handleModalKeydown)
 })
 
 // Format stat value (statistics rows)
