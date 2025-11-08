@@ -12,8 +12,17 @@
 
           <!-- Filtros OE / Ne compactos -->
           <div class="flex items-center gap-2">
-            <input v-model="oe" placeholder="OE" class="w-20 px-2 py-1 border rounded text-sm" />
-            <input v-model="ne" placeholder="Ne" class="w-20 px-2 py-1 border rounded text-sm" />
+            <!-- Combobox: input with datalist populated from data -->
+            <input list="oe-list" v-model="oe" placeholder="OE" class="w-24 px-2 py-1 border rounded text-sm" />
+            <datalist id="oe-list">
+              <option v-for="o in availableOe" :key="o" :value="o">{{ o }}</option>
+            </datalist>
+
+            <input list="ne-list" v-model="ne" placeholder="Ne" class="w-24 px-2 py-1 border rounded text-sm" />
+            <datalist id="ne-list">
+              <option v-for="n in availableNe" :key="n" :value="n">{{ n }}</option>
+            </datalist>
+
             <button @click="applyFilters" class="px-2 py-1 bg-blue-600 text-white rounded text-sm">Aplicar</button>
             <button @click="clearFilters" class="px-2 py-1 bg-white border rounded text-sm">Limpiar</button>
           </div>
@@ -58,7 +67,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
+import { ref, onMounted, onBeforeUnmount, watch, nextTick, computed } from 'vue'
 // NOTE: require installing echarts: `npm install echarts`
 import * as echarts from 'echarts'
 
@@ -77,6 +86,35 @@ const oe = ref('')
 const ne = ref('')
 const appliedOe = ref('')
 const appliedNe = ref('')
+
+// helper: buscar valor por clave que contenga needle (case-insensitive)
+function findField(row, needle) {
+  if (!row) return undefined
+  const lk = needle.toLowerCase()
+  for (const k of Object.keys(row)) {
+    if (k && k.toLowerCase().includes(lk)) return row[k]
+  }
+  return undefined
+}
+
+// listas únicas para sugerencias (combobox)
+const availableOe = computed(() => {
+  const s = new Set()
+  for (const r of rows.value) {
+    const v = findField(r, 'oe')
+    if (v != null && String(v).trim() !== '') s.add(String(v))
+  }
+  return Array.from(s).sort()
+})
+
+const availableNe = computed(() => {
+  const s = new Set()
+  for (const r of rows.value) {
+    const v = findField(r, 'ne')
+    if (v != null && String(v).trim() !== '') s.add(String(v))
+  }
+  return Array.from(s).sort()
+})
 
 const metrics = [
   { value: 'Tenac.', label: 'Tenacidad (Tenac.)' },
@@ -144,14 +182,7 @@ function buildSeries() {
   const x = []
   const y = []
 
-  // helper: try to find a field value for OE/Ne in the row (case-insensitive key match)
-  function findField(row, needle) {
-    const lk = needle.toLowerCase()
-    for (const k of Object.keys(row)) {
-      if (k && k.toLowerCase().includes(lk)) return row[k]
-    }
-    return undefined
-  }
+  // use top-level findField helper
 
   const source = rows.value.filter(r => {
     if (appliedOe.value) {
