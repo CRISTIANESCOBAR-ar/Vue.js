@@ -211,7 +211,7 @@ const formRegistroRef = ref(null)
 const sidebarVisible = ref(true)
 const collapsed = ref(false)
 const userHidden = ref(false) // true when user explicitly hid the sidebar with the X
-const active = ref('form')
+const active = ref('resumen')
 
 // track viewport width to decide push vs overlay behavior
 const windowWidth = ref(typeof window !== 'undefined' ? window.innerWidth : 1200)
@@ -227,6 +227,8 @@ const mainMargin = computed(() => {
 const headerTitle = computed(() => {
   if (active.value === 'form') return 'Carga de Datos'
   if (active.value === 'list') return 'Registros'
+  if (active.value === 'resumen') return 'Resumen de Ensayos'
+  if (active.value === 'graficos') return 'Gráficos de Ensayos'
   if (active.value === 'tenso') return 'TensoRapid'
   if (active.value === 'config') return 'Configuración'
   return 'Carga de Datos'
