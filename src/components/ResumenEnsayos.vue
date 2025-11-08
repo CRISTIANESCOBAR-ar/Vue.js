@@ -232,6 +232,10 @@
             class="px-4 py-[0.4rem] bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors duration-200 font-medium"
             aria-label="Cerrar detalle">Cerrar</button>
         </header>
+        <!-- Small hint showing keyboard shortcuts -->
+        <div class="px-6 mb-2">
+          <div class="text-xs text-slate-500">← Anterior &nbsp;&nbsp; → Siguiente &nbsp;&nbsp; Esc Cerrar</div>
+        </div>
 
         <section class="flex-1">
           <div v-if="modalLoading" class="text-sm text-slate-600 py-8 text-center">
