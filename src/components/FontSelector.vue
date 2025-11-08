@@ -54,7 +54,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 
 const currentFont = ref('inter') // Default
 
@@ -117,21 +117,29 @@ function applyFont(fontId) {
 
     currentFont.value = fontId
 
-    // Apply CSS variables to root
-    document.documentElement.style.setProperty('--ui-font', selectedFont.cssVars.ui)
-    document.documentElement.style.setProperty('--heading-font', selectedFont.cssVars.heading)
+    // Apply CSS variables to root (guard window/document for SSR/lint)
+    if (typeof window !== 'undefined' && window.document && window.document.documentElement && window.document.documentElement.style) {
+        window.document.documentElement.style.setProperty('--ui-font', selectedFont.cssVars.ui)
+        window.document.documentElement.style.setProperty('--heading-font', selectedFont.cssVars.heading)
+    }
 
-    // Save preference to localStorage
-    localStorage.setItem('preferred-font', fontId)
+    // Save preference to localStorage (guard for SSR/test env)
+    if (typeof localStorage !== 'undefined') {
+        try { localStorage.setItem('preferred-font', fontId) } catch { /* ignore */ }
+    }
 
     console.log(`✅ Fuente aplicada: ${selectedFont.name}`)
 }
 
-// Load saved preference on mount
-const savedFont = localStorage.getItem('preferred-font')
-if (savedFont) {
-    applyFont(savedFont)
-}
+// Load saved preference on mount (guarded)
+onMounted(() => {
+    if (typeof localStorage !== 'undefined') {
+        try {
+            const savedFont = localStorage.getItem('preferred-font')
+            if (savedFont) applyFont(savedFont)
+        } catch { /* ignore */ }
+    }
+})
 </script>
 
 <style scoped>
