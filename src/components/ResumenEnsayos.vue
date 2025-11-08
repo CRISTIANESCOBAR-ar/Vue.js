@@ -34,6 +34,15 @@
                   v-model="searchField" value="Ne" />
                 <span class="text-slate-700">Ne</span>
               </label>
+              <!-- Quick filters for OE and Ne (client-side) -->
+              <div class="flex items-center gap-2 ml-2">
+                <label class="sr-only" for="oeFilter">OE</label>
+                <input id="oeFilter" v-model.trim="oeQuery" type="search" placeholder="OE"
+                  class="px-2 py-1 border border-slate-200 rounded-md text-sm w-24" />
+                <label class="sr-only" for="neFilter">Ne</label>
+                <input id="neFilter" v-model.trim="neQuery" type="search" placeholder="Ne"
+                  class="px-2 py-1 border border-slate-200 rounded-md text-sm w-20" />
+              </div>
             </div>
           </div>
 
@@ -432,6 +441,10 @@ const searchTimeout = ref(null)
 const debounceDefault = 500
 const debounceMsDisplay = ref(debounceDefault)
 
+// Quick client-side filters for OE and Ne
+const oeQuery = ref('')
+const neQuery = ref('')
+
 // Search field selection: 'ALL' | 'OE' | 'Ne'
 const searchField = ref('ALL')
 const allSearchFields = ['Ensayo', 'Fecha', 'OE', 'Ne', 'CVm %', 'Delg -30%', 'Delg -40%', 'Delg -50%', 'Grue +35%', 'Grue +50%', 'Neps +140%', 'Neps +280%', 'Fuerza B', 'Elong. %', 'Tenac.', 'Trabajo B', 'Titulo']
@@ -473,18 +486,42 @@ function clearSearch() {
 
 const filteredRows = computed(() => {
   const term = (debouncedQ.value || '').toString().trim().toLowerCase()
-  if (!term) return rows.value || []
-  const parts = term.split(/\s+/).filter(Boolean)
+  const oe = (oeQuery.value || '').toString().trim().toLowerCase()
+  const ne = (neQuery.value || '').toString().trim().toLowerCase()
+
+  // If no filters, return all rows
+  if (!term && !oe && !ne) return rows.value || []
+
+  const parts = term ? term.split(/\s+/).filter(Boolean) : []
+
   return (rows.value || []).filter((r) => {
     if (!r) return false
-    // Search across selected fields (determined by radio button selection)
-    return parts.every((p) => {
-      return fieldsToCheck.value.some((field) => {
-        const val = r[field]
-        if (val == null || val === '') return false
-        return String(val).toLowerCase().includes(p)
+
+    // Text search across selected fields
+    if (parts.length) {
+      const textMatch = parts.every((p) => {
+        return fieldsToCheck.value.some((field) => {
+          const val = r[field]
+          if (val == null || val === '') return false
+          return String(val).toLowerCase().includes(p)
+        })
       })
-    })
+      if (!textMatch) return false
+    }
+
+    // OE filter (client-side): substring match against r.OE
+    if (oe) {
+      const v = r.OE == null ? '' : String(r.OE).toLowerCase()
+      if (!v.includes(oe)) return false
+    }
+
+    // Ne filter (client-side): substring match against r.Ne
+    if (ne) {
+      const v = r.Ne == null ? '' : String(r.Ne).toLowerCase()
+      if (!v.includes(ne)) return false
+    }
+
+    return true
   })
 })
 
