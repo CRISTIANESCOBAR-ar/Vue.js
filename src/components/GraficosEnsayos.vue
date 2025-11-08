@@ -12,16 +12,9 @@
 
           <!-- Filtros OE / Ne compactos -->
           <div class="flex items-center gap-2">
-            <!-- Combobox: input with datalist populated from data -->
-            <input list="oe-list" v-model="oe" placeholder="OE" class="w-24 px-2 py-1 border rounded text-sm" />
-            <datalist id="oe-list">
-              <option v-for="o in availableOe" :key="o" :value="o">{{ o }}</option>
-            </datalist>
-
-            <input list="ne-list" v-model="ne" placeholder="Ne" class="w-24 px-2 py-1 border rounded text-sm" />
-            <datalist id="ne-list">
-              <option v-for="n in availableNe" :key="n" :value="n">{{ n }}</option>
-            </datalist>
+            <!-- Combobox: vue3-select-component for OE/Ne -->
+            <VueSelect v-model="oe" :options="oeOptions" clearable :searchable class="w-36" />
+            <VueSelect v-model="ne" :options="neOptions" clearable :searchable class="w-36" />
 
             <button @click="applyFilters" class="px-2 py-1 bg-blue-600 text-white rounded text-sm">Aplicar</button>
             <button @click="clearFilters" class="px-2 py-1 bg-white border rounded text-sm">Limpiar</button>
@@ -70,6 +63,8 @@
 import { ref, onMounted, onBeforeUnmount, watch, nextTick, computed } from 'vue'
 // NOTE: require installing echarts: `npm install echarts`
 import * as echarts from 'echarts'
+import VueSelect from 'vue3-select-component'
+import { useRegistroStore } from '../stores/registro.js'
 
 // Use backendUrl when running locally (same heuristic as other components)
 const backendUrl = typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:3001' : ''
@@ -116,6 +111,9 @@ const availableNe = computed(() => {
   return Array.from(s).sort()
 })
 
+const oeOptions = computed(() => availableOe.value.map(v => ({ label: String(v), value: String(v) })))
+const neOptions = computed(() => availableNe.value.map(v => ({ label: String(v), value: String(v) })))
+
 const metrics = [
   { value: 'Tenac.', label: 'Tenacidad (Tenac.)' },
   { value: 'Fuerza B', label: 'Fuerza B' },
@@ -125,6 +123,52 @@ const metrics = [
 ]
 
 const metric = ref('Tenac.')
+
+// pinia store for sync
+const registro = useRegistroStore()
+
+// debounce timers
+let oeTimer = null
+let neTimer = null
+
+// --- Sync local filters with Pinia store (two-way)
+// when store changes (e.g., from ResumenEnsayos), update local inputs
+watch(() => registro.oeFilter, (v) => {
+  if (v !== oe.value) {
+    oe.value = v || ''
+    appliedOe.value = v || ''
+    renderChart()
+  }
+})
+
+watch(() => registro.neFilter, (v) => {
+  if (v !== ne.value) {
+    ne.value = v || ''
+    appliedNe.value = v || ''
+    renderChart()
+  }
+})
+
+// when local inputs change, debounce and update store + applied filters
+watch(oe, (val) => {
+  if (oeTimer) clearTimeout(oeTimer)
+  oeTimer = setTimeout(() => {
+    const v = val ? String(val).trim() : ''
+    appliedOe.value = v
+    registro.setOeFilter(v)
+    renderChart()
+  }, 350)
+})
+
+watch(ne, (val) => {
+  if (neTimer) clearTimeout(neTimer)
+  neTimer = setTimeout(() => {
+    const v = val ? String(val).trim() : ''
+    appliedNe.value = v
+    registro.setNeFilter(v)
+    renderChart()
+  }, 350)
+})
 
 function parseNum(v) {
   if (v == null || v === '') return NaN
@@ -221,6 +265,47 @@ function clearFilters() {
   appliedNe.value = ''
   renderChart()
 }
+
+// apply filters while typing (debounced) and sync to store
+watch(oe, (v) => {
+  if (oeTimer) clearTimeout(oeTimer)
+  oeTimer = setTimeout(() => {
+    const trimmed = v ? String(v).trim() : ''
+    appliedOe.value = trimmed
+    // sync to store if different
+    if (registro && registro.oeFilter !== trimmed) registro.setOeFilter(trimmed)
+    renderChart()
+  }, 350)
+})
+
+watch(ne, (v) => {
+  if (neTimer) clearTimeout(neTimer)
+  neTimer = setTimeout(() => {
+    const trimmed = v ? String(v).trim() : ''
+    appliedNe.value = trimmed
+    if (registro && registro.neFilter !== trimmed) registro.setNeFilter(trimmed)
+    renderChart()
+  }, 350)
+})
+
+// react to external changes from the registro store (ResumenEnsayos sync)
+watch(() => registro.oeFilter, (v) => {
+  if (v == null) v = ''
+  if (v !== oe.value) oe.value = v
+  if (v !== appliedOe.value) {
+    appliedOe.value = v
+    renderChart()
+  }
+})
+
+watch(() => registro.neFilter, (v) => {
+  if (v == null) v = ''
+  if (v !== ne.value) ne.value = v
+  if (v !== appliedNe.value) {
+    appliedNe.value = v
+    renderChart()
+  }
+})
 
 function renderChart() {
   if (!chartEl.value) return
