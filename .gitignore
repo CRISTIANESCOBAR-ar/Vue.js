@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+ffmpeg/
+*.mp4
+ffmpeg_scene_log.txt
+wepage.html
