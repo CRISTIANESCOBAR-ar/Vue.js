@@ -237,14 +237,9 @@
           <div class="text-xs text-slate-500">← Anterior &nbsp;&nbsp; → Siguiente &nbsp;&nbsp; Esc Cerrar</div>
         </div>
 
-        <section class="flex-1">
-          <div v-if="modalLoading" class="text-sm text-slate-600 py-8 text-center">
-            <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-slate-300 border-t-blue-600">
-            </div>
-            <p class="mt-2">Cargando detalles...</p>
-          </div>
-
-          <div v-else>
+        <section class="flex-1 relative">
+          <!-- Always render content to preserve modal height; show spinner as overlay when loading -->
+          <div>
             <div v-if="mergedRows.length === 0" class="text-sm text-slate-600 py-8 text-center">No hay datos para este
               ensayo.</div>
             <div v-else class="rounded-xl border border-slate-200 overflow-auto modal-scroll max-h-[calc(95vh-4rem)]">
@@ -513,6 +508,11 @@
                 </tbody>
               </table>
             </div>
+          </div>
+
+          <div v-if="modalLoading" class="absolute inset-0 bg-white/70 backdrop-blur-sm z-40 flex flex-col items-center justify-center">
+            <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-slate-300 border-t-blue-600"></div>
+            <p class="mt-3 text-sm text-slate-700">Cargando detalles...</p>
           </div>
         </section>
       </div>
@@ -888,7 +888,7 @@ async function openDetail(testnr) {
       }
     }
 
-    // Combinar filas por NO
+  // Combinar filas por NO
     const usterMap = new Map()
     usterTblRows.value.forEach(row => {
       const no = row.NO_ || row.NO
