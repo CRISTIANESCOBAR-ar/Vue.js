@@ -2,12 +2,22 @@
   <div class="w-full bg-white rounded-2xl shadow-xl px-4 py-3 border border-slate-200">
     <div class="flex items-center justify-between mb-3">
       <h3 class="text-lg font-semibold text-slate-800">Visualizador de Ensayos</h3>
-      <div class="flex items-center gap-2">
-        <label class="text-sm text-slate-600">Métrica:</label>
-        <select v-model="metric" class="px-2 py-1 border rounded-md text-sm">
-          <option v-for="m in metrics" :key="m.value" :value="m.value">{{ m.label }}</option>
-        </select>
-      </div>
+        <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2">
+            <label class="text-sm text-slate-600">Métrica:</label>
+            <select v-model="metric" class="px-2 py-1 border rounded-md text-sm">
+              <option v-for="m in metrics" :key="m.value" :value="m.value">{{ m.label }}</option>
+            </select>
+          </div>
+
+          <!-- Filtros OE / Ne compactos -->
+          <div class="flex items-center gap-2">
+            <input v-model="oe" placeholder="OE" class="w-20 px-2 py-1 border rounded text-sm" />
+            <input v-model="ne" placeholder="Ne" class="w-20 px-2 py-1 border rounded text-sm" />
+            <button @click="applyFilters" class="px-2 py-1 bg-blue-600 text-white rounded text-sm">Aplicar</button>
+            <button @click="clearFilters" class="px-2 py-1 bg-white border rounded text-sm">Limpiar</button>
+          </div>
+        </div>
     </div>
 
     <div v-if="loading" class="text-sm text-slate-600 py-8 text-center">
@@ -27,6 +37,14 @@
             <button @click="loadSampleData()" class="px-3 py-1 bg-blue-600 text-white rounded text-sm">Usar datos de ejemplo</button>
           </div>
         </div>
+      </div>
+
+      <div class="mb-3 text-sm text-slate-600">
+        <template v-if="appliedOe || appliedNe">
+          <span class="mr-2">Filtros aplicados:</span>
+          <span v-if="appliedOe" class="inline-block mr-2 px-2 py-0.5 bg-slate-100 text-slate-700 rounded">OE: {{ appliedOe }}</span>
+          <span v-if="appliedNe" class="inline-block px-2 py-0.5 bg-slate-100 text-slate-700 rounded">Ne: {{ appliedNe }}</span>
+        </template>
       </div>
 
       <div class="h-[48vh] md:h-[60vh] relative">
@@ -53,6 +71,12 @@ const chartEl = ref(null)
 let chart = null
   const noData = ref(false)
   const fetchError = ref(null)
+
+// filtros OE / Ne (inputs) y filtros aplicados
+const oe = ref('')
+const ne = ref('')
+const appliedOe = ref('')
+const appliedNe = ref('')
 
 const metrics = [
   { value: 'Tenac.', label: 'Tenacidad (Tenac.)' },
@@ -112,14 +136,37 @@ function loadSampleData() {
     }
   })
   fetchError.value = null
+  // mantener filtros aplicados al usar datos de ejemplo
   nextTick(() => renderChart())
 }
 
 function buildSeries() {
   const x = []
   const y = []
-  for (const r of rows.value) {
-    const ens = r.Ensayo || r.testnr || r.Testnr || ''
+
+  // helper: try to find a field value for OE/Ne in the row (case-insensitive key match)
+  function findField(row, needle) {
+    const lk = needle.toLowerCase()
+    for (const k of Object.keys(row)) {
+      if (k && k.toLowerCase().includes(lk)) return row[k]
+    }
+    return undefined
+  }
+
+  const source = rows.value.filter(r => {
+    if (appliedOe.value) {
+      const v = findField(r, 'oe')
+      if (!v || String(v).toLowerCase().indexOf(appliedOe.value.toLowerCase()) === -1) return false
+    }
+    if (appliedNe.value) {
+      const v = findField(r, 'ne')
+      if (!v || String(v).toLowerCase().indexOf(appliedNe.value.toLowerCase()) === -1) return false
+    }
+    return true
+  })
+
+  for (const r of source) {
+    const ens = r.Ensayo || r.testnr || r.Testnr || r.Ens || ''
     const raw = r[metric.value] ?? r[metric.value.replace('.', '')]
     const n = parseNum(raw)
     if (!Number.isFinite(n)) continue
@@ -127,6 +174,21 @@ function buildSeries() {
     y.push(n)
   }
   return { x, y }
+}
+
+function applyFilters() {
+  appliedOe.value = oe.value ? oe.value.trim() : ''
+  appliedNe.value = ne.value ? ne.value.trim() : ''
+  // re-render chart with filters
+  renderChart()
+}
+
+function clearFilters() {
+  oe.value = ''
+  ne.value = ''
+  appliedOe.value = ''
+  appliedNe.value = ''
+  renderChart()
 }
 
 function renderChart() {
