@@ -37,9 +37,8 @@
               <!-- Quick filters for OE and Ne (client-side) -->
               <div class="flex items-center gap-2 ml-2">
                 <label class="sr-only" for="oeFilter">OE</label>
-                <input id="oeFilter" v-model.trim="oeQuery" type="search" placeholder="OE"
-                  v-tippy="'Filtrar por OE'" aria-label="Filtrar por OE"
-                  class="px-2 py-1 border border-slate-200 rounded-md text-sm w-24" />
+                <input id="oeFilter" v-model.trim="oeQuery" type="search" placeholder="OE" v-tippy="'Filtrar por OE'"
+                  aria-label="Filtrar por OE" class="px-2 py-1 border border-slate-200 rounded-md text-sm w-24" />
                 <label class="sr-only" for="neFilter">Ne</label>
                 <input id="neFilter" v-model.trim="neQuery" type="search" placeholder="Ne"
                   v-tippy="'Filtrar por título'" aria-label="Filtrar por título"
@@ -72,7 +71,8 @@
             No hay coincidencias para la búsqueda.
           </div>
 
-          <div class="overflow-auto _minimal-scroll w-full max-h-[calc(100vh-5rem)] rounded-xl border border-slate-200 pb-0">
+          <div
+            class="overflow-auto _minimal-scroll w-full max-h-[calc(100vh-5rem)] rounded-xl border border-slate-200 pb-0">
             <table class="min-w-full w-full table-auto divide-y divide-slate-200 text-xs">
               <colgroup>
                 <col style="width:6%" /> <!-- Ensayo -->
@@ -162,35 +162,38 @@
           </div>
           <!-- pagination controls -->
           <div class="flex items-center justify-between mt-3 px-1">
-            <div class="text-sm text-slate-600">Mostrando {{ startDisplay }}–{{ endDisplay }} de {{ filteredRows.length }}</div>
-              <div class="flex items-center gap-2">
-                <label class="text-sm text-slate-600">Filas:</label>
-                <select v-model.number="pageSize" class="text-sm px-2 py-1 border rounded-md">
-                  <option v-for="s in [10,25,50,100,0]" :key="s" :value="s">{{ s === 0 ? 'Todos' : s }}</option>
-                </select>
+            <div class="text-sm text-slate-600">Mostrando {{ startDisplay }}–{{ endDisplay }} de {{ filteredRows.length
+              }}</div>
+            <div class="flex items-center gap-2">
+              <label class="text-sm text-slate-600">Filas:</label>
+              <select v-model.number="pageSize" class="text-sm px-2 py-1 border rounded-md">
+                <option v-for="s in [10, 25, 50, 100, 0]" :key="s" :value="s">{{ s === 0 ? 'Todos' : s }}</option>
+              </select>
 
-                <!-- first / prev -->
-                <button @click="page = 1" :disabled="page <= 1"
-                  class="px-2 py-1 bg-slate-100 disabled:opacity-50 rounded-md text-sm" title="Primera">« Primera</button>
-                <button @click="page = Math.max(1, page - 1)" :disabled="page <= 1"
-                  class="px-2 py-1 bg-slate-100 disabled:opacity-50 rounded-md text-sm" title="Anterior">‹ Anterior</button>
+              <!-- first / prev -->
+              <button @click="page = 1" :disabled="page <= 1"
+                class="px-2 py-1 bg-slate-100 disabled:opacity-50 rounded-md text-sm" title="Primera">« Primera</button>
+              <button @click="page = Math.max(1, page - 1)" :disabled="page <= 1"
+                class="px-2 py-1 bg-slate-100 disabled:opacity-50 rounded-md text-sm" title="Anterior">‹
+                Anterior</button>
 
-                <!-- go to page input -->
-                <div class="flex items-center gap-1">
-                  <label class="sr-only" for="gotoPage">Ir a página</label>
-                  <input id="gotoPage" type="number" min="1" :max="totalPages" v-model.number.lazy="gotoPage"
-                    @keydown.enter.prevent="goToPage()"
-                    class="w-20 text-sm px-2 py-1 border rounded-md" placeholder="Página" />
-                  <button @click="goToPage()" class="px-2 py-1 bg-slate-100 rounded-md text-sm">Ir</button>
-                </div>
-
-                <!-- page indicator and next/last -->
-                <span class="text-sm text-slate-600">Página {{ page }} / {{ totalPages }}</span>
-                <button @click="page = Math.min(totalPages, page + 1)" :disabled="page >= totalPages"
-                  class="px-2 py-1 bg-slate-100 disabled:opacity-50 rounded-md text-sm" title="Siguiente">Siguiente ›</button>
-                <button @click="page = totalPages" :disabled="page >= totalPages"
-                  class="px-2 py-1 bg-slate-100 disabled:opacity-50 rounded-md text-sm" title="Última">Última »</button>
+              <!-- go to page input -->
+              <div class="flex items-center gap-1">
+                <label class="sr-only" for="gotoPage">Ir a página</label>
+                <input id="gotoPage" type="number" min="1" :max="totalPages" v-model.number.lazy="gotoPage"
+                  @keydown.enter.prevent="goToPage()" class="w-20 text-sm px-2 py-1 border rounded-md"
+                  placeholder="Página" />
+                <button @click="goToPage()" class="px-2 py-1 bg-slate-100 rounded-md text-sm">Ir</button>
               </div>
+
+              <!-- page indicator and next/last -->
+              <span class="text-sm text-slate-600">Página {{ page }} / {{ totalPages }}</span>
+              <button @click="page = Math.min(totalPages, page + 1)" :disabled="page >= totalPages"
+                class="px-2 py-1 bg-slate-100 disabled:opacity-50 rounded-md text-sm" title="Siguiente">Siguiente
+                ›</button>
+              <button @click="page = totalPages" :disabled="page >= totalPages"
+                class="px-2 py-1 bg-slate-100 disabled:opacity-50 rounded-md text-sm" title="Última">Última »</button>
+            </div>
           </div>
         </div>
       </div>
@@ -301,8 +304,16 @@
                   <!-- statistics rows -->
                   <tr class="bg-gradient-to-r from-blue-50 to-indigo-50 font-semibold border-t-2 border-blue-200">
                     <td class="px-3 py-1 text-slate-700">Promedio
-                      <button v-tippy="{ content: 'La suma de todos los valores dividida por la cantidad de datos. Representa el valor típico o central de un conjunto de datos.' , placement: 'top', theme: 'custom' }" aria-label="Info Promedio" class="ml-2 inline-flex items-center text-slate-400 hover:text-slate-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 8h.01" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      <button
+                        v-tippy="{ content: 'La suma de todos los valores dividida por la cantidad de datos. Representa el valor típico o central de un conjunto de datos.', placement: 'top', theme: 'custom' }"
+                        aria-label="Info Promedio"
+                        class="ml-2 inline-flex items-center text-slate-400 hover:text-slate-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" stroke-width="1.5">
+                          <circle cx="12" cy="12" r="10" />
+                          <path d="M12 16v-4" stroke-linecap="round" stroke-linejoin="round" />
+                          <path d="M12 8h.01" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
                       </button>
                     </td>
                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TITULO.avg) }}</td>
@@ -325,8 +336,15 @@
 
                   <tr class="bg-blue-50/50 font-medium">
                     <td class="px-3 py-1 text-slate-700">CV
-                      <button v-tippy="{ content: 'Una medida de dispersión relativa. Un CV del 5% indica baja variabilidad; uno del 50% indica alta dispersión.' , placement: 'top', theme: 'custom' }" aria-label="Info CV" class="ml-2 inline-flex items-center text-slate-400 hover:text-slate-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 8h.01" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      <button
+                        v-tippy="{ content: 'Una medida de dispersión relativa. Un CV del 5% indica baja variabilidad; uno del 50% indica alta dispersión.', placement: 'top', theme: 'custom' }"
+                        aria-label="Info CV" class="ml-2 inline-flex items-center text-slate-400 hover:text-slate-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" stroke-width="1.5">
+                          <circle cx="12" cy="12" r="10" />
+                          <path d="M12 16v-4" stroke-linecap="round" stroke-linejoin="round" />
+                          <path d="M12 8h.01" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
                       </button>
                     </td>
                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TITULO.cv) }}</td>
@@ -349,8 +367,16 @@
 
                   <tr class="bg-indigo-50/50 font-medium">
                     <td class="px-3 py-1 text-slate-700">s
-                      <button v-tippy="{ content: 'Desviación estándar. Mide cuánto se alejan los datos del promedio.' , placement: 'top', theme: 'custom' }" aria-label="Info desviación estándar" class="ml-2 inline-flex items-center text-slate-400 hover:text-slate-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 8h.01" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      <button
+                        v-tippy="{ content: 'Desviación estándar. Mide cuánto se alejan los datos del promedio.', placement: 'top', theme: 'custom' }"
+                        aria-label="Info desviación estándar"
+                        class="ml-2 inline-flex items-center text-slate-400 hover:text-slate-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" stroke-width="1.5">
+                          <circle cx="12" cy="12" r="10" />
+                          <path d="M12 16v-4" stroke-linecap="round" stroke-linejoin="round" />
+                          <path d="M12 8h.01" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
                       </button>
                     </td>
                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TITULO.sd) }}</td>
@@ -373,8 +399,15 @@
 
                   <tr class="bg-blue-50/50 font-medium">
                     <td class="px-3 py-1 text-slate-700">Q95
-                      <button v-tippy="{ content: 'Cuantil 95. El valor por debajo del cual se encuentra el 95% de los datos.' , placement: 'top', theme: 'custom' }" aria-label="Info Q95" class="ml-2 inline-flex items-center text-slate-400 hover:text-slate-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 8h.01" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      <button
+                        v-tippy="{ content: 'Cuantil 95. El valor por debajo del cual se encuentra el 95% de los datos.', placement: 'top', theme: 'custom' }"
+                        aria-label="Info Q95" class="ml-2 inline-flex items-center text-slate-400 hover:text-slate-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" stroke-width="1.5">
+                          <circle cx="12" cy="12" r="10" />
+                          <path d="M12 16v-4" stroke-linecap="round" stroke-linejoin="round" />
+                          <path d="M12 8h.01" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
                       </button>
                     </td>
                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TITULO.q95) }}</td>
@@ -397,8 +430,15 @@
 
                   <tr class="bg-indigo-50/50 font-medium">
                     <td class="px-3 py-1 text-slate-700">Máx
-                      <button v-tippy="{ content: 'Máximo. El valor más alto del conjunto de datos.' , placement: 'top', theme: 'custom' }" aria-label="Info Max" class="ml-2 inline-flex items-center text-slate-400 hover:text-slate-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 8h.01" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      <button
+                        v-tippy="{ content: 'Máximo. El valor más alto del conjunto de datos.', placement: 'top', theme: 'custom' }"
+                        aria-label="Info Max" class="ml-2 inline-flex items-center text-slate-400 hover:text-slate-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" stroke-width="1.5">
+                          <circle cx="12" cy="12" r="10" />
+                          <path d="M12 16v-4" stroke-linecap="round" stroke-linejoin="round" />
+                          <path d="M12 8h.01" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
                       </button>
                     </td>
                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TITULO.max) }}</td>
@@ -421,8 +461,15 @@
 
                   <tr class="bg-blue-50/50 font-medium">
                     <td class="px-3 py-1 text-slate-700">Mín
-                      <button v-tippy="{ content: 'Mínimo. El valor más bajo del conjunto de datos.' , placement: 'top', theme: 'custom' }" aria-label="Info Min" class="ml-2 inline-flex items-center text-slate-400 hover:text-slate-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 8h.01" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      <button
+                        v-tippy="{ content: 'Mínimo. El valor más bajo del conjunto de datos.', placement: 'top', theme: 'custom' }"
+                        aria-label="Info Min" class="ml-2 inline-flex items-center text-slate-400 hover:text-slate-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" stroke-width="1.5">
+                          <circle cx="12" cy="12" r="10" />
+                          <path d="M12 16v-4" stroke-linecap="round" stroke-linejoin="round" />
+                          <path d="M12 8h.01" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
                       </button>
                     </td>
                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TITULO.min) }}</td>
@@ -621,7 +668,28 @@ const tensorTestnrs = ref([])
 const modalTitle = computed(() => {
   const u = selectedTestnr.value || '—'
   const t = (tensorTestnrs.value && tensorTestnrs.value[0]) || '—'
-  return `Detalle completo del ensayo Uster ${u} y TensoRapid ${t}`
+
+  // try to find the row that matches the selected ensayo to pull meta (Fecha, OE, Titulo, Ne)
+  const row = (mergedRows.value || []).find(r => String(r?.Ensayo) === String(u)) || (mergedRows.value && mergedRows.value[0]) || {}
+  const rawFecha = row?.Fecha || row?.fecha || ''
+  let fechaStr = '—'
+  if (rawFecha) {
+    const d = new Date(rawFecha)
+    if (!isNaN(d.getTime())) {
+      const dd = String(d.getDate()).padStart(2, '0')
+      const mm = String(d.getMonth() + 1).padStart(2, '0')
+      const yy = String(d.getFullYear()).slice(-2)
+      fechaStr = `${dd}/${mm}/${yy}`
+    } else {
+      fechaStr = String(rawFecha)
+    }
+  }
+
+  const oe = row?.OE ?? row?.Oe ?? row?.oe ?? '—'
+  const ne = row?.Ne ?? row?.NE ?? row?.ne ?? '—'
+
+  // requested header order: Fecha — Ne — OE Nro. — Ensayo Uster X y TensoRapid X
+  return `Fecha: ${fechaStr} — Ne: ${ne} — OE Nro.: ${oe} — Ensayo Uster ${u} y TensoRapid ${t}`
 })
 
 // Format stat value (statistics rows)
