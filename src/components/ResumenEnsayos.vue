@@ -38,11 +38,11 @@
               <div class="flex items-center gap-2 ml-2">
                 <label class="sr-only" for="oeFilter">OE</label>
                 <input id="oeFilter" v-model.trim="oeQuery" type="search" placeholder="OE"
-                  title="Filtrar por OE" aria-label="Filtrar por OE"
+                  v-tippy="'Filtrar por OE'" aria-label="Filtrar por OE"
                   class="px-2 py-1 border border-slate-200 rounded-md text-sm w-24" />
                 <label class="sr-only" for="neFilter">Ne</label>
                 <input id="neFilter" v-model.trim="neQuery" type="search" placeholder="Ne"
-                  title="Filtrar por título" aria-label="Filtrar por título"
+                  v-tippy="'Filtrar por título'" aria-label="Filtrar por título"
                   class="px-2 py-1 border border-slate-200 rounded-md text-sm w-20" />
               </div>
             </div>
