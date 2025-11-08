@@ -195,8 +195,8 @@ import { useRegistroStore } from './stores/registro'
 const store = useRegistroStore()
 const registros = computed(() => store.registros)
 
-// Environment helper (evita usar import.meta directamente en templates)
-const isDev = typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.MODE !== 'production'
+
+// Environment helper removed: dev-only helpers were commented in template to reduce footer noise.
 
 const editIndex = ref(null)
 // ref para acceder al método expuesto en FormRegistro (focusRolada)
@@ -811,54 +811,7 @@ function maybeHideSidebar() {
   }
 }
 
-// --- Developer: prueba rápida simulada de flujo responsive ---
-async function runResponsiveSimTest() {
-  // Simula los anchos y registra la secuencia de estados en consola
-  const widths = [360, 800, 1200]
-  const results = []
-  // Helper sleep
-  const sleep = (ms) => new Promise(r => setTimeout(r, ms))
-
-  for (const w of widths) {
-    console.group(`Responsive test — width: ${w}px`)
-    // Abrir el sidebar como lo haría un usuario
-    sidebarVisible.value = true
-    // aproximar collapsed según breakpoint
-    collapsed.value = w >= 1024 ? false : true
-    console.log('opened ->', { sidebarVisible: sidebarVisible.value, collapsed: collapsed.value })
-
-    // Programar auto-hide según la lógica (simulamos llamando a scheduleHideSidebarWithDelay
-    // con el delay correspondiente en lugar de depender de window.innerWidth)
-    let delay
-    if (w < 768) delay = 1500
-    else if (w >= 768 && w < 1024) delay = 3000
-    else delay = 1000
-
-    // Llammos a scheduleHideSidebarWithDelay con el ms calculado para reproducir el comportamiento
-    scheduleHideSidebarWithDelay(delay)
-    console.log(`scheduled auto-hide in ${delay}ms`)
-
-    // esperar más que el delay para observar si se oculta
-    await sleep(delay + 250)
-    console.log('after wait ->', { sidebarVisible: sidebarVisible.value, collapsed: collapsed.value })
-
-    // Simular acción manual del usuario (toggle)
-    sidebarVisible.value = true
-    console.log('manually reopened ->', { sidebarVisible: sidebarVisible.value })
-    await sleep(200)
-    // cerrar manualmente
-    sidebarVisible.value = false
-    console.log('manually closed ->', { sidebarVisible: sidebarVisible.value })
-
-    results.push({ width: w, final: { sidebarVisible: sidebarVisible.value, collapsed: collapsed.value } })
-    console.groupEnd()
-    // pequeño descanso entre pruebas
-    await sleep(300)
-  }
-
-  console.info('Responsive simulation completed', results)
-  try { await Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Prueba responsive completada (ver consola)', showConfirmButton: false, timer: 2000 }) } catch { /* noop */ }
-}
+// Developer helper 'runResponsiveSimTest' removed - the dev button in the footer was commented out.
 
 async function eliminarRegistro(idx) {
   const r = store.registros[idx]
