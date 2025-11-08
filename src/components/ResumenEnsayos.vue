@@ -152,17 +152,34 @@
           <!-- pagination controls -->
           <div class="flex items-center justify-between mt-3 px-1">
             <div class="text-sm text-slate-600">Mostrando {{ startDisplay }}–{{ endDisplay }} de {{ filteredRows.length }}</div>
-            <div class="flex items-center gap-2">
-              <label class="text-sm text-slate-600">Filas:</label>
-              <select v-model.number="pageSize" class="text-sm px-2 py-1 border rounded-md">
-                <option v-for="s in [10,25,50,100,0]" :key="s" :value="s">{{ s === 0 ? 'Todos' : s }}</option>
-              </select>
-              <button @click="page = Math.max(1, page - 1)" :disabled="page <= 1"
-                class="px-3 py-1 bg-slate-100 disabled:opacity-50 rounded-md text-sm">Anterior</button>
-              <span class="text-sm text-slate-600">Página {{ page }} / {{ totalPages }}</span>
-              <button @click="page = Math.min(totalPages, page + 1)" :disabled="page >= totalPages"
-                class="px-3 py-1 bg-slate-100 disabled:opacity-50 rounded-md text-sm">Siguiente</button>
-            </div>
+              <div class="flex items-center gap-2">
+                <label class="text-sm text-slate-600">Filas:</label>
+                <select v-model.number="pageSize" class="text-sm px-2 py-1 border rounded-md">
+                  <option v-for="s in [10,25,50,100,0]" :key="s" :value="s">{{ s === 0 ? 'Todos' : s }}</option>
+                </select>
+
+                <!-- first / prev -->
+                <button @click="page = 1" :disabled="page <= 1"
+                  class="px-2 py-1 bg-slate-100 disabled:opacity-50 rounded-md text-sm" title="Primera">« Primera</button>
+                <button @click="page = Math.max(1, page - 1)" :disabled="page <= 1"
+                  class="px-2 py-1 bg-slate-100 disabled:opacity-50 rounded-md text-sm" title="Anterior">‹ Anterior</button>
+
+                <!-- go to page input -->
+                <div class="flex items-center gap-1">
+                  <label class="sr-only" for="gotoPage">Ir a página</label>
+                  <input id="gotoPage" type="number" min="1" :max="totalPages" v-model.number.lazy="gotoPage"
+                    @keydown.enter.prevent="goToPage()"
+                    class="w-20 text-sm px-2 py-1 border rounded-md" placeholder="Página" />
+                  <button @click="goToPage()" class="px-2 py-1 bg-slate-100 rounded-md text-sm">Ir</button>
+                </div>
+
+                <!-- page indicator and next/last -->
+                <span class="text-sm text-slate-600">Página {{ page }} / {{ totalPages }}</span>
+                <button @click="page = Math.min(totalPages, page + 1)" :disabled="page >= totalPages"
+                  class="px-2 py-1 bg-slate-100 disabled:opacity-50 rounded-md text-sm" title="Siguiente">Siguiente ›</button>
+                <button @click="page = totalPages" :disabled="page >= totalPages"
+                  class="px-2 py-1 bg-slate-100 disabled:opacity-50 rounded-md text-sm" title="Última">Última »</button>
+              </div>
           </div>
         </div>
       </div>
@@ -510,6 +527,21 @@ watch([filteredRows, pageSize], () => {
   // reset to first page when filter changes or page size changes
   page.value = 1
 })
+
+// helper state for go-to-page input
+const gotoPage = ref(1)
+
+function goToPage() {
+  const p = Number(gotoPage.value) || 1
+  if (p < 1) page.value = 1
+  else if (p > totalPages.value) page.value = totalPages.value
+  else page.value = Math.floor(p)
+  // keep the goto input in sync
+  gotoPage.value = page.value
+}
+
+// keep gotoPage synced when page changes
+watch(page, (v) => { gotoPage.value = v })
 
 const backendUrl = typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:3001' : ''
 
