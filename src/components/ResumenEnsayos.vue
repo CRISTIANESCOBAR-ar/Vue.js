@@ -570,9 +570,9 @@
             </div>
           </div>
 
-          <div v-if="modalLoading" class="absolute inset-0 bg-white/70 backdrop-blur-sm z-40 flex flex-col items-center justify-center">
-            <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-slate-300 border-t-blue-600"></div>
-            <p class="mt-3 text-sm text-slate-700">Cargando detalles...</p>
+          <div v-if="modalLoading" class="absolute inset-0 bg-white/95 z-50 flex flex-col items-center justify-center pointer-events-auto">
+            <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-slate-300 border-t-blue-600"></div>
+            <p class="mt-3 text-base text-slate-700 font-medium">Cargando ensayo...</p>
           </div>
         </section>
       </div>
