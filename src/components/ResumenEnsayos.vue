@@ -163,7 +163,7 @@
           <!-- pagination controls -->
           <div class="flex items-center justify-between mt-3 px-1">
             <div class="text-sm text-slate-600">Mostrando {{ startDisplay }}–{{ endDisplay }} de {{ filteredRows.length
-              }}</div>
+            }}</div>
             <div class="flex items-center gap-2">
               <label class="text-sm text-slate-600">Filas:</label>
               <select v-model.number="pageSize" class="text-sm px-2 py-1 border rounded-md">
@@ -222,10 +222,15 @@
 
         <header class="flex items-start sm:items-center justify-between mb-2 pb-1 gap-3">
           <div id="modalTitle" class="flex flex-col sm:flex-row sm:items-center gap-2 mx-8">
-            <div class="text-slate-600 text-sm">Fecha: <span class="text-slate-900 text-lg font-semibold ml-1">{{ modalMeta.fechaStr }}</span></div>
-            <div class="text-slate-600 text-sm">Ne: <span class="text-slate-900 text-lg font-semibold ml-1">{{ modalMeta.ne }}</span></div>
-            <div class="text-slate-600 text-sm">OE Nro.: <span class="text-slate-900 text-lg font-semibold ml-1">{{ modalMeta.oe }}</span></div>
-            <div class="text-slate-600 text-sm">Ensayo Uster <span class="text-slate-900 text-lg font-semibold ml-1">{{ modalMeta.u }}</span> y TensoRapid <span class="text-slate-900 text-lg font-semibold ml-1">{{ modalMeta.t }}</span></div>
+            <div class="text-slate-600 text-sm">Fecha: <span class="text-slate-900 text-lg font-semibold ml-1">{{
+              modalMeta.fechaStr }}</span></div>
+            <div class="text-slate-600 text-sm">Ne: <span class="text-slate-900 text-lg font-semibold ml-1">{{
+                modalMeta.ne }}</span></div>
+            <div class="text-slate-600 text-sm">OE Nro.: <span class="text-slate-900 text-lg font-semibold ml-1">{{
+                modalMeta.oe }}</span></div>
+            <div class="text-slate-600 text-sm">Ensayo Uster <span class="text-slate-900 text-lg font-semibold ml-1">{{
+                modalMeta.u }}</span> y TensoRapid <span class="text-slate-900 text-lg font-semibold ml-1">{{
+                modalMeta.t }}</span></div>
           </div>
 
           <button @click="closeModal"
@@ -570,8 +575,10 @@
             </div>
           </div>
 
-          <div v-if="modalLoading" class="absolute inset-0 bg-white/95 z-50 flex flex-col items-center justify-center pointer-events-auto">
-            <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-slate-300 border-t-blue-600"></div>
+          <div v-if="modalLoading"
+            class="absolute inset-0 bg-white/95 z-50 flex flex-col items-center justify-center pointer-events-auto">
+            <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-slate-300 border-t-blue-600">
+            </div>
             <p class="mt-3 text-base text-slate-700 font-medium">Cargando ensayo...</p>
           </div>
         </section>
@@ -817,7 +824,7 @@ function modalNext() {
 function _handleModalKeydown(e) {
   try {
     if (!modalVisible.value) return
-  const active = (typeof window !== 'undefined' && window.document) ? window.document.activeElement?.tagName || '' : ''
+    const active = (typeof window !== 'undefined' && window.document) ? window.document.activeElement?.tagName || '' : ''
     // don't interfere when typing in inputs/selects/textareas
     if (['INPUT', 'TEXTAREA', 'SELECT'].includes(String(active).toUpperCase())) return
 
@@ -948,7 +955,7 @@ async function openDetail(testnr) {
       }
     }
 
-  // Combinar filas por NO
+    // Combinar filas por NO
     const usterMap = new Map()
     usterTblRows.value.forEach(row => {
       const no = row.NO_ || row.NO
