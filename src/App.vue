@@ -39,9 +39,10 @@
       </div>
 
       <nav class="px-2 py-2 space-y-2">
-        <SidebarItem icon="📄" label="Carga de datos" :active="active === 'form'" :collapsed="collapsed"
+        <!-- Ocultadas: no funcionales para manejo Uster/TensoRapid -->
+        <SidebarItem v-if="false" icon="📄" label="Carga de datos" :active="active === 'form'" :collapsed="collapsed"
           @click="setActive('form')" />
-        <SidebarItem icon="📋" label="Registros" :active="active === 'list'" :collapsed="collapsed"
+        <SidebarItem v-if="false" icon="📋" label="Registros" :active="active === 'list'" :collapsed="collapsed"
           @click="setActive('list')" />
         <SidebarItem icon="📑" label="Resumen" :active="active === 'resumen'" :collapsed="collapsed"
           @click="setActive('resumen')" />
