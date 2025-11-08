@@ -14,7 +14,7 @@ Archivos clave (rápido):
 Comandos dev esenciales:
 
 - Frontend: `npm run dev` (Vite, http://localhost:5173)
-- Backend: `cd server && npm start` (Express en puerto desde `server/.env`, por defecto 3001)
+- Backend: `Set-Location server; npm start` (Express en puerto desde `server/.env`, por defecto 3001)
 - Build: `npm run build`; deploy opcional con `firebase deploy` según `firebase.json`.
 
 Entorno: crear `server/.env` con `ORACLE_USER`, `ORACLE_PASSWORD`, `ORACLE_CONNECTIONSTRING`, `PORT`, `SCHEMA_PREFIX`.
