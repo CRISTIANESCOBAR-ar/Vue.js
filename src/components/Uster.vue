@@ -72,7 +72,7 @@
         <!-- Columna 1: Lista de Ensayos, Botones y Estado -->
         <div class="flex flex-col gap-3">
           <div class="scan-container rounded-xl border border-slate-200 overflow-hidden bg-white">
-            <table class="min-w-full w-full table-auto divide-y divide-slate-200 text-xs">
+            <table class="min-w-full w-full table-auto divide-y divide-slate-200 text-xs scan-table">
               <colgroup>
                 <col class="col-ensayo" />
                 <col class="col-par" />
@@ -140,7 +140,7 @@
         <div style="width:160px;">
           <!-- fixed-height container that shows 10 rows and scrolls when there are more -->
           <div class="titulo-container rounded-xl border border-slate-200 overflow-hidden bg-white">
-            <table class="min-w-full w-full table-auto divide-y divide-slate-200 text-xs">
+            <table class="min-w-full w-full table-auto divide-y divide-slate-200 text-xs titulo-table">
               <thead>
                 <tr class="bg-gradient-to-r from-slate-50 to-slate-100">
                   <th class="px-3 py-3 text-center font-semibold text-slate-700 border-b border-slate-200 text-xs"
@@ -180,7 +180,7 @@
         <!-- Columna 3: Detalle Compacto (moved to right) -->
         <div>
           <div class="rounded-xl border border-slate-200 overflow-hidden bg-white">
-            <table class="min-w-full w-full table-auto divide-y divide-slate-200 text-xs">
+            <table class="min-w-full w-full table-auto divide-y divide-slate-200 text-xs compact-table">
               <colgroup>
                 <col class="col-dato" />
                 <col class="col-valor" />
@@ -1656,9 +1656,18 @@ function formatTimestampToDatetime(value) {
   /* altura consistente */
   padding-top: 0.45rem;
   padding-bottom: 0.45rem;
-  min-height: 40px;
+  min-height: var(--titulo-header-h, 2.5rem) !important;
   line-height: 1.1;
   vertical-align: middle;
+}
+
+/* Ensure headers specifically match the titulo header size */
+.uster-component .scan-table thead th,
+.uster-component .titulo-table thead th,
+.uster-component .compact-table thead th {
+  padding-top: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
+  min-height: var(--titulo-header-h, 2.5rem) !important;
 }
 
 /* Anchos fijos para columnas */
@@ -1699,16 +1708,35 @@ function formatTimestampToDatetime(value) {
 /* ensure table cells use border-box so widths include borders/padding */
 table.text-sm,
 table.text-sm th,
-table.text-sm td {
+table.text-sm td,
+table.text-xs,
+table.text-xs th,
+table.text-xs td {
   box-sizing: border-box;
-  /* Use a system sans-serif stack for all table text to improve legibility */
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  /* Use the UI font for table text to keep rows predictable */
+  font-family: var(--ui-font);
+}
+
+/* Make sure scan-table cells have explicit, small vertical padding and constrained line-height
+   so each row fits exactly in the computed --titulo-row-h value and the scroll container
+   doesn't need to show a vertical scrollbar. */
+.uster-component .scan-table tbody td,
+.uster-component .scan-table tbody th {
+  padding-top: 0.25rem !important;
+  /* 4px */
+  padding-bottom: 0.25rem !important;
+  /* 4px */
+  line-height: 1 !important;
+  height: var(--titulo-row-h, 2rem) !important;
+  vertical-align: middle !important;
+  box-sizing: border-box !important;
+  overflow: hidden;
 }
 
 /* Nro/Titulo small column: fixed visible area for 10 rows and sticky header */
 .titulo-container {
-  /* height = header + 10 rows. Ajustado con +5px para evitar scrollbar */
-  max-height: calc(var(--titulo-header-h, 2.5rem) + (var(--titulo-row-h, 2rem) * 10) + 5px);
+  /* height = header + 10 rows. Use explicit height so it matches scan-container exactly */
+  height: var(--titulo-total-h);
   overflow-y: auto;
   /* prevent horizontal scrollbar caused by small overflows */
   overflow-x: hidden;
@@ -1772,7 +1800,7 @@ table.text-sm td {
 
 .titulo-table tbody tr {
   /* hint row height to keep 10 visible rows — unified with other tables */
-  height: var(--titulo-row-h, 2rem);
+  height: var(--titulo-row-h, 2rem) !important;
 }
 
 .titulo-table td input {
@@ -1792,8 +1820,8 @@ table.text-sm td {
   /* Scan list (left) fixed area for exactly 10 rows */
   /* use the same header/row height variables as the Nro/Titulo column
      so both tables visually align */
-  /* Ajustado con +5px para evitar scrollbar */
-  height: calc(var(--titulo-header-h, 2.5rem) + (var(--titulo-row-h, 2rem) * 10) + 5px);
+  /* Use same total height as titulo-container */
+  height: var(--titulo-total-h);
   overflow-y: auto;
   /* prevent horizontal scrollbar caused by column widths or long content */
   overflow-x: hidden;
@@ -1807,12 +1835,37 @@ table.text-sm td {
 }
 
 .scan-table tbody tr {
-  height: var(--titulo-row-h, 2rem);
+  height: var(--titulo-row-h, 2rem) !important;
 }
 
 /* Ensure the compact table uses the same row height so all tables align visually */
 .compact-table tbody tr {
-  height: var(--titulo-row-h, 2rem);
+  height: var(--titulo-row-h, 2rem) !important;
+}
+
+/* Tighten vertical padding on scan table cells to match titulo-table and avoid forcing extra row height */
+.scan-table tbody td,
+.scan-table tbody th {
+  padding-top: 0.25rem !important;
+  /* 4px */
+  padding-bottom: 0.25rem !important;
+  /* 4px */
+}
+
+/* Make titulo-table cells use the same vertical padding so rows align */
+.titulo-table tbody td,
+.titulo-table tbody th {
+  padding-top: 0.25rem !important;
+  padding-bottom: 0.25rem !important;
+}
+
+/* Ensure checkbox and svg icon sizes don't push row heights: center and constrain */
+.scan-table tbody td input[type="checkbox"],
+.scan-table tbody td svg {
+  display: inline-block;
+  height: 1rem;
+  width: 1rem;
+  vertical-align: middle;
 }
 
 /* Defensive: ensure tables don't force horizontal scroll beyond their containers */
@@ -1883,6 +1936,8 @@ table.w-full {
   --titulo-header-h: 2.5rem;
   /* increased 25% */
   /* header height used in calculations (was 2rem) */
+  /* total height for the visible list (header + 10 rows + small gap) */
+  --titulo-total-h: calc(var(--titulo-header-h) + (var(--titulo-row-h) * 10) + 5px);
 }
 
 /* Grid gap controls for the three-column layout in Uster.vue
