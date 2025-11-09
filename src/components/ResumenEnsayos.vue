@@ -1295,13 +1295,8 @@ async function exportModalToExcel() {
       return
     }
 
-    // Visible headers and mapping to object keys used in the modal table
-    const headers = ['Fecha', 'Ne', 'OE Nro.', 'Huso', 'Titulo', 'CVm %', 'Delg -30%', 'Delg -40%', 'Delg -50%', 'Grue +35%', 'Grue +50%', 'Neps +140%', 'Neps +280%', 'Fuerza B', 'Elongación %', 'Tenacidad', 'Trabajo']
-    const keys = ['NO', 'TITULO', 'CVM_PERCENT', 'DELG_MINUS30_KM', 'DELG_MINUS40_KM', 'DELG_MINUS50_KM', 'GRUE_35_KM', 'GRUE_50_KM', 'NEPS_140_KM', 'NEPS_280_KM', 'FUERZA_B', 'ELONGACION', 'TENACIDAD', 'TRABAJO']
-
-    // find meta info (fecha, ne, oe) from available sources
-    const mainMeta = (rows && rows.length && rows[0]) || null
-    const rawFecha = mainMeta ? (mainMeta.Fecha || mainMeta.fecha || mainMeta.DATE || null) : null
+    // Visible headers in the desired order: Huso first, then Fecha, Ne, OE Nro., Titulo, ... and finally Uster/TensoRapid
+    const headers = ['Huso', 'Fecha', 'Ne', 'OE Nro.', 'Titulo', 'CVm %', 'Delg -30%', 'Delg -40%', 'Delg -50%', 'Grue +35%', 'Grue +50%', 'Neps +140%', 'Neps +280%', 'Fuerza B', 'Elongación %', 'Tenacidad', 'Trabajo', 'Uster', 'TensoRapid']
 
     // helper to coerce each cell value
     const coerce = (raw) => {
@@ -1312,21 +1307,38 @@ async function exportModalToExcel() {
       return Number.isFinite(n) ? n : s
     }
 
-    // Build body rows with Fecha, Ne, OE Nro. prefixed
+    // Build body rows with order matching `headers`
+    // Huso, Fecha, Ne, OE Nro., Titulo, CVm %, ... , Trabajo, Uster, TensoRapid
     const bodyRows = rows.map(r => {
-      const metaFechaRaw = (r && (r.Fecha || r.fecha)) || rawFecha || null
       const rowVals = []
-      rowVals.push(metaFechaRaw || '')
-      rowVals.push(modalMeta.value.ne || '')
-      rowVals.push(modalMeta.value.oe || '')
       // Huso (NO)
       rowVals.push(coerce(r.NO))
-      // remaining keys (skip NO)
-      keys.forEach(k => {
-        if (k === 'NO') return
-        const raw = r?.[k]
-        rowVals.push(coerce(raw))
-      })
+      // Fecha - use modalMeta which has the actual fecha
+      rowVals.push(modalMeta.value.fechaStr || '')
+      // Ne, OE
+      rowVals.push(modalMeta.value.ne || '')
+      rowVals.push(modalMeta.value.oe || '')
+      // Titulo
+      rowVals.push(coerce(r.TITULO))
+      // CVm %
+      rowVals.push(coerce(r.CVM_PERCENT))
+      // Delg / Grue / Neps
+      rowVals.push(coerce(r.DELG_MINUS30_KM))
+      rowVals.push(coerce(r.DELG_MINUS40_KM))
+      rowVals.push(coerce(r.DELG_MINUS50_KM))
+      rowVals.push(coerce(r.GRUE_35_KM))
+      rowVals.push(coerce(r.GRUE_50_KM))
+      rowVals.push(coerce(r.NEPS_140_KM))
+      rowVals.push(coerce(r.NEPS_280_KM))
+      // TensoRapid metrics
+      rowVals.push(coerce(r.FUERZA_B))
+      rowVals.push(coerce(r.ELONGACION))
+      rowVals.push(coerce(r.TENACIDAD))
+      rowVals.push(coerce(r.TRABAJO))
+      // Uster and TensoRapid identifiers (repeat for each row)
+      rowVals.push(modalMeta.value.u || '')
+      rowVals.push(modalMeta.value.t || '')
+
       return rowVals
     })
 
@@ -1396,9 +1408,6 @@ async function exportModalToExcel() {
     try {
       const stats = combinedStats.value || {}
       const metricCols = ['TITULO', 'CVM_PERCENT', 'DELG_MINUS30_KM', 'DELG_MINUS40_KM', 'DELG_MINUS50_KM', 'GRUE_35_KM', 'GRUE_50_KM', 'NEPS_140_KM', 'NEPS_280_KM', 'FUERZA_B', 'ELONGACION', 'TENACIDAD', 'TRABAJO']
-      // blank row separator and title
-      sheet.addRow([])
-      sheet.addRow(['Estadísticas'])
 
       const statLabels = [
         { key: 'avg', label: 'Promedio' },
@@ -1409,15 +1418,17 @@ async function exportModalToExcel() {
         { key: 'min', label: 'Mín' }
       ]
 
-      // for each stat label, add a row with Fecha, Ne, OE, Label, then values per metricCols
+      // for each stat label, add a row with Label in the first column (Huso), then Fecha, Ne, OE, then values per metricCols, and finally Uster/TensoRapid
       statLabels.forEach(sl => {
         const rowVals = []
+        // Label goes into the first column (Huso column for stats)
+        rowVals.push(sl.label)
         // use first data row's date if available, else modalMeta
-        const firstDataFecha = bodyRows.length ? bodyRows[0][0] : null
+        const firstDataFecha = bodyRows.length ? bodyRows[0][1] : null // note: bodyRows[0][1] is Fecha (second column)
         rowVals.push(firstDataFecha || modalMeta.value.fechaStr || '')
         rowVals.push(modalMeta.value.ne || '')
         rowVals.push(modalMeta.value.oe || '')
-        rowVals.push(sl.label)
+
         metricCols.forEach(metric => {
           const s = stats[metric] || {}
           const v = s[sl.key]
@@ -1425,6 +1436,11 @@ async function exportModalToExcel() {
           else if (typeof v === 'number') rowVals.push(Number(v.toFixed(2)))
           else rowVals.push(v)
         })
+
+        // Append Uster and TensoRapid identifiers to the statistics rows as well
+        rowVals.push(modalMeta.value.u || '')
+        rowVals.push(modalMeta.value.t || '')
+
         const r = sheet.addRow(rowVals)
         r.eachCell(cell => { cell.alignment = { horizontal: 'center' } })
       })
