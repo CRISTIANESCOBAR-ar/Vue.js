@@ -271,6 +271,17 @@
           </div>
 
           <div class="flex items-center gap-2">
+            <!-- Export modal data to Excel (small button to the left of Copy) -->
+            <button @click="exportModalToExcel" type="button"
+              v-tippy="{ content: 'Exportar este detalle a Excel', placement: 'bottom', theme: 'custom' }"
+              class="w-9 h-9 rounded-lg bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 flex items-center justify-center text-slate-600 hover:text-slate-700 transition-all duration-200"
+              aria-label="Exportar detalle a Excel">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+            </button>
             <!-- Copy as image button -->
             <button @click="copyModalAsImage" type="button"
               v-tippy="{ content: 'Copiar como imagen para WhatsApp', placement: 'bottom', theme: 'custom' }"
@@ -664,7 +675,6 @@
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import Swal from 'sweetalert2'
 import { toPng } from 'html-to-image'
-import * as XLSX from 'xlsx'
 import ExcelJS from 'exceljs'
 
 const loading = ref(false)
@@ -1275,6 +1285,85 @@ async function copyModalAsImage() {
 
 }
 
+// Export only the currently-open modal's mergedRows to an XLSX file using ExcelJS
+async function exportModalToExcel() {
+  try {
+    const rows = (mergedRows.value || [])
+    if (!rows.length) {
+      Swal.fire({ icon: 'info', title: 'Nada para exportar', text: 'No hay filas en el detalle del ensayo.' })
+      return
+    }
+
+    // Visible headers and mapping to object keys used in the modal table
+    const headers = ['Huso', 'Titulo', 'CVm %', 'Delg -30%', 'Delg -40%', 'Delg -50%', 'Grue +35%', 'Grue +50%', 'Neps +140%', 'Neps +280%', 'Fuerza B', 'Elongación %', 'Tenacidad', 'Trabajo']
+    const keys = ['NO', 'TITULO', 'CVM_PERCENT', 'DELG_MINUS30_KM', 'DELG_MINUS40_KM', 'DELG_MINUS50_KM', 'GRUE_35_KM', 'GRUE_50_KM', 'NEPS_140_KM', 'NEPS_280_KM', 'FUERZA_B', 'ELONGACION', 'TENACIDAD', 'TRABAJO']
+
+    const bodyRows = rows.map(r => keys.map(k => {
+      const raw = r?.[k]
+      if (raw == null) return ''
+      if (typeof raw === 'number') return raw
+      const s = String(raw).trim()
+      // try numeric coercion (comma as decimal)
+      const n = Number(s.replace(/,/g, '.').replace(/[^0-9.+\-eE]/g, ''))
+      if (Number.isFinite(n)) return n
+      return s
+    }))
+
+    const workbook = new ExcelJS.Workbook()
+    workbook.creator = 'carga-datos-vue'
+    workbook.created = new Date()
+    const sheet = workbook.addWorksheet('Detalle')
+
+    // Freeze like C2 for modal export as well (optional but consistent)
+    try { sheet.views = [{ state: 'frozen', xSplit: 2, ySplit: 1, topLeftCell: 'C2', activeCell: 'C2' }] } catch (e) { /* ignore */ }
+
+    sheet.addRow(headers)
+    bodyRows.forEach(r => sheet.addRow(r))
+    sheet.columns = headers.map(h => ({ header: h, width: Math.max(8, String(h).length + 6) }))
+
+    // Header styling
+    const headerRow = sheet.getRow(1)
+    headerRow.font = { bold: true, color: { argb: 'FFFFFFFF' } }
+    headerRow.alignment = { horizontal: 'center', vertical: 'middle' }
+    headerRow.eachCell(cell => {
+      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF6366F1' } }
+      cell.border = { bottom: { style: 'thin', color: { argb: 'FFCCCCCC' } } }
+    })
+
+    const lastRowNumber = bodyRows.length + 1
+    const lastColNumber = headers.length
+    try { sheet.autoFilter = { from: { row: 1, column: 1 }, to: { row: lastRowNumber, column: lastColNumber } } } catch (e) { /* ignore */ }
+
+    for (let rn = 2; rn <= lastRowNumber; rn++) {
+      const row = sheet.getRow(rn)
+      const isEven = (rn % 2) === 0
+      row.eachCell(cell => {
+        cell.alignment = { horizontal: 'center', vertical: 'middle' }
+        if (isEven) cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF8FAFF' } }
+      })
+    }
+
+    const buffer = await workbook.xlsx.writeBuffer()
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    const now = new Date()
+    const pad = n => String(n).padStart(2, '0')
+    const ts = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`
+    link.href = url
+    link.setAttribute('download', `detalle-ensayo-${modalMeta.value.u || 'ensayo'}-${ts}.xlsx`)
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+
+    Swal.fire({ icon: 'success', title: 'Exportado', text: 'Detalle exportado a XLSX.', timer: 1200, showConfirmButton: false })
+  } catch (err) {
+    console.error('Error exportando detalle a XLSX', err)
+    Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo exportar el detalle.' })
+  }
+}
+
 async function loadRows() {
   loading.value = true
   try {
@@ -1290,152 +1379,186 @@ async function loadRows() {
   }
 }
 
-  async function exportToExcel() {
-    try {
-      const rowsToExport = filteredRows.value || []
-      if (!rowsToExport.length) {
-        Swal.fire({ icon: 'info', title: 'Nada para exportar', text: 'No hay filas que coincidan con los filtros.' })
-        return
-      }
-
-      const headers = fieldsToCheck.value || []
-
-      // Build rows and coerce types similar to before
-      function parseDateSmart(value) {
-        if (value == null || value === '') return null
-        if (value instanceof Date) return value
-        const s = String(value).trim()
-        if (!s) return null
-        let d = new Date(s)
-        if (!isNaN(d.getTime())) return d
-        const m = s.match(new RegExp('^([0-9]{1,2})[-/.]([0-9]{1,2})[-/.]([0-9]{2,4})$'))
-        if (m) {
-          const a = parseInt(m[1], 10)
-          const b = parseInt(m[2], 10)
-          let y = parseInt(m[3], 10)
-          if (y < 100) y += y >= 70 ? 1900 : 2000
-          const tryDayFirst = new Date(y, b - 1, a)
-          const tryMonthFirst = new Date(y, a - 1, b)
-          const now = new Date()
-          const plausible = dt => {
-            if (isNaN(dt.getTime())) return false
-            const yr = dt.getFullYear()
-            return yr >= 1900 && yr <= now.getFullYear() + 1
-          }
-          if (a > 12 && plausible(tryDayFirst)) return tryDayFirst
-          if (b > 12 && plausible(tryMonthFirst)) return tryMonthFirst
-          if (plausible(tryDayFirst)) return tryDayFirst
-          if (plausible(tryMonthFirst)) return tryMonthFirst
-        }
-        return null
-      }
-
-      const bodyRows = rowsToExport.map(r => {
-        return headers.map(h => {
-          const raw = r[h] == null ? '' : r[h]
-          const key = String(h).toLowerCase()
-          if (key === 'ensayo') {
-            const n = Number(String(raw).toString().replace(/[^0-9-]+/g, ''))
-            return Number.isFinite(n) ? n : raw
-          }
-          if (key === 'fecha') {
-            const pd = parseDateSmart(raw)
-            return pd || raw
-          }
-          if (numericColumnsSet.has(h)) {
-            if (raw === '' || raw == null) return ''
-            if (typeof raw === 'number') return raw
-            const n = Number(String(raw).toString().replace(/,/g, '.').replace(/[^0-9.-]+/g, ''))
-            return Number.isNaN(n) ? raw : n
-          }
-          if (key === 'titulo') {
-            const parsed = parseTituloToNumber(raw)
-            return parsed == null ? raw : parsed
-          }
-          return raw
-        })
-      })
-
-      // Create workbook with ExcelJS to enable real table + styles
-      const workbook = new ExcelJS.Workbook()
-      workbook.creator = 'carga-datos-vue'
-      workbook.created = new Date()
-
-      const sheet = workbook.addWorksheet('Resumen')
-
-      // Add header row
-      sheet.addRow(headers)
-
-      // Add data rows
-      bodyRows.forEach(r => sheet.addRow(r))
-
-      // Set column widths
-      sheet.columns = headers.map(h => ({ header: h, width: Math.max(10, String(h).length + 4) }))
-
-      // Add table covering header + data
-      const totalRows = bodyRows.length
-      try {
-        sheet.addTable({
-          name: 'ResumenTable',
-          ref: 'A1',
-          headerRow: true,
-          totalsRow: false,
-          style: { theme: 'TableStyleMedium9', showRowStripes: true },
-          columns: headers.map(h => ({ name: h })),
-          rows: bodyRows
-        })
-      } catch (e) {
-        console.warn('Could not add table via ExcelJS:', e)
-      }
-
-      // Ensure Fecha column type and format
-      const fechaIdx = headers.findIndex(h => String(h).toLowerCase() === 'fecha')
-      if (fechaIdx !== -1) {
-        sheet.getColumn(fechaIdx + 1).numFmt = 'dd/mm/yyyy'
-        sheet.eachRow((row, rowNumber) => {
-          if (rowNumber === 1) return
-          const cell = row.getCell(fechaIdx + 1)
-          if (cell && typeof cell.value === 'string') {
-            const pd = parseDateSmart(cell.value)
-            if (pd) cell.value = pd
-          }
-        })
-      }
-
-      // Ensure Ensayo column numeric
-      const ensayoIdx = headers.findIndex(h => String(h).toLowerCase() === 'ensayo')
-      if (ensayoIdx !== -1) {
-        sheet.eachRow((row, rowNumber) => {
-          if (rowNumber === 1) return
-          const cell = row.getCell(ensayoIdx + 1)
-          if (cell && typeof cell.value === 'string') {
-            const n = Number(String(cell.value).replace(/[^0-9-]+/g, ''))
-            if (Number.isFinite(n)) cell.value = n
-          }
-        })
-      }
-
-      // Generate buffer and trigger download
-      const buffer = await workbook.xlsx.writeBuffer()
-      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
-      const url = URL.createObjectURL(blob)
-      const link = document.createElement('a')
-      const now = new Date()
-      const pad = n => String(n).padStart(2, '0')
-      const ts = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`
-      link.href = url
-      link.setAttribute('download', `resumen-ensayos-${ts}.xlsx`)
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-      URL.revokeObjectURL(url)
-
-      Swal.fire({ icon: 'success', title: 'Exportado', text: 'Archivo XLSX listo para abrir en Excel.', timer: 1400, showConfirmButton: false })
-    } catch (err) {
-      console.error('Error exporting XLSX (ExcelJS)', err)
-      Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo exportar a XLSX.' })
+async function exportToExcel() {
+  try {
+    const rowsToExport = filteredRows.value || []
+    if (!rowsToExport.length) {
+      Swal.fire({ icon: 'info', title: 'Nada para exportar', text: 'No hay filas que coincidan con los filtros.' })
+      return
     }
+
+    const headers = fieldsToCheck.value || []
+
+    // Build rows and coerce types similar to before
+    function parseDateSmart(value) {
+      if (value == null || value === '') return null
+      if (value instanceof Date) return value
+      const s = String(value).trim()
+      if (!s) return null
+      let d = new Date(s)
+      if (!isNaN(d.getTime())) return d
+      const m = s.match(new RegExp('^([0-9]{1,2})[-/.]([0-9]{1,2})[-/.]([0-9]{2,4})$'))
+      if (m) {
+        const a = parseInt(m[1], 10)
+        const b = parseInt(m[2], 10)
+        let y = parseInt(m[3], 10)
+        if (y < 100) y += y >= 70 ? 1900 : 2000
+        const tryDayFirst = new Date(y, b - 1, a)
+        const tryMonthFirst = new Date(y, a - 1, b)
+        const now = new Date()
+        const plausible = dt => {
+          if (isNaN(dt.getTime())) return false
+          const yr = dt.getFullYear()
+          return yr >= 1900 && yr <= now.getFullYear() + 1
+        }
+        if (a > 12 && plausible(tryDayFirst)) return tryDayFirst
+        if (b > 12 && plausible(tryMonthFirst)) return tryMonthFirst
+        if (plausible(tryDayFirst)) return tryDayFirst
+        if (plausible(tryMonthFirst)) return tryMonthFirst
+      }
+      return null
+    }
+
+    const bodyRows = rowsToExport.map(r => {
+      return headers.map(h => {
+        const raw = r[h] == null ? '' : r[h]
+        const key = String(h).toLowerCase()
+        if (key === 'ensayo') {
+          const n = Number(String(raw).toString().replace(/[^0-9-]+/g, ''))
+          return Number.isFinite(n) ? n : raw
+        }
+        if (key === 'fecha') {
+          const pd = parseDateSmart(raw)
+          return pd || raw
+        }
+        if (numericColumnsSet.has(h)) {
+          if (raw === '' || raw == null) return ''
+          if (typeof raw === 'number') return raw
+          const n = Number(String(raw).toString().replace(/,/g, '.').replace(/[^0-9.-]+/g, ''))
+          return Number.isNaN(n) ? raw : n
+        }
+        if (key === 'titulo') {
+          const parsed = parseTituloToNumber(raw)
+          return parsed == null ? raw : parsed
+        }
+        return raw
+      })
+    })
+
+    // Create workbook with ExcelJS to enable real table + styles
+    const workbook = new ExcelJS.Workbook()
+    workbook.creator = 'carga-datos-vue'
+    workbook.created = new Date()
+
+    const sheet = workbook.addWorksheet('Resumen')
+
+    // Fijar paneles como si el usuario hubiera seleccionado la celda C2 (columnas A-B
+    // a la izquierda y la fila 1 arriba quedan fijas). Esto mantiene la cabecera
+    // visible al desplazarse.
+    try {
+      sheet.views = [{ state: 'frozen', xSplit: 2, ySplit: 1, topLeftCell: 'C2', activeCell: 'C2' }]
+    } catch (e) {
+      console.warn('No se pudo fijar paneles en la hoja Excel (sheet.views):', e)
+    }
+
+    // Add header row
+    sheet.addRow(headers)
+
+    // Add data rows
+    bodyRows.forEach(r => sheet.addRow(r))
+
+    // Set column widths (based on header lengths)
+    sheet.columns = headers.map(h => ({ header: h, width: Math.max(10, String(h).length + 8) }))
+
+    // Instead of creating a native Excel "table" (which in some Excel versions
+    // produced table XML that was later stripped), add a styled header row,
+    // banded rows, center alignment and an explicit autofilter range. This avoids
+    // problematic table XML while keeping the UX (filters + banding).
+    const totalRows = bodyRows.length
+    const lastRowNumber = totalRows + 1 // header + data rows
+    const lastColNumber = headers.length
+
+    // Style header row
+    const headerRow = sheet.getRow(1)
+    headerRow.font = { bold: true, color: { argb: 'FFFFFFFF' } }
+    headerRow.alignment = { horizontal: 'center', vertical: 'middle' }
+    headerRow.height = 20
+    headerRow.eachCell(cell => {
+      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF6366F1' } } // indigo-500-ish
+      cell.border = { bottom: { style: 'thin', color: { argb: 'FFCCCCCC' } } }
+    })
+
+    // Apply autofilter from header to last data row
+    try {
+      sheet.autoFilter = { from: { row: 1, column: 1 }, to: { row: lastRowNumber, column: lastColNumber } }
+    } catch (e) {
+      // Some older ExcelJS consumers may not support complex autofilter objects;
+      // ignore if setting fails but keep export successful.
+      console.warn('Could not set autofilter on worksheet:', e)
+    }
+
+    // Banded rows + center alignment
+    for (let rn = 2; rn <= lastRowNumber; rn++) {
+      const row = sheet.getRow(rn)
+      const isEven = (rn % 2) === 0
+      row.eachCell(cell => {
+        // center content horizontally + vertically
+        cell.alignment = { horizontal: 'center', vertical: 'middle' }
+        // subtle banded background for even rows
+        if (isEven) {
+          cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF8FAFF' } }
+        }
+      })
+    }
+
+    // Ensure Fecha column type and format
+    const fechaIdx = headers.findIndex(h => String(h).toLowerCase() === 'fecha')
+    if (fechaIdx !== -1) {
+      sheet.getColumn(fechaIdx + 1).numFmt = 'dd/mm/yyyy'
+      sheet.eachRow((row, rowNumber) => {
+        if (rowNumber === 1) return
+        const cell = row.getCell(fechaIdx + 1)
+        if (cell && typeof cell.value === 'string') {
+          const pd = parseDateSmart(cell.value)
+          if (pd) cell.value = pd
+        }
+      })
+    }
+
+    // Ensure Ensayo column numeric
+    const ensayoIdx = headers.findIndex(h => String(h).toLowerCase() === 'ensayo')
+    if (ensayoIdx !== -1) {
+      sheet.eachRow((row, rowNumber) => {
+        if (rowNumber === 1) return
+        const cell = row.getCell(ensayoIdx + 1)
+        if (cell && typeof cell.value === 'string') {
+          const n = Number(String(cell.value).replace(/[^0-9-]+/g, ''))
+          if (Number.isFinite(n)) cell.value = n
+        }
+      })
+    }
+
+    // Generate buffer and trigger download
+    const buffer = await workbook.xlsx.writeBuffer()
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    const now = new Date()
+    const pad = n => String(n).padStart(2, '0')
+    const ts = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`
+    link.href = url
+    link.setAttribute('download', `resumen-ensayos-${ts}.xlsx`)
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+
+    Swal.fire({ icon: 'success', title: 'Exportado', text: 'Archivo XLSX listo para abrir en Excel.', timer: 1400, showConfirmButton: false })
+  } catch (err) {
+    console.error('Error exporting XLSX (ExcelJS)', err)
+    Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo exportar a XLSX.' })
   }
+}
 
 onMounted(() => {
   loadRows()
