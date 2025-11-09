@@ -68,9 +68,9 @@
               <span class="hidden sm:inline">Refrescar</span>
             </button>
 
-            <!-- Export to Excel (XLSX) button -->
+            <!-- Export to Excel (CSV) button -->
             <button @click="exportToExcel"
-              v-tippy="{ content: 'Exportar a Excel (XLSX)', placement: 'bottom', theme: 'custom' }"
+              v-tippy="{ content: 'Exportar a Excel (CSV)', placement: 'bottom', theme: 'custom' }"
               class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -685,13 +685,6 @@ const neQuery = ref('')
 const allSearchFields = ['Ensayo', 'Fecha', 'OE', 'Ne', 'CVm %', 'Delg -30%', 'Delg -40%', 'Delg -50%', 'Grue +35%', 'Grue +50%', 'Neps +140%', 'Neps +280%', 'Fuerza B', 'Elong. %', 'Tenac.', 'Trabajo B', 'Titulo']
 const fieldsToCheck = computed(() => allSearchFields)
 
-// Exact-name numeric columns mapping to avoid heuristic mistakes when coercing
-const numericColumnsSet = new Set([
-  'CVm %', 'Delg -30%', 'Delg -40%', 'Delg -50%',
-  'Grue +35%', 'Grue +50%', 'Neps +140%', 'Neps +280%',
-  'Fuerza B', 'Elong. %', 'Tenac.', 'Trabajo B'
-])
-
 function onInput() {
   // record keystroke timestamp
   try {
@@ -775,79 +768,57 @@ const totalPages = computed(() => {
 })
 
 const pagedRows = computed(() => {
-    const headers = fieldsToCheck.value || []
+  const list = filteredRows.value || []
+  if (pageSize.value === 0) return list
+  const start = (page.value - 1) * pageSize.value
+  return list.slice(start, start + pageSize.value)
+})
 
-    // Build array of plain objects ordered by headers
-    // Use a smarter date parser and an exact-name numeric map to avoid wrong coercions
-    const fechaHeaderIndex = headers.findIndex(h => String(h).toLowerCase() === 'fecha')
+const startDisplay = computed(() => {
+  const total = filteredRows.value.length || 0
+  if (total === 0) return 0
+  if (pageSize.value === 0) return 1
+  return (page.value - 1) * pageSize.value + 1
+})
 
-    function parseDateSmart(value) {
-      if (value == null || value === '') return null
-      if (value instanceof Date) return value
-      const s = String(value).trim()
-      if (!s) return null
+const endDisplay = computed(() => {
+  const total = filteredRows.value.length || 0
+  if (total === 0) return 0
+  if (pageSize.value === 0) return total
+  return Math.min(total, page.value * pageSize.value)
+})
 
-      // Try native/ISO parse first
-      let d = new Date(s)
-      if (!isNaN(d.getTime())) return d
+watch([filteredRows, pageSize], () => {
+  // reset to first page when filter changes or page size changes
+  page.value = 1
+})
 
-      // Match common localized formats: dd/mm/yyyy or mm/dd/yyyy (also accept - and .)
-      const m = s.match(/^(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{2,4})$/)
-      if (m) {
-        const a = parseInt(m[1], 10)
-        const b = parseInt(m[2], 10)
-        let y = parseInt(m[3], 10)
-        if (y < 100) y += y >= 70 ? 1900 : 2000
+// helper state for go-to-page input
+const gotoPage = ref(1)
 
-        const tryDayFirst = new Date(y, b - 1, a)
-        const tryMonthFirst = new Date(y, a - 1, b)
-        const now = new Date()
-        const plausible = dt => {
-          if (isNaN(dt.getTime())) return false
-          const yr = dt.getFullYear()
-          return yr >= 1900 && yr <= now.getFullYear() + 1
-        }
+function goToPage() {
+  const p = Number(gotoPage.value) || 1
+  if (p < 1) page.value = 1
+  else if (p > totalPages.value) page.value = totalPages.value
+  else page.value = Math.floor(p)
+  // keep the goto input in sync
+  gotoPage.value = page.value
+}
 
-        // Heuristics: prefer day-first when day > 12, otherwise accept month-first if that yields a plausible year
-        if (a > 12 && plausible(tryDayFirst)) return tryDayFirst
-        if (b > 12 && plausible(tryMonthFirst)) return tryMonthFirst
+// keep gotoPage synced when page changes
+watch(page, (v) => { gotoPage.value = v })
 
-        // Ambiguous: prefer day-first (dd/mm) but fall back to month-first if day-first is implausible
-        if (plausible(tryDayFirst)) return tryDayFirst
-        if (plausible(tryMonthFirst)) return tryMonthFirst
-      }
+const backendUrl = typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:3001' : ''
 
-      return null
-    }
-
-    const data = rowsToExport.map(r => {
-      const obj = {}
-      headers.forEach((h, idx) => {
-        let val = r[h] == null ? '' : r[h]
-
-        if (idx === fechaHeaderIndex && val) {
-          const pd = parseDateSmart(val)
-          obj[h] = pd || String(val)
-        } else if (numericColumnsSet.has(h)) {
-          // Exact-name numeric mapping
-          if (val === '' || val == null) {
-            obj[h] = ''
-          } else if (typeof val === 'number') {
-            obj[h] = val
-          } else {
-            // Normalize decimal comma to dot and strip non-numeric chars
-            const n = Number(String(val).toString().replace(/,/g, '.').replace(/[^0-9\-\.]+/g, ''))
-            obj[h] = Number.isNaN(n) ? String(val) : n
-          }
-        } else if (String(h).toLowerCase() === 'titulo') {
-          const parsed = parseTituloToNumber(val)
-          obj[h] = parsed == null ? String(val) : parsed
-        } else {
-          obj[h] = val
-        }
-      })
-      return obj
-    })
+// Modal state
+const modalVisible = ref(false)
+const modalLoading = ref(false)
+const selectedTestnr = ref(null)
+const usterTblRows = ref([])
+const tensorTblRows = ref([])
+const mergedRows = ref([])
+const combinedStats = ref({})
+const tensorTestnrs = ref([])
 
 const modalMeta = computed(() => {
   const u = selectedTestnr.value || '—'
