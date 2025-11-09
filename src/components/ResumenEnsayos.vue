@@ -1315,8 +1315,8 @@ async function exportModalToExcel() {
     workbook.created = new Date()
     const sheet = workbook.addWorksheet('Detalle')
 
-  // Freeze like C2 for modal export as well (optional but consistent)
-  try { sheet.views = [{ state: 'frozen', xSplit: 2, ySplit: 1, topLeftCell: 'C2', activeCell: 'C2' }] } catch { /* ignore */ }
+    // Freeze like C2 for modal export as well (optional but consistent)
+    try { sheet.views = [{ state: 'frozen', xSplit: 2, ySplit: 1, topLeftCell: 'C2', activeCell: 'C2' }] } catch { /* ignore */ }
 
     sheet.addRow(headers)
     bodyRows.forEach(r => sheet.addRow(r))
@@ -1331,9 +1331,9 @@ async function exportModalToExcel() {
       cell.border = { bottom: { style: 'thin', color: { argb: 'FFCCCCCC' } } }
     })
 
-  const lastRowNumber = bodyRows.length + 1
-  const lastColNumber = headers.length
-  try { sheet.autoFilter = { from: { row: 1, column: 1 }, to: { row: lastRowNumber, column: lastColNumber } } } catch { /* ignore */ }
+    const lastRowNumber = bodyRows.length + 1
+    const lastColNumber = headers.length
+    try { sheet.autoFilter = { from: { row: 1, column: 1 }, to: { row: lastRowNumber, column: lastColNumber } } } catch { /* ignore */ }
 
     for (let rn = 2; rn <= lastRowNumber; rn++) {
       const row = sheet.getRow(rn)
@@ -1342,6 +1342,36 @@ async function exportModalToExcel() {
         cell.alignment = { horizontal: 'center', vertical: 'middle' }
         if (isEven) cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF8FAFF' } }
       })
+    }
+
+    // Append statistics section below the data (if available)
+    try {
+      const stats = combinedStats.value || {}
+      const statCols = ['Metric', 'avg', 'cv', 'sd', 'q95', 'max', 'min']
+      // blank row separator
+      sheet.addRow([])
+      sheet.addRow(['Estadísticas'])
+      const statsHeaderRow = sheet.addRow(statCols)
+      statsHeaderRow.font = { bold: true }
+      statsHeaderRow.alignment = { horizontal: 'center' }
+
+      const metricCols = ['TITULO', 'CVM_PERCENT', 'DELG_MINUS30_KM', 'DELG_MINUS40_KM', 'DELG_MINUS50_KM', 'GRUE_35_KM', 'GRUE_50_KM', 'NEPS_140_KM', 'NEPS_280_KM', 'FUERZA_B', 'ELONGACION', 'TENACIDAD', 'TRABAJO']
+
+      metricCols.forEach(metric => {
+        const s = stats[metric] || {}
+        const rowValues = [metric,
+          Number.isFinite(s.avg) ? Number(s.avg.toFixed(2)) : null,
+          Number.isFinite(s.cv) ? Number(s.cv.toFixed(2)) : null,
+          Number.isFinite(s.sd) ? Number(s.sd.toFixed(2)) : null,
+          Number.isFinite(s.q95) ? Number(s.q95.toFixed(2)) : null,
+          Number.isFinite(s.max) ? Number(s.max) : null,
+          Number.isFinite(s.min) ? Number(s.min) : null
+        ]
+        const r = sheet.addRow(rowValues)
+        r.eachCell(cell => { cell.alignment = { horizontal: 'center' } })
+      })
+    } catch {
+      // non-fatal: if stats are missing, export still succeeds
     }
 
     const buffer = await workbook.xlsx.writeBuffer()
