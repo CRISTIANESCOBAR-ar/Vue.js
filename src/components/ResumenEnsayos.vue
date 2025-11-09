@@ -180,6 +180,7 @@
                   <td class="px-2 py-[0.3rem] text-center text-slate-700">{{ row['Trabajo B'] }}</td>
                   <td class="px-2 py-[0.3rem] text-center">
                     <button @click="openDetail(row.Ensayo)"
+                      v-tippy="{ content: 'Ver el detalle de los ensayos USTER y TENSORAPID', placement: 'bottom', theme: 'custom' }"
                       class="inline-flex items-center gap-2 px-2 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-xs font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm">
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-600" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="2">
