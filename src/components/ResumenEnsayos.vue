@@ -209,10 +209,11 @@
 
               <!-- first / prev -->
               <button @click="page = 1" :disabled="page <= 1"
-                class="px-2 py-1 bg-slate-100 disabled:opacity-50 rounded-md text-sm" title="Primera">« Primera</button>
+                class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 disabled:opacity-50"
+                title="Primera">« Primera</button>
               <button @click="page = Math.max(1, page - 1)" :disabled="page <= 1"
-                class="px-2 py-1 bg-slate-100 disabled:opacity-50 rounded-md text-sm" title="Anterior">‹
-                Anterior</button>
+                class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 disabled:opacity-50"
+                title="Anterior">‹ Anterior</button>
 
               <!-- go to page input -->
               <div class="flex items-center gap-1">
@@ -221,16 +222,18 @@
                   @keydown.enter.prevent="goToPage()"
                   class="w-20 text-sm px-2 py-1 border border-slate-200 rounded-md text-slate-700 placeholder-slate-400 focus:border-blue-400"
                   placeholder="Página" />
-                <button @click="goToPage()" class="px-2 py-1 bg-slate-100 rounded-md text-sm text-slate-700">Ir</button>
+                <button @click="goToPage()"
+                  class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150">Ir</button>
               </div>
 
               <!-- page indicator and next/last -->
               <span class="text-sm text-slate-600">Página {{ page }} / {{ totalPages }}</span>
               <button @click="page = Math.min(totalPages, page + 1)" :disabled="page >= totalPages"
-                class="px-2 py-1 bg-slate-100 disabled:opacity-50 rounded-md text-sm" title="Siguiente">Siguiente
-                ›</button>
+                class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 disabled:opacity-50"
+                title="Siguiente">Siguiente ›</button>
               <button @click="page = totalPages" :disabled="page >= totalPages"
-                class="px-2 py-1 bg-slate-100 disabled:opacity-50 rounded-md text-sm" title="Última">Última »</button>
+                class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 disabled:opacity-50"
+                title="Última">Última »</button>
             </div>
           </div>
         </div>
