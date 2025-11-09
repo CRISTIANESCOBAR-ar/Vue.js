@@ -1126,10 +1126,10 @@ async function copyModalAsImage() {
 
     console.log('Modal element found, capturing...')
 
-    // Helper function to convert oklch to rgb (simplified)
+    // Helper function to convert oklch/oklab to rgb (simplified)
     function oklchToRgb(color) {
-      // If it contains oklch, return a safe fallback
-      if (color && (color.includes('oklch') || color.includes('color('))) {
+      // If it contains oklch, oklab, or color(), return a safe fallback
+      if (color && (color.includes('oklch') || color.includes('oklab') || color.includes('color('))) {
         // Extract lightness if possible, otherwise use defaults
         if (color.includes('0.98')) return '#fafafa'
         if (color.includes('0.95')) return '#f5f5f5'
@@ -1150,6 +1150,7 @@ async function copyModalAsImage() {
     // Apply inline styles to all elements in the original before cloning
     const allOriginalElements = modalEl.querySelectorAll('*')
     const originalStyles = []
+    const originalSvgAttrs = []
     
     allOriginalElements.forEach((el, index) => {
       const computedStyle = window.getComputedStyle(el)
@@ -1157,7 +1158,7 @@ async function copyModalAsImage() {
       // Save original inline styles to restore later
       originalStyles[index] = el.getAttribute('style') || ''
       
-      // Get computed values and convert oklch
+      // Get computed values and convert oklch/oklab
       const color = oklchToRgb(computedStyle.color)
       const bgColor = oklchToRgb(computedStyle.backgroundColor)
       const borderColor = oklchToRgb(computedStyle.borderColor)
@@ -1166,6 +1167,25 @@ async function copyModalAsImage() {
       if (color !== computedStyle.color) el.style.color = color
       if (bgColor !== computedStyle.backgroundColor) el.style.backgroundColor = bgColor
       if (borderColor !== computedStyle.borderColor) el.style.borderColor = borderColor
+      
+      // Special handling for SVG elements
+      if (el.tagName === 'svg' || el.tagName === 'path' || el.tagName === 'circle' || el.tagName === 'rect') {
+        originalSvgAttrs[index] = {
+          fill: el.getAttribute('fill'),
+          stroke: el.getAttribute('stroke')
+        }
+        
+        // Force SVG colors to safe values
+        const fillValue = computedStyle.fill || el.getAttribute('fill')
+        const strokeValue = computedStyle.stroke || el.getAttribute('stroke')
+        
+        if (fillValue && (fillValue.includes('oklch') || fillValue.includes('oklab') || fillValue.includes('color('))) {
+          el.setAttribute('fill', '#000000')
+        }
+        if (strokeValue && (strokeValue.includes('oklch') || strokeValue.includes('oklab') || strokeValue.includes('color('))) {
+          el.setAttribute('stroke', '#000000')
+        }
+      }
     })
 
     // Also fix the modal element itself
@@ -1184,12 +1204,22 @@ async function copyModalAsImage() {
 
       console.log('Canvas created, size:', canvas.width, 'x', canvas.height)
 
-      // Restore original inline styles
+      // Restore original inline styles and SVG attributes
       allOriginalElements.forEach((el, index) => {
         if (originalStyles[index]) {
           el.setAttribute('style', originalStyles[index])
         } else {
           el.removeAttribute('style')
+        }
+        
+        // Restore SVG attributes
+        if (originalSvgAttrs[index]) {
+          if (originalSvgAttrs[index].fill !== null) {
+            el.setAttribute('fill', originalSvgAttrs[index].fill)
+          }
+          if (originalSvgAttrs[index].stroke !== null) {
+            el.setAttribute('stroke', originalSvgAttrs[index].stroke)
+          }
         }
       })
       if (modalOriginalStyle) {
@@ -1242,12 +1272,22 @@ async function copyModalAsImage() {
         }
       }, 'image/png')
     } catch (captureErr) {
-      // Restore styles even if capture fails
+      // Restore styles and SVG attributes even if capture fails
       allOriginalElements.forEach((el, index) => {
         if (originalStyles[index]) {
           el.setAttribute('style', originalStyles[index])
         } else {
           el.removeAttribute('style')
+        }
+        
+        // Restore SVG attributes
+        if (originalSvgAttrs[index]) {
+          if (originalSvgAttrs[index].fill !== null) {
+            el.setAttribute('fill', originalSvgAttrs[index].fill)
+          }
+          if (originalSvgAttrs[index].stroke !== null) {
+            el.setAttribute('stroke', originalSvgAttrs[index].stroke)
+          }
         }
       })
       if (modalOriginalStyle) {
