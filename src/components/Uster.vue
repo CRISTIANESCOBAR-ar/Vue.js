@@ -20,7 +20,7 @@
 
           <div class="flex items-center gap-2">
             <button @click="selectFolder" title="Seleccionar carpeta con archivos de Uster"
-              class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors duration-200 shadow-sm hover:shadow-md hidden md:inline-flex items-center gap-2">
+              class="hidden md:inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -30,7 +30,7 @@
             </button>
 
             <button @click="selectFolder" title="Seleccionar carpeta con archivos de Uster"
-              class="p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg inline-flex md:hidden shadow-sm hover:shadow-md transition-all duration-200"
+              class="inline-flex md:hidden items-center p-2 border border-slate-200 bg-white text-slate-700 rounded-md hover:bg-slate-50 transition-colors duration-150"
               aria-label="Seleccionar carpeta">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
@@ -40,7 +40,7 @@
             </button>
 
             <button v-if="hasPersistedHandle" @click="refreshFolder" title="Actualizar archivos de Uster"
-              class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium transition-colors duration-200 shadow-sm hover:shadow-md hidden md:inline-flex items-center gap-2">
+              class="hidden md:inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -49,7 +49,7 @@
               Actualizar
             </button>
             <button v-if="hasPersistedHandle" @click="refreshFolder" title="Actualizar archivos de Uster"
-              class="p-2 bg-green-600 hover:bg-green-700 text-white rounded-lg inline-flex md:hidden shadow-sm hover:shadow-md transition-all duration-200"
+              class="inline-flex md:hidden items-center p-2 border border-slate-200 bg-white text-slate-700 rounded-md hover:bg-slate-50 transition-colors duration-150"
               aria-label="Actualizar carpeta">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
@@ -110,10 +110,20 @@
                   :class="{ 'bg-blue-50': selectedTestnr === item.testnr }">
                   <td class="px-3 py-2 border-b border-slate-200 text-xs text-center col-ensayo">{{ item.testnr || '' }}
                   </td>
-                  <td class="px-3 py-2 border-b border-slate-200 text-center text-xs col-par"><input type="checkbox"
-                      disabled :checked="item.hasPar" class="rounded" /></td>
-                  <td class="px-3 py-2 border-b border-slate-200 text-center text-xs col-tbl"><input type="checkbox"
-                      disabled :checked="item.hasTbl" class="rounded" /></td>
+                  <td class="px-3 py-2 border-b border-slate-200 text-center text-xs col-par">
+                    <svg v-if="item.hasPar" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-auto"
+                      :class="item.imp === true ? 'text-green-600' : 'text-slate-400'" fill="none" viewBox="0 0 24 24"
+                      stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </td>
+                  <td class="px-3 py-2 border-b border-slate-200 text-center text-xs col-tbl">
+                    <svg v-if="item.hasTbl" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-auto"
+                      :class="item.imp === true ? 'text-green-600' : 'text-slate-400'" fill="none" viewBox="0 0 24 24"
+                      stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </td>
                   <td class="px-3 py-2 border-b border-slate-200 text-center text-xs col-imp">
                     <span v-if="item.imp === true" title="Guardado en la base de datos">
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-600 mx-auto" fill="none"
@@ -166,8 +176,8 @@
                         @input="onTituloInput(r.srcIndex, $event)" @keydown.enter.prevent="focusNextTitulo(r.srcIndex)"
                         @keydown.up.prevent="focusPrevTitulo(r.srcIndex)"
                         @keydown.down.prevent="focusNextTituloWrap(r.srcIndex)"
-                        :class="['w-full box-border rounded-lg px-1 py-1.5 text-sm text-center border border-slate-300 focus:outline-none focus:ring-2 focus:border-blue-500 transition-all', isFocusedIndex === r.srcIndex ? 'bg-yellow-50 ring-2 ring-yellow-400' : 'bg-white hover:bg-slate-50']"
-                        style="box-sizing: border-box;" />
+                        :class="['w-full box-border px-1 py-0.5 text-sm text-center border border-slate-300 focus:outline-none focus:ring-2 focus:border-blue-500 transition-all', isFocusedIndex === r.srcIndex ? 'bg-yellow-50 ring-2 ring-yellow-400' : 'bg-white hover:bg-slate-50']"
+                        style="box-sizing: border-box; margin:0; border-radius:0;" />
                     </div>
                     <div v-else class="text-xs text-slate-400">—</div>
                   </td>
@@ -208,12 +218,12 @@
           <div class="mt-3 flex gap-2">
             <button ref="saveButton" v-if="canSave" @click="saveCurrentTest" :disabled="isSaving"
               @keydown.up.prevent="focusLastTitulo"
-              class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium disabled:opacity-60 disabled:cursor-not-allowed shadow-sm hover:shadow-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2">
+              class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2">
               <span v-if="!isSaving">Guardar</span>
               <span v-else>Guardando...</span>
             </button>
             <button v-if="selectedTestnr && isTestSaved" @click="deleteCurrentTest" :disabled="isDeleting"
-              class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium disabled:opacity-60 disabled:cursor-not-allowed shadow-sm hover:shadow-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2">
+              class="inline-flex items-center gap-2 px-3 py-1 border border-red-300 bg-white text-red-700 rounded-md text-sm font-medium hover:bg-red-50 transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2">
               <span v-if="!isDeleting">Eliminar</span>
               <span v-else>Eliminando...</span>
             </button>
@@ -1865,7 +1875,6 @@ table.text-xs td {
    without changing table structure (no display:block trick). These reduce
    vertical padding and ensure inputs/checks don't expand rows. */
 .uster-component .scan-table tbody td,
-.uster-component .titulo-table tbody td,
 .uster-component .compact-table tbody td {
   padding-top: 0.25rem !important;
   /* 4px */
@@ -1874,6 +1883,18 @@ table.text-xs td {
   line-height: 1 !important;
   box-sizing: border-box !important;
   vertical-align: middle !important;
+}
+
+/* Reduce vertical gap for titulo cells so inputs sit flush with their cells
+   and focusing doesn't trigger row height changes */
+.uster-component .titulo-table tbody td,
+.uster-component .titulo-table tbody th {
+  /* Remove vertical padding so the input can sit flush with the cell.
+     Use zero padding to eliminate any visible gap between the input
+     and the table cell borders. */
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  box-sizing: border-box !important;
 }
 
 /* Ensure the row elements keep the expected height and don't expand */
@@ -1886,15 +1907,18 @@ table.text-xs td {
 
 /* Inputs in the titulo-table should fit within the row without increasing height */
 .uster-component .titulo-table td input {
-  /* Make the input slightly smaller than the available row height so
-     focusing/active styles (borders, rings, shadows) don't push the row
-     taller and trigger the scroll bar. Use box-sizing:border-box so
-     padding/border are included in the fixed height. */
-  height: calc(var(--titulo-row-h, 2rem) - 0.7rem) !important;
-  /* a bit tighter than before */
-  max-height: calc(var(--titulo-row-h, 2rem) - 0.7rem) !important;
-  padding: 0.08rem 0.5rem !important;
+  /* Fill the full cell height and sit flush: remove vertical padding on
+     the td (above) and make the input 100% height. Keep box-sizing so
+     the input border doesn't increase layout size. */
   box-sizing: border-box !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  margin: 0 !important;
+  padding: 0 0.5rem !important;
+  border-radius: 0 !important;
+  line-height: 1 !important;
 }
 
 /* When the input receives focus, reduce its inner padding/height just a
@@ -1929,8 +1953,8 @@ table.text-xs td {
 /* Make titulo-table cells use the same vertical padding so rows align */
 .titulo-table tbody td,
 .titulo-table tbody th {
-  padding-top: 0.25rem !important;
-  padding-bottom: 0.25rem !important;
+  padding-top: 0.06rem !important;
+  padding-bottom: 0.06rem !important;
 }
 
 /* Ensure checkbox and svg icon sizes don't push row heights: center and constrain */
@@ -2083,5 +2107,30 @@ table.w-full {
     padding-top: 0.375rem;
     padding-bottom: 0.375rem;
   }
+}
+
+/* Micro-adjust: compensate subpixel rounding by nudging tables up slightly.
+   This uses translateY to remove a tiny visible gap under the last visible row
+   caused by fractional-pixel rounding in different browsers. Change value to
+   -0.5px or -2px if you want a smaller/larger nudge. */
+.uster-component .titulo-container table,
+.uster-component .scan-container table,
+.uster-component .compact-table {
+  transform: translateY(-1px);
+  /* preserve existing stacking and layout behavior */
+  will-change: transform;
+}
+
+/* Custom checkbox colors for .PAR and .TBL columns based on saved state */
+.scan-table input[type="checkbox"].accent-green-600 {
+  accent-color: #16a34a !important;
+  filter: none !important;
+  opacity: 1 !important;
+}
+
+.scan-table input[type="checkbox"].accent-slate-400 {
+  accent-color: #94a3b8 !important;
+  filter: grayscale(0.3) !important;
+  opacity: 0.7 !important;
 }
 </style>

@@ -2,24 +2,24 @@
   <div class="w-full bg-white rounded-2xl shadow-xl px-4 py-3 border border-slate-200">
     <div class="flex items-center justify-between mb-3">
       <h3 class="text-lg font-semibold text-slate-800">Visualizador de Ensayos</h3>
-        <div class="flex items-center gap-3">
-          <div class="flex items-center gap-2">
-            <label class="text-sm text-slate-600">Métrica:</label>
-            <select v-model="metric" class="px-2 py-1 border rounded-md text-sm">
-              <option v-for="m in metrics" :key="m.value" :value="m.value">{{ m.label }}</option>
-            </select>
-          </div>
-
-          <!-- Filtros OE / Ne compactos -->
-          <div class="flex items-center gap-2">
-            <!-- Combobox: vue3-select-component for OE/Ne -->
-            <VueSelect v-model="oe" :options="oeOptions" clearable :searchable class="w-36" />
-            <VueSelect v-model="ne" :options="neOptions" clearable :searchable class="w-36" />
-
-            <button @click="applyFilters" class="px-2 py-1 bg-blue-600 text-white rounded text-sm">Aplicar</button>
-            <button @click="clearFilters" class="px-2 py-1 bg-white border rounded text-sm">Limpiar</button>
-          </div>
+      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2">
+          <label class="text-sm text-slate-600">Métrica:</label>
+          <select v-model="metric" class="px-2 py-1 border rounded-md text-sm">
+            <option v-for="m in metrics" :key="m.value" :value="m.value">{{ m.label }}</option>
+          </select>
         </div>
+
+        <!-- Filtros OE / Ne compactos -->
+        <div class="flex items-center gap-2">
+          <!-- Combobox: vue3-select-component for OE/Ne -->
+          <VueSelect v-model="oe" :options="oeOptions" clearable :searchable class="w-36" />
+          <VueSelect v-model="ne" :options="neOptions" clearable :searchable class="w-36" />
+
+          <button @click="applyFilters" class="px-2 py-1 bg-blue-600 text-white rounded text-sm">Aplicar</button>
+          <button @click="clearFilters" class="px-2 py-1 bg-white border rounded text-sm">Limpiar</button>
+        </div>
+      </div>
     </div>
 
     <div v-if="loading" class="text-sm text-slate-600 py-8 text-center">
@@ -36,7 +36,8 @@
           </div>
           <div class="flex items-center gap-2">
             <button @click="loadData()" class="px-3 py-1 bg-white border rounded text-sm">Reintentar</button>
-            <button @click="loadSampleData()" class="px-3 py-1 bg-blue-600 text-white rounded text-sm">Usar datos de ejemplo</button>
+            <button @click="loadSampleData()" class="px-3 py-1 bg-blue-600 text-white rounded text-sm">Usar datos de
+              ejemplo</button>
           </div>
         </div>
       </div>
@@ -44,15 +45,18 @@
       <div class="mb-3 text-sm text-slate-600">
         <template v-if="appliedOe || appliedNe">
           <span class="mr-2">Filtros aplicados:</span>
-          <span v-if="appliedOe" class="inline-block mr-2 px-2 py-0.5 bg-slate-100 text-slate-700 rounded">OE: {{ appliedOe }}</span>
-          <span v-if="appliedNe" class="inline-block px-2 py-0.5 bg-slate-100 text-slate-700 rounded">Ne: {{ appliedNe }}</span>
+          <span v-if="appliedOe" class="inline-block mr-2 px-2 py-0.5 bg-slate-100 text-slate-700 rounded">OE: {{
+            appliedOe }}</span>
+          <span v-if="appliedNe" class="inline-block px-2 py-0.5 bg-slate-100 text-slate-700 rounded">Ne: {{ appliedNe
+            }}</span>
         </template>
       </div>
 
       <div class="h-[48vh] md:h-[60vh] relative">
         <div ref="chartEl" class="w-full h-full"></div>
         <div v-if="noData" class="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div class="bg-white/80 px-4 py-2 rounded-md text-sm text-slate-700">No hay datos numéricos para la métrica seleccionada.</div>
+          <div class="bg-white/80 px-4 py-2 rounded-md text-sm text-slate-700">No hay datos numéricos para la métrica
+            seleccionada.</div>
         </div>
       </div>
     </div>
@@ -73,8 +77,8 @@ const loading = ref(false)
 const rows = ref([])
 const chartEl = ref(null)
 let chart = null
-  const noData = ref(false)
-  const fetchError = ref(null)
+const noData = ref(false)
+const fetchError = ref(null)
 
 // filtros OE / Ne (inputs) y filtros aplicados
 const oe = ref('')
@@ -353,5 +357,7 @@ watch(metric, () => {
 </script>
 
 <style scoped>
-.echarts-hidden { display: none }
+.echarts-hidden {
+  display: none
+}
 </style>

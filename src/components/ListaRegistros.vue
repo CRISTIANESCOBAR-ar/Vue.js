@@ -617,7 +617,6 @@ watch(() => props.registros.length, () => {
 })
 
 /* eslint-env browser */
-/* global document */
 // Sticky header: dynamic top calculation and intersection observer
 const listScrollRef = ref(null)
 const tableRef = ref(null)

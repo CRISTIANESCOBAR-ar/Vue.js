@@ -21,6 +21,11 @@ module.exports = [
         localStorage: 'readonly',
         console: 'readonly',
         fetch: 'readonly',
+        document: 'readonly',
+        Blob: 'readonly',
+        URL: 'readonly',
+        navigator: 'readonly',
+        ClipboardItem: 'readonly',
         setTimeout: 'readonly',
         clearTimeout: 'readonly',
         Swal: 'readonly'

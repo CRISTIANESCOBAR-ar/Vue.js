@@ -657,7 +657,6 @@ function clearHideTimer() {
   }
 }
 
-/* eslint-disable no-undef */
 function hideSidebarTooltips() {
   if (typeof document === 'undefined') return
   try {
@@ -675,7 +674,6 @@ function hideSidebarTooltips() {
     // noop
   }
 }
-/* eslint-enable no-undef */
 
 let introTimer = null
 function clearIntroTimer() {
