@@ -1386,6 +1386,42 @@ function exportToExcel() {
     // Set reasonable column widths based on header length
     ws['!cols'] = headers.map(h => ({ wch: Math.max(10, String(h).length + 4) }))
 
+    // Apply table-like formatting: autofilter, header style and banded rows
+    try {
+      const lastRow = data.length // data rows start at r=1 because header is row 0
+      const lastCol = Math.max(0, headers.length - 1)
+      const range = XLSX.utils.encode_range({ s: { c: 0, r: 0 }, e: { c: lastCol, r: lastRow } })
+
+      // Enable autofilter so Excel shows filter arrows on header
+      ws['!autofilter'] = { ref: range }
+
+      // Header style (solid fill + bold)
+      for (let c = 0; c <= lastCol; c++) {
+        const cell = XLSX.utils.encode_cell({ c, r: 0 })
+        if (!ws[cell]) continue
+        ws[cell].s = Object.assign({}, ws[cell].s || {}, {
+          fill: { patternType: 'solid', fgColor: { rgb: 'FFEDF7FF' } },
+          font: { bold: true }
+        })
+      }
+
+      // Banded rows: apply light fill to every other data row for readability
+      for (let i = 0; i < data.length; i++) {
+        const rowIndex = i + 1 // data rows start at r=1
+        if (i % 2 === 1) continue // skip even rows to create banding on odd-indexed rows
+        for (let c = 0; c <= lastCol; c++) {
+          const cell = XLSX.utils.encode_cell({ c, r: rowIndex })
+          if (!ws[cell]) continue
+          ws[cell].s = Object.assign({}, ws[cell].s || {}, {
+            fill: { patternType: 'solid', fgColor: { rgb: 'FFF7FBFF' } }
+          })
+        }
+      }
+    } catch (err) {
+      // Non-fatal: continue if styling isn't supported or fails
+      console.warn('Could not apply table formatting to XLSX:', err)
+    }
+
     const wb = XLSX.utils.book_new()
     XLSX.utils.book_append_sheet(wb, ws, 'Resumen')
 
