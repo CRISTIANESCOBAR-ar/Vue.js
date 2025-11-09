@@ -1345,7 +1345,7 @@ function exportToExcel() {
 
         // Ensayo -> numeric when possible
         if (String(h).toLowerCase() === 'ensayo') {
-          const n = Number(String(val).toString().replace(/[^0-9\-]+/g, ''))
+          const n = Number(String(val).toString().replace(/[^0-9-]+/g, ''))
           obj[h] = Number.isFinite(n) ? n : (val === '' ? '' : String(val))
           return
         }
@@ -1364,7 +1364,7 @@ function exportToExcel() {
           } else if (typeof val === 'number') {
             obj[h] = val
           } else {
-            const n = Number(String(val).toString().replace(/,/g, '.').replace(/[^0-9\-\.]+/g, ''))
+            const n = Number(String(val).toString().replace(/,/g, '.').replace(/[^0-9.-]+/g, ''))
             obj[h] = Number.isNaN(n) ? String(val) : n
           }
           return
