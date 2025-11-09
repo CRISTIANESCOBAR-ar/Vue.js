@@ -1634,14 +1634,16 @@ function formatTimestampToDatetime(value) {
 
 /* Use the UI font for tables in this component to match ResumenEnsayos.vue
    (overrides global monospace rules for .col-* through higher specificity) */
-.fixed-table, .compact-table, .fixed-table th, .fixed-table td, .compact-table th, .compact-table td {
+.fixed-table,
+.compact-table,
+.fixed-table th,
+.fixed-table td,
+.compact-table th,
+.compact-table td {
   font-family: var(--ui-font) !important;
 }
 
-/* Also ensure any table in this component uses the UI font (covers tables without .fixed-table) */
-table, table th, table td, .min-w-full, .min-w-full th, .min-w-full td {
-  font-family: var(--ui-font) !important;
-}
+/* Table font is now provided globally in src/index.css */
 
 .compact-table {
   table-layout: fixed;

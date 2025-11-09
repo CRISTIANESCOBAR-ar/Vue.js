@@ -38,6 +38,18 @@ pre,
 	font-family: var(--mono-font);
 }
 
+/* Force UI font for table cells across the app to match ResumenEnsayos.vue table style.
+	 This keeps tabular data visually consistent and overrides component-local monospace
+	 where necessary. Use !important so utility classes like .font-mono don't win. */
+table,
+table th,
+table td,
+.min-w-full,
+.min-w-full th,
+.min-w-full td {
+	font-family: var(--ui-font) !important;
+}
+
 /* Slight global tuning for a futuristic aesthetic */
 body {
 	letter-spacing: 0.0025em;
