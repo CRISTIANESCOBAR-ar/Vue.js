@@ -67,6 +67,20 @@
               </svg>
               <span class="hidden sm:inline">Refrescar</span>
             </button>
+
+            <!-- Export to Excel (CSV) button -->
+            <button @click="exportToExcel"
+              v-tippy="{ content: 'Exportar a Excel (CSV)', placement: 'bottom', theme: 'custom' }"
+              class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke-linecap="round" stroke-linejoin="round">
+                </path>
+                <polyline points="7 10 12 15 17 10" stroke-linecap="round" stroke-linejoin="round"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3" stroke-linecap="round" stroke-linejoin="round"></line>
+              </svg>
+              <span class="hidden sm:inline">Exportar</span>
+            </button>
           </div>
         </div>
       </div>
@@ -1140,19 +1154,19 @@ async function copyModalAsImage() {
       return
     }
 
-  // Find and hide prev/next buttons and modal action buttons temporarily
-  const prevBtn = document.querySelector('[aria-label="Anterior ensayo"]')
-  const nextBtn = document.querySelector('[aria-label="Siguiente ensayo"]')
-  const copyBtn = document.querySelector('[aria-label="Copiar como imagen"]')
-  const closeBtn = document.querySelector('[aria-label="Cerrar detalle"]')
-  const prevBtnDisplay = prevBtn?.style.display
-  const nextBtnDisplay = nextBtn?.style.display
-  const copyBtnDisplay = copyBtn?.style.display
-  const closeBtnDisplay = closeBtn?.style.display
-  if (prevBtn) prevBtn.style.display = 'none'
-  if (nextBtn) nextBtn.style.display = 'none'
-  if (copyBtn) copyBtn.style.display = 'none'
-  if (closeBtn) closeBtn.style.display = 'none'
+    // Find and hide prev/next buttons and modal action buttons temporarily
+    const prevBtn = document.querySelector('[aria-label="Anterior ensayo"]')
+    const nextBtn = document.querySelector('[aria-label="Siguiente ensayo"]')
+    const copyBtn = document.querySelector('[aria-label="Copiar como imagen"]')
+    const closeBtn = document.querySelector('[aria-label="Cerrar detalle"]')
+    const prevBtnDisplay = prevBtn?.style.display
+    const nextBtnDisplay = nextBtn?.style.display
+    const copyBtnDisplay = copyBtn?.style.display
+    const closeBtnDisplay = closeBtn?.style.display
+    if (prevBtn) prevBtn.style.display = 'none'
+    if (nextBtn) nextBtn.style.display = 'none'
+    if (copyBtn) copyBtn.style.display = 'none'
+    if (closeBtn) closeBtn.style.display = 'none'
 
     // Show loading indicator (short)
     Swal.fire({
@@ -1189,14 +1203,14 @@ async function copyModalAsImage() {
         cacheBust: true
       })
 
-  // Restore console.error
-  console.error = originalConsoleError
+      // Restore console.error
+      console.error = originalConsoleError
 
-  // Restore prev/next and modal action buttons
-  if (prevBtn) prevBtn.style.display = prevBtnDisplay || ''
-  if (nextBtn) nextBtn.style.display = nextBtnDisplay || ''
-  if (copyBtn) copyBtn.style.display = copyBtnDisplay || ''
-  if (closeBtn) closeBtn.style.display = closeBtnDisplay || ''
+      // Restore prev/next and modal action buttons
+      if (prevBtn) prevBtn.style.display = prevBtnDisplay || ''
+      if (nextBtn) nextBtn.style.display = nextBtnDisplay || ''
+      if (copyBtn) copyBtn.style.display = copyBtnDisplay || ''
+      if (closeBtn) closeBtn.style.display = closeBtnDisplay || ''
 
       // Convert data URL to blob
       const response = await fetch(dataUrl)
@@ -1264,6 +1278,56 @@ async function loadRows() {
     Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo cargar el informe completo.' })
   } finally {
     loading.value = false
+  }
+}
+
+function exportToExcel() {
+  try {
+    const rowsToExport = filteredRows.value || []
+    if (!rowsToExport.length) {
+      Swal.fire({ icon: 'info', title: 'Nada para exportar', text: 'No hay filas que coincidan con los filtros.' })
+      return
+    }
+
+    // Use the same header order as fieldsToCheck
+    const headers = fieldsToCheck.value || []
+
+    // Build CSV (UTF-8 with BOM so Excel detects UTF-8)
+    const bom = '\uFEFF'
+    const esc = (v) => {
+      if (v == null) return ''
+      const s = String(v)
+      // Escape double quotes
+      return '"' + s.replace(/"/g, '""') + '"'
+    }
+
+    const lines = []
+    lines.push(headers.map(h => esc(h)).join(','))
+    rowsToExport.forEach(r => {
+      const vals = headers.map(h => {
+        // Prefer original property keys; fallback to empty
+        const v = r[h] == null ? '' : r[h]
+        return esc(v)
+      })
+      lines.push(vals.join(','))
+    })
+
+    const csvContent = bom + lines.join('\n')
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    const date = new Date().toISOString().slice(0, 10)
+    link.href = url
+    link.setAttribute('download', `resumen-ensayos-${date}.csv`)
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+
+    Swal.fire({ icon: 'success', title: 'Exportado', text: 'Archivo CSV listo para abrir en Excel.', timer: 1400, showConfirmButton: false })
+  } catch (err) {
+    console.error('Error exporting CSV', err)
+    Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo exportar a CSV.' })
   }
 }
 
