@@ -167,9 +167,12 @@
                   <td class="px-2 py-[0.3rem] text-center">
                     <button @click="openDetail(row.Ensayo)"
                       class="inline-flex items-center gap-2 px-2 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-xs font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" stroke-linecap="round" stroke-linejoin="round"></path>
-                        <path d="M2.5 12s3.5-7 9.5-7 9.5 7 9.5 7-3.5 7-9.5 7-9.5-7-9.5-7z" stroke-linecap="round" stroke-linejoin="round"></path>
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-600" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" stroke-linecap="round" stroke-linejoin="round">
+                        </path>
+                        <path d="M2.5 12s3.5-7 9.5-7 9.5 7 9.5 7-3.5 7-9.5 7-9.5-7-9.5-7z" stroke-linecap="round"
+                          stroke-linejoin="round"></path>
                       </svg>
                       <span class="whitespace-nowrap">Ver detalle</span>
                     </button>
@@ -1137,13 +1140,19 @@ async function copyModalAsImage() {
       return
     }
 
-    // Find and hide prev/next buttons temporarily
-    const prevBtn = document.querySelector('[aria-label="Anterior ensayo"]')
-    const nextBtn = document.querySelector('[aria-label="Siguiente ensayo"]')
-    const prevBtnDisplay = prevBtn?.style.display
-    const nextBtnDisplay = nextBtn?.style.display
-    if (prevBtn) prevBtn.style.display = 'none'
-    if (nextBtn) nextBtn.style.display = 'none'
+  // Find and hide prev/next buttons and modal action buttons temporarily
+  const prevBtn = document.querySelector('[aria-label="Anterior ensayo"]')
+  const nextBtn = document.querySelector('[aria-label="Siguiente ensayo"]')
+  const copyBtn = document.querySelector('[aria-label="Copiar como imagen"]')
+  const closeBtn = document.querySelector('[aria-label="Cerrar detalle"]')
+  const prevBtnDisplay = prevBtn?.style.display
+  const nextBtnDisplay = nextBtn?.style.display
+  const copyBtnDisplay = copyBtn?.style.display
+  const closeBtnDisplay = closeBtn?.style.display
+  if (prevBtn) prevBtn.style.display = 'none'
+  if (nextBtn) nextBtn.style.display = 'none'
+  if (copyBtn) copyBtn.style.display = 'none'
+  if (closeBtn) closeBtn.style.display = 'none'
 
     // Show loading indicator (short)
     Swal.fire({
@@ -1180,12 +1189,14 @@ async function copyModalAsImage() {
         cacheBust: true
       })
 
-      // Restore console.error
-      console.error = originalConsoleError
+  // Restore console.error
+  console.error = originalConsoleError
 
-      // Restore prev/next buttons
-      if (prevBtn) prevBtn.style.display = prevBtnDisplay || ''
-      if (nextBtn) nextBtn.style.display = nextBtnDisplay || ''
+  // Restore prev/next and modal action buttons
+  if (prevBtn) prevBtn.style.display = prevBtnDisplay || ''
+  if (nextBtn) nextBtn.style.display = nextBtnDisplay || ''
+  if (copyBtn) copyBtn.style.display = copyBtnDisplay || ''
+  if (closeBtn) closeBtn.style.display = closeBtnDisplay || ''
 
       // Convert data URL to blob
       const response = await fetch(dataUrl)
@@ -1226,6 +1237,8 @@ async function copyModalAsImage() {
       console.error = originalConsoleError
       if (prevBtn) prevBtn.style.display = prevBtnDisplay || ''
       if (nextBtn) nextBtn.style.display = nextBtnDisplay || ''
+      if (copyBtn) copyBtn.style.display = copyBtnDisplay || ''
+      if (closeBtn) closeBtn.style.display = closeBtnDisplay || ''
       throw captureError
     }
   } catch (err) {
