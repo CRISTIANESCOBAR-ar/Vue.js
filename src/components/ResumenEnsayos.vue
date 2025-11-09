@@ -1296,19 +1296,39 @@ async function exportModalToExcel() {
     }
 
     // Visible headers and mapping to object keys used in the modal table
-    const headers = ['Huso', 'Titulo', 'CVm %', 'Delg -30%', 'Delg -40%', 'Delg -50%', 'Grue +35%', 'Grue +50%', 'Neps +140%', 'Neps +280%', 'Fuerza B', 'Elongación %', 'Tenacidad', 'Trabajo']
+    const headers = ['Fecha', 'Ne', 'OE Nro.', 'Huso', 'Titulo', 'CVm %', 'Delg -30%', 'Delg -40%', 'Delg -50%', 'Grue +35%', 'Grue +50%', 'Neps +140%', 'Neps +280%', 'Fuerza B', 'Elongación %', 'Tenacidad', 'Trabajo']
     const keys = ['NO', 'TITULO', 'CVM_PERCENT', 'DELG_MINUS30_KM', 'DELG_MINUS40_KM', 'DELG_MINUS50_KM', 'GRUE_35_KM', 'GRUE_50_KM', 'NEPS_140_KM', 'NEPS_280_KM', 'FUERZA_B', 'ELONGACION', 'TENACIDAD', 'TRABAJO']
 
-    const bodyRows = rows.map(r => keys.map(k => {
-      const raw = r?.[k]
-      if (raw == null) return ''
+    // find meta info (fecha, ne, oe) from available sources
+    const mainMeta = (rows && rows.length && rows[0]) || null
+    const rawFecha = mainMeta ? (mainMeta.Fecha || mainMeta.fecha || mainMeta.DATE || null) : null
+
+    // helper to coerce each cell value
+    const coerce = (raw) => {
+      if (raw == null || raw === '') return ''
       if (typeof raw === 'number') return raw
       const s = String(raw).trim()
-      // try numeric coercion (comma as decimal)
       const n = Number(s.replace(/,/g, '.').replace(/[^0-9.+\-eE]/g, ''))
-      if (Number.isFinite(n)) return n
-      return s
-    }))
+      return Number.isFinite(n) ? n : s
+    }
+
+    // Build body rows with Fecha, Ne, OE Nro. prefixed
+    const bodyRows = rows.map(r => {
+      const metaFechaRaw = (r && (r.Fecha || r.fecha)) || rawFecha || null
+      const rowVals = []
+      rowVals.push(metaFechaRaw || '')
+      rowVals.push(modalMeta.value.ne || '')
+      rowVals.push(modalMeta.value.oe || '')
+      // Huso (NO)
+      rowVals.push(coerce(r.NO))
+      // remaining keys (skip NO)
+      keys.forEach(k => {
+        if (k === 'NO') return
+        const raw = r?.[k]
+        rowVals.push(coerce(raw))
+      })
+      return rowVals
+    })
 
     const workbook = new ExcelJS.Workbook()
     workbook.creator = 'carga-datos-vue'
@@ -1343,35 +1363,73 @@ async function exportModalToExcel() {
         if (isEven) cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF8FAFF' } }
       })
     }
+    // Ensure Fecha column values are actual Date objects in Excel (col 1)
+    const fechaIdx = headers.findIndex(h => String(h).toLowerCase().includes('fecha'))
+    if (fechaIdx !== -1) {
+      const col = sheet.getColumn(fechaIdx + 1)
+      col.numFmt = 'dd/mm/yyyy'
+      // parse cell strings like dd/mm/yyyy into Date
+      sheet.eachRow((row, rowNumber) => {
+        if (rowNumber === 1) return
+        const cell = row.getCell(fechaIdx + 1)
+        const v = cell.value
+        if (v == null || v === '') return
+        if (v instanceof Date) return
+        // try parse dd/mm/yyyy or ISO
+        const s = String(v).trim()
+        const m = s.match(/^([0-9]{1,2})[-/.]([0-9]{1,2})[-/.]([0-9]{2,4})$/)
+        if (m) {
+          let d = parseInt(m[1], 10)
+          let mo = parseInt(m[2], 10)
+          let y = parseInt(m[3], 10)
+          if (y < 100) y += y >= 70 ? 1900 : 2000
+          const dt = new Date(y, mo - 1, d)
+          if (!isNaN(dt.getTime())) cell.value = dt
+        } else {
+          const dt = new Date(s)
+          if (!isNaN(dt.getTime())) cell.value = dt
+        }
+      })
+    }
 
-    // Append statistics section below the data (if available)
+    // Append statistics section below the data (if available). Each stats row repeats Fecha, Ne, OE Nro. in first 3 columns
     try {
       const stats = combinedStats.value || {}
-      const statCols = ['Metric', 'avg', 'cv', 'sd', 'q95', 'max', 'min']
-      // blank row separator
+      const metricCols = ['TITULO', 'CVM_PERCENT', 'DELG_MINUS30_KM', 'DELG_MINUS40_KM', 'DELG_MINUS50_KM', 'GRUE_35_KM', 'GRUE_50_KM', 'NEPS_140_KM', 'NEPS_280_KM', 'FUERZA_B', 'ELONGACION', 'TENACIDAD', 'TRABAJO']
+      // blank row separator and title
       sheet.addRow([])
       sheet.addRow(['Estadísticas'])
-      const statsHeaderRow = sheet.addRow(statCols)
-      statsHeaderRow.font = { bold: true }
-      statsHeaderRow.alignment = { horizontal: 'center' }
 
-      const metricCols = ['TITULO', 'CVM_PERCENT', 'DELG_MINUS30_KM', 'DELG_MINUS40_KM', 'DELG_MINUS50_KM', 'GRUE_35_KM', 'GRUE_50_KM', 'NEPS_140_KM', 'NEPS_280_KM', 'FUERZA_B', 'ELONGACION', 'TENACIDAD', 'TRABAJO']
+      const statLabels = [
+        { key: 'avg', label: 'Promedio' },
+        { key: 'cv', label: 'CV' },
+        { key: 'sd', label: 's' },
+        { key: 'q95', label: 'Q95' },
+        { key: 'max', label: 'Máx' },
+        { key: 'min', label: 'Mín' }
+      ]
 
-      metricCols.forEach(metric => {
-        const s = stats[metric] || {}
-        const rowValues = [metric,
-          Number.isFinite(s.avg) ? Number(s.avg.toFixed(2)) : null,
-          Number.isFinite(s.cv) ? Number(s.cv.toFixed(2)) : null,
-          Number.isFinite(s.sd) ? Number(s.sd.toFixed(2)) : null,
-          Number.isFinite(s.q95) ? Number(s.q95.toFixed(2)) : null,
-          Number.isFinite(s.max) ? Number(s.max) : null,
-          Number.isFinite(s.min) ? Number(s.min) : null
-        ]
-        const r = sheet.addRow(rowValues)
+      // for each stat label, add a row with Fecha, Ne, OE, Label, then values per metricCols
+      statLabels.forEach(sl => {
+        const rowVals = []
+        // use first data row's date if available, else modalMeta
+        const firstDataFecha = bodyRows.length ? bodyRows[0][0] : null
+        rowVals.push(firstDataFecha || modalMeta.value.fechaStr || '')
+        rowVals.push(modalMeta.value.ne || '')
+        rowVals.push(modalMeta.value.oe || '')
+        rowVals.push(sl.label)
+        metricCols.forEach(metric => {
+          const s = stats[metric] || {}
+          const v = s[sl.key]
+          if (v == null) rowVals.push('')
+          else if (typeof v === 'number') rowVals.push(Number(v.toFixed(2)))
+          else rowVals.push(v)
+        })
+        const r = sheet.addRow(rowVals)
         r.eachCell(cell => { cell.alignment = { horizontal: 'center' } })
       })
     } catch {
-      // non-fatal: if stats are missing, export still succeeds
+      // non-fatal
     }
 
     const buffer = await workbook.xlsx.writeBuffer()
