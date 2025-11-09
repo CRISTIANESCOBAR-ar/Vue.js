@@ -665,6 +665,7 @@ import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import Swal from 'sweetalert2'
 import { toPng } from 'html-to-image'
 import * as XLSX from 'xlsx'
+import ExcelJS from 'exceljs'
 
 const loading = ref(false)
 const rows = ref([])
@@ -1289,201 +1290,152 @@ async function loadRows() {
   }
 }
 
-function exportToExcel() {
-  try {
-    const rowsToExport = filteredRows.value || []
-    if (!rowsToExport.length) {
-      Swal.fire({ icon: 'info', title: 'Nada para exportar', text: 'No hay filas que coincidan con los filtros.' })
-      return
-    }
-
-    const headers = fieldsToCheck.value || []
-
-    // Build array of plain objects ordered by headers
-    // Helper: parse common date formats to a JS Date (same heuristics used elsewhere)
-    function parseDateSmart(value) {
-      if (value == null || value === '') return null
-      if (value instanceof Date) return value
-      const s = String(value).trim()
-      if (!s) return null
-
-      // Try native/ISO parse first
-      let d = new Date(s)
-      if (!isNaN(d.getTime())) return d
-
-      // Match dd/mm/yyyy or mm/dd/yyyy with separators -/. or .
-      const m = s.match(new RegExp('^([0-9]{1,2})[-/.]([0-9]{1,2})[-/.]([0-9]{2,4})$'))
-      if (m) {
-        const a = parseInt(m[1], 10)
-        const b = parseInt(m[2], 10)
-        let y = parseInt(m[3], 10)
-        if (y < 100) y += y >= 70 ? 1900 : 2000
-
-        const tryDayFirst = new Date(y, b - 1, a)
-        const tryMonthFirst = new Date(y, a - 1, b)
-        const now = new Date()
-        const plausible = dt => {
-          if (isNaN(dt.getTime())) return false
-          const yr = dt.getFullYear()
-          return yr >= 1900 && yr <= now.getFullYear() + 1
-        }
-
-        if (a > 12 && plausible(tryDayFirst)) return tryDayFirst
-        if (b > 12 && plausible(tryMonthFirst)) return tryMonthFirst
-        if (plausible(tryDayFirst)) return tryDayFirst
-        if (plausible(tryMonthFirst)) return tryMonthFirst
+  async function exportToExcel() {
+    try {
+      const rowsToExport = filteredRows.value || []
+      if (!rowsToExport.length) {
+        Swal.fire({ icon: 'info', title: 'Nada para exportar', text: 'No hay filas que coincidan con los filtros.' })
+        return
       }
 
-      return null
-    }
+      const headers = fieldsToCheck.value || []
 
-    // Build array of plain objects ordered by headers, coercing types for export
-    const data = rowsToExport.map(r => {
-      const obj = {}
-      headers.forEach(h => {
-        let val = r[h] == null ? '' : r[h]
-
-        // Ensayo -> numeric when possible
-        if (String(h).toLowerCase() === 'ensayo') {
-          const n = Number(String(val).toString().replace(/[^0-9-]+/g, ''))
-          obj[h] = Number.isFinite(n) ? n : (val === '' ? '' : String(val))
-          return
-        }
-
-        // Fecha -> Date object when possible
-        if (String(h).toLowerCase() === 'fecha') {
-          const pd = parseDateSmart(val)
-          obj[h] = pd || (val === '' ? '' : String(val))
-          return
-        }
-
-        // Exact-name numeric columns
-        if (numericColumnsSet.has(h)) {
-          if (val === '' || val == null) {
-            obj[h] = ''
-          } else if (typeof val === 'number') {
-            obj[h] = val
-          } else {
-            const n = Number(String(val).toString().replace(/,/g, '.').replace(/[^0-9.-]+/g, ''))
-            obj[h] = Number.isNaN(n) ? String(val) : n
+      // Build rows and coerce types similar to before
+      function parseDateSmart(value) {
+        if (value == null || value === '') return null
+        if (value instanceof Date) return value
+        const s = String(value).trim()
+        if (!s) return null
+        let d = new Date(s)
+        if (!isNaN(d.getTime())) return d
+        const m = s.match(new RegExp('^([0-9]{1,2})[-/.]([0-9]{1,2})[-/.]([0-9]{2,4})$'))
+        if (m) {
+          const a = parseInt(m[1], 10)
+          const b = parseInt(m[2], 10)
+          let y = parseInt(m[3], 10)
+          if (y < 100) y += y >= 70 ? 1900 : 2000
+          const tryDayFirst = new Date(y, b - 1, a)
+          const tryMonthFirst = new Date(y, a - 1, b)
+          const now = new Date()
+          const plausible = dt => {
+            if (isNaN(dt.getTime())) return false
+            const yr = dt.getFullYear()
+            return yr >= 1900 && yr <= now.getFullYear() + 1
           }
-          return
+          if (a > 12 && plausible(tryDayFirst)) return tryDayFirst
+          if (b > 12 && plausible(tryMonthFirst)) return tryMonthFirst
+          if (plausible(tryDayFirst)) return tryDayFirst
+          if (plausible(tryMonthFirst)) return tryMonthFirst
         }
+        return null
+      }
 
-        // Titulo -> attempt numeric parse
-        if (String(h).toLowerCase() === 'titulo') {
-          const parsed = parseTituloToNumber(val)
-          obj[h] = parsed == null ? (val === '' ? '' : String(val)) : parsed
-          return
-        }
-
-        obj[h] = val
+      const bodyRows = rowsToExport.map(r => {
+        return headers.map(h => {
+          const raw = r[h] == null ? '' : r[h]
+          const key = String(h).toLowerCase()
+          if (key === 'ensayo') {
+            const n = Number(String(raw).toString().replace(/[^0-9-]+/g, ''))
+            return Number.isFinite(n) ? n : raw
+          }
+          if (key === 'fecha') {
+            const pd = parseDateSmart(raw)
+            return pd || raw
+          }
+          if (numericColumnsSet.has(h)) {
+            if (raw === '' || raw == null) return ''
+            if (typeof raw === 'number') return raw
+            const n = Number(String(raw).toString().replace(/,/g, '.').replace(/[^0-9.-]+/g, ''))
+            return Number.isNaN(n) ? raw : n
+          }
+          if (key === 'titulo') {
+            const parsed = parseTituloToNumber(raw)
+            return parsed == null ? raw : parsed
+          }
+          return raw
+        })
       })
-      return obj
-    })
 
-    const ws = XLSX.utils.json_to_sheet(data, { header: headers })
-    // Set reasonable column widths based on header length
-    ws['!cols'] = headers.map(h => ({ wch: Math.max(10, String(h).length + 4) }))
+      // Create workbook with ExcelJS to enable real table + styles
+      const workbook = new ExcelJS.Workbook()
+      workbook.creator = 'carga-datos-vue'
+      workbook.created = new Date()
 
-    // Apply table-like formatting: autofilter, header style and banded rows
-    try {
-      const lastRow = data.length // data rows start at r=1 because header is row 0
-      const lastCol = Math.max(0, headers.length - 1)
-      const range = XLSX.utils.encode_range({ s: { c: 0, r: 0 }, e: { c: lastCol, r: lastRow } })
+      const sheet = workbook.addWorksheet('Resumen')
 
-      // Enable autofilter so Excel shows filter arrows on header
-      ws['!autofilter'] = { ref: range }
+      // Add header row
+      sheet.addRow(headers)
 
-      // Header style (solid fill + bold)
-      for (let c = 0; c <= lastCol; c++) {
-        const cell = XLSX.utils.encode_cell({ c, r: 0 })
-        if (!ws[cell]) continue
-        ws[cell].s = Object.assign({}, ws[cell].s || {}, {
-          fill: { patternType: 'solid', fgColor: { rgb: 'FFEDF7FF' } },
-          font: { bold: true }
+      // Add data rows
+      bodyRows.forEach(r => sheet.addRow(r))
+
+      // Set column widths
+      sheet.columns = headers.map(h => ({ header: h, width: Math.max(10, String(h).length + 4) }))
+
+      // Add table covering header + data
+      const totalRows = bodyRows.length
+      try {
+        sheet.addTable({
+          name: 'ResumenTable',
+          ref: 'A1',
+          headerRow: true,
+          totalsRow: false,
+          style: { theme: 'TableStyleMedium9', showRowStripes: true },
+          columns: headers.map(h => ({ name: h })),
+          rows: bodyRows
+        })
+      } catch (e) {
+        console.warn('Could not add table via ExcelJS:', e)
+      }
+
+      // Ensure Fecha column type and format
+      const fechaIdx = headers.findIndex(h => String(h).toLowerCase() === 'fecha')
+      if (fechaIdx !== -1) {
+        sheet.getColumn(fechaIdx + 1).numFmt = 'dd/mm/yyyy'
+        sheet.eachRow((row, rowNumber) => {
+          if (rowNumber === 1) return
+          const cell = row.getCell(fechaIdx + 1)
+          if (cell && typeof cell.value === 'string') {
+            const pd = parseDateSmart(cell.value)
+            if (pd) cell.value = pd
+          }
         })
       }
 
-      // Banded rows: apply light fill to every other data row for readability
-      for (let i = 0; i < data.length; i++) {
-        const rowIndex = i + 1 // data rows start at r=1
-        if (i % 2 === 1) continue // skip even rows to create banding on odd-indexed rows
-        for (let c = 0; c <= lastCol; c++) {
-          const cell = XLSX.utils.encode_cell({ c, r: rowIndex })
-          if (!ws[cell]) continue
-          ws[cell].s = Object.assign({}, ws[cell].s || {}, {
-            fill: { patternType: 'solid', fgColor: { rgb: 'FFF7FBFF' } }
-          })
-        }
+      // Ensure Ensayo column numeric
+      const ensayoIdx = headers.findIndex(h => String(h).toLowerCase() === 'ensayo')
+      if (ensayoIdx !== -1) {
+        sheet.eachRow((row, rowNumber) => {
+          if (rowNumber === 1) return
+          const cell = row.getCell(ensayoIdx + 1)
+          if (cell && typeof cell.value === 'string') {
+            const n = Number(String(cell.value).replace(/[^0-9-]+/g, ''))
+            if (Number.isFinite(n)) cell.value = n
+          }
+        })
       }
+
+      // Generate buffer and trigger download
+      const buffer = await workbook.xlsx.writeBuffer()
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      const now = new Date()
+      const pad = n => String(n).padStart(2, '0')
+      const ts = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`
+      link.href = url
+      link.setAttribute('download', `resumen-ensayos-${ts}.xlsx`)
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(url)
+
+      Swal.fire({ icon: 'success', title: 'Exportado', text: 'Archivo XLSX listo para abrir en Excel.', timer: 1400, showConfirmButton: false })
     } catch (err) {
-      // Non-fatal: continue if styling isn't supported or fails
-      console.warn('Could not apply table formatting to XLSX:', err)
+      console.error('Error exporting XLSX (ExcelJS)', err)
+      Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo exportar a XLSX.' })
     }
-
-    const wb = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(wb, ws, 'Resumen')
-
-    // Ensure Fecha and Ensayo cells have correct types/formats in the sheet
-    try {
-      const fechaColIndex = headers.findIndex(h => String(h).toLowerCase() === 'fecha')
-      const ensayoColIndex = headers.findIndex(h => String(h).toLowerCase() === 'ensayo')
-
-      if (data && data.length && (fechaColIndex !== -1 || ensayoColIndex !== -1)) {
-        data.forEach((rowObj, i) => {
-          const sheetRow = i + 1 // json_to_sheet places header at row 0
-
-          if (fechaColIndex !== -1) {
-            const cellAddr = XLSX.utils.encode_cell({ c: fechaColIndex, r: sheetRow })
-            const v = rowObj[headers[fechaColIndex]]
-            if (v instanceof Date) {
-              if (!ws[cellAddr]) ws[cellAddr] = {}
-              ws[cellAddr].t = 'd'
-              ws[cellAddr].v = v
-              // Excel format dd/mm/yyyy
-              ws[cellAddr].z = 'dd/mm/yyyy'
-            }
-          }
-
-          if (ensayoColIndex !== -1) {
-            const cellAddr = XLSX.utils.encode_cell({ c: ensayoColIndex, r: sheetRow })
-            const v = rowObj[headers[ensayoColIndex]]
-            if (typeof v === 'number' && Number.isFinite(v)) {
-              if (!ws[cellAddr]) ws[cellAddr] = {}
-              ws[cellAddr].t = 'n'
-              ws[cellAddr].v = v
-            }
-          }
-        })
-      }
-    } catch (e) {
-      // Non-fatal: if formatting fails, continue with default behavior
-      console.warn('Warning: could not apply XLSX cell typing:', e)
-    }
-
-    // Write workbook ensuring dates are preserved
-    const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array', cellDates: true })
-    const blob = new Blob([wbout], { type: 'application/octet-stream' })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    // Build a timestamped filename including date and time (YYYY-MM-DD_HHMMSS)
-    const now = new Date()
-    const pad = (n) => String(n).padStart(2, '0')
-    const ts = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`
-    link.href = url
-    link.setAttribute('download', `resumen-ensayos-${ts}.xlsx`)
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
-
-    Swal.fire({ icon: 'success', title: 'Exportado', text: 'Archivo XLSX listo para abrir en Excel.', timer: 1400, showConfirmButton: false })
-  } catch (err) {
-    console.error('Error exporting XLSX', err)
-    Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo exportar a XLSX.' })
   }
-}
 
 onMounted(() => {
   loadRows()
