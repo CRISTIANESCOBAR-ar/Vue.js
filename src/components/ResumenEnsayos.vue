@@ -1132,45 +1132,68 @@ async function copyModalAsImage() {
       }
     })
 
-    // Use html-to-image to capture the modal (supports modern CSS)
-    const dataUrl = await toPng(modalEl, {
-      quality: 1,
-      pixelRatio: 2,
-      backgroundColor: '#ffffff'
-    })
-
-    // Convert data URL to blob
-    const response = await fetch(dataUrl)
-    const blob = await response.blob()
+    // Temporarily suppress console errors for font loading issues
+    const originalConsoleError = console.error
+    console.error = (...args) => {
+      const message = args[0]?.toString() || ''
+      // Suppress CORS and CSS rules errors (they don't affect the final image)
+      if (message.includes('CSS rules') || 
+          message.includes('cssRules') || 
+          message.includes('SecurityError')) {
+        return
+      }
+      originalConsoleError.apply(console, args)
+    }
 
     try {
-      // Try to copy to clipboard
-      await navigator.clipboard.write([
-        new ClipboardItem({ 'image/png': blob })
-      ])
-
-      Swal.fire({
-        icon: 'success',
-        title: '¡Copiado!',
-        text: 'La imagen está lista para pegar en WhatsApp (Ctrl+V).',
-        timer: 2500,
-        showConfirmButton: false
+      // Use html-to-image to capture the modal (supports modern CSS)
+      const dataUrl = await toPng(modalEl, {
+        quality: 1,
+        pixelRatio: 2,
+        backgroundColor: '#ffffff',
+        skipFonts: false
       })
-    } catch (clipboardErr) {
-      console.warn('Clipboard not available, downloading instead:', clipboardErr)
-      
-      // Fallback: download the image
-      const link = document.createElement('a')
-      link.download = `ensayo-${selectedTestnr.value || 'detalle'}.png`
-      link.href = dataUrl
-      link.click()
 
-      Swal.fire({
-        icon: 'success',
-        title: 'Descargado',
-        text: 'La imagen se descargó. Puedes subirla a WhatsApp.',
-        timer: 2500
-      })
+      // Restore console.error
+      console.error = originalConsoleError
+
+      // Convert data URL to blob
+      const response = await fetch(dataUrl)
+      const blob = await response.blob()
+
+      try {
+        // Try to copy to clipboard
+        await navigator.clipboard.write([
+          new ClipboardItem({ 'image/png': blob })
+        ])
+
+        Swal.fire({
+          icon: 'success',
+          title: '¡Copiado!',
+          text: 'La imagen está lista para pegar en WhatsApp (Ctrl+V).',
+          timer: 2500,
+          showConfirmButton: false
+        })
+      } catch (clipboardErr) {
+        console.warn('Clipboard not available, downloading instead:', clipboardErr)
+
+        // Fallback: download the image
+        const link = document.createElement('a')
+        link.download = `ensayo-${selectedTestnr.value || 'detalle'}.png`
+        link.href = dataUrl
+        link.click()
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Descargado',
+          text: 'La imagen se descargó. Puedes subirla a WhatsApp.',
+          timer: 2500
+        })
+      }
+    } catch (captureError) {
+      // Restore console.error even if capture fails
+      console.error = originalConsoleError
+      throw captureError
     }
   } catch (err) {
     console.error('Error capturing modal:', err)
