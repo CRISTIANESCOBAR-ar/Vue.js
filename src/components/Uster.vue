@@ -71,8 +71,8 @@
       <div class="grid uster-grid" style="grid-template-columns: 390px 160px 320px;">
         <!-- Columna 1: Lista de Ensayos, Botones y Estado -->
         <div class="flex flex-col gap-3">
-          <div class="scan-container rounded-xl border border-slate-200 overflow-hidden">
-            <table class="text-sm border-collapse fixed-table scan-table">
+          <div class="scan-container rounded-xl border border-slate-200 overflow-hidden bg-white">
+            <table class="min-w-full w-full table-auto divide-y divide-slate-200 text-xs">
               <colgroup>
                 <col class="col-ensayo" />
                 <col class="col-par" />
@@ -139,8 +139,8 @@
         <!-- Columna 2: Nro / Titulo (ahora en el medio) -->
         <div style="width:160px;">
           <!-- fixed-height container that shows 10 rows and scrolls when there are more -->
-          <div class="titulo-container rounded-xl border border-slate-200 overflow-hidden">
-            <table class="w-full text-sm border-collapse titulo-table">
+          <div class="titulo-container rounded-xl border border-slate-200 overflow-hidden bg-white">
+            <table class="min-w-full w-full table-auto divide-y divide-slate-200 text-xs">
               <thead>
                 <tr class="bg-gradient-to-r from-slate-50 to-slate-100">
                   <th class="px-3 py-3 text-center font-semibold text-slate-700 border-b border-slate-200 text-xs"
@@ -179,8 +179,8 @@
 
         <!-- Columna 3: Detalle Compacto (moved to right) -->
         <div>
-          <div class="rounded-xl border border-slate-200 overflow-hidden">
-            <table class="text-sm border-collapse compact-table compact-dato w-full">
+          <div class="rounded-xl border border-slate-200 overflow-hidden bg-white">
+            <table class="min-w-full w-full table-auto divide-y divide-slate-200 text-xs">
               <colgroup>
                 <col class="col-dato" />
                 <col class="col-valor" />
@@ -1649,12 +1649,13 @@ function formatTimestampToDatetime(value) {
 }
 
 .col-imp {
-  width: 59px;
+  /* aumentamos ligeramente para recibir 10% del ancho de .col-ne */
+  width: 65px;
 }
 
-.col-ne,
-.col-maq {
-  width: 60px;
+.col-ne {
+  /* reducido ~10% respecto a 60px original */
+  width: 54px;
 }
 
 .col-maq {
