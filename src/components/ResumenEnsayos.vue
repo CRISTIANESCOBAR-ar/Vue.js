@@ -19,28 +19,12 @@
           <!-- center area: filters -->
           <div class="flex-1 flex items-center justify-center gap-2">
             <div class="flex items-center gap-2 flex-wrap">
-              <span class="text-sm font-medium text-slate-600">Buscar en:</span>
-              <label class="inline-flex items-center text-sm cursor-pointer">
-                <input type="radio" name="searchField" class="mr-1 text-blue-600 focus:ring-blue-500"
-                  v-model="searchField" value="ALL" />
-                <span class="text-slate-700">Todos</span>
-              </label>
-              <label class="inline-flex items-center text-sm cursor-pointer">
-                <input type="radio" name="searchField" class="mr-1 text-blue-600 focus:ring-blue-500"
-                  v-model="searchField" value="OE" />
-                <span class="text-slate-700">OE</span>
-              </label>
-              <label class="inline-flex items-center text-sm cursor-pointer">
-                <input type="radio" name="searchField" class="mr-1 text-blue-600 focus:ring-blue-500"
-                  v-model="searchField" value="Ne" />
-                <span class="text-slate-700">Ne</span>
-              </label>
               <!-- Quick filters for OE and Ne (client-side) -->
-              <div class="flex items-center gap-2 ml-2">
-                <label class="sr-only" for="oeFilter">OE</label>
+              <div class="flex items-center gap-2">
+                <label for="oeFilter" class="text-sm text-slate-600">OE</label>
                 <input id="oeFilter" v-model.trim="oeQuery" type="search" placeholder="OE" v-tippy="'Filtrar por OE'"
                   aria-label="Filtrar por OE" class="px-2 py-1 border border-slate-200 rounded-md text-sm w-24" />
-                <label class="sr-only" for="neFilter">Ne</label>
+                <label for="neFilter" class="text-sm text-slate-600">Ne</label>
                 <input id="neFilter" v-model.trim="neQuery" type="search" placeholder="Ne"
                   v-tippy="'Filtrar por título'" aria-label="Filtrar por título"
                   class="px-2 py-1 border border-slate-200 rounded-md text-sm w-20" />
@@ -645,17 +629,9 @@ const debounceMsDisplay = ref(debounceDefault)
 const oeQuery = ref('')
 const neQuery = ref('')
 
-// Search field selection: 'ALL' | 'OE' | 'Ne'
-const searchField = ref('ALL')
+// Search fields to check for the general search (always search across these columns)
 const allSearchFields = ['Ensayo', 'Fecha', 'OE', 'Ne', 'CVm %', 'Delg -30%', 'Delg -40%', 'Delg -50%', 'Grue +35%', 'Grue +50%', 'Neps +140%', 'Neps +280%', 'Fuerza B', 'Elong. %', 'Tenac.', 'Trabajo B', 'Titulo']
-
-const fieldsToCheck = computed(() => {
-  switch (searchField.value) {
-    case 'OE': return ['OE']
-    case 'Ne': return ['Ne']
-    default: return allSearchFields
-  }
-})
+const fieldsToCheck = computed(() => allSearchFields)
 
 function onInput() {
   // record keystroke timestamp
