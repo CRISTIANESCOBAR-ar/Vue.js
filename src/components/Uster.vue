@@ -1650,6 +1650,17 @@ function formatTimestampToDatetime(value) {
   width: 100%;
 }
 
+/* Unificar altura/padding de los encabezados en las tablas principales del componente
+   para que "Ensayos encontrados", "Huso/Titulo" y "Dato/Valor" coincidan. */
+.uster-component table thead th {
+  /* altura consistente */
+  padding-top: 0.45rem;
+  padding-bottom: 0.45rem;
+  min-height: 40px;
+  line-height: 1.1;
+  vertical-align: middle;
+}
+
 /* Anchos fijos para columnas */
 .col-ensayo {
   /* Aumentado para evitar quiebre del encabezado 'Ensayo' */
@@ -1728,19 +1739,21 @@ table.text-sm td {
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
 }
 
-.titulo-table thead th {
+/* Ensure titulo, scan and compact Dato/Valor tables share the same header sizing
+   Use the --titulo-header-h variable so all header heights stay consistent across the component */
+.titulo-table thead th,
+.scan-table thead th,
+.compact-table thead th {
   position: sticky;
   top: 0;
   z-index: 2;
   background: inherit;
-  /* preserve header background */
-}
-
-/* Increase vertical padding in headers for better spacing with larger header height */
-.titulo-table thead th,
-.scan-table thead th {
+  /* spacing consistent with --titulo-header-h */
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
+  min-height: var(--titulo-header-h, 2.5rem);
+  vertical-align: middle;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03);
 }
 
 /* Add left indentation (sangría) to Dato/Valor headers and cells (only the small compact table) */
