@@ -1632,6 +1632,17 @@ function formatTimestampToDatetime(value) {
   width: 100%;
 }
 
+/* Use the UI font for tables in this component to match ResumenEnsayos.vue
+   (overrides global monospace rules for .col-* through higher specificity) */
+.fixed-table, .compact-table, .fixed-table th, .fixed-table td, .compact-table th, .compact-table td {
+  font-family: var(--ui-font) !important;
+}
+
+/* Also ensure any table in this component uses the UI font (covers tables without .fixed-table) */
+table, table th, table td, .min-w-full, .min-w-full th, .min-w-full td {
+  font-family: var(--ui-font) !important;
+}
+
 .compact-table {
   table-layout: fixed;
   width: 100%;
@@ -1640,7 +1651,6 @@ function formatTimestampToDatetime(value) {
 /* Anchos fijos para columnas */
 .col-ensayo {
   width: 63px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Helvetica Neue', monospace;
 }
 
 .col-par,
