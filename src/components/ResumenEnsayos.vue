@@ -689,7 +689,7 @@ const fieldsToCheck = computed(() => allSearchFields)
 const numericColumnsSet = new Set([
   'CVm %', 'Delg -30%', 'Delg -40%', 'Delg -50%',
   'Grue +35%', 'Grue +50%', 'Neps +140%', 'Neps +280%',
-  'Fuerza B', 'Elong. %', 'Tenac.', 'Trabajo B'
+  'Fuerza B', 'Elong. %', 'Tenac.', 'Trabajo B', 'Ne'
 ])
 
 function onInput() {
