@@ -232,9 +232,31 @@
                   modalMeta.t }}</span></div>
           </div>
 
-          <button @click="closeModal"
-            class="px-4 py-[0.4rem] bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors duration-200 font-medium"
-            aria-label="Cerrar detalle">Cerrar</button>
+          <div class="flex items-center gap-2">
+            <!-- Copy as image button -->
+            <button @click="copyModalAsImage" type="button"
+              v-tippy="{ content: 'Copiar como imagen para WhatsApp', placement: 'bottom', theme: 'custom' }"
+              class="w-9 h-9 rounded-lg bg-white border border-slate-200 hover:border-blue-400 hover:bg-blue-50 flex items-center justify-center text-slate-600 hover:text-blue-600 transition-all duration-200 group"
+              aria-label="Copiar como imagen">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+            </button>
+
+            <!-- Close button -->
+            <button @click="closeModal" type="button"
+              v-tippy="{ content: 'Cerrar (Esc)', placement: 'bottom', theme: 'custom' }"
+              class="w-9 h-9 rounded-lg bg-white border border-slate-200 hover:border-red-400 hover:bg-red-50 flex items-center justify-center text-slate-600 hover:text-red-600 transition-all duration-200"
+              aria-label="Cerrar detalle">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
         </header>
 
         <section class="flex-1 relative">
@@ -1089,6 +1111,70 @@ async function openDetail(testnr) {
 function closeModal() {
   modalVisible.value = false
   selectedTestnr.value = null
+}
+
+async function copyModalAsImage() {
+  try {
+    // Find the modal content element (the white card, not the overlay)
+    const modalEl = document.querySelector('[role="document"]')
+    if (!modalEl) {
+      Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo encontrar el modal para capturar.' })
+      return
+    }
+
+    // Dynamically import html2canvas
+    const html2canvas = (await import('html2canvas')).default
+
+    // Capture the modal as canvas
+    const canvas = await html2canvas(modalEl, {
+      backgroundColor: '#ffffff',
+      scale: 2, // Higher quality
+      logging: false,
+      useCORS: true
+    })
+
+    // Convert canvas to blob
+    canvas.toBlob(async (blob) => {
+      if (!blob) {
+        Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo generar la imagen.' })
+        return
+      }
+
+      try {
+        // Copy to clipboard
+        await navigator.clipboard.write([
+          new ClipboardItem({ 'image/png': blob })
+        ])
+
+        Swal.fire({
+          icon: 'success',
+          title: '¡Copiado!',
+          text: 'La imagen está lista para pegar en WhatsApp.',
+          timer: 2000,
+          showConfirmButton: false
+        })
+      } catch (err) {
+        console.error('Clipboard error:', err)
+        // Fallback: download the image
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = `ensayo-${selectedTestnr.value || 'detalle'}.png`
+        a.click()
+        URL.revokeObjectURL(url)
+
+        Swal.fire({
+          icon: 'info',
+          title: 'Descargado',
+          text: 'No se pudo copiar al portapapeles. La imagen se descargó.',
+          timer: 2500
+        })
+      }
+    }, 'image/png')
+  } catch (err) {
+    console.error('Error capturing modal:', err)
+    Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo capturar la imagen del modal.' })
+  }
 }
 
 async function loadRows() {
