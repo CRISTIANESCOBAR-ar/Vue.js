@@ -70,7 +70,7 @@
 
             <!-- Export to Excel (CSV) button -->
             <button @click="exportToExcel"
-              v-tippy="{ content: 'Exportar a Excel (CSV)', placement: 'bottom', theme: 'custom' }"
+              v-tippy="{ content: 'Exportar a Excel (XLSX)', placement: 'bottom', theme: 'custom' }"
               class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -685,6 +685,13 @@ const neQuery = ref('')
 const allSearchFields = ['Ensayo', 'Fecha', 'OE', 'Ne', 'CVm %', 'Delg -30%', 'Delg -40%', 'Delg -50%', 'Grue +35%', 'Grue +50%', 'Neps +140%', 'Neps +280%', 'Fuerza B', 'Elong. %', 'Tenac.', 'Trabajo B', 'Titulo']
 const fieldsToCheck = computed(() => allSearchFields)
 
+// Exact-name numeric columns mapping to avoid heuristic mistakes when coercing
+const numericColumnsSet = new Set([
+  'CVm %', 'Delg -30%', 'Delg -40%', 'Delg -50%',
+  'Grue +35%', 'Grue +50%', 'Neps +140%', 'Neps +280%',
+  'Fuerza B', 'Elong. %', 'Tenac.', 'Trabajo B'
+])
+
 function onInput() {
   // record keystroke timestamp
   try {
@@ -1146,7 +1153,7 @@ function closeModal() {
 }
 
 async function copyModalAsImage() {
-  /* eslint-disable no-undef */
+
   try {
     // Find the modal content element
     const modalEl = document.querySelector('[role="document"]')
@@ -1264,7 +1271,7 @@ async function copyModalAsImage() {
       text: `No se pudo capturar la imagen: ${err.message}`
     })
   }
-  /* eslint-enable no-undef */
+
 }
 
 async function loadRows() {
@@ -1293,28 +1300,143 @@ function exportToExcel() {
     const headers = fieldsToCheck.value || []
 
     // Build array of plain objects ordered by headers
-    const data = rowsToExport.map(r => {
-      const obj = {}
-      headers.forEach(h => {
-        obj[h] = r[h] == null ? '' : r[h]
-      })
-      return obj
-    })
+      // Helper: parse common date formats to a JS Date (same heuristics used elsewhere)
+      function parseDateSmart(value) {
+        if (value == null || value === '') return null
+        if (value instanceof Date) return value
+        const s = String(value).trim()
+        if (!s) return null
 
-    const ws = XLSX.utils.json_to_sheet(data, { header: headers })
+        // Try native/ISO parse first
+        let d = new Date(s)
+        if (!isNaN(d.getTime())) return d
+
+        // Match dd/mm/yyyy or mm/dd/yyyy with separators -/. or .
+        const m = s.match(/^([0-9]{1,2})[-\/.]([0-9]{1,2})[-\/.]([0-9]{2,4})$/)
+        if (m) {
+          const a = parseInt(m[1], 10)
+          const b = parseInt(m[2], 10)
+          let y = parseInt(m[3], 10)
+          if (y < 100) y += y >= 70 ? 1900 : 2000
+
+          const tryDayFirst = new Date(y, b - 1, a)
+          const tryMonthFirst = new Date(y, a - 1, b)
+          const now = new Date()
+          const plausible = dt => {
+            if (isNaN(dt.getTime())) return false
+            const yr = dt.getFullYear()
+            return yr >= 1900 && yr <= now.getFullYear() + 1
+          }
+
+          if (a > 12 && plausible(tryDayFirst)) return tryDayFirst
+          if (b > 12 && plausible(tryMonthFirst)) return tryMonthFirst
+          if (plausible(tryDayFirst)) return tryDayFirst
+          if (plausible(tryMonthFirst)) return tryMonthFirst
+        }
+
+        return null
+      }
+
+      // Build array of plain objects ordered by headers, coercing types for export
+      const data = rowsToExport.map(r => {
+        const obj = {}
+        headers.forEach(h => {
+          let val = r[h] == null ? '' : r[h]
+
+          // Ensayo -> numeric when possible
+          if (String(h).toLowerCase() === 'ensayo') {
+            const n = Number(String(val).toString().replace(/[^0-9\-]+/g, ''))
+            obj[h] = Number.isFinite(n) ? n : (val === '' ? '' : String(val))
+            return
+          }
+
+          // Fecha -> Date object when possible
+          if (String(h).toLowerCase() === 'fecha') {
+            const pd = parseDateSmart(val)
+            obj[h] = pd || (val === '' ? '' : String(val))
+            return
+          }
+
+          // Exact-name numeric columns
+          if (numericColumnsSet.has(h)) {
+            if (val === '' || val == null) {
+              obj[h] = ''
+            } else if (typeof val === 'number') {
+              obj[h] = val
+            } else {
+              const n = Number(String(val).toString().replace(/,/g, '.').replace(/[^0-9\-\.]+/g, ''))
+              obj[h] = Number.isNaN(n) ? String(val) : n
+            }
+            return
+          }
+
+          // Titulo -> attempt numeric parse
+          if (String(h).toLowerCase() === 'titulo') {
+            const parsed = parseTituloToNumber(val)
+            obj[h] = parsed == null ? (val === '' ? '' : String(val)) : parsed
+            return
+          }
+
+          obj[h] = val
+        })
+        return obj
+      })
+
+      const ws = XLSX.utils.json_to_sheet(data, { header: headers })
     // Set reasonable column widths based on header length
     ws['!cols'] = headers.map(h => ({ wch: Math.max(10, String(h).length + 4) }))
 
     const wb = XLSX.utils.book_new()
     XLSX.utils.book_append_sheet(wb, ws, 'Resumen')
 
-    const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' })
+    // Ensure Fecha and Ensayo cells have correct types/formats in the sheet
+    try {
+      const fechaColIndex = headers.findIndex(h => String(h).toLowerCase() === 'fecha')
+      const ensayoColIndex = headers.findIndex(h => String(h).toLowerCase() === 'ensayo')
+
+      if (data && data.length && (fechaColIndex !== -1 || ensayoColIndex !== -1)) {
+        data.forEach((rowObj, i) => {
+          const sheetRow = i + 1 // json_to_sheet places header at row 0
+
+          if (fechaColIndex !== -1) {
+            const cellAddr = XLSX.utils.encode_cell({ c: fechaColIndex, r: sheetRow })
+            const v = rowObj[headers[fechaColIndex]]
+            if (v instanceof Date) {
+              if (!ws[cellAddr]) ws[cellAddr] = {}
+              ws[cellAddr].t = 'd'
+              ws[cellAddr].v = v
+              // Excel format dd/mm/yyyy
+              ws[cellAddr].z = 'dd/mm/yyyy'
+            }
+          }
+
+          if (ensayoColIndex !== -1) {
+            const cellAddr = XLSX.utils.encode_cell({ c: ensayoColIndex, r: sheetRow })
+            const v = rowObj[headers[ensayoColIndex]]
+            if (typeof v === 'number' && Number.isFinite(v)) {
+              if (!ws[cellAddr]) ws[cellAddr] = {}
+              ws[cellAddr].t = 'n'
+              ws[cellAddr].v = v
+            }
+          }
+        })
+      }
+    } catch (e) {
+      // Non-fatal: if formatting fails, continue with default behavior
+      console.warn('Warning: could not apply XLSX cell typing:', e)
+    }
+
+    // Write workbook ensuring dates are preserved
+    const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array', cellDates: true })
     const blob = new Blob([wbout], { type: 'application/octet-stream' })
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
-    const date = new Date().toISOString().slice(0, 10)
-    link.href = url
-    link.setAttribute('download', `resumen-ensayos-${date}.xlsx`)
+  // Build a timestamped filename including date and time (YYYY-MM-DD_HHMMSS)
+  const now = new Date()
+  const pad = (n) => String(n).padStart(2, '0')
+  const ts = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`
+  link.href = url
+  link.setAttribute('download', `resumen-ensayos-${ts}.xlsx`)
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
