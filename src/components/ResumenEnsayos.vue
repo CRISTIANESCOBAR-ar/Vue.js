@@ -273,7 +273,7 @@
           <div class="flex items-center gap-2">
             <!-- Export modal data to Excel (small button to the left of Copy) -->
             <button @click="exportModalToExcel" type="button"
-              v-tippy="{ content: 'Exportar este detalle a Excel', placement: 'bottom', theme: 'custom' }"
+              v-tippy="{ content: 'Exportar este detalle a Excel (XLSX)', placement: 'bottom', theme: 'custom' }"
               class="w-9 h-9 rounded-lg bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 flex items-center justify-center text-slate-600 hover:text-slate-700 transition-all duration-200"
               aria-label="Exportar detalle a Excel">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
@@ -1177,14 +1177,17 @@ async function copyModalAsImage() {
     // Find and hide prev/next buttons and modal action buttons temporarily
     const prevBtn = document.querySelector('[aria-label="Anterior ensayo"]')
     const nextBtn = document.querySelector('[aria-label="Siguiente ensayo"]')
+    const exportBtn = document.querySelector('[aria-label="Exportar detalle a Excel"]')
     const copyBtn = document.querySelector('[aria-label="Copiar como imagen"]')
     const closeBtn = document.querySelector('[aria-label="Cerrar detalle"]')
     const prevBtnDisplay = prevBtn?.style.display
     const nextBtnDisplay = nextBtn?.style.display
+    const exportBtnDisplay = exportBtn?.style.display
     const copyBtnDisplay = copyBtn?.style.display
     const closeBtnDisplay = closeBtn?.style.display
     if (prevBtn) prevBtn.style.display = 'none'
     if (nextBtn) nextBtn.style.display = 'none'
+    if (exportBtn) exportBtn.style.display = 'none'
     if (copyBtn) copyBtn.style.display = 'none'
     if (closeBtn) closeBtn.style.display = 'none'
 
@@ -1229,6 +1232,7 @@ async function copyModalAsImage() {
       // Restore prev/next and modal action buttons
       if (prevBtn) prevBtn.style.display = prevBtnDisplay || ''
       if (nextBtn) nextBtn.style.display = nextBtnDisplay || ''
+      if (exportBtn) exportBtn.style.display = exportBtnDisplay || ''
       if (copyBtn) copyBtn.style.display = copyBtnDisplay || ''
       if (closeBtn) closeBtn.style.display = closeBtnDisplay || ''
 
@@ -1271,6 +1275,7 @@ async function copyModalAsImage() {
       console.error = originalConsoleError
       if (prevBtn) prevBtn.style.display = prevBtnDisplay || ''
       if (nextBtn) nextBtn.style.display = nextBtnDisplay || ''
+      if (exportBtn) exportBtn.style.display = exportBtnDisplay || ''
       if (copyBtn) copyBtn.style.display = copyBtnDisplay || ''
       if (closeBtn) closeBtn.style.display = closeBtnDisplay || ''
       throw captureError
