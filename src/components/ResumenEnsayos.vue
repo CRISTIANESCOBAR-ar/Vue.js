@@ -27,7 +27,7 @@
                     v-tippy="{ content: 'Filtrar por OE', placement: 'bottom', theme: 'custom' }"
                     aria-label="Filtrar por OE" class="px-2 py-1 border border-slate-200 rounded-md text-sm w-24 pr-7" />
                   <button type="button" @click="oeQuery = ''" aria-label="Limpiar OE"
-                    v-show="oeQuery"
+                    v-show="oeQuery" v-tippy="{ content: 'Borrar filtro', placement: 'bottom', theme: 'custom' }"
                     class="absolute right-1 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <line x1="18" y1="6" x2="6" y2="18" stroke-linecap="round" stroke-linejoin="round"></line>
@@ -42,7 +42,7 @@
                     v-tippy="{ content: 'Filtrar por Ne', placement: 'bottom', theme: 'custom' }" aria-label="Filtrar por Ne"
                     class="px-2 py-1 border border-slate-200 rounded-md text-sm w-20 pr-7" />
                   <button type="button" @click="neQuery = ''" aria-label="Limpiar Ne"
-                    v-show="neQuery"
+                    v-show="neQuery" v-tippy="{ content: 'Borrar filtro', placement: 'bottom', theme: 'custom' }"
                     class="absolute right-1 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <line x1="18" y1="6" x2="6" y2="18" stroke-linecap="round" stroke-linejoin="round"></line>
