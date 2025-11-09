@@ -68,9 +68,9 @@
               <span class="hidden sm:inline">Refrescar</span>
             </button>
 
-            <!-- Export to Excel (CSV) button -->
+            <!-- Export to Excel (XLSX) button -->
             <button @click="exportToExcel"
-              v-tippy="{ content: 'Exportar a Excel (CSV)', placement: 'bottom', theme: 'custom' }"
+              v-tippy="{ content: 'Exportar a Excel (XLSX)', placement: 'bottom', theme: 'custom' }"
               class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -1293,10 +1293,51 @@ function exportToExcel() {
     const headers = fieldsToCheck.value || []
 
     // Build array of plain objects ordered by headers
+    // Convert Fecha to Date objects (if possible) so Excel recognizes dates
+    const fechaHeaderIndex = headers.findIndex(h => String(h).toLowerCase() === 'fecha')
+
     const data = rowsToExport.map(r => {
       const obj = {}
-      headers.forEach(h => {
-        obj[h] = r[h] == null ? '' : r[h]
+      headers.forEach((h, idx) => {
+        let val = r[h] == null ? '' : r[h]
+
+        // If this is the Fecha column, try to parse to Date
+        if (idx === fechaHeaderIndex && val) {
+          // If already Date
+          if (val instanceof Date) {
+            obj[h] = val
+            return
+          }
+
+          // Try ISO parse first
+          let d = new Date(val)
+          if (isNaN(d.getTime())) {
+            // Try dd/mm/yyyy or dd/mm/yy
+            const m = String(val).trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/)
+            if (m) {
+              let day = parseInt(m[1], 10)
+              let month = parseInt(m[2], 10)
+              let year = parseInt(m[3], 10)
+              if (year < 100) year += year >= 70 ? 1900 : 2000
+              d = new Date(year, month - 1, day)
+            }
+          }
+
+          if (!isNaN(d.getTime())) obj[h] = d
+          else obj[h] = String(val)
+        } else {
+          // For non-fecha columns, attempt to coerce numeric strings to numbers
+          if (val !== '' && typeof val === 'string') {
+            const maybeNum = Number(String(val).replace(/,/g, '.'))
+            if (!Number.isNaN(maybeNum) && String(val).match(/^-?\d+[\.,]?\d*$/)) {
+              obj[h] = maybeNum
+            } else {
+              obj[h] = val
+            }
+          } else {
+            obj[h] = val
+          }
+        }
       })
       return obj
     })
@@ -1308,7 +1349,20 @@ function exportToExcel() {
     const wb = XLSX.utils.book_new()
     XLSX.utils.book_append_sheet(wb, ws, 'Resumen')
 
-    const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' })
+    // Ensure Fecha column cells are typed as dates and formatted dd/mm/yyyy
+    if (fechaHeaderIndex !== -1) {
+      const range = XLSX.utils.decode_range(ws['!ref'] || 'A1')
+      for (let row = range.s.r + 1; row <= range.e.r; row++) {
+        const cellAddress = XLSX.utils.encode_cell({ c: fechaHeaderIndex, r: row })
+        const cell = ws[cellAddress]
+        if (cell && cell.v instanceof Date) {
+          cell.t = 'd'
+          cell.z = 'dd/mm/yyyy'
+        }
+      }
+    }
+
+    const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array', cellDates: true })
     const blob = new Blob([wbout], { type: 'application/octet-stream' })
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
