@@ -22,11 +22,12 @@
               <!-- Quick filters for OE and Ne (client-side) -->
               <div class="flex items-center gap-2">
                 <label for="oeFilter" class="text-sm text-slate-600">OE</label>
-                <input id="oeFilter" v-model.trim="oeQuery" type="search" placeholder="OE" v-tippy="'Filtrar por OE'"
+                <input id="oeFilter" v-model.trim="oeQuery" type="search" placeholder="OE" 
+                  v-tippy="{ content: 'Filtrar por OE', placement: 'bottom', theme: 'custom' }"
                   aria-label="Filtrar por OE" class="px-2 py-1 border border-slate-200 rounded-md text-sm w-24" />
                 <label for="neFilter" class="text-sm text-slate-600">Ne</label>
                 <input id="neFilter" v-model.trim="neQuery" type="search" placeholder="Ne"
-                  v-tippy="'Filtrar por título'" aria-label="Filtrar por título"
+                  v-tippy="{ content: 'Filtrar por Ne', placement: 'bottom', theme: 'custom' }" aria-label="Filtrar por Ne"
                   class="px-2 py-1 border border-slate-200 rounded-md text-sm w-20" />
               </div>
             </div>
@@ -36,8 +37,16 @@
           <div class="flex items-center gap-2">
             <span v-if="(debouncedQ || q) && rows.length >= 0" class="text-sm font-medium text-slate-600"
               aria-live="polite">{{ filteredRows.length }} coincidencias</span>
-            <button @click="loadRows"
-              class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm font-medium transition-colors duration-200 shadow-sm hover:shadow-md">Refrescar</button>
+
+            <!-- Minimal modern refresh button with icon -->
+            <button @click="loadRows" v-tippy="{ content: 'Refrescar datos', placement: 'bottom', theme: 'custom' }"
+              class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M21 12a9 9 0 1 1-3-6.7" stroke-linecap="round" stroke-linejoin="round"></path>
+                <polyline points="21 3 21 9 15 9" stroke-linecap="round" stroke-linejoin="round"></polyline>
+              </svg>
+              <span class="hidden sm:inline">Refrescar</span>
+            </button>
           </div>
         </div>
       </div>
