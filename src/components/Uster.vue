@@ -68,7 +68,7 @@
       <!-- scanStatus moved below the left list as per UX request -->
 
       <!-- Middle: three columns (left: list, middle: compact preview, right: Nro/Titulo) -->
-      <div class="grid uster-grid" style="grid-template-columns: 390px 160px 320px;">
+      <div class="grid uster-grid" style="grid-template-columns: 440px 160px 270px;">
         <!-- Columna 1: Lista de Ensayos, Botones y Estado -->
         <div class="flex flex-col gap-3">
           <div class="scan-container rounded-xl border border-slate-200 overflow-hidden bg-white">
@@ -1650,6 +1650,22 @@ function formatTimestampToDatetime(value) {
   width: 100%;
 }
 
+/* Remove extra spacing from table borders so container height matches rows exactly */
+.scan-table,
+.titulo-table,
+.compact-table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* Remove bottom border on the last visible tbody row to avoid a small gap
+   caused by borders/pixel rounding when the container height matches rows */
+.scan-table tbody tr:last-child td,
+.titulo-table tbody tr:last-child td,
+.compact-table tbody tr:last-child td {
+  border-bottom: none !important;
+}
+
 /* Unificar altura/padding de los encabezados en las tablas principales del componente
    para que "Ensayos encontrados", "Huso/Titulo" y "Dato/Valor" coincidan. */
 .uster-component table thead th {
@@ -1672,8 +1688,8 @@ function formatTimestampToDatetime(value) {
 
 /* Anchos fijos para columnas */
 .col-ensayo {
-  /* Aumentado para evitar quiebre del encabezado 'Ensayo' */
-  width: 72px;
+  /* Aumentado para dar más espacio a la columna "Ensayo" en la lista izquierda */
+  width: 82px;
 }
 
 .col-par,
@@ -1698,11 +1714,13 @@ function formatTimestampToDatetime(value) {
 
 /* Columnas tabla compacta */
 .col-dato {
-  width: 100px;
+  /* Increased by ~15% to give more room to the 'Dato' column */
+  width: 115px;
 }
 
 .col-valor {
-  width: 180px;
+  /* Reduced to compensate the increase on .col-dato so total width stays similar */
+  width: 165px;
 }
 
 /* ensure table cells use border-box so widths include borders/padding */
@@ -1843,6 +1861,62 @@ table.text-xs td {
   height: var(--titulo-row-h, 2rem) !important;
 }
 
+/* Minimal, non-intrusive adjustments to equalize visible row height across tables
+   without changing table structure (no display:block trick). These reduce
+   vertical padding and ensure inputs/checks don't expand rows. */
+.uster-component .scan-table tbody td,
+.uster-component .titulo-table tbody td,
+.uster-component .compact-table tbody td {
+  padding-top: 0.25rem !important;
+  /* 4px */
+  padding-bottom: 0.25rem !important;
+  /* 4px */
+  line-height: 1 !important;
+  box-sizing: border-box !important;
+  vertical-align: middle !important;
+}
+
+/* Ensure the row elements keep the expected height and don't expand */
+.uster-component .scan-table tbody tr,
+.uster-component .titulo-table tbody tr,
+.uster-component .compact-table tbody tr {
+  height: var(--titulo-row-h, 2rem) !important;
+  max-height: var(--titulo-row-h, 2rem) !important;
+}
+
+/* Inputs in the titulo-table should fit within the row without increasing height */
+.uster-component .titulo-table td input {
+  /* Make the input slightly smaller than the available row height so
+     focusing/active styles (borders, rings, shadows) don't push the row
+     taller and trigger the scroll bar. Use box-sizing:border-box so
+     padding/border are included in the fixed height. */
+  height: calc(var(--titulo-row-h, 2rem) - 0.7rem) !important;
+  /* a bit tighter than before */
+  max-height: calc(var(--titulo-row-h, 2rem) - 0.7rem) !important;
+  padding: 0.08rem 0.5rem !important;
+  box-sizing: border-box !important;
+}
+
+/* When the input receives focus, reduce its inner padding/height just a
+   touch to compensate for focus rings / shadows that can add visual
+   overflow on some browsers. This prevents the focused input from
+   increasing row height. */
+.uster-component .titulo-table td input:focus {
+  height: calc(var(--titulo-row-h, 2rem) - 0.8rem) !important;
+  max-height: calc(var(--titulo-row-h, 2rem) - 0.8rem) !important;
+  padding-top: 0.06rem !important;
+  padding-bottom: 0.06rem !important;
+  outline: none !important;
+}
+
+/* Constrain checkboxes and svg icons so they don't push row height */
+.uster-component .scan-table tbody td input[type="checkbox"],
+.uster-component .scan-table tbody td svg {
+  width: 1rem !important;
+  height: 1rem !important;
+  vertical-align: middle !important;
+}
+
 /* Tighten vertical padding on scan table cells to match titulo-table and avoid forcing extra row height */
 .scan-table tbody td,
 .scan-table tbody th {
@@ -1937,7 +2011,10 @@ table.w-full {
   /* increased 25% */
   /* header height used in calculations (was 2rem) */
   /* total height for the visible list (header + 10 rows + small gap) */
-  --titulo-total-h: calc(var(--titulo-header-h) + (var(--titulo-row-h) * 10) + 5px);
+  /* total height = header + 10 rows (no extra gap) */
+  /* Slightly reduce total to account for table borders and avoid extra gap under last row */
+  /* decrease by a couple pixels to compensate for borders and rounding */
+  --titulo-total-h: calc(var(--titulo-header-h) + (var(--titulo-row-h) * 10) - 4px);
 }
 
 /* Grid gap controls for the three-column layout in Uster.vue
