@@ -1126,96 +1126,137 @@ async function copyModalAsImage() {
 
     console.log('Modal element found, capturing...')
 
-    // Clone the modal to avoid modifying the original
-    const clone = modalEl.cloneNode(true)
+    // Helper function to convert oklch to rgb (simplified)
+    function oklchToRgb(color) {
+      // If it contains oklch, return a safe fallback
+      if (color && (color.includes('oklch') || color.includes('color('))) {
+        // Extract lightness if possible, otherwise use defaults
+        if (color.includes('0.98')) return '#fafafa'
+        if (color.includes('0.95')) return '#f5f5f5'
+        if (color.includes('0.9')) return '#e5e5e5'
+        if (color.includes('0.8')) return '#d4d4d4'
+        if (color.includes('0.7')) return '#a3a3a3'
+        if (color.includes('0.6')) return '#737373'
+        if (color.includes('0.5')) return '#525252'
+        if (color.includes('0.4')) return '#404040'
+        if (color.includes('0.3')) return '#262626'
+        if (color.includes('0.2')) return '#171717'
+        if (color.includes('0.1')) return '#0a0a0a'
+        return '#000000'
+      }
+      return color
+    }
+
+    // Apply inline styles to all elements in the original before cloning
+    const allOriginalElements = modalEl.querySelectorAll('*')
+    const originalStyles = []
     
-    // Apply inline styles to fix oklch() color issues
-    clone.style.backgroundColor = '#ffffff'
-    clone.style.color = '#000000'
-    
-    // Fix all text colors in the clone
-    const allElements = clone.querySelectorAll('*')
-    allElements.forEach(el => {
+    allOriginalElements.forEach((el, index) => {
       const computedStyle = window.getComputedStyle(el)
       
-      // Force compatible color values
-      if (computedStyle.color && computedStyle.color.includes('oklch')) {
-        el.style.color = '#000000'
-      }
-      if (computedStyle.backgroundColor && computedStyle.backgroundColor.includes('oklch')) {
-        el.style.backgroundColor = '#ffffff'
-      }
-      if (computedStyle.borderColor && computedStyle.borderColor.includes('oklch')) {
-        el.style.borderColor = '#e5e7eb'
-      }
+      // Save original inline styles to restore later
+      originalStyles[index] = el.getAttribute('style') || ''
+      
+      // Get computed values and convert oklch
+      const color = oklchToRgb(computedStyle.color)
+      const bgColor = oklchToRgb(computedStyle.backgroundColor)
+      const borderColor = oklchToRgb(computedStyle.borderColor)
+      
+      // Apply as inline styles
+      if (color !== computedStyle.color) el.style.color = color
+      if (bgColor !== computedStyle.backgroundColor) el.style.backgroundColor = bgColor
+      if (borderColor !== computedStyle.borderColor) el.style.borderColor = borderColor
     })
 
-    // Temporarily add clone to document for rendering
-    clone.style.position = 'fixed'
-    clone.style.left = '-9999px'
-    clone.style.top = '0'
-    document.body.appendChild(clone)
+    // Also fix the modal element itself
+    const modalOriginalStyle = modalEl.getAttribute('style') || ''
+    modalEl.style.backgroundColor = '#ffffff'
+    modalEl.style.color = '#000000'
 
-    // Capture the cloned modal as canvas
-    const canvas = await html2canvas(clone, {
-      backgroundColor: '#ffffff',
-      scale: 2, // Higher quality
-      logging: false,
-      useCORS: true,
-      ignoreElements: (element) => {
-        // Skip elements that might cause issues
-        return false
+    try {
+      // Capture the modal as canvas with the fixed styles
+      const canvas = await html2canvas(modalEl, {
+        backgroundColor: '#ffffff',
+        scale: 2,
+        logging: false,
+        useCORS: true
+      })
+
+      console.log('Canvas created, size:', canvas.width, 'x', canvas.height)
+
+      // Restore original inline styles
+      allOriginalElements.forEach((el, index) => {
+        if (originalStyles[index]) {
+          el.setAttribute('style', originalStyles[index])
+        } else {
+          el.removeAttribute('style')
+        }
+      })
+      if (modalOriginalStyle) {
+        modalEl.setAttribute('style', modalOriginalStyle)
+      } else {
+        modalEl.removeAttribute('style')
       }
-    })
 
-    // Remove the clone
-    document.body.removeChild(clone)
+      // Convert canvas to blob
+      canvas.toBlob(async (blob) => {
+        if (!blob) {
+          console.error('Failed to create blob from canvas')
+          Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo generar la imagen.' })
+          return
+        }
 
-    console.log('Canvas created, size:', canvas.width, 'x', canvas.height)
+        console.log('Blob created, size:', blob.size, 'bytes')
 
-    // Convert canvas to blob
-    canvas.toBlob(async (blob) => {
-      if (!blob) {
-        console.error('Failed to create blob from canvas')
-        Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo generar la imagen.' })
-        return
+        try {
+          // Copy to clipboard
+          await navigator.clipboard.write([
+            new ClipboardItem({ 'image/png': blob })
+          ])
+
+          console.log('Copied to clipboard successfully')
+
+          Swal.fire({
+            icon: 'success',
+            title: '¡Copiado!',
+            text: 'La imagen está lista para pegar en WhatsApp.',
+            timer: 2000,
+            showConfirmButton: false
+          })
+        } catch (err) {
+          console.error('Clipboard error:', err)
+          // Fallback: download the image
+          const url = URL.createObjectURL(blob)
+          const a = document.createElement('a')
+          a.href = url
+          a.download = `ensayo-${selectedTestnr.value || 'detalle'}.png`
+          a.click()
+          URL.revokeObjectURL(url)
+
+          Swal.fire({
+            icon: 'info',
+            title: 'Descargado',
+            text: 'No se pudo copiar al portapapeles. La imagen se descargó.',
+            timer: 2500
+          })
+        }
+      }, 'image/png')
+    } catch (captureErr) {
+      // Restore styles even if capture fails
+      allOriginalElements.forEach((el, index) => {
+        if (originalStyles[index]) {
+          el.setAttribute('style', originalStyles[index])
+        } else {
+          el.removeAttribute('style')
+        }
+      })
+      if (modalOriginalStyle) {
+        modalEl.setAttribute('style', modalOriginalStyle)
+      } else {
+        modalEl.removeAttribute('style')
       }
-
-      console.log('Blob created, size:', blob.size, 'bytes')
-
-      try {
-        // Copy to clipboard
-        await navigator.clipboard.write([
-          new ClipboardItem({ 'image/png': blob })
-        ])
-
-        console.log('Copied to clipboard successfully')
-
-        Swal.fire({
-          icon: 'success',
-          title: '¡Copiado!',
-          text: 'La imagen está lista para pegar en WhatsApp.',
-          timer: 2000,
-          showConfirmButton: false
-        })
-      } catch (err) {
-        console.error('Clipboard error:', err)
-        // Fallback: download the image
-        const url = URL.createObjectURL(blob)
-        const a = document.createElement('a')
-        a.href = url
-        a.download = `ensayo-${selectedTestnr.value || 'detalle'}.png`
-        a.click()
-        URL.revokeObjectURL(url)
-
-        Swal.fire({
-          icon: 'info',
-          title: 'Descargado',
-          text: 'No se pudo copiar al portapapeles. La imagen se descargó.',
-          timer: 2500
-        })
-      }
-    }, 'image/png')
+      throw captureErr
+    }
   } catch (err) {
     console.error('Error capturing modal:', err)
     Swal.fire({ icon: 'error', title: 'Error', text: `No se pudo capturar la imagen: ${err.message}` })
