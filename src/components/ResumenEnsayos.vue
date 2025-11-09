@@ -164,8 +164,8 @@
             <div class="text-sm text-slate-600">Mostrando {{ startDisplay }}–{{ endDisplay }} de {{ filteredRows.length
             }}</div>
             <div class="flex items-center gap-2">
-              <label class="text-sm text-slate-600">Filas:</label>
-              <select v-model.number="pageSize" class="text-sm px-2 py-1 border rounded-md">
+              <label class="text-sm text-slate-700">Registros por página:</label>
+              <select v-model.number="pageSize" class="text-sm px-2 py-1 border border-slate-200 rounded-md text-slate-700 focus:border-blue-400">
                 <option v-for="s in [10, 25, 50, 100, 0]" :key="s" :value="s">{{ s === 0 ? 'Todos' : s }}</option>
               </select>
 
@@ -180,9 +180,9 @@
               <div class="flex items-center gap-1">
                 <label class="sr-only" for="gotoPage">Ir a página</label>
                 <input id="gotoPage" type="number" min="1" :max="totalPages" v-model.number.lazy="gotoPage"
-                  @keydown.enter.prevent="goToPage()" class="w-20 text-sm px-2 py-1 border rounded-md"
+                  @keydown.enter.prevent="goToPage()" class="w-20 text-sm px-2 py-1 border border-slate-200 rounded-md text-slate-700 placeholder-slate-400 focus:border-blue-400"
                   placeholder="Página" />
-                <button @click="goToPage()" class="px-2 py-1 bg-slate-100 rounded-md text-sm">Ir</button>
+                <button @click="goToPage()" class="px-2 py-1 bg-slate-100 rounded-md text-sm text-slate-700">Ir</button>
               </div>
 
               <!-- page indicator and next/last -->
