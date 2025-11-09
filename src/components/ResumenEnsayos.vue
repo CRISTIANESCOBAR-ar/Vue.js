@@ -6,17 +6,18 @@
         <div class="flex items-center gap-2">
           <h3 class="text-xl font-semibold text-slate-800 whitespace-nowrap">Resumen de Ensayos</h3>
 
-          <!-- center area: search + filters -->
-          <div class="flex-1 flex items-center justify-center gap-2">
-            <div class="flex items-center gap-2 w-full max-w-sm">
-              <label for="searchInput" class="sr-only">Buscar ensayos</label>
-              <input id="searchInput" v-model="q" @input="onInput" type="search"
-                placeholder="Buscar por Ensayo, Fecha, OE, Ne..." aria-label="Buscar ensayos"
-                class="px-3 py-1.5 border border-slate-300 rounded-md w-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" />
-              <button v-if="q" @click="clearSearch" title="Limpiar"
-                class="px-2 py-1 bg-slate-100 hover:bg-slate-200 rounded-md text-sm whitespace-nowrap transition-colors duration-200">Limpiar</button>
-            </div>
+          <!-- search moved next to title -->
+          <div class="ml-4 flex items-center">
+            <label for="searchInput" class="sr-only">Buscar ensayos</label>
+            <input id="searchInput" v-model="q" @input="onInput" type="search"
+              placeholder="Buscar por Ensayo, Fecha, OE, Ne..." aria-label="Buscar ensayos"
+              class="px-3 py-1.5 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" />
+            <button v-if="q" @click="clearSearch" title="Limpiar"
+              class="ml-2 px-2 py-1 bg-slate-100 hover:bg-slate-200 rounded-md text-sm whitespace-nowrap transition-colors duration-200">Limpiar</button>
+          </div>
 
+          <!-- center area: filters -->
+          <div class="flex-1 flex items-center justify-center gap-2">
             <div class="flex items-center gap-2 flex-wrap">
               <span class="text-sm font-medium text-slate-600">Buscar en:</span>
               <label class="inline-flex items-center text-sm cursor-pointer">
