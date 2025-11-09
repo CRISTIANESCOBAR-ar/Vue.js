@@ -1115,6 +1115,7 @@ function closeModal() {
 }
 
 async function copyModalAsImage() {
+  /* eslint-disable no-undef */
   try {
     // Find the modal content element
     const modalEl = document.querySelector('[role="document"]')
@@ -1147,9 +1148,9 @@ async function copyModalAsImage() {
     console.error = (...args) => {
       const message = args[0]?.toString() || ''
       // Suppress CORS and CSS rules errors (they don't affect the final image)
-      if (message.includes('CSS rules') || 
-          message.includes('cssRules') || 
-          message.includes('SecurityError')) {
+      if (message.includes('CSS rules') ||
+        message.includes('cssRules') ||
+        message.includes('SecurityError')) {
         return
       }
       originalConsoleError.apply(console, args)
@@ -1214,12 +1215,13 @@ async function copyModalAsImage() {
     }
   } catch (err) {
     console.error('Error capturing modal:', err)
-    Swal.fire({ 
-      icon: 'error', 
-      title: 'Error', 
-      text: `No se pudo capturar la imagen: ${err.message}` 
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: `No se pudo capturar la imagen: ${err.message}`
     })
   }
+  /* eslint-enable no-undef */
 }
 
 async function loadRows() {
