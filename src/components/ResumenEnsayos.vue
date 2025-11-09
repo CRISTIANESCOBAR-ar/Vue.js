@@ -1,7 +1,7 @@
 <template>
-  <div class="w-full pt-1 px-1">
-    <main class="w-full bg-white rounded-2xl shadow-xl px-4 py-3 border border-slate-200">
-      <div class="flex flex-col gap-2 mb-3">
+  <div class="w-full h-screen flex flex-col p-1">
+    <main class="w-full flex-1 min-h-0 bg-white rounded-2xl shadow-xl px-4 py-3 border border-slate-200 flex flex-col">
+      <div class="flex flex-col gap-2 mb-3 flex-shrink-0">
         <!-- Single top row: title, search, filters (center), refresh -->
         <div class="flex items-center gap-2">
           <h3 class="text-xl font-semibold text-slate-800 whitespace-nowrap">Informe Completo de Ensayos</h3>
@@ -57,22 +57,22 @@
         </div>
       </div>
 
-      <div v-if="loading" class="text-sm text-slate-600 py-8 text-center">
+      <div v-if="loading" class="text-sm text-slate-600 py-8 text-center flex-1">
         <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-slate-300 border-t-blue-600"></div>
         <p class="mt-2">Cargando...</p>
       </div>
 
-      <div v-else>
+      <div v-else class="flex-1 min-h-0 flex flex-col">
         <div v-if="rows.length === 0" class="text-sm text-slate-600 py-8 text-center">No hay ensayos.</div>
 
-        <div v-else>
+        <div v-else class="flex-1 min-h-0 flex flex-col">
           <div v-if="filteredRows.length === 0"
-            class="text-sm text-slate-600 mb-4 py-4 text-center bg-slate-50 rounded-lg">
+            class="text-sm text-slate-600 mb-4 py-4 text-center bg-slate-50 rounded-lg flex-shrink-0">
             No hay coincidencias para la búsqueda.
           </div>
 
           <div
-            class="overflow-auto _minimal-scroll w-full max-h-[calc(100vh-5rem)] rounded-xl border border-slate-200 pb-0">
+            class="overflow-auto _minimal-scroll w-full flex-1 min-h-0 rounded-xl border border-slate-200 pb-0">
             <table class="min-w-full w-full table-auto divide-y divide-slate-200 text-xs">
               <colgroup>
                 <col style="width:6%" /> <!-- Ensayo -->
@@ -161,7 +161,7 @@
             </table>
           </div>
           <!-- pagination controls -->
-          <div class="flex items-center justify-between mt-3 px-1">
+          <div class="flex items-center justify-between mt-3 px-1 flex-shrink-0">
             <div class="text-sm text-slate-600">Mostrando {{ startDisplay }}–{{ endDisplay }} de {{ filteredRows.length
             }}</div>
             <div class="flex items-center gap-2">
