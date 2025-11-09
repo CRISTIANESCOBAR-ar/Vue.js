@@ -4,7 +4,7 @@
       <div class="flex flex-col gap-2 mb-3 flex-shrink-0">
         <!-- Single top row: title, search, filters (center), refresh -->
         <div class="flex items-center gap-2">
-          <h3 class="text-xl font-semibold text-slate-800 whitespace-nowrap">Informe Completo de Ensayos</h3>
+          <h3 class="text-xl font-semibold text-slate-800 whitespace-nowrap">Resumen de Ensayos</h3>
 
           <!-- center area: search + filters -->
           <div class="flex-1 flex items-center justify-center gap-2">
@@ -165,7 +165,8 @@
             }}</div>
             <div class="flex items-center gap-2">
               <label class="text-sm text-slate-700">Registros por página:</label>
-              <select v-model.number="pageSize" class="text-sm px-2 py-1 border border-slate-200 rounded-md text-slate-700 focus:border-blue-400">
+              <select v-model.number="pageSize"
+                class="text-sm px-2 py-1 border border-slate-200 rounded-md text-slate-700 focus:border-blue-400">
                 <option v-for="s in [10, 25, 50, 100, 0]" :key="s" :value="s">{{ s === 0 ? 'Todos' : s }}</option>
               </select>
 
@@ -180,7 +181,8 @@
               <div class="flex items-center gap-1">
                 <label class="sr-only" for="gotoPage">Ir a página</label>
                 <input id="gotoPage" type="number" min="1" :max="totalPages" v-model.number.lazy="gotoPage"
-                  @keydown.enter.prevent="goToPage()" class="w-20 text-sm px-2 py-1 border border-slate-200 rounded-md text-slate-700 placeholder-slate-400 focus:border-blue-400"
+                  @keydown.enter.prevent="goToPage()"
+                  class="w-20 text-sm px-2 py-1 border border-slate-200 rounded-md text-slate-700 placeholder-slate-400 focus:border-blue-400"
                   placeholder="Página" />
                 <button @click="goToPage()" class="px-2 py-1 bg-slate-100 rounded-md text-sm text-slate-700">Ir</button>
               </div>
