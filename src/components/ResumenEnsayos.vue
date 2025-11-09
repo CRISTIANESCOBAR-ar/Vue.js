@@ -625,7 +625,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import Swal from 'sweetalert2'
-import html2canvas from 'html2canvas'
+import { toPng } from 'html-to-image'
 
 const loading = ref(false)
 const rows = ref([])
@@ -1116,190 +1116,69 @@ function closeModal() {
 
 async function copyModalAsImage() {
   try {
-    // Find the modal content element (the white card, not the overlay)
+    // Find the modal content element
     const modalEl = document.querySelector('[role="document"]')
     if (!modalEl) {
-      console.error('Modal element not found')
-      Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo encontrar el modal para capturar.' })
+      Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo encontrar el modal.' })
       return
     }
 
-    console.log('Modal element found, capturing...')
-
-    // Helper function to convert oklch/oklab to rgb (simplified)
-    function oklchToRgb(color) {
-      // If it contains oklch, oklab, or color(), return a safe fallback
-      if (color && (color.includes('oklch') || color.includes('oklab') || color.includes('color('))) {
-        // Extract lightness if possible, otherwise use defaults
-        if (color.includes('0.98')) return '#fafafa'
-        if (color.includes('0.95')) return '#f5f5f5'
-        if (color.includes('0.9')) return '#e5e5e5'
-        if (color.includes('0.8')) return '#d4d4d4'
-        if (color.includes('0.7')) return '#a3a3a3'
-        if (color.includes('0.6')) return '#737373'
-        if (color.includes('0.5')) return '#525252'
-        if (color.includes('0.4')) return '#404040'
-        if (color.includes('0.3')) return '#262626'
-        if (color.includes('0.2')) return '#171717'
-        if (color.includes('0.1')) return '#0a0a0a'
-        return '#000000'
-      }
-      return color
-    }
-
-    // Apply inline styles to all elements in the original before cloning
-    const allOriginalElements = modalEl.querySelectorAll('*')
-    const originalStyles = []
-    const originalSvgAttrs = []
-    
-    allOriginalElements.forEach((el, index) => {
-      const computedStyle = window.getComputedStyle(el)
-      
-      // Save original inline styles to restore later
-      originalStyles[index] = el.getAttribute('style') || ''
-      
-      // Get computed values and convert oklch/oklab
-      const color = oklchToRgb(computedStyle.color)
-      const bgColor = oklchToRgb(computedStyle.backgroundColor)
-      const borderColor = oklchToRgb(computedStyle.borderColor)
-      
-      // Apply as inline styles
-      if (color !== computedStyle.color) el.style.color = color
-      if (bgColor !== computedStyle.backgroundColor) el.style.backgroundColor = bgColor
-      if (borderColor !== computedStyle.borderColor) el.style.borderColor = borderColor
-      
-      // Special handling for SVG elements
-      if (el.tagName === 'svg' || el.tagName === 'path' || el.tagName === 'circle' || el.tagName === 'rect') {
-        originalSvgAttrs[index] = {
-          fill: el.getAttribute('fill'),
-          stroke: el.getAttribute('stroke')
-        }
-        
-        // Force SVG colors to safe values
-        const fillValue = computedStyle.fill || el.getAttribute('fill')
-        const strokeValue = computedStyle.stroke || el.getAttribute('stroke')
-        
-        if (fillValue && (fillValue.includes('oklch') || fillValue.includes('oklab') || fillValue.includes('color('))) {
-          el.setAttribute('fill', '#000000')
-        }
-        if (strokeValue && (strokeValue.includes('oklch') || strokeValue.includes('oklab') || strokeValue.includes('color('))) {
-          el.setAttribute('stroke', '#000000')
-        }
+    // Show loading indicator
+    Swal.fire({
+      title: 'Capturando imagen...',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading()
       }
     })
 
-    // Also fix the modal element itself
-    const modalOriginalStyle = modalEl.getAttribute('style') || ''
-    modalEl.style.backgroundColor = '#ffffff'
-    modalEl.style.color = '#000000'
+    // Use html-to-image to capture the modal (supports modern CSS)
+    const dataUrl = await toPng(modalEl, {
+      quality: 1,
+      pixelRatio: 2,
+      backgroundColor: '#ffffff'
+    })
+
+    // Convert data URL to blob
+    const response = await fetch(dataUrl)
+    const blob = await response.blob()
 
     try {
-      // Capture the modal as canvas with the fixed styles
-      const canvas = await html2canvas(modalEl, {
-        backgroundColor: '#ffffff',
-        scale: 2,
-        logging: false,
-        useCORS: true
+      // Try to copy to clipboard
+      await navigator.clipboard.write([
+        new ClipboardItem({ 'image/png': blob })
+      ])
+
+      Swal.fire({
+        icon: 'success',
+        title: '¡Copiado!',
+        text: 'La imagen está lista para pegar en WhatsApp (Ctrl+V).',
+        timer: 2500,
+        showConfirmButton: false
       })
+    } catch (clipboardErr) {
+      console.warn('Clipboard not available, downloading instead:', clipboardErr)
+      
+      // Fallback: download the image
+      const link = document.createElement('a')
+      link.download = `ensayo-${selectedTestnr.value || 'detalle'}.png`
+      link.href = dataUrl
+      link.click()
 
-      console.log('Canvas created, size:', canvas.width, 'x', canvas.height)
-
-      // Restore original inline styles and SVG attributes
-      allOriginalElements.forEach((el, index) => {
-        if (originalStyles[index]) {
-          el.setAttribute('style', originalStyles[index])
-        } else {
-          el.removeAttribute('style')
-        }
-        
-        // Restore SVG attributes
-        if (originalSvgAttrs[index]) {
-          if (originalSvgAttrs[index].fill !== null) {
-            el.setAttribute('fill', originalSvgAttrs[index].fill)
-          }
-          if (originalSvgAttrs[index].stroke !== null) {
-            el.setAttribute('stroke', originalSvgAttrs[index].stroke)
-          }
-        }
+      Swal.fire({
+        icon: 'success',
+        title: 'Descargado',
+        text: 'La imagen se descargó. Puedes subirla a WhatsApp.',
+        timer: 2500
       })
-      if (modalOriginalStyle) {
-        modalEl.setAttribute('style', modalOriginalStyle)
-      } else {
-        modalEl.removeAttribute('style')
-      }
-
-      // Convert canvas to blob
-      canvas.toBlob(async (blob) => {
-        if (!blob) {
-          console.error('Failed to create blob from canvas')
-          Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo generar la imagen.' })
-          return
-        }
-
-        console.log('Blob created, size:', blob.size, 'bytes')
-
-        try {
-          // Copy to clipboard
-          await navigator.clipboard.write([
-            new ClipboardItem({ 'image/png': blob })
-          ])
-
-          console.log('Copied to clipboard successfully')
-
-          Swal.fire({
-            icon: 'success',
-            title: '¡Copiado!',
-            text: 'La imagen está lista para pegar en WhatsApp.',
-            timer: 2000,
-            showConfirmButton: false
-          })
-        } catch (err) {
-          console.error('Clipboard error:', err)
-          // Fallback: download the image
-          const url = URL.createObjectURL(blob)
-          const a = document.createElement('a')
-          a.href = url
-          a.download = `ensayo-${selectedTestnr.value || 'detalle'}.png`
-          a.click()
-          URL.revokeObjectURL(url)
-
-          Swal.fire({
-            icon: 'info',
-            title: 'Descargado',
-            text: 'No se pudo copiar al portapapeles. La imagen se descargó.',
-            timer: 2500
-          })
-        }
-      }, 'image/png')
-    } catch (captureErr) {
-      // Restore styles and SVG attributes even if capture fails
-      allOriginalElements.forEach((el, index) => {
-        if (originalStyles[index]) {
-          el.setAttribute('style', originalStyles[index])
-        } else {
-          el.removeAttribute('style')
-        }
-        
-        // Restore SVG attributes
-        if (originalSvgAttrs[index]) {
-          if (originalSvgAttrs[index].fill !== null) {
-            el.setAttribute('fill', originalSvgAttrs[index].fill)
-          }
-          if (originalSvgAttrs[index].stroke !== null) {
-            el.setAttribute('stroke', originalSvgAttrs[index].stroke)
-          }
-        }
-      })
-      if (modalOriginalStyle) {
-        modalEl.setAttribute('style', modalOriginalStyle)
-      } else {
-        modalEl.removeAttribute('style')
-      }
-      throw captureErr
     }
   } catch (err) {
     console.error('Error capturing modal:', err)
-    Swal.fire({ icon: 'error', title: 'Error', text: `No se pudo capturar la imagen: ${err.message}` })
+    Swal.fire({ 
+      icon: 'error', 
+      title: 'Error', 
+      text: `No se pudo capturar la imagen: ${err.message}` 
+    })
   }
 }
 
