@@ -71,8 +71,7 @@
             No hay coincidencias para la búsqueda.
           </div>
 
-          <div
-            class="overflow-auto _minimal-scroll w-full flex-1 min-h-0 rounded-xl border border-slate-200 pb-0">
+          <div class="overflow-auto _minimal-scroll w-full flex-1 min-h-0 rounded-xl border border-slate-200 pb-0">
             <table class="min-w-full w-full table-auto divide-y divide-slate-200 text-xs">
               <colgroup>
                 <col style="width:6%" /> <!-- Ensayo -->
@@ -225,12 +224,12 @@
             <div class="text-slate-600 text-sm">Fecha: <span class="text-slate-900 text-lg font-semibold ml-1">{{
               modalMeta.fechaStr }}</span></div>
             <div class="text-slate-600 text-sm">Ne: <span class="text-slate-900 text-lg font-semibold ml-1">{{
-                modalMeta.ne }}</span></div>
+              modalMeta.ne }}</span></div>
             <div class="text-slate-600 text-sm">OE Nro.: <span class="text-slate-900 text-lg font-semibold ml-1">{{
-                modalMeta.oe }}</span></div>
+              modalMeta.oe }}</span></div>
             <div class="text-slate-600 text-sm">Ensayo Uster <span class="text-slate-900 text-lg font-semibold ml-1">{{
-                modalMeta.u }}</span> y TensoRapid <span class="text-slate-900 text-lg font-semibold ml-1">{{
-                modalMeta.t }}</span></div>
+              modalMeta.u }}</span> y TensoRapid <span class="text-slate-900 text-lg font-semibold ml-1">{{
+                  modalMeta.t }}</span></div>
           </div>
 
           <button @click="closeModal"
@@ -380,18 +379,21 @@
 
                   <!-- statistics rows -->
                   <tr class="bg-gradient-to-r from-blue-50 to-indigo-50 font-semibold border-t-2 border-blue-200">
-                    <td class="px-3 py-1 text-slate-700">Promedio
-                      <button
-                        v-tippy="{ content: 'La suma de todos los valores dividida por la cantidad de datos. Representa el valor típico o central de un conjunto de datos.', placement: 'top', theme: 'custom' }"
-                        aria-label="Info Promedio"
-                        class="ml-2 inline-flex items-center text-slate-400 hover:text-slate-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
-                          stroke="currentColor" stroke-width="1.5">
-                          <circle cx="12" cy="12" r="10" />
-                          <path d="M12 16v-4" stroke-linecap="round" stroke-linejoin="round" />
-                          <path d="M12 8h.01" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                      </button>
+                    <td class="px-3 py-1 text-slate-700">
+                      <div class="flex items-center justify-center gap-1">
+                        <span>Promedio</span>
+                        <button
+                          v-tippy="{ content: 'La suma de todos los valores dividida por la cantidad de datos. Representa el valor típico o central de un conjunto de datos.', placement: 'top', theme: 'custom' }"
+                          aria-label="Info Promedio"
+                          class="inline-flex items-center text-slate-400 hover:text-slate-600">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="1.5">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M12 16v-4" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M12 8h.01" stroke-linecap="round" stroke-linejoin="round" />
+                          </svg>
+                        </button>
+                      </div>
                     </td>
                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TITULO.avg) }}</td>
                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.CVM_PERCENT.avg) }}</td>
@@ -412,17 +414,20 @@
                   </tr>
 
                   <tr class="bg-blue-50/50 font-medium">
-                    <td class="px-3 py-1 text-slate-700">CV
-                      <button
-                        v-tippy="{ content: 'Una medida de dispersión relativa. Un CV del 5% indica baja variabilidad; uno del 50% indica alta dispersión.', placement: 'top', theme: 'custom' }"
-                        aria-label="Info CV" class="ml-2 inline-flex items-center text-slate-400 hover:text-slate-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
-                          stroke="currentColor" stroke-width="1.5">
-                          <circle cx="12" cy="12" r="10" />
-                          <path d="M12 16v-4" stroke-linecap="round" stroke-linejoin="round" />
-                          <path d="M12 8h.01" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                      </button>
+                    <td class="px-3 py-1 text-slate-700">
+                      <div class="flex items-center justify-center gap-1">
+                        <span>CV</span>
+                        <button
+                          v-tippy="{ content: 'Una medida de dispersión relativa. Un CV del 5% indica baja variabilidad; uno del 50% indica alta dispersión.', placement: 'top', theme: 'custom' }"
+                          aria-label="Info CV" class="inline-flex items-center text-slate-400 hover:text-slate-600">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="1.5">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M12 16v-4" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M12 8h.01" stroke-linecap="round" stroke-linejoin="round" />
+                          </svg>
+                        </button>
+                      </div>
                     </td>
                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TITULO.cv) }}</td>
                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.CVM_PERCENT.cv) }}</td>
@@ -443,18 +448,21 @@
                   </tr>
 
                   <tr class="bg-indigo-50/50 font-medium">
-                    <td class="px-3 py-1 text-slate-700">s
-                      <button
-                        v-tippy="{ content: 'Desviación estándar. Mide cuánto se alejan los datos del promedio.', placement: 'top', theme: 'custom' }"
-                        aria-label="Info desviación estándar"
-                        class="ml-2 inline-flex items-center text-slate-400 hover:text-slate-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
-                          stroke="currentColor" stroke-width="1.5">
-                          <circle cx="12" cy="12" r="10" />
-                          <path d="M12 16v-4" stroke-linecap="round" stroke-linejoin="round" />
-                          <path d="M12 8h.01" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                      </button>
+                    <td class="px-3 py-1 text-slate-700">
+                      <div class="flex items-center justify-center gap-1">
+                        <span>s</span>
+                        <button
+                          v-tippy="{ content: 'Desviación estándar. Mide cuánto se alejan los datos del promedio.', placement: 'top', theme: 'custom' }"
+                          aria-label="Info desviación estándar"
+                          class="inline-flex items-center text-slate-400 hover:text-slate-600">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="1.5">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M12 16v-4" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M12 8h.01" stroke-linecap="round" stroke-linejoin="round" />
+                          </svg>
+                        </button>
+                      </div>
                     </td>
                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TITULO.sd) }}</td>
                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.CVM_PERCENT.sd) }}</td>
@@ -475,17 +483,20 @@
                   </tr>
 
                   <tr class="bg-blue-50/50 font-medium">
-                    <td class="px-3 py-1 text-slate-700">Q95
-                      <button
-                        v-tippy="{ content: 'Cuantil 95. El valor por debajo del cual se encuentra el 95% de los datos.', placement: 'top', theme: 'custom' }"
-                        aria-label="Info Q95" class="ml-2 inline-flex items-center text-slate-400 hover:text-slate-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
-                          stroke="currentColor" stroke-width="1.5">
-                          <circle cx="12" cy="12" r="10" />
-                          <path d="M12 16v-4" stroke-linecap="round" stroke-linejoin="round" />
-                          <path d="M12 8h.01" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                      </button>
+                    <td class="px-3 py-1 text-slate-700">
+                      <div class="flex items-center justify-center gap-1">
+                        <span>Q95</span>
+                        <button
+                          v-tippy="{ content: 'Cuantil 95. El valor por debajo del cual se encuentra el 95% de los datos.', placement: 'top', theme: 'custom' }"
+                          aria-label="Info Q95" class="inline-flex items-center text-slate-400 hover:text-slate-600">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="1.5">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M12 16v-4" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M12 8h.01" stroke-linecap="round" stroke-linejoin="round" />
+                          </svg>
+                        </button>
+                      </div>
                     </td>
                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TITULO.q95) }}</td>
                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.CVM_PERCENT.q95) }}</td>
@@ -506,17 +517,20 @@
                   </tr>
 
                   <tr class="bg-indigo-50/50 font-medium">
-                    <td class="px-3 py-1 text-slate-700">Máx
-                      <button
-                        v-tippy="{ content: 'Máximo. El valor más alto del conjunto de datos.', placement: 'top', theme: 'custom' }"
-                        aria-label="Info Max" class="ml-2 inline-flex items-center text-slate-400 hover:text-slate-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
-                          stroke="currentColor" stroke-width="1.5">
-                          <circle cx="12" cy="12" r="10" />
-                          <path d="M12 16v-4" stroke-linecap="round" stroke-linejoin="round" />
-                          <path d="M12 8h.01" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                      </button>
+                    <td class="px-3 py-1 text-slate-700">
+                      <div class="flex items-center justify-center gap-1">
+                        <span>Máx</span>
+                        <button
+                          v-tippy="{ content: 'Máximo. El valor más alto del conjunto de datos.', placement: 'top', theme: 'custom' }"
+                          aria-label="Info Max" class="inline-flex items-center text-slate-400 hover:text-slate-600">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="1.5">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M12 16v-4" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M12 8h.01" stroke-linecap="round" stroke-linejoin="round" />
+                          </svg>
+                        </button>
+                      </div>
                     </td>
                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TITULO.max) }}</td>
                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.CVM_PERCENT.max) }}</td>
@@ -537,17 +551,20 @@
                   </tr>
 
                   <tr class="bg-blue-50/50 font-medium">
-                    <td class="px-3 py-1 text-slate-700">Mín
-                      <button
-                        v-tippy="{ content: 'Mínimo. El valor más bajo del conjunto de datos.', placement: 'top', theme: 'custom' }"
-                        aria-label="Info Min" class="ml-2 inline-flex items-center text-slate-400 hover:text-slate-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
-                          stroke="currentColor" stroke-width="1.5">
-                          <circle cx="12" cy="12" r="10" />
-                          <path d="M12 16v-4" stroke-linecap="round" stroke-linejoin="round" />
-                          <path d="M12 8h.01" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                      </button>
+                    <td class="px-3 py-1 text-slate-700">
+                      <div class="flex items-center justify-center gap-1">
+                        <span>Mín</span>
+                        <button
+                          v-tippy="{ content: 'Mínimo. El valor más bajo del conjunto de datos.', placement: 'top', theme: 'custom' }"
+                          aria-label="Info Min" class="inline-flex items-center text-slate-400 hover:text-slate-600">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="1.5">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M12 16v-4" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M12 8h.01" stroke-linecap="round" stroke-linejoin="round" />
+                          </svg>
+                        </button>
+                      </div>
                     </td>
                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TITULO.min) }}</td>
                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.CVM_PERCENT.min) }}</td>
