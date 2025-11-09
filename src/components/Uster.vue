@@ -1652,7 +1652,8 @@ function formatTimestampToDatetime(value) {
 
 /* Anchos fijos para columnas */
 .col-ensayo {
-  width: 63px;
+  /* Aumentado para evitar quiebre del encabezado 'Ensayo' */
+  width: 72px;
 }
 
 .col-par,
@@ -1666,12 +1667,13 @@ function formatTimestampToDatetime(value) {
 }
 
 .col-ne {
-  /* reducido ~10% respecto a 60px original */
-  width: 54px;
+  /* reducido ~10% respecto al valor actual (54px -> ~49px) */
+  width: 49px;
 }
 
 .col-maq {
-  width: 78px;
+  /* reducido ~5% (78px -> ~74px) */
+  width: 74px;
 }
 
 /* Columnas tabla compacta */
