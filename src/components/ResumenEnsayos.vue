@@ -625,6 +625,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import Swal from 'sweetalert2'
+import html2canvas from 'html2canvas'
 
 const loading = ref(false)
 const rows = ref([])
@@ -1118,33 +1119,77 @@ async function copyModalAsImage() {
     // Find the modal content element (the white card, not the overlay)
     const modalEl = document.querySelector('[role="document"]')
     if (!modalEl) {
+      console.error('Modal element not found')
       Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo encontrar el modal para capturar.' })
       return
     }
 
-    // Dynamically import html2canvas
-    const html2canvas = (await import('html2canvas')).default
+    console.log('Modal element found, capturing...')
 
-    // Capture the modal as canvas
-    const canvas = await html2canvas(modalEl, {
+    // Clone the modal to avoid modifying the original
+    const clone = modalEl.cloneNode(true)
+    
+    // Apply inline styles to fix oklch() color issues
+    clone.style.backgroundColor = '#ffffff'
+    clone.style.color = '#000000'
+    
+    // Fix all text colors in the clone
+    const allElements = clone.querySelectorAll('*')
+    allElements.forEach(el => {
+      const computedStyle = window.getComputedStyle(el)
+      
+      // Force compatible color values
+      if (computedStyle.color && computedStyle.color.includes('oklch')) {
+        el.style.color = '#000000'
+      }
+      if (computedStyle.backgroundColor && computedStyle.backgroundColor.includes('oklch')) {
+        el.style.backgroundColor = '#ffffff'
+      }
+      if (computedStyle.borderColor && computedStyle.borderColor.includes('oklch')) {
+        el.style.borderColor = '#e5e7eb'
+      }
+    })
+
+    // Temporarily add clone to document for rendering
+    clone.style.position = 'fixed'
+    clone.style.left = '-9999px'
+    clone.style.top = '0'
+    document.body.appendChild(clone)
+
+    // Capture the cloned modal as canvas
+    const canvas = await html2canvas(clone, {
       backgroundColor: '#ffffff',
       scale: 2, // Higher quality
       logging: false,
-      useCORS: true
+      useCORS: true,
+      ignoreElements: (element) => {
+        // Skip elements that might cause issues
+        return false
+      }
     })
+
+    // Remove the clone
+    document.body.removeChild(clone)
+
+    console.log('Canvas created, size:', canvas.width, 'x', canvas.height)
 
     // Convert canvas to blob
     canvas.toBlob(async (blob) => {
       if (!blob) {
+        console.error('Failed to create blob from canvas')
         Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo generar la imagen.' })
         return
       }
+
+      console.log('Blob created, size:', blob.size, 'bytes')
 
       try {
         // Copy to clipboard
         await navigator.clipboard.write([
           new ClipboardItem({ 'image/png': blob })
         ])
+
+        console.log('Copied to clipboard successfully')
 
         Swal.fire({
           icon: 'success',
@@ -1173,7 +1218,7 @@ async function copyModalAsImage() {
     }, 'image/png')
   } catch (err) {
     console.error('Error capturing modal:', err)
-    Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo capturar la imagen del modal.' })
+    Swal.fire({ icon: 'error', title: 'Error', text: `No se pudo capturar la imagen: ${err.message}` })
   }
 }
 
