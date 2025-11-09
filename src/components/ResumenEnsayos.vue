@@ -1123,10 +1123,20 @@ async function copyModalAsImage() {
       return
     }
 
-    // Show loading indicator
+    // Find and hide prev/next buttons temporarily
+    const prevBtn = document.querySelector('[aria-label="Anterior ensayo"]')
+    const nextBtn = document.querySelector('[aria-label="Siguiente ensayo"]')
+    const prevBtnDisplay = prevBtn?.style.display
+    const nextBtnDisplay = nextBtn?.style.display
+    if (prevBtn) prevBtn.style.display = 'none'
+    if (nextBtn) nextBtn.style.display = 'none'
+
+    // Show loading indicator (short)
     Swal.fire({
-      title: 'Capturando imagen...',
+      title: 'Capturando...',
       allowOutsideClick: false,
+      showConfirmButton: false,
+      timer: 100,
       didOpen: () => {
         Swal.showLoading()
       }
@@ -1148,7 +1158,7 @@ async function copyModalAsImage() {
     try {
       // Use html-to-image to capture the modal (supports modern CSS)
       const dataUrl = await toPng(modalEl, {
-        quality: 1,
+        quality: 0.95, // Slightly lower quality for faster processing
         pixelRatio: 2,
         backgroundColor: '#ffffff',
         skipFonts: false
@@ -1156,6 +1166,10 @@ async function copyModalAsImage() {
 
       // Restore console.error
       console.error = originalConsoleError
+
+      // Restore prev/next buttons
+      if (prevBtn) prevBtn.style.display = prevBtnDisplay || ''
+      if (nextBtn) nextBtn.style.display = nextBtnDisplay || ''
 
       // Convert data URL to blob
       const response = await fetch(dataUrl)
@@ -1170,8 +1184,8 @@ async function copyModalAsImage() {
         Swal.fire({
           icon: 'success',
           title: '¡Copiado!',
-          text: 'La imagen está lista para pegar en WhatsApp (Ctrl+V).',
-          timer: 2500,
+          text: 'Pega en WhatsApp: Ctrl+V',
+          timer: 1500,
           showConfirmButton: false
         })
       } catch (clipboardErr) {
@@ -1186,13 +1200,16 @@ async function copyModalAsImage() {
         Swal.fire({
           icon: 'success',
           title: 'Descargado',
-          text: 'La imagen se descargó. Puedes subirla a WhatsApp.',
-          timer: 2500
+          text: 'Imagen lista para WhatsApp',
+          timer: 1500,
+          showConfirmButton: false
         })
       }
     } catch (captureError) {
-      // Restore console.error even if capture fails
+      // Restore console.error and buttons even if capture fails
       console.error = originalConsoleError
+      if (prevBtn) prevBtn.style.display = prevBtnDisplay || ''
+      if (nextBtn) nextBtn.style.display = nextBtnDisplay || ''
       throw captureError
     }
   } catch (err) {
