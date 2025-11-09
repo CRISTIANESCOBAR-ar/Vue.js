@@ -664,6 +664,7 @@
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import Swal from 'sweetalert2'
 import { toPng } from 'html-to-image'
+import * as XLSX from 'xlsx'
 
 const loading = ref(false)
 const rows = ref([])
@@ -1289,45 +1290,40 @@ function exportToExcel() {
       return
     }
 
-    // Use the same header order as fieldsToCheck
     const headers = fieldsToCheck.value || []
 
-    // Build CSV (UTF-8 with BOM so Excel detects UTF-8)
-    const bom = '\uFEFF'
-    const esc = (v) => {
-      if (v == null) return ''
-      const s = String(v)
-      // Escape double quotes
-      return '"' + s.replace(/"/g, '""') + '"'
-    }
-
-    const lines = []
-    lines.push(headers.map(h => esc(h)).join(','))
-    rowsToExport.forEach(r => {
-      const vals = headers.map(h => {
-        // Prefer original property keys; fallback to empty
-        const v = r[h] == null ? '' : r[h]
-        return esc(v)
+    // Build array of plain objects ordered by headers
+    const data = rowsToExport.map(r => {
+      const obj = {}
+      headers.forEach(h => {
+        obj[h] = r[h] == null ? '' : r[h]
       })
-      lines.push(vals.join(','))
+      return obj
     })
 
-    const csvContent = bom + lines.join('\n')
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const ws = XLSX.utils.json_to_sheet(data, { header: headers })
+    // Set reasonable column widths based on header length
+    ws['!cols'] = headers.map(h => ({ wch: Math.max(10, String(h).length + 4) }))
+
+    const wb = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(wb, ws, 'Resumen')
+
+    const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' })
+    const blob = new Blob([wbout], { type: 'application/octet-stream' })
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
     const date = new Date().toISOString().slice(0, 10)
     link.href = url
-    link.setAttribute('download', `resumen-ensayos-${date}.csv`)
+    link.setAttribute('download', `resumen-ensayos-${date}.xlsx`)
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
     URL.revokeObjectURL(url)
 
-    Swal.fire({ icon: 'success', title: 'Exportado', text: 'Archivo CSV listo para abrir en Excel.', timer: 1400, showConfirmButton: false })
+    Swal.fire({ icon: 'success', title: 'Exportado', text: 'Archivo XLSX listo para abrir en Excel.', timer: 1400, showConfirmButton: false })
   } catch (err) {
-    console.error('Error exporting CSV', err)
-    Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo exportar a CSV.' })
+    console.error('Error exporting XLSX', err)
+    Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo exportar a XLSX.' })
   }
 }
 
