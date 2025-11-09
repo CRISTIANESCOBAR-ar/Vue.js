@@ -22,13 +22,34 @@
               <!-- Quick filters for OE and Ne (client-side) -->
               <div class="flex items-center gap-2">
                 <label for="oeFilter" class="text-sm text-slate-600">OE</label>
-                <input id="oeFilter" v-model.trim="oeQuery" type="search" placeholder="OE" 
-                  v-tippy="{ content: 'Filtrar por OE', placement: 'bottom', theme: 'custom' }"
-                  aria-label="Filtrar por OE" class="px-2 py-1 border border-slate-200 rounded-md text-sm w-24" />
+                <div class="relative">
+                  <input id="oeFilter" v-model.trim="oeQuery" type="search" placeholder="OE"
+                    v-tippy="{ content: 'Filtrar por OE', placement: 'bottom', theme: 'custom' }"
+                    aria-label="Filtrar por OE" class="px-2 py-1 border border-slate-200 rounded-md text-sm w-24 pr-7" />
+                  <button type="button" @click="oeQuery = ''" aria-label="Limpiar OE"
+                    v-show="oeQuery"
+                    class="absolute right-1 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="18" y1="6" x2="6" y2="18" stroke-linecap="round" stroke-linejoin="round"></line>
+                      <line x1="6" y1="6" x2="18" y2="18" stroke-linecap="round" stroke-linejoin="round"></line>
+                    </svg>
+                  </button>
+                </div>
+
                 <label for="neFilter" class="text-sm text-slate-600">Ne</label>
-                <input id="neFilter" v-model.trim="neQuery" type="search" placeholder="Ne"
-                  v-tippy="{ content: 'Filtrar por Ne', placement: 'bottom', theme: 'custom' }" aria-label="Filtrar por Ne"
-                  class="px-2 py-1 border border-slate-200 rounded-md text-sm w-20" />
+                <div class="relative">
+                  <input id="neFilter" v-model.trim="neQuery" type="search" placeholder="Ne"
+                    v-tippy="{ content: 'Filtrar por Ne', placement: 'bottom', theme: 'custom' }" aria-label="Filtrar por Ne"
+                    class="px-2 py-1 border border-slate-200 rounded-md text-sm w-20 pr-7" />
+                  <button type="button" @click="neQuery = ''" aria-label="Limpiar Ne"
+                    v-show="neQuery"
+                    class="absolute right-1 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="18" y1="6" x2="6" y2="18" stroke-linecap="round" stroke-linejoin="round"></line>
+                      <line x1="6" y1="6" x2="18" y2="18" stroke-linecap="round" stroke-linejoin="round"></line>
+                    </svg>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -41,7 +62,8 @@
             <!-- Minimal modern refresh button with icon -->
             <button @click="loadRows" v-tippy="{ content: 'Refrescar datos', placement: 'bottom', theme: 'custom' }"
               class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" aria-hidden="true">
                 <path d="M21 12a9 9 0 1 1-3-6.7" stroke-linecap="round" stroke-linejoin="round"></path>
                 <polyline points="21 3 21 9 15 9" stroke-linecap="round" stroke-linejoin="round"></polyline>
               </svg>
@@ -1239,6 +1261,29 @@ onMounted(() => {
   scrollbar-width: thin;
   /* thumb then track */
   scrollbar-color: rgba(99, 102, 241, 0.35) transparent;
+}
+
+/* Hide native browser "clear" / cancel buttons for search inputs to avoid duplicate icons */
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+input[type="search"]::-ms-clear,
+input[type="search"]::-ms-reveal {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* Small style for our custom clear buttons inside inputs */
+.relative button[aria-label^="Limpiar"] {
+  background: transparent;
+  border: none;
+  padding: 0.1rem;
+}
+
+.relative button[aria-label^="Limpiar"] svg {
+  stroke: currentColor;
 }
 
 .modal-scroll::-webkit-scrollbar {
