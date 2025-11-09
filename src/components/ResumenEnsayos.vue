@@ -23,11 +23,9 @@
               <div class="flex items-center gap-2">
                 <label for="oeFilter" class="text-sm text-slate-600">OE</label>
                 <div class="relative">
-                  <input id="oeFilter" v-model.trim="oeQuery" type="search" placeholder="OE"
-                    aria-label="Filtrar por OE"
+                  <input id="oeFilter" v-model.trim="oeQuery" type="search" placeholder="OE" aria-label="Filtrar por OE"
                     class="px-2 py-1 border border-slate-200 rounded-md text-sm w-24 pr-8" />
-                  <button type="button" @click="oeQuery = ''" aria-label="Limpiar OE"
-                    v-show="oeQuery"
+                  <button type="button" @click="oeQuery = ''" aria-label="Limpiar OE" v-show="oeQuery"
                     class="custom-clear absolute right-1 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
                       stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -39,11 +37,9 @@
 
                 <label for="neFilter" class="text-sm text-slate-600">Ne</label>
                 <div class="relative">
-                  <input id="neFilter" v-model.trim="neQuery" type="search" placeholder="Ne"
-                    aria-label="Filtrar por Ne"
+                  <input id="neFilter" v-model.trim="neQuery" type="search" placeholder="Ne" aria-label="Filtrar por Ne"
                     class="px-2 py-1 border border-slate-200 rounded-md text-sm w-20 pr-8" />
-                  <button type="button" @click="neQuery = ''" aria-label="Limpiar Ne"
-                    v-show="neQuery"
+                  <button type="button" @click="neQuery = ''" aria-label="Limpiar Ne" v-show="neQuery"
                     class="custom-clear absolute right-1 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
                       stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1170,11 +1166,13 @@ async function copyModalAsImage() {
 
     try {
       // Use html-to-image to capture the modal (supports modern CSS)
+      // NOTE: skipFonts=true avoids inlining remote stylesheets (cssRules SecurityError)
       const dataUrl = await toPng(modalEl, {
         quality: 0.95, // Slightly lower quality for faster processing
         pixelRatio: 2,
         backgroundColor: '#ffffff',
-        skipFonts: false
+        skipFonts: true,
+        cacheBust: true
       })
 
       // Restore console.error
