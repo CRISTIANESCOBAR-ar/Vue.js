@@ -123,18 +123,18 @@
 									<!-- Botón Editar (solo si está guardado y no está editando) -->
 									<button v-if="item.testnr && item.saved && !item.isEditing"
 										@click="startEditing(item)"
-										class="px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-xs font-medium transition-colors duration-200">
+										class="px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-xs font-medium transition-colors duration-200 shadow-sm hover:shadow-md">
 										Editar
 									</button>
 									<!-- Botones Guardar y Cancelar (si está editando o no está guardado) -->
 									<div v-else-if="item.testnr && item.usterTestnr" class="flex gap-1 justify-center">
 										<button @click="saveToOracle(item)" :disabled="isSaving"
 											:ref="el => setSaveButtonRef(el, item.testnr)"
-											class="px-3 py-1 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-xs font-medium disabled:opacity-50 transition-colors duration-200">
+											class="px-3 py-1 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-xs font-medium disabled:opacity-50 transition-colors duration-200 shadow-sm hover:shadow-md">
 											{{ isSaving ? 'Guardando...' : 'Guardar' }}
 										</button>
 										<button v-if="item.isEditing" @click="cancelEditing(item)" :disabled="isSaving"
-											class="px-3 py-1 bg-slate-500 text-white rounded-lg hover:bg-slate-600 text-xs font-medium disabled:opacity-50 transition-colors duration-200">
+											class="px-3 py-1 bg-slate-500 text-white rounded-lg hover:bg-slate-600 text-xs font-medium disabled:opacity-50 transition-colors duration-200 shadow-sm hover:shadow-md">
 											Cancelar
 										</button>
 									</div>

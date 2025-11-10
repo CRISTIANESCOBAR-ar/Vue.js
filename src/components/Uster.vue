@@ -20,7 +20,7 @@
 
           <div class="flex items-center gap-2">
             <button @click="selectFolder" title="Seleccionar carpeta con archivos de Uster"
-              class="hidden md:inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150">
+              class="hidden md:inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -30,7 +30,7 @@
             </button>
 
             <button @click="selectFolder" title="Seleccionar carpeta con archivos de Uster"
-              class="inline-flex md:hidden items-center p-2 border border-slate-200 bg-white text-slate-700 rounded-md hover:bg-slate-50 transition-colors duration-150"
+              class="inline-flex md:hidden items-center p-2 border border-slate-200 bg-white text-slate-700 rounded-md hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md"
               aria-label="Seleccionar carpeta">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
@@ -40,7 +40,7 @@
             </button>
 
             <button v-if="hasPersistedHandle" @click="refreshFolder" title="Actualizar archivos de Uster"
-              class="hidden md:inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150">
+              class="hidden md:inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -49,7 +49,7 @@
               Actualizar
             </button>
             <button v-if="hasPersistedHandle" @click="refreshFolder" title="Actualizar archivos de Uster"
-              class="inline-flex md:hidden items-center p-2 border border-slate-200 bg-white text-slate-700 rounded-md hover:bg-slate-50 transition-colors duration-150"
+              class="inline-flex md:hidden items-center p-2 border border-slate-200 bg-white text-slate-700 rounded-md hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md"
               aria-label="Actualizar carpeta">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
@@ -218,12 +218,12 @@
           <div class="mt-3 flex gap-2">
             <button ref="saveButton" v-if="canSave" @click="saveCurrentTest" :disabled="isSaving"
               @keydown.up.prevent="focusLastTitulo"
-              class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2">
+              class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 shadow-sm hover:shadow-md">
               <span v-if="!isSaving">Guardar</span>
               <span v-else>Guardando...</span>
             </button>
             <button v-if="selectedTestnr && isTestSaved" @click="deleteCurrentTest" :disabled="isDeleting"
-              class="inline-flex items-center gap-2 px-3 py-1 border border-red-300 bg-white text-red-700 rounded-md text-sm font-medium hover:bg-red-50 transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2">
+              class="inline-flex items-center gap-2 px-3 py-1 border border-red-300 bg-white text-red-700 rounded-md text-sm font-medium hover:bg-red-50 transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 shadow-sm hover:shadow-md">
               <span v-if="!isDeleting">Eliminar</span>
               <span v-else>Eliminando...</span>
             </button>
@@ -1275,8 +1275,8 @@ async function saveCurrentTest() {
         // No hay siguiente ensayo (ej. se guardó el último no-guardado y la lista filtrada quedó vacía)
         // Limpiar selección y desactivar inputs/buttons para evitar que el usuario siga editando
         selectedTestnr.value = ''
-  // limpiar cualquier TITULO restante y tblData
-  tblData.value = []
+        // limpiar cualquier TITULO restante y tblData
+        tblData.value = []
         isFocusedIndex.value = null
         await nextTick()
       }
