@@ -221,8 +221,8 @@
 				</div>
 				<!-- Fin columna izquierda -->
 
-				<!-- Columna derecha: Tabla TBL -->
-				<div v-show="parsedTblData.length" class="bg-white rounded-2xl shadow-xl p-5 border border-slate-200">
+				<!-- Columna derecha: Tabla TBL (sin contenedor exterior) -->
+				<div v-show="parsedTblData.length">
 					<h5 class="font-semibold text-lg text-slate-800 mb-3">Datos .TBL — TESTNR: {{ tblTestnr }}</h5>
 					<div class="overflow-auto _minimal-scroll border border-slate-200 rounded-xl max-h-96">
 						<table class="w-full text-sm border-collapse tbl-centered">
