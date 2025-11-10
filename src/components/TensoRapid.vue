@@ -36,8 +36,10 @@
 				</div>
 			</div>
 
-			<!-- Filtros: Todos / No guardados / Guardados -->
-			<div class="mt-4 flex items-center gap-4">
+			<!-- Contenedor que agrupa filtros, tablas y estado -->
+			<div class="mt-4 bg-white rounded-2xl shadow-sm p-4 border border-slate-200">
+				<!-- Filtros: Todos / No guardados / Guardados -->
+				<div class="flex items-center gap-4">
 				<label class="inline-flex items-center text-sm cursor-pointer">
 					<input type="radio" name="tenso-filter" v-model="filterMode" value="all"
 						class="mr-2 text-indigo-600 focus:ring-indigo-500" />
@@ -55,8 +57,8 @@
 				</label>
 			</div>
 
-			<!-- Grid de dos columnas: tabla de ensayos a la izquierda y datos TBL a la derecha -->
-			<div class="mt-4 grid grid-cols-1 xl:grid-cols-2 gap-4 items-start">
+				<!-- Grid de dos columnas: tabla de ensayos a la izquierda y datos TBL a la derecha -->
+				<div class="mt-4 grid grid-cols-1 xl:grid-cols-2 gap-4 items-start">
 				<!-- Columna izquierda: Tabla de ensayos encontrados -->
 				<div>
 					<div
@@ -225,7 +227,9 @@
 					<div class="overflow-auto _minimal-scroll border border-slate-200 rounded-xl max-h-96">
 						<table class="w-full text-sm border-collapse tbl-centered">
 							<colgroup>
-								<col style="width:40px" />
+								<!-- Reduced by 40% from 40px -> 24px -->
+								<col style="width:24px" />
+								<!-- Reduced Test column by 40% (was 68px -> now ~41px) -->
 								<col class="tbl-col-test" />
 								<col style="width:48px" />
 								<col style="width:48px" />
@@ -294,6 +298,8 @@
 				</div>
 				<!-- Fin columna derecha -->
 
+			</div>
+			<!-- Cierre del contenedor que agrupa filtros y tablas -->
 			</div>
 			<!-- Fin grid dos columnas -->
 
@@ -1311,8 +1317,8 @@ onMounted(() => {
 
 /* Column classes for TBL preview */
 .tbl-col-test {
-	/* Reduced by ~15% from a typical 80px default (≈68px) */
-	width: 68px;
+	/* Reduced by 40% per request: 68px -> 41px */
+	width: 41px;
 }
 
 .tbl-col-tiempo {
