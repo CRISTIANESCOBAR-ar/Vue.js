@@ -1,0 +1,6 @@
+# Ignore backup and temporary files
+**/*.bak.*
+src/components/*.bak.vue
+# node_modules and dist are already ignored by gitignore but safe to include
+node_modules/
+dist/
