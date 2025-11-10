@@ -251,7 +251,8 @@ const isSaving = ref(false)
 const maxRows = 10
 
 // filtro UI: 'all' | 'saved' | 'not'
-const filterMode = ref('all')
+// Por defecto enfocamos en los ensayos no guardados para que el usuario cargue/guarde rápidamente
+const filterMode = ref('not')
 
 // Refs para inputs y botones (para auto-focus)
 const inputRefs = ref({})
