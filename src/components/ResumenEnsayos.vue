@@ -854,22 +854,56 @@ const modalMeta = computed(() => {
   const rawFecha = meta?.Fecha || meta?.fecha || meta?.FECHA || meta?.date || ''
   let fechaStr = '—'
   if (rawFecha) {
-    const d = new Date(rawFecha)
-    if (!isNaN(d.getTime())) {
-      const dd = String(d.getDate()).padStart(2, '0')
-      const mm = String(d.getMonth() + 1).padStart(2, '0')
-      const yy = String(d.getFullYear()).slice(-2)
-      fechaStr = `${dd}/${mm}/${yy}`
-    } else {
-      // try parse dd/mm/yyyy or dd/mm/yy
-      const m = String(rawFecha).match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/)
-      if (m) {
-        const dd = String(m[1]).padStart(2, '0')
-        const mm = String(m[2]).padStart(2, '0')
-        const yy = String(m[3]).length === 4 ? String(m[3]).slice(-2) : String(m[3])
+    const s = String(rawFecha).trim()
+
+    // If ISO-like (YYYY-MM-DD...) use Date parsing
+    const isoMatch = s.match(/^\d{4}-\d{1,2}-\d{1,2}/)
+    if (isoMatch) {
+      const d = new Date(s)
+      if (!isNaN(d.getTime())) {
+        const dd = String(d.getDate()).padStart(2, '0')
+        const mm = String(d.getMonth() + 1).padStart(2, '0')
+        const yy = String(d.getFullYear()).slice(-2)
         fechaStr = `${dd}/${mm}/${yy}`
       } else {
-        fechaStr = String(rawFecha)
+        fechaStr = s
+      }
+    } else {
+      // Try common numeric formats: either dd/mm/yyyy or mm/dd/yyyy (also accept - or . as separators)
+      const m = s.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})$/)
+      if (m) {
+        const a = Number(m[1])
+        const b = Number(m[2])
+        const rawYear = String(m[3])
+
+        // Heuristic: if first number >12 -> it's day (dd/mm), if second >12 -> it's day (mm/dd)
+        // If ambiguous (both <=12) prefer European dd/mm per requirement.
+        let day, month
+        if (a > 12 && b <= 31) {
+          day = a; month = b
+        } else if (b > 12 && a <= 31) {
+          // input looks like mm/dd -> a=month, b=day
+          day = b; month = a
+        } else {
+          // ambiguous (both <=12) -> assume dd/mm
+          day = a; month = b
+        }
+
+        const dd = String(day).padStart(2, '0')
+        const mm = String(month).padStart(2, '0')
+        const yy = rawYear.length === 4 ? rawYear.slice(-2) : rawYear.padStart(2, '0')
+        fechaStr = `${dd}/${mm}/${yy}`
+      } else {
+        // Last resort: try Date parsing (handles textual months)
+        const d2 = new Date(s)
+        if (!isNaN(d2.getTime())) {
+          const dd = String(d2.getDate()).padStart(2, '0')
+          const mm = String(d2.getMonth() + 1).padStart(2, '0')
+          const yy = String(d2.getFullYear()).slice(-2)
+          fechaStr = `${dd}/${mm}/${yy}`
+        } else {
+          fechaStr = s
+        }
       }
     }
   }
