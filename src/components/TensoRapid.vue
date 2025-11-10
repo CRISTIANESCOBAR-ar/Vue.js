@@ -1,6 +1,7 @@
+
 <template>
-	<div class="w-full">
-		<div class="bg-white rounded-2xl shadow-xl p-4 md:p-5 mt-2 mb-4 border border-slate-200">
+	<div class="w-full pt-2 px-2 space-y-4 tenso-component">
+			<div class="bg-white rounded-2xl shadow-xl pt-4 pb-4 px-4 md:pt-5 md:pb-5 md:px-5 mt-2 mb-4 border border-slate-200">
 			<!-- Selector de carpeta (con título principal delante) -->
 			<div class="mt-3 flex items-center gap-3">
 				<div class="text-2xl font-semibold text-slate-800 mr-4">Datos TensoRapid</div>
