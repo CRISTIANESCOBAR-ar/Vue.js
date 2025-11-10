@@ -38,24 +38,30 @@
 
 			<!-- Contenedor que agrupa filtros, tablas y estado -->
 			<div class="mt-4 bg-white rounded-2xl shadow-sm p-4 border border-slate-200">
-				<!-- Filtros: Todos / No guardados / Guardados -->
-				<div class="flex items-center gap-4">
-				<label class="inline-flex items-center text-sm cursor-pointer">
-					<input type="radio" name="tenso-filter" v-model="filterMode" value="all"
-						class="mr-2 text-indigo-600 focus:ring-indigo-500" />
-					<span class="text-slate-700 font-medium">Todos</span>
-				</label>
-				<label class="inline-flex items-center text-sm cursor-pointer">
-					<input type="radio" name="tenso-filter" v-model="filterMode" value="not"
-						class="mr-2 text-indigo-600 focus:ring-indigo-500" />
-					<span class="text-slate-700 font-medium">No guardados</span>
-				</label>
-				<label class="inline-flex items-center text-sm cursor-pointer">
-					<input type="radio" name="tenso-filter" v-model="filterMode" value="saved"
-						class="mr-2 text-indigo-600 focus:ring-indigo-500" />
-					<span class="text-slate-700 font-medium">Guardados</span>
-				</label>
-			</div>
+				<!-- Top row: filtros a la izquierda y título Datos .TBL a la derecha (si hay datos) -->
+				<div class="mt-4 flex items-center justify-between gap-4">
+					<div class="flex items-center gap-4">
+						<label class="inline-flex items-center text-sm cursor-pointer">
+							<input type="radio" name="tenso-filter" v-model="filterMode" value="all"
+								class="mr-2 text-indigo-600 focus:ring-indigo-500" />
+							<span class="text-slate-700 font-medium">Todos</span>
+						</label>
+						<label class="inline-flex items-center text-sm cursor-pointer">
+							<input type="radio" name="tenso-filter" v-model="filterMode" value="not"
+								class="mr-2 text-indigo-600 focus:ring-indigo-500" />
+							<span class="text-slate-700 font-medium">No guardados</span>
+						</label>
+						<label class="inline-flex items-center text-sm cursor-pointer">
+							<input type="radio" name="tenso-filter" v-model="filterMode" value="saved"
+								class="mr-2 text-indigo-600 focus:ring-indigo-500" />
+							<span class="text-slate-700 font-medium">Guardados</span>
+						</label>
+					</div>
+					<!-- Título Datos .TBL alineado a la derecha en la misma línea -->
+					<div v-if="parsedTblData.length" class="ml-4">
+						<h5 class="font-semibold text-lg text-slate-800 mb-0">Datos .TBL — TESTNR: {{ tblTestnr }}</h5>
+					</div>
+				</div>
 
 				<!-- Grid de dos columnas: tabla de ensayos a la izquierda y datos TBL a la derecha -->
 				<div class="mt-4 grid grid-cols-1 xl:grid-cols-2 gap-4 items-start">
@@ -223,7 +229,6 @@
 
 				<!-- Columna derecha: Tabla TBL (sin contenedor exterior) -->
 				<div v-show="parsedTblData.length">
-					<h5 class="font-semibold text-lg text-slate-800 mb-3">Datos .TBL — TESTNR: {{ tblTestnr }}</h5>
 					<div class="overflow-auto _minimal-scroll border border-slate-200 rounded-xl max-h-96">
 						<table class="w-full text-sm border-collapse tbl-centered">
 							<colgroup>
