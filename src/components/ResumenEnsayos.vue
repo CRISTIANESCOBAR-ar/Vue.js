@@ -209,10 +209,10 @@
 
               <!-- first / prev -->
               <button @click="page = 1" :disabled="page <= 1"
-                class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 disabled:opacity-50"
+                class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 disabled:opacity-50 shadow-sm hover:shadow-md"
                 title="Primera">« Primera</button>
               <button @click="page = Math.max(1, page - 1)" :disabled="page <= 1"
-                class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 disabled:opacity-50"
+                class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 disabled:opacity-50 shadow-sm hover:shadow-md"
                 title="Anterior">‹ Anterior</button>
 
               <!-- go to page input -->
@@ -223,16 +223,16 @@
                   class="w-20 text-sm px-2 py-1 border border-slate-200 rounded-md text-slate-700 placeholder-slate-400 focus:border-blue-400"
                   placeholder="Página" />
                 <button @click="goToPage()"
-                  class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150">Ir</button>
+                  class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md">Ir</button>
               </div>
 
               <!-- page indicator and next/last -->
               <span class="text-sm text-slate-600">Página {{ page }} / {{ totalPages }}</span>
               <button @click="page = Math.min(totalPages, page + 1)" :disabled="page >= totalPages"
-                class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 disabled:opacity-50"
+                class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 disabled:opacity-50 shadow-sm hover:shadow-md"
                 title="Siguiente">Siguiente ›</button>
               <button @click="page = totalPages" :disabled="page >= totalPages"
-                class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 disabled:opacity-50"
+                class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 disabled:opacity-50 shadow-sm hover:shadow-md"
                 title="Última">Última »</button>
             </div>
           </div>
