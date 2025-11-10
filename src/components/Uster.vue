@@ -1225,6 +1225,55 @@ async function saveCurrentTest() {
       await nextTick();
     }
 
+    // Limpia los inputs de TITULO correspondientes al TESTNR guardado
+    try {
+      for (let i = 0; i < tblData.value.length; i++) {
+        const r = tblData.value[i]
+        if (r && String(r['TESTNR']) === String(par.TESTNR)) {
+          // limpiar el campo TITULO para que el input quede vacío tras guardar
+          r['TITULO'] = ''
+        }
+      }
+    } catch { /* noop */ }
+
+    // Seleccionar y activar el siguiente ensayo.
+    // Si el filtro está en 'No guardados', elegimos el primer ensayo no guardado.
+    // En otro caso, elegimos el siguiente ensayo en la lista (rotando si es necesario).
+    try {
+      let nextTestnr = null
+      const list = Array.isArray(scanList.value) ? scanList.value.filter(i => i && i.testnr) : []
+
+      if (filterShowNotSaved.value) {
+        const nextItem = list.find(i => i.imp !== true)
+        if (nextItem) nextTestnr = nextItem.testnr
+      }
+
+      if (!nextTestnr) {
+        // buscar el índice del actual y avanzar
+        const idx = list.findIndex(i => String(i.testnr) === String(par.TESTNR))
+        if (idx !== -1) {
+          for (let j = idx + 1; j < list.length; j++) {
+            if (list[j] && list[j].testnr) { nextTestnr = list[j].testnr; break }
+          }
+          // si no hay siguiente, buscar desde el inicio
+          if (!nextTestnr) {
+            for (let j = 0; j < idx; j++) {
+              if (list[j] && list[j].testnr) { nextTestnr = list[j].testnr; break }
+            }
+          }
+        } else if (list.length > 0) {
+          nextTestnr = list[0].testnr
+        }
+      }
+
+      if (nextTestnr) {
+        // Esperar un tick para que el DOM esté estable y luego seleccionar
+        await nextTick()
+        await selectRow(nextTestnr)
+        // after selectRow, focus will be placed on first titulo input
+      }
+    } catch (err) { console.warn('auto-advance after save failed', err) }
+
     // Actualizar el archivo .TBL con los valores de Titulo editados
     try {
       const tblUpdated = await updateTblFileWithTitulos()
