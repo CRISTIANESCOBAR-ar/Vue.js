@@ -1,12 +1,11 @@
 <template>
 	<div class="w-full">
 		<div class="bg-white rounded-2xl shadow-xl p-4 md:p-5 mt-2 mb-4 border border-slate-200">
-			<h3 class="text-2xl font-semibold text-slate-800 mb-4">TensoRapid</h3>
-
-			<!-- Selector de carpeta -->
+			<!-- Selector de carpeta (con título principal delante) -->
 			<div class="mt-3 flex items-center gap-3">
+				<div class="text-2xl font-semibold text-slate-800 mr-4">Datos TensoRapid</div>
 				<label class="text-sm font-semibold text-slate-700 mr-2 shrink-0">Carpeta TensoRapid:</label>
-				<div class="flex-1 min-w-0">
+				<div class="w-64 min-w-0">
 					<div class="px-3 py-2 border border-slate-300 rounded-lg bg-slate-50 text-sm text-slate-800 truncate"
 						:title="tensoFolderPathFull">
 						{{ tensoFolderPathFull || 'Ninguna carpeta seleccionada' }}
