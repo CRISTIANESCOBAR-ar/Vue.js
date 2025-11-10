@@ -15,15 +15,19 @@
 				<div class="flex items-center gap-2">
 					<button @click="selectTensoFolder"
 						class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md">
-						<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7a2 2 0 012-2h3l2 3h6a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
+						<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+							stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+								d="M3 7a2 2 0 012-2h3l2 3h6a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
 						</svg>
 						Seleccionar
 					</button>
 					<button @click="refreshTensoFolder"
 						class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md">
-						<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+						<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+							stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+								d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
 						</svg>
 						Actualizar
 					</button>
@@ -55,12 +59,12 @@
 				<div class="scan-container max-h-64 overflow-y-auto _minimal-scroll rounded-xl border border-slate-200">
 					<table class="text-xs border-collapse fixed-table scan-table w-full">
 						<colgroup>
-							<col style="width: 80px" />
-							<col style="width: 50px" />
-							<col style="width: 50px" />
-							<col style="width: 50px" />
-							<col style="width: 60px" />
-							<col style="width: 60px" />
+							<col class="col-ensayo" />
+							<col class="col-par" />
+							<col class="col-tbl" />
+							<col class="col-imp" />
+							<col class="col-ne" />
+							<col class="col-maq" />
 							<col style="width: 120px" />
 							<col style="width: 80px" />
 						</colgroup>
@@ -1182,5 +1186,15 @@ onMounted(() => {
 .scan-container {
 	max-height: 16rem;
 	overflow-y: auto;
+	/* Set max-width to match Uster scan table total width:
+	   col-ensayo (82px) + col-par (53px) + col-tbl (53px) + col-imp (65px) + 
+	   col-ne (49px) + col-maq (74px) + USTER (120px) + Acción (80px) = ~576px */
+	max-width: 576px;
+}
+
+/* Force fixed table layout so col widths from global CSS (col-ensayo, col-par, etc.) are respected */
+.scan-table {
+	table-layout: fixed;
+	width: 576px;
 }
 </style>
