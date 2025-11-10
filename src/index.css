@@ -166,11 +166,14 @@ body {
 	width: 48px;
 }
 .col-imp {
-	width: 65px;
+	/* Reduced by ~10% (65px -> 59px) */
+	width: 59px;
 }
 .col-ne {
-	width: 49px;
+	/* Reduced by ~10% (49px -> 44px) */
+	width: 44px;
 }
 .col-maq {
-	width: 74px;
+	/* Reduced by ~10% (74px -> 67px) */
+	width: 67px;
 }

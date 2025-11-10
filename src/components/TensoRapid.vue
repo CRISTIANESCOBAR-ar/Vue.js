@@ -70,7 +70,8 @@
 								<col class="col-ne" />
 								<col class="col-maq" />
 								<col style="width: 72px" />
-								<col style="width: 194px" />
+								<!-- Increased Acción to absorb freed width from Estado/Ne/Maq reductions -->
+								<col style="width: 212px" />
 							</colgroup>
 							<thead class="sticky top-0 bg-gradient-to-r from-slate-50 to-slate-100 z-10">
 								<tr>
