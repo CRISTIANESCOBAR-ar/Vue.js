@@ -150,7 +150,7 @@
 												class="px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-xs font-medium transition-colors duration-200 shadow-sm hover:shadow-md">
 												Editar
 											</button>
-											<button @click.stop="deleteTensorapid(item)" :disabled="isDeleting"
+											<button v-if="!item.isEditing" @click.stop="deleteTensorapid(item)" :disabled="isDeleting"
 												class="px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700 text-xs font-medium disabled:opacity-50 transition-colors duration-200 shadow-sm hover:shadow-md">
 												{{ isDeleting ? 'Eliminando...' : 'Eliminar' }}
 											</button>
@@ -168,7 +168,7 @@
 												class="px-3 py-1 bg-slate-500 text-white rounded-lg hover:bg-slate-600 text-xs font-medium disabled:opacity-50 transition-colors duration-200 shadow-sm hover:shadow-md">
 												Cancelar
 											</button>
-											<button @click.stop="deleteTensorapid(item)" :disabled="isDeleting"
+											<button v-if="!item.isEditing" @click.stop="deleteTensorapid(item)" :disabled="isDeleting"
 												class="px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700 text-xs font-medium disabled:opacity-50 transition-colors duration-200 shadow-sm hover:shadow-md">
 												{{ isDeleting ? 'Eliminando...' : 'Eliminar' }}
 											</button>
