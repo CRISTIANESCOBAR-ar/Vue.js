@@ -150,40 +150,53 @@
 												class="flex items-center gap-1 justify-center">
 												<button @click.stop="startEditing(item)"
 													class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md">
-													<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-														<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536M9 11l6-6 3 3-6 6H9v-3z" />
+													<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+														viewBox="0 0 24 24" stroke="currentColor">
+														<path stroke-linecap="round" stroke-linejoin="round"
+															stroke-width="2"
+															d="M15.232 5.232l3.536 3.536M9 11l6-6 3 3-6 6H9v-3z" />
 													</svg>
 													Editar
 												</button>
-												<button v-if="!item.isEditing" @click.stop="deleteTensorapid(item)" :disabled="isDeleting"
+												<button v-if="!item.isEditing" @click.stop="deleteTensorapid(item)"
+													:disabled="isDeleting"
 													class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md disabled:opacity-50">
-													<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-														<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22M10 3h4a1 1 0 011 1v2H9V4a1 1 0 011-1z" />
+													<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-red-600"
+														fill="none" viewBox="0 0 24 24" stroke="currentColor">
+														<path stroke-linecap="round" stroke-linejoin="round"
+															stroke-width="2"
+															d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22M10 3h4a1 1 0 011 1v2H9V4a1 1 0 011-1z" />
 													</svg>
 													{{ isDeleting ? 'Eliminando...' : 'Eliminar' }}
 												</button>
-												</div>
-												<!-- Botones Guardar y Cancelar (si está editando o no está guardado) -->
-												<div v-else-if="item.testnr && item.usterTestnr"
-													class="flex gap-1 justify-center">
-														<button @click="saveToOracle(item)" :disabled="isSaving"
-															:ref="el => setSaveButtonRef(el, item.testnr)"
-															class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md disabled:opacity-50">
-															{{ isSaving ? 'Guardando...' : 'Guardar' }}
-														</button>
-													<button v-if="item.isEditing" @click="cancelEditing(item)"
-														:disabled="isSaving"
-														class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md disabled:opacity-50">
-														<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-															<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-														</svg>
-														Cancelar
-													</button>
-													<button v-if="!item.isEditing" @click.stop="deleteTensorapid(item)" :disabled="isDeleting"
-														class="px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700 text-xs font-medium disabled:opacity-50 transition-colors duration-200 shadow-sm hover:shadow-md">
-															{{ isDeleting ? 'Eliminando...' : 'Eliminar' }}
-														</button>
-												</div>
+											</div>
+											<!-- Botones Guardar y Cancelar (si está editando o no está guardado) -->
+											<div v-else-if="item.testnr && item.usterTestnr"
+												class="flex gap-1 justify-center">
+												<button @click="saveToOracle(item)" :disabled="isSaving"
+													:ref="el => setSaveButtonRef(el, item.testnr)"
+													class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md disabled:opacity-50">
+													<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+														<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+													</svg>
+													<span>{{ isSaving ? 'Guardando...' : 'Guardar' }}</span>
+												</button>
+												<button v-if="item.isEditing" @click="cancelEditing(item)"
+													:disabled="isSaving"
+													class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md disabled:opacity-50">
+													<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+														viewBox="0 0 24 24" stroke="currentColor">
+														<path stroke-linecap="round" stroke-linejoin="round"
+															stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+													</svg>
+													Cancelar
+												</button>
+												<button v-if="!item.isEditing" @click.stop="deleteTensorapid(item)"
+													:disabled="isDeleting"
+													class="px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700 text-xs font-medium disabled:opacity-50 transition-colors duration-200 shadow-sm hover:shadow-md">
+													{{ isDeleting ? 'Eliminando...' : 'Eliminar' }}
+												</button>
+											</div>
 										</transition>
 									</td>
 								</tr>
@@ -1321,14 +1334,19 @@ onMounted(() => {
 }
 
 /* Fade transition for action buttons */
-.fade-enter-active, .fade-leave-active {
+.fade-enter-active,
+.fade-leave-active {
 	transition: opacity 180ms ease, transform 180ms ease;
 }
-.fade-enter-from, .fade-leave-to {
+
+.fade-enter-from,
+.fade-leave-to {
 	opacity: 0;
 	transform: translateY(-6px);
 }
-.fade-enter-to, .fade-leave-from {
+
+.fade-enter-to,
+.fade-leave-from {
 	opacity: 1;
 	transform: translateY(0);
 }
