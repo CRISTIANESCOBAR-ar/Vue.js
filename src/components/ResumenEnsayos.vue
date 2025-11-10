@@ -870,7 +870,7 @@ const modalMeta = computed(() => {
       }
     } else {
       // Try common numeric formats: either dd/mm/yyyy or mm/dd/yyyy (also accept - or . as separators)
-      const m = s.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})$/)
+  const m = s.match(new RegExp('^(\\d{1,2})[\\/\\-.](\\d{1,2})[\\/\\-.](\\d{2,4})$'))
       if (m) {
         const a = Number(m[1])
         const b = Number(m[2])
