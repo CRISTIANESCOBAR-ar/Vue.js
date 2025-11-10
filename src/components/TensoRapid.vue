@@ -55,199 +55,218 @@
 				</label>
 			</div>
 
-			<div class="mt-4">
-				<div class="scan-container max-h-64 overflow-y-auto _minimal-scroll rounded-xl border border-slate-200">
-					<table class="text-xs border-collapse fixed-table scan-table w-full">
-						<colgroup>
-							<col class="col-ensayo" />
-							<col class="col-par" />
-							<col class="col-tbl" />
-							<col class="col-imp" />
-							<col class="col-ne" />
-							<col class="col-maq" />
-							<col style="width: 72px" />
-							<col style="width: 168px" />
-						</colgroup>
-						<thead class="sticky top-0 bg-gradient-to-r from-slate-50 to-slate-100 z-10">
-							<tr>
-								<th
-									class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
-									Ensayo</th>
-								<th
-									class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
-									.PAR</th>
-								<th
-									class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
-									.TBL</th>
-								<th
-									class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
-									Estado</th>
-								<th
-									class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
-									Ne</th>
-								<th
-									class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
-									Maq.</th>
-								<th
-									class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
-									USTER</th>
-								<th
-									class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
-									Acción</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr v-for="(item, idx) in tensoDisplayList" :key="idx"
-								class="hover:bg-blue-50/30 cursor-pointer transition-colors duration-150"
-								:class="{ 'bg-blue-50': selectedTensoTestnr === item.testnr }"
-								@click="loadTensoTestFiles(item.testnr)">
-								<td class="px-2 py-[0.3rem] border border-slate-200 text-xs text-center text-slate-700">
-									{{
-										item.testnr || '' }}</td>
-								<td class="px-2 py-[0.3rem] border border-slate-200 text-center text-xs"><input
-										type="checkbox" disabled :checked="item.hasPar" /></td>
-								<td class="px-2 py-[0.3rem] border border-slate-200 text-center text-xs"><input
-										type="checkbox" disabled :checked="item.hasTbl" /></td>
-								<td class="px-2 py-[0.3rem] border border-slate-200 text-center text-xs">
-									<span v-if="item.saved === true" title="Guardado en la base de datos">
-										<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-600 mx-auto"
-											fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-											<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-										</svg>
-									</span>
-								</td>
-								<td
-									class="px-2 py-[0.3rem] border border-slate-200 text-center text-xs font-mono text-slate-700">
-									{{ item.nomcount || '' }}</td>
-								<td
-									class="px-2 py-[0.3rem] border border-slate-200 text-center text-xs font-mono text-slate-700">
-									{{ item.maschnr || '' }}</td>
-								<td class="px-2 py-[0.3rem] border border-slate-200 text-center text-xs" @click.stop>
-									<input v-if="item.testnr" type="text" v-model="item.usterTestnr"
-										:placeholder="item.saved ? '05410' : ''" maxlength="5" inputmode="numeric"
-										:disabled="item.saved && !item.isEditing"
-										:ref="el => setInputRef(el, item.testnr)"
-										@input="formatUsterTestnr(item, $event)" @keydown.enter="focusSaveButton(item)"
-										:class="[
-											'w-full px-2 py-1 text-xs text-center border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono transition-colors',
-											item.saved && !item.isEditing ? 'bg-slate-100 cursor-not-allowed' : ''
-										]" />
-								</td>
-								<td class="px-2 py-[0.3rem] border border-slate-200 text-center text-xs" @click.stop>
-									<!-- Botón Editar (solo si está guardado y no está editando) -->
-									<button v-if="item.testnr && item.saved && !item.isEditing"
-										@click="startEditing(item)"
-										class="px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-xs font-medium transition-colors duration-200 shadow-sm hover:shadow-md">
-										Editar
-									</button>
-									<!-- Botones Guardar y Cancelar (si está editando o no está guardado) -->
-									<div v-else-if="item.testnr && item.usterTestnr" class="flex gap-1 justify-center">
-										<button @click="saveToOracle(item)" :disabled="isSaving"
-											:ref="el => setSaveButtonRef(el, item.testnr)"
-											class="px-3 py-1 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-xs font-medium disabled:opacity-50 transition-colors duration-200 shadow-sm hover:shadow-md">
-											{{ isSaving ? 'Guardando...' : 'Guardar' }}
+			<!-- Grid de dos columnas: tabla de ensayos a la izquierda y datos TBL a la derecha -->
+			<div class="mt-4 grid grid-cols-1 xl:grid-cols-2 gap-4 items-start">
+				<!-- Columna izquierda: Tabla de ensayos encontrados -->
+				<div>
+					<div
+						class="scan-container max-h-64 overflow-y-auto _minimal-scroll rounded-xl border border-slate-200">
+						<table class="text-xs border-collapse fixed-table scan-table w-full">
+							<colgroup>
+								<col class="col-ensayo" />
+								<col class="col-par" />
+								<col class="col-tbl" />
+								<col class="col-imp" />
+								<col class="col-ne" />
+								<col class="col-maq" />
+								<col style="width: 72px" />
+								<col style="width: 168px" />
+							</colgroup>
+							<thead class="sticky top-0 bg-gradient-to-r from-slate-50 to-slate-100 z-10">
+								<tr>
+									<th
+										class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
+										Ensayo</th>
+									<th
+										class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
+										.PAR</th>
+									<th
+										class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
+										.TBL</th>
+									<th
+										class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
+										Estado</th>
+									<th
+										class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
+										Ne</th>
+									<th
+										class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
+										Maq.</th>
+									<th
+										class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
+										USTER</th>
+									<th
+										class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
+										Acción</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr v-for="(item, idx) in tensoDisplayList" :key="idx"
+									class="hover:bg-blue-50/30 cursor-pointer transition-colors duration-150"
+									:class="{ 'bg-blue-50': selectedTensoTestnr === item.testnr }"
+									@click="loadTensoTestFiles(item.testnr)">
+									<td
+										class="px-2 py-[0.3rem] border border-slate-200 text-xs text-center text-slate-700">
+										{{
+											item.testnr || '' }}</td>
+									<td class="px-2 py-[0.3rem] border border-slate-200 text-center text-xs"><input
+											type="checkbox" disabled :checked="item.hasPar" /></td>
+									<td class="px-2 py-[0.3rem] border border-slate-200 text-center text-xs"><input
+											type="checkbox" disabled :checked="item.hasTbl" /></td>
+									<td class="px-2 py-[0.3rem] border border-slate-200 text-center text-xs">
+										<span v-if="item.saved === true" title="Guardado en la base de datos">
+											<svg xmlns="http://www.w3.org/2000/svg"
+												class="h-4 w-4 text-green-600 mx-auto" fill="none" viewBox="0 0 24 24"
+												stroke="currentColor" stroke-width="2">
+												<path stroke-linecap="round" stroke-linejoin="round"
+													d="M5 13l4 4L19 7" />
+											</svg>
+										</span>
+									</td>
+									<td
+										class="px-2 py-[0.3rem] border border-slate-200 text-center text-xs font-mono text-slate-700">
+										{{ item.nomcount || '' }}</td>
+									<td
+										class="px-2 py-[0.3rem] border border-slate-200 text-center text-xs font-mono text-slate-700">
+										{{ item.maschnr || '' }}</td>
+									<td class="px-2 py-[0.3rem] border border-slate-200 text-center text-xs"
+										@click.stop>
+										<input v-if="item.testnr" type="text" v-model="item.usterTestnr"
+											:placeholder="item.saved ? '05410' : ''" maxlength="5" inputmode="numeric"
+											:disabled="item.saved && !item.isEditing"
+											:ref="el => setInputRef(el, item.testnr)"
+											@input="formatUsterTestnr(item, $event)"
+											@keydown.enter="focusSaveButton(item)" :class="[
+												'w-full px-2 py-1 text-xs text-center border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono transition-colors',
+												item.saved && !item.isEditing ? 'bg-slate-100 cursor-not-allowed' : ''
+											]" />
+									</td>
+									<td class="px-2 py-[0.3rem] border border-slate-200 text-center text-xs"
+										@click.stop>
+										<!-- Botón Editar (solo si está guardado y no está editando) -->
+										<button v-if="item.testnr && item.saved && !item.isEditing"
+											@click="startEditing(item)"
+											class="px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-xs font-medium transition-colors duration-200 shadow-sm hover:shadow-md">
+											Editar
 										</button>
-										<button v-if="item.isEditing" @click="cancelEditing(item)" :disabled="isSaving"
-											class="px-3 py-1 bg-slate-500 text-white rounded-lg hover:bg-slate-600 text-xs font-medium disabled:opacity-50 transition-colors duration-200 shadow-sm hover:shadow-md">
-											Cancelar
-										</button>
-									</div>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-				<div class="flex items-center gap-2 mt-3">
-					<div class="text-sm font-medium text-slate-600">{{ tensoScanStatus }}</div>
-					<div v-if="isScanning" class="text-sm text-slate-500 flex items-center gap-2">
-						<svg class="w-4 h-4 animate-spin text-slate-600" viewBox="0 0 24 24" fill="none">
-							<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
-							</circle>
-							<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
-						</svg>
-						<span>Escaneando...</span>
+										<!-- Botones Guardar y Cancelar (si está editando o no está guardado) -->
+										<div v-else-if="item.testnr && item.usterTestnr"
+											class="flex gap-1 justify-center">
+											<button @click="saveToOracle(item)" :disabled="isSaving"
+												:ref="el => setSaveButtonRef(el, item.testnr)"
+												class="px-3 py-1 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-xs font-medium disabled:opacity-50 transition-colors duration-200 shadow-sm hover:shadow-md">
+												{{ isSaving ? 'Guardando...' : 'Guardar' }}
+											</button>
+											<button v-if="item.isEditing" @click="cancelEditing(item)"
+												:disabled="isSaving"
+												class="px-3 py-1 bg-slate-500 text-white rounded-lg hover:bg-slate-600 text-xs font-medium disabled:opacity-50 transition-colors duration-200 shadow-sm hover:shadow-md">
+												Cancelar
+											</button>
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="flex items-center gap-2 mt-3">
+						<div class="text-sm font-medium text-slate-600">{{ tensoScanStatus }}</div>
+						<div v-if="isScanning" class="text-sm text-slate-500 flex items-center gap-2">
+							<svg class="w-4 h-4 animate-spin text-slate-600" viewBox="0 0 24 24" fill="none">
+								<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+									stroke-width="4">
+								</circle>
+								<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z">
+								</path>
+							</svg>
+							<span>Escaneando...</span>
+						</div>
 					</div>
 				</div>
-			</div>
+				<!-- Fin columna izquierda -->
 
-			<!-- Preview area for PAR data - COMENTADO: Solo se muestra TBL -->
-			<!-- 
-		<div v-show="Object.keys(parsedParData).length" class="max-w-4xl mx-auto bg-white rounded shadow p-4 mt-4">
-			<h5 class="font-medium mb-2">Datos .PAR — TESTNR: {{ parsedParData.TESTNR || tblTestnr }}</h5>
-			<div class="overflow-auto border rounded">
-				<table class="w-full text-sm border-collapse">
-					<thead>
-						<tr class="bg-gray-100 text-gray-700">
-							<th class="p-2 border text-xs text-left">Campo</th>
-							<th class="p-2 border text-xs text-left">Valor</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr v-for="field in tensoParFields" :key="field.field">
-							<td class="p-2 border text-xs font-medium">{{ field.field }}</td>
-							<td class="p-2 border text-xs font-mono">{{ parsedParData[field.field] || '' }}</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		</div>
-		-->
-
-			<!-- Preview area for TBL data -->
-			<div v-show="parsedTblData.length"
-				class="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl p-5 mt-4 border border-slate-200">
-				<h5 class="font-semibold text-lg text-slate-800 mb-3">Datos .TBL — TESTNR: {{ tblTestnr }}</h5>
-				<div class="overflow-auto _minimal-scroll border border-slate-200 rounded-xl max-h-96">
-					<table class="w-full text-sm border-collapse">
-						<thead class="sticky top-0 bg-gradient-to-r from-slate-50 to-slate-100">
-							<tr>
-								<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">#</th>
-								<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">TESTNR</th>
-								<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">No.</th>
-								<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700 bg-blue-50">
-									Huso</th>
-								<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">
-									TIEMPO_ROTURA</th>
-								<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">FUERZA_B
-								</th>
-								<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">ELONGACION
-								</th>
-								<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">TENACIDAD
-								</th>
-								<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">TRABAJO
-								</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr v-for="(row, ri) in preparedTblPreview" :key="ri"
-								class="hover:bg-blue-50/30 transition-colors duration-150">
-								<td class="p-1.5 border border-slate-200 text-xs text-center text-slate-700">{{ ri + 1
-								}}</td>
-								<td class="p-1.5 border border-slate-200 text-xs font-mono text-slate-700">{{ row.TESTNR
-									|| '' }}</td>
-								<td class="p-1.5 border border-slate-200 text-xs font-mono text-slate-700">{{
-									row.HUSO_ENSAYOS || '' }}</td>
-								<td
-									class="p-1.5 border border-slate-200 text-xs font-mono bg-blue-50 text-center font-semibold text-slate-700">
-									{{
-										row.HUSO_NUMBER }}</td>
-								<td class="p-1.5 border border-slate-200 text-xs font-mono text-right text-slate-700">{{
-									row.TIEMPO_ROTURA || '' }}</td>
-								<td class="p-1.5 border border-slate-200 text-xs font-mono text-right text-slate-700">{{
-									row.FUERZA_B || '' }}</td>
-								<td class="p-1.5 border border-slate-200 text-xs font-mono text-right text-slate-700">{{
-									row.ELONGACION || '' }}</td>
-								<td class="p-1.5 border border-slate-200 text-xs font-mono text-right text-slate-700">{{
-									row.TENACIDAD || '' }}</td>
-								<td class="p-1.5 border border-slate-200 text-xs font-mono text-right text-slate-700">{{
-									row.TRABAJO || '' }}</td>
-							</tr>
-						</tbody>
-					</table>
+				<!-- Columna derecha: Tabla TBL -->
+				<div v-show="parsedTblData.length" class="bg-white rounded-2xl shadow-xl p-5 border border-slate-200">
+					<h5 class="font-semibold text-lg text-slate-800 mb-3">Datos .TBL — TESTNR: {{ tblTestnr }}</h5>
+					<div class="overflow-auto _minimal-scroll border border-slate-200 rounded-xl max-h-96">
+						<table class="w-full text-sm border-collapse">
+							<colgroup>
+								<col style="width:40px" />
+								<col class="tbl-col-test" />
+								<col style="width:48px" />
+								<col style="width:48px" />
+								<col class="tbl-col-tiempo" />
+								<col style="width:44px" />
+								<col style="width:32px" />
+								<col style="width:80px" />
+								<col style="width:80px" />
+							</colgroup>
+							<thead class="sticky top-0 bg-gradient-to-r from-slate-50 to-slate-100">
+								<tr>
+									<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">#</th>
+									<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">Test
+									</th>
+									<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">No.
+									</th>
+									<th
+										class="p-2 border border-slate-200 text-xs font-semibold text-slate-700 bg-blue-50">
+										Huso</th>
+									<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">
+										Tiempo Rotura</th>
+									<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">
+										Fuerza B
+									</th>
+									<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">
+										Elong.
+									</th>
+									<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">
+										TENACIDAD
+									</th>
+									<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">TRABAJO
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr v-for="(row, ri) in preparedTblPreview" :key="ri"
+									class="hover:bg-blue-50/30 transition-colors duration-150">
+									<td class="p-1.5 border border-slate-200 text-xs text-center text-slate-700">{{ ri +
+										1 }}</td>
+									<td class="p-1.5 border border-slate-200 text-xs font-mono text-slate-700">{{
+										row.TESTNR || '' }}</td>
+									<td class="p-1.5 border border-slate-200 text-xs font-mono text-slate-700">{{
+										row.HUSO_ENSAYOS || '' }}</td>
+									<td
+										class="p-1.5 border border-slate-200 text-xs font-mono bg-blue-50 text-center font-semibold text-slate-700">
+										{{ row.HUSO_NUMBER }}</td>
+									<td
+										class="p-1.5 border border-slate-200 text-xs font-mono text-right text-slate-700 tbl-td-tiempo">
+										{{ row.TIEMPO_ROTURA || '' }}</td>
+									<td
+										class="p-1.5 border border-slate-200 text-xs font-mono text-right text-slate-700">
+										{{ row.FUERZA_B || '' }}</td>
+									<td
+										class="p-1.5 border border-slate-200 text-xs font-mono text-right text-slate-700">
+										{{ row.ELONGACION || '' }}</td>
+									<td
+										class="p-1.5 border border-slate-200 text-xs font-mono text-right text-slate-700">
+										{{ row.TENACIDAD || '' }}</td>
+									<td
+										class="p-1.5 border border-slate-200 text-xs font-mono text-right text-slate-700">
+										{{ row.TRABAJO || '' }}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 				</div>
+				<!-- Fin columna derecha -->
+
 			</div>
+			<!-- Fin grid dos columnas -->
+
 		</div>
+		<!-- Fin div bg-white -->
+
 	</div>
+	<!-- Fin div w-full -->
 </template>
 
 <script setup>
@@ -1197,5 +1216,22 @@ onMounted(() => {
 .scan-table {
 	table-layout: fixed;
 	width: 100%;
+}
+
+/* Column classes for TBL preview */
+.tbl-col-test {
+	/* Reduced by ~15% from a typical 80px default (≈68px) */
+	width: 68px;
+}
+
+.tbl-col-tiempo {
+	/* Reduced by 50% (halved) per request */
+	width: 35px;
+}
+
+.tbl-td-tiempo {
+	/* Allow breaking when the cell can't fit in one line */
+	white-space: normal;
+	word-break: break-word;
 }
 </style>
