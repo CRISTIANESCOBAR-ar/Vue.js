@@ -166,9 +166,9 @@
 												<!-- Botones Guardar y Cancelar (si está editando o no está guardado) -->
 												<div v-else-if="item.testnr && item.usterTestnr"
 													class="flex gap-1 justify-center">
-													<button @click="saveToOracle(item)" :disabled="isSaving"
-														:ref="el => setSaveButtonRef(el, item.testnr)"
-														class="px-3 py-1 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-xs font-medium disabled:opacity-50 transition-colors duration-200 shadow-sm hover:shadow-md">
+														<button @click="saveToOracle(item)" :disabled="isSaving"
+															:ref="el => setSaveButtonRef(el, item.testnr)"
+															class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md disabled:opacity-50">
 															{{ isSaving ? 'Guardando...' : 'Guardar' }}
 														</button>
 													<button v-if="item.isEditing" @click="cancelEditing(item)"
