@@ -14,9 +14,9 @@
 				</div>
 				<div class="flex items-center gap-2">
 					<button @click="selectTensoFolder"
-						class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm font-medium transition-colors duration-200 shadow-sm hover:shadow-md">Seleccionar</button>
+						class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md">Seleccionar</button>
 					<button @click="refreshTensoFolder"
-						class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium transition-colors duration-200 shadow-sm hover:shadow-md">Actualizar</button>
+						class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md">Actualizar</button>
 					<input ref="tensoFolderInputLocal" type="file" webkitdirectory directory multiple class="hidden"
 						@change="onTensoFolderInputChangeLocal" />
 				</div>
