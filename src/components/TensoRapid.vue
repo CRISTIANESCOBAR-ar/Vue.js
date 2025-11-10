@@ -65,8 +65,8 @@
 							<col class="col-imp" />
 							<col class="col-ne" />
 							<col class="col-maq" />
-							<col style="width: 120px" />
-							<col style="width: 80px" />
+							<col style="width: 72px" />
+							<col style="width: 168px" />
 						</colgroup>
 						<thead class="sticky top-0 bg-gradient-to-r from-slate-50 to-slate-100 z-10">
 							<tr>
@@ -1186,15 +1186,16 @@ onMounted(() => {
 .scan-container {
 	max-height: 16rem;
 	overflow-y: auto;
-	/* Set max-width to match Uster scan table total width:
+	overflow-x: hidden;
+	/* Set width to match table + borders/padding:
 	   col-ensayo (82px) + col-par (53px) + col-tbl (53px) + col-imp (65px) + 
-	   col-ne (49px) + col-maq (74px) + USTER (120px) + Acción (80px) = ~576px */
-	max-width: 576px;
+	   col-ne (49px) + col-maq (74px) + USTER (72px) + Acción (168px) + borders = ~640px */
+	width: 640px;
 }
 
 /* Force fixed table layout so col widths from global CSS (col-ensayo, col-par, etc.) are respected */
 .scan-table {
 	table-layout: fixed;
-	width: 576px;
+	width: 100%;
 }
 </style>
