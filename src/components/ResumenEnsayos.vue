@@ -278,7 +278,7 @@
             <!-- Export modal data to Excel (small button to the left of Copy) -->
             <button @click="exportModalToExcel" type="button"
               v-tippy="{ content: 'Exportar este detalle a Excel (XLSX)', placement: 'bottom', theme: 'custom' }"
-              class="w-9 h-9 rounded-lg bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 flex items-center justify-center text-slate-600 hover:text-slate-700 transition-all duration-200"
+              class="w-9 h-9 rounded-lg bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 flex items-center justify-center text-slate-600 hover:text-slate-700 transition-all duration-200 shadow-sm hover:shadow-md"
               aria-label="Exportar detalle a Excel">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2">
@@ -290,7 +290,7 @@
             <!-- Copy as image button -->
             <button @click="copyModalAsImage" type="button"
               v-tippy="{ content: 'Copiar como imagen para WhatsApp', placement: 'bottom', theme: 'custom' }"
-              class="w-9 h-9 rounded-lg bg-white border border-slate-200 hover:border-blue-400 hover:bg-blue-50 flex items-center justify-center text-slate-600 hover:text-blue-600 transition-all duration-200 group"
+              class="w-9 h-9 rounded-lg bg-white border border-slate-200 hover:border-blue-400 hover:bg-blue-50 flex items-center justify-center text-slate-600 hover:text-blue-600 transition-all duration-200 group shadow-sm hover:shadow-md"
               aria-label="Copiar como imagen">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2">
@@ -302,7 +302,7 @@
             <!-- Close button -->
             <button @click="closeModal" type="button"
               v-tippy="{ content: 'Cerrar (Esc)', placement: 'bottom', theme: 'custom' }"
-              class="w-9 h-9 rounded-lg bg-white border border-slate-200 hover:border-red-400 hover:bg-red-50 flex items-center justify-center text-slate-600 hover:text-red-600 transition-all duration-200"
+              class="w-9 h-9 rounded-lg bg-white border border-slate-200 hover:border-red-400 hover:bg-red-50 flex items-center justify-center text-slate-600 hover:text-red-600 transition-all duration-200 shadow-sm hover:shadow-md"
               aria-label="Cerrar detalle">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -870,7 +870,7 @@ const modalMeta = computed(() => {
       }
     } else {
       // Try common numeric formats: either dd/mm/yyyy or mm/dd/yyyy (also accept - or . as separators)
-  const m = s.match(new RegExp('^(\\d{1,2})[\\/\\-.](\\d{1,2})[\\/\\-.](\\d{2,4})$'))
+      const m = s.match(new RegExp('^(\\d{1,2})[\\/\\-.](\\d{1,2})[\\/\\-.](\\d{2,4})$'))
       if (m) {
         const a = Number(m[1])
         const b = Number(m[2])
