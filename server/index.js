@@ -1158,6 +1158,77 @@ app.get('/api/tensorapid/tbl', async (req, res) => {
   }
 })
 
+/*
+DELETE /api/tensorapid/delete
+Body: { testnr: '...' }
+Deletes all records for a given TESTNR from TENSORAPID_TBL and TENSORAPID_PAR only.
+Response: { success: true, message: '...' }
+*/
+app.delete('/api/tensorapid/delete', async (req, res) => {
+  const payload = req.body || {}
+  const testnr = payload.testnr
+
+  globalThis.console.log('DELETE /api/tensorapid/delete received - TESTNR:', testnr)
+
+  if (!testnr) return res.status(400).json({ error: 'Missing testnr' })
+
+  const dryRun =
+    (typeof globalThis !== 'undefined' &&
+      globalThis.process &&
+      globalThis.process.env &&
+      globalThis.process.env.SKIP_DB === 'true') ||
+    payload.dry === true
+
+  let conn
+  try {
+    if (dryRun) {
+      return res.json({
+        success: true,
+        message: `Ensayo ${testnr} eliminado (dry run)`,
+        dryRun: true
+      })
+    }
+
+    await initPool()
+    conn = await getConnection()
+
+    // Delete from TENSORAPID_TBL first (child table)
+    const deleteTblSql = `DELETE FROM ${SCHEMA_PREFIX}TENSORAPID_TBL WHERE TESTNR = :TESTNR`
+    globalThis.console.log('Executing DELETE TBL SQL:', deleteTblSql)
+    const tblResult = await conn.execute(deleteTblSql, { TESTNR: testnr }, { autoCommit: false })
+    globalThis.console.log('TBL rows deleted:', tblResult.rowsAffected)
+
+    // Delete from TENSORAPID_PAR (parent table)
+    const deleteParSql = `DELETE FROM ${SCHEMA_PREFIX}TENSORAPID_PAR WHERE TESTNR = :TESTNR`
+    globalThis.console.log('Executing DELETE PAR SQL:', deleteParSql)
+    const parResult = await conn.execute(deleteParSql, { TESTNR: testnr }, { autoCommit: false })
+    globalThis.console.log('PAR rows deleted:', parResult.rowsAffected)
+
+    await conn.commit()
+    res.json({
+      success: true,
+      message: `Ensayo ${testnr} eliminado correctamente`,
+      deletedTblRows: tblResult.rowsAffected,
+      deletedParRows: parResult.rowsAffected
+    })
+  } catch (err) {
+    globalThis.console.error('Delete tensorapid error', err)
+    try {
+      if (conn) await conn.rollback()
+    } catch (er2) {
+      globalThis.console.error('rollback failed', er2)
+    }
+    const baseError = String(err && err.message ? err.message : err)
+    res.status(500).json({ error: baseError })
+  } finally {
+    try {
+      if (conn) await conn.close()
+    } catch (e) {
+      globalThis.console.error('close conn err', e)
+    }
+  }
+})
+
 // GET /api/report/informe-completo
 // Returns a consolidated report for ALL TESTNRs from USTER_PAR with aggregates from USTER_TBL and TENSORAPID_TBL
 app.get('/api/report/informe-completo', async (req, res) => {

@@ -144,11 +144,17 @@
 									<td class="px-2 py-[0.3rem] border border-slate-200 text-center text-xs"
 										@click.stop>
 										<!-- Botón Editar (solo si está guardado y no está editando) -->
-										<button v-if="item.testnr && item.saved && !item.isEditing"
-											@click="startEditing(item)"
-											class="px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-xs font-medium transition-colors duration-200 shadow-sm hover:shadow-md">
-											Editar
-										</button>
+										<div v-if="item.testnr && item.saved && !item.isEditing"
+											class="flex items-center gap-1 justify-center">
+											<button @click.stop="startEditing(item)"
+												class="px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-xs font-medium transition-colors duration-200 shadow-sm hover:shadow-md">
+												Editar
+											</button>
+											<button @click.stop="deleteTensorapid(item)" :disabled="isDeleting"
+												class="px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700 text-xs font-medium disabled:opacity-50 transition-colors duration-200 shadow-sm hover:shadow-md">
+												{{ isDeleting ? 'Eliminando...' : 'Eliminar' }}
+											</button>
+										</div>
 										<!-- Botones Guardar y Cancelar (si está editando o no está guardado) -->
 										<div v-else-if="item.testnr && item.usterTestnr"
 											class="flex gap-1 justify-center">
@@ -161,6 +167,10 @@
 												:disabled="isSaving"
 												class="px-3 py-1 bg-slate-500 text-white rounded-lg hover:bg-slate-600 text-xs font-medium disabled:opacity-50 transition-colors duration-200 shadow-sm hover:shadow-md">
 												Cancelar
+											</button>
+											<button @click.stop="deleteTensorapid(item)" :disabled="isDeleting"
+												class="px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700 text-xs font-medium disabled:opacity-50 transition-colors duration-200 shadow-sm hover:shadow-md">
+												{{ isDeleting ? 'Eliminando...' : 'Eliminar' }}
 											</button>
 										</div>
 									</td>
@@ -188,7 +198,7 @@
 				<div v-show="parsedTblData.length" class="bg-white rounded-2xl shadow-xl p-5 border border-slate-200">
 					<h5 class="font-semibold text-lg text-slate-800 mb-3">Datos .TBL — TESTNR: {{ tblTestnr }}</h5>
 					<div class="overflow-auto _minimal-scroll border border-slate-200 rounded-xl max-h-96">
-						<table class="w-full text-sm border-collapse">
+						<table class="w-full text-sm border-collapse tbl-centered">
 							<colgroup>
 								<col style="width:40px" />
 								<col class="tbl-col-test" />
@@ -197,8 +207,8 @@
 								<col class="tbl-col-tiempo" />
 								<col style="width:44px" />
 								<col style="width:32px" />
-								<col style="width:80px" />
-								<col style="width:80px" />
+								<col style="width:40px" />
+								<col style="width:40px" />
 							</colgroup>
 							<thead class="sticky top-0 bg-gradient-to-r from-slate-50 to-slate-100">
 								<tr>
@@ -219,9 +229,9 @@
 										Elong.
 									</th>
 									<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">
-										TENACIDAD
+										Tenac.
 									</th>
-									<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">TRABAJO
+									<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">Trabajo
 									</th>
 								</tr>
 							</thead>
@@ -281,6 +291,7 @@ const selectedTensoTestnr = ref('')
 const tensoScanStatus = ref('')
 const isScanning = ref(false)
 const isSaving = ref(false)
+const isDeleting = ref(false)
 const maxRows = 10
 
 // filtro UI: 'all' | 'saved' | 'not'
@@ -511,6 +522,61 @@ async function saveToOracle(item) {
 		}
 	} finally {
 		isSaving.value = false
+	}
+}
+
+// Eliminar ensayo de TENSORAPID_PAR y TENSORAPID_TBL
+async function deleteTensorapid(item) {
+	if (!item || !item.testnr) return
+	if (!item.saved) return
+	// Confirmación
+	let confirmed = false
+	if (typeof Swal !== 'undefined') {
+		const res = await Swal.fire({
+			title: `Eliminar ensayo ${item.testnr}?`,
+			text: 'Esto eliminará los registros en TENSORAPID_PAR y TENSORAPID_TBL. Esta acción no afecta USTER.',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: 'Eliminar',
+			cancelButtonText: 'Cancelar'
+		})
+		confirmed = res && res.isConfirmed
+	} else {
+		confirmed = typeof window !== 'undefined' ? window.confirm(`Eliminar ensayo ${item.testnr}? Esta acción eliminará datos TensoRapid.`) : false
+	}
+	if (!confirmed) return
+	if (isDeleting.value) return
+	isDeleting.value = true
+	try {
+		const backendUrl = (typeof window !== 'undefined' && window.location.hostname === 'localhost') ? 'http://localhost:3001' : ''
+		const endpoint = backendUrl + '/api/tensorapid/delete'
+		const resp = await fetch(endpoint, {
+			method: 'DELETE',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ testnr: item.testnr }),
+			credentials: 'include'
+		})
+		const data = await resp.json().catch(() => null)
+		if (!resp.ok) throw new Error(data && data.error ? data.error : `HTTP ${resp.status}`)
+
+		// Remove from scan list and clear parsed data if currently selected
+		tensoScanList.value = (tensoScanList.value || []).filter(i => i.testnr !== item.testnr)
+		if (selectedTensoTestnr.value === item.testnr) {
+			parsedTblData.value = []
+			parsedParData.value = {}
+			selectedTensoTestnr.value = ''
+		}
+
+		if (typeof Swal !== 'undefined') {
+			Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: `Ensayo ${item.testnr} eliminado`, showConfirmButton: false, timer: 3000 })
+		}
+	} catch (err) {
+		console.error('deleteTensorapid error', err)
+		if (typeof Swal !== 'undefined') {
+			await Swal.fire({ icon: 'error', title: 'Error al eliminar', text: String(err && err.message ? err.message : err), confirmButtonText: 'Cerrar' })
+		}
+	} finally {
+		isDeleting.value = false
 	}
 }
 
@@ -1233,5 +1299,12 @@ onMounted(() => {
 	/* Allow breaking when the cell can't fit in one line */
 	white-space: normal;
 	word-break: break-word;
+}
+
+/* Center table content horizontally and vertically for Datos .TBL */
+.tbl-centered th,
+.tbl-centered td {
+	text-align: center;
+	vertical-align: middle;
 }
 </style>
