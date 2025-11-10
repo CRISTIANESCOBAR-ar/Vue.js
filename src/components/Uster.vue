@@ -1271,6 +1271,14 @@ async function saveCurrentTest() {
         await nextTick()
         await selectRow(nextTestnr)
         // after selectRow, focus will be placed on first titulo input
+      } else {
+        // No hay siguiente ensayo (ej. se guardó el último no-guardado y la lista filtrada quedó vacía)
+        // Limpiar selección y desactivar inputs/buttons para evitar que el usuario siga editando
+        selectedTestnr.value = ''
+  // limpiar cualquier TITULO restante y tblData
+  tblData.value = []
+        isFocusedIndex.value = null
+        await nextTick()
       }
     } catch (err) { console.warn('auto-advance after save failed', err) }
 
