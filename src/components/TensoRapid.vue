@@ -70,7 +70,7 @@
 								<col class="col-ne" />
 								<col class="col-maq" />
 								<col style="width: 72px" />
-								<col style="width: 168px" />
+								<col style="width: 194px" />
 							</colgroup>
 							<thead class="sticky top-0 bg-gradient-to-r from-slate-50 to-slate-100 z-10">
 								<tr>
@@ -144,35 +144,46 @@
 									<td class="px-2 py-[0.3rem] border border-slate-200 text-center text-xs"
 										@click.stop>
 										<!-- Botón Editar (solo si está guardado y no está editando) -->
-										<div v-if="item.testnr && item.saved && !item.isEditing"
-											class="flex items-center gap-1 justify-center">
-											<button @click.stop="startEditing(item)"
-												class="px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-xs font-medium transition-colors duration-200 shadow-sm hover:shadow-md">
-												Editar
-											</button>
-											<button v-if="!item.isEditing" @click.stop="deleteTensorapid(item)" :disabled="isDeleting"
-												class="px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700 text-xs font-medium disabled:opacity-50 transition-colors duration-200 shadow-sm hover:shadow-md">
-												{{ isDeleting ? 'Eliminando...' : 'Eliminar' }}
-											</button>
-										</div>
-										<!-- Botones Guardar y Cancelar (si está editando o no está guardado) -->
-										<div v-else-if="item.testnr && item.usterTestnr"
-											class="flex gap-1 justify-center">
-											<button @click="saveToOracle(item)" :disabled="isSaving"
-												:ref="el => setSaveButtonRef(el, item.testnr)"
-												class="px-3 py-1 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-xs font-medium disabled:opacity-50 transition-colors duration-200 shadow-sm hover:shadow-md">
-												{{ isSaving ? 'Guardando...' : 'Guardar' }}
-											</button>
-											<button v-if="item.isEditing" @click="cancelEditing(item)"
-												:disabled="isSaving"
-												class="px-3 py-1 bg-slate-500 text-white rounded-lg hover:bg-slate-600 text-xs font-medium disabled:opacity-50 transition-colors duration-200 shadow-sm hover:shadow-md">
-												Cancelar
-											</button>
-											<button v-if="!item.isEditing" @click.stop="deleteTensorapid(item)" :disabled="isDeleting"
-												class="px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700 text-xs font-medium disabled:opacity-50 transition-colors duration-200 shadow-sm hover:shadow-md">
-												{{ isDeleting ? 'Eliminando...' : 'Eliminar' }}
-											</button>
-										</div>
+										<transition name="fade" mode="out-in">
+											<div v-if="item.testnr && item.saved && !item.isEditing"
+												class="flex items-center gap-1 justify-center">
+												<button @click.stop="startEditing(item)"
+													class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md">
+													<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+														<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536M9 11l6-6 3 3-6 6H9v-3z" />
+													</svg>
+													Editar
+												</button>
+												<button v-if="!item.isEditing" @click.stop="deleteTensorapid(item)" :disabled="isDeleting"
+													class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md disabled:opacity-50">
+													<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+														<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22M10 3h4a1 1 0 011 1v2H9V4a1 1 0 011-1z" />
+													</svg>
+													{{ isDeleting ? 'Eliminando...' : 'Eliminar' }}
+												</button>
+												</div>
+												<!-- Botones Guardar y Cancelar (si está editando o no está guardado) -->
+												<div v-else-if="item.testnr && item.usterTestnr"
+													class="flex gap-1 justify-center">
+													<button @click="saveToOracle(item)" :disabled="isSaving"
+														:ref="el => setSaveButtonRef(el, item.testnr)"
+														class="px-3 py-1 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-xs font-medium disabled:opacity-50 transition-colors duration-200 shadow-sm hover:shadow-md">
+															{{ isSaving ? 'Guardando...' : 'Guardar' }}
+														</button>
+													<button v-if="item.isEditing" @click="cancelEditing(item)"
+														:disabled="isSaving"
+														class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md disabled:opacity-50">
+														<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+															<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+														</svg>
+														Cancelar
+													</button>
+													<button v-if="!item.isEditing" @click.stop="deleteTensorapid(item)" :disabled="isDeleting"
+														class="px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700 text-xs font-medium disabled:opacity-50 transition-colors duration-200 shadow-sm hover:shadow-md">
+															{{ isDeleting ? 'Eliminando...' : 'Eliminar' }}
+														</button>
+												</div>
+										</transition>
 									</td>
 								</tr>
 							</tbody>
@@ -1306,5 +1317,18 @@ onMounted(() => {
 .tbl-centered td {
 	text-align: center;
 	vertical-align: middle;
+}
+
+/* Fade transition for action buttons */
+.fade-enter-active, .fade-leave-active {
+	transition: opacity 180ms ease, transform 180ms ease;
+}
+.fade-enter-from, .fade-leave-to {
+	opacity: 0;
+	transform: translateY(-6px);
+}
+.fade-enter-to, .fade-leave-from {
+	opacity: 1;
+	transform: translateY(0);
 }
 </style>

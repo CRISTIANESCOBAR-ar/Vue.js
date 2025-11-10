@@ -157,11 +157,13 @@ body {
    These are declared globally so other components (no-scoped styles)
    that reuse the col-* classes get the same widths as the Uster component. */
 .col-ensayo {
-	width: 82px;
+	/* Reduced by ~20% (82px -> 66px) to free horizontal space for Action */
+	width: 66px;
 }
 .col-par,
 .col-tbl {
-	width: 53px;
+	/* Reduced by ~10% (53px -> 48px) */
+	width: 48px;
 }
 .col-imp {
 	width: 65px;
