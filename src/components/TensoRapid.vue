@@ -65,8 +65,7 @@
 
 				<!-- Grid de dos columnas: tabla de ensayos a la izquierda y datos TBL a la derecha -->
 				<!-- Left column fixed, right column flexible to avoid TBL dropping below -->
-				<div class="mt-4 grid grid-cols-1 xl:grid-cols-2 gap-4 items-start"
-					style="grid-template-columns: 640px 1fr;">
+				<div class="mt-4 grid grid-cols-1 xl:grid-cols-2 gap-4 items-start tenso-grid">
 					<!-- Columna izquierda: Tabla de ensayos encontrados -->
 					<div>
 						<div class="max-h-64 overflow-y-auto _minimal-scroll">
@@ -79,8 +78,8 @@
 									<col class="col-ne" />
 									<col class="col-maq" />
 									<col style="width: 72px" />
-									<!-- Increased Acción to absorb freed width from Estado/Ne/Maq reductions -->
-									<col style="width: 212px" />
+									<!-- Acción increased by ~15% (212px -> 244px) -->
+									<col class="col-accion" />
 								</colgroup>
 								<thead class="sticky top-0 bg-gradient-to-r from-slate-50 to-slate-100 z-10">
 									<tr>
@@ -1343,6 +1342,22 @@ onMounted(() => {
 	/* Allow breaking when the cell can't fit in one line */
 	white-space: normal;
 	word-break: break-word;
+}
+
+/* Grid: left column fixed on xl and above, right column flexible. Moved from inline style to CSS. */
+.tenso-grid {
+	/* default single-column (mobile) kept by Tailwind grid-cols-1 */
+	grid-template-columns: 1fr;
+}
+@media (min-width: 1280px) {
+	.tenso-grid {
+		grid-template-columns: 672px 1fr;
+	}
+}
+
+/* Acción column width handled via class on <col> */
+.col-accion {
+	width: 244px;
 }
 
 /* Center table content horizontally and vertically for Datos .TBL */
