@@ -855,11 +855,6 @@ const modalMeta = computed(() => {
   // Prefer the main report `rows` for meta (it contains Fecha / OE / Ne). Fallback to USTER or merged rows.
   let meta = (rows.value || []).find(r => String(r?.Ensayo) === String(u)) || null
   if (!meta) meta = (usterTblRows.value && usterTblRows.value[0]) || (mergedRows.value && mergedRows.value[0]) || {}
-  
-  // Debug: log meta to see what fields are available
-  if (selectedTestnr.value) {
-    console.log('modalMeta - selectedTestnr:', u, 'meta:', meta)
-  }
 
   const rawFecha = meta?.Fecha || meta?.fecha || meta?.FECHA || meta?.date || ''
   let fechaStr = '—'

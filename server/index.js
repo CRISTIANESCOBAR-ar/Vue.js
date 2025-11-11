@@ -1357,10 +1357,37 @@ app.get('/api/report/informe-completo', async (req, res) => {
       ORDER BY TESTNR DESC
       FETCH FIRST 200 ROWS ONLY`
     const parRes = await conn.execute(parSql, [], { outFormat: oracledb.OUT_FORMAT_OBJECT })
-    const parRows = parRes.rows || []
+    const parRowsRaw = parRes.rows || []
 
-    if (parRows.length === 0) {
+    if (parRowsRaw.length === 0) {
       return res.json({ rows: [] })
+    }
+
+    // Helper to read LOB (Large Object) as string
+    async function readLob(lob) {
+      if (!lob || typeof lob.getData !== 'function') {
+        return lob == null ? null : String(lob)
+      }
+      try {
+        const data = await lob.getData()
+        return data ? String(data) : null
+      } catch (err) {
+        globalThis.console.warn('Error reading LOB:', err)
+        return null
+      }
+    }
+
+    // Convert LOBs to strings for OBS field
+    const parRows = []
+    for (const row of parRowsRaw) {
+      const obsValue =
+        row.OBS && typeof row.OBS === 'object' && row.OBS.getData
+          ? await readLob(row.OBS)
+          : row.OBS || null
+      parRows.push({
+        ...row,
+        OBS: obsValue
+      })
     }
 
     const testnrs = parRows.map((r) => r.TESTNR).filter(Boolean)
