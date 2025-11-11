@@ -1316,10 +1316,8 @@ onMounted(() => {
 	max-height: 16rem;
 	overflow-y: auto;
 	overflow-x: hidden;
-	/* Set width to match table + borders/padding:
-	   col-ensayo (82px) + col-par (53px) + col-tbl (53px) + col-imp (65px) + 
-	   col-ne (49px) + col-maq (74px) + USTER (72px) + Acción (168px) + borders = ~640px */
-	width: 640px;
+	/* Allow fluid width so the table can expand to its container instead of being fixed */
+	width: auto;
 }
 
 /* Force fixed table layout so col widths from global CSS (col-ensayo, col-par, etc.) are respected */
