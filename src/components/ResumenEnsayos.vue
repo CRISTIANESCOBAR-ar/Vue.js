@@ -1643,6 +1643,19 @@ async function exportToExcel() {
           const pd = parseDateSmart(raw)
           return pd || raw
         }
+        // Special handling for Ne: preserve "Flame" suffix if present
+        if (key === 'ne') {
+          const strVal = String(raw)
+          if (strVal.toUpperCase().includes('FLAME')) {
+            // Keep as string to preserve "Flame" suffix
+            return strVal
+          }
+          // Otherwise try to convert to number
+          if (raw === '' || raw == null) return ''
+          if (typeof raw === 'number') return raw
+          const n = Number(String(raw).toString().replace(/,/g, '.').replace(/[^0-9.-]+/g, ''))
+          return Number.isNaN(n) ? raw : n
+        }
         if (numericColumnsSet.has(h)) {
           if (raw === '' || raw == null) return ''
           if (typeof raw === 'number') return raw
