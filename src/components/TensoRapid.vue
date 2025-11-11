@@ -1,7 +1,7 @@
-
 <template>
 	<div class="w-full pt-2 px-2 space-y-4 tenso-component">
-			<div class="bg-white rounded-2xl shadow-xl pt-4 pb-4 px-4 md:pt-5 md:pb-5 md:px-5 mt-2 mb-4 border border-slate-200">
+		<div
+			class="bg-white rounded-2xl shadow-xl pt-4 pb-4 px-4 md:pt-5 md:pb-5 md:px-5 mt-2 mb-4 border border-slate-200">
 			<!-- Selector de carpeta (con título principal delante) -->
 			<div class="mt-3 flex items-center gap-3">
 				<div class="text-2xl font-semibold text-slate-800 mr-4">Datos TensoRapid</div>
@@ -65,246 +65,254 @@
 
 				<!-- Grid de dos columnas: tabla de ensayos a la izquierda y datos TBL a la derecha -->
 				<div class="mt-4 grid grid-cols-1 xl:grid-cols-2 gap-4 items-start">
-				<!-- Columna izquierda: Tabla de ensayos encontrados -->
-				<div>
-					<div
-						class="scan-container max-h-64 overflow-y-auto _minimal-scroll rounded-xl border border-slate-200">
-						<table class="text-xs border-collapse fixed-table scan-table w-full">
-							<colgroup>
-								<col class="col-ensayo" />
-								<col class="col-par" />
-								<col class="col-tbl" />
-								<col class="col-imp" />
-								<col class="col-ne" />
-								<col class="col-maq" />
-								<col style="width: 72px" />
-								<!-- Increased Acción to absorb freed width from Estado/Ne/Maq reductions -->
-								<col style="width: 212px" />
-							</colgroup>
-							<thead class="sticky top-0 bg-gradient-to-r from-slate-50 to-slate-100 z-10">
-								<tr>
-									<th
-										class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
-										Ensayo</th>
-									<th
-										class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
-										.PAR</th>
-									<th
-										class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
-										.TBL</th>
-									<th
-										class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
-										Estado</th>
-									<th
-										class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
-										Ne</th>
-									<th
-										class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
-										Maq.</th>
-									<th
-										class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
-										USTER</th>
-									<th
-										class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
-										Acción</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr v-for="(item, idx) in tensoDisplayList" :key="idx"
-									class="hover:bg-blue-50/30 cursor-pointer transition-colors duration-150"
-									:class="{ 'bg-blue-50': selectedTensoTestnr === item.testnr }"
-									@click="loadTensoTestFiles(item.testnr)">
-									<td
-										class="px-2 py-[0.3rem] border border-slate-200 text-xs text-center text-slate-700">
-										{{
-											item.testnr || '' }}</td>
-									<td class="px-2 py-[0.3rem] border border-slate-200 text-center text-xs"><input
-											type="checkbox" disabled :checked="item.hasPar" /></td>
-									<td class="px-2 py-[0.3rem] border border-slate-200 text-center text-xs"><input
-											type="checkbox" disabled :checked="item.hasTbl" /></td>
-									<td class="px-2 py-[0.3rem] border border-slate-200 text-center text-xs">
-										<span v-if="item.saved === true" title="Guardado en la base de datos">
-											<svg xmlns="http://www.w3.org/2000/svg"
-												class="h-4 w-4 text-green-600 mx-auto" fill="none" viewBox="0 0 24 24"
-												stroke="currentColor" stroke-width="2">
-												<path stroke-linecap="round" stroke-linejoin="round"
-													d="M5 13l4 4L19 7" />
-											</svg>
-										</span>
-									</td>
-									<td
-										class="px-2 py-[0.3rem] border border-slate-200 text-center text-xs font-mono text-slate-700">
-										{{ item.nomcount || '' }}</td>
-									<td
-										class="px-2 py-[0.3rem] border border-slate-200 text-center text-xs font-mono text-slate-700">
-										{{ item.maschnr || '' }}</td>
-									<td class="px-2 py-[0.3rem] border border-slate-200 text-center text-xs"
-										@click.stop>
-										<input v-if="item.testnr" type="text" v-model="item.usterTestnr"
-											:placeholder="item.saved ? '05410' : ''" maxlength="5" inputmode="numeric"
-											:disabled="item.saved && !item.isEditing"
-											:ref="el => setInputRef(el, item.testnr)"
-											@input="formatUsterTestnr(item, $event)"
-											@keydown.enter="focusSaveButton(item)" :class="[
-												'w-full px-2 py-1 text-xs text-center border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono transition-colors',
-												item.saved && !item.isEditing ? 'bg-slate-100 cursor-not-allowed' : ''
-											]" />
-									</td>
-									<td class="px-2 py-[0.3rem] border border-slate-200 text-center text-xs"
-										@click.stop>
-										<!-- Botón Editar (solo si está guardado y no está editando) -->
-										<transition name="fade" mode="out-in">
-											<div v-if="item.testnr && item.saved && !item.isEditing"
-												class="flex items-center gap-1 justify-center">
-												<button @click.stop="startEditing(item)"
-													class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md">
-													<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
-														viewBox="0 0 24 24" stroke="currentColor">
-														<path stroke-linecap="round" stroke-linejoin="round"
-															stroke-width="2"
-															d="M15.232 5.232l3.536 3.536M9 11l6-6 3 3-6 6H9v-3z" />
-													</svg>
-													Editar
-												</button>
-												<button v-if="!item.isEditing" @click.stop="deleteTensorapid(item)"
-													:disabled="isDeleting"
-													class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md disabled:opacity-50">
-													<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-red-600"
-														fill="none" viewBox="0 0 24 24" stroke="currentColor">
-														<path stroke-linecap="round" stroke-linejoin="round"
-															stroke-width="2"
-															d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22M10 3h4a1 1 0 011 1v2H9V4a1 1 0 011-1z" />
-													</svg>
-													{{ isDeleting ? 'Eliminando...' : 'Eliminar' }}
-												</button>
-											</div>
-											<!-- Botones Guardar y Cancelar (si está editando o no está guardado) -->
-											<div v-else-if="item.testnr && item.usterTestnr"
-												class="flex gap-1 justify-center">
-												<button @click="saveToOracle(item)" :disabled="isSaving"
-													:ref="el => setSaveButtonRef(el, item.testnr)"
-													class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md disabled:opacity-50">
-													<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-														<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-													</svg>
-													<span>{{ isSaving ? 'Guardando...' : 'Guardar' }}</span>
-												</button>
-												<button v-if="item.isEditing" @click="cancelEditing(item)"
-													:disabled="isSaving"
-													class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md disabled:opacity-50">
-													<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
-														viewBox="0 0 24 24" stroke="currentColor">
-														<path stroke-linecap="round" stroke-linejoin="round"
-															stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-													</svg>
-													Cancelar
-												</button>
-												<button v-if="!item.isEditing" @click.stop="deleteTensorapid(item)"
-													:disabled="isDeleting"
-													class="px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700 text-xs font-medium disabled:opacity-50 transition-colors duration-200 shadow-sm hover:shadow-md">
-													{{ isDeleting ? 'Eliminando...' : 'Eliminar' }}
-												</button>
-											</div>
-										</transition>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-					<div class="flex items-center gap-2 mt-3">
-						<div class="text-sm font-medium text-slate-600">{{ tensoScanStatus }}</div>
-						<div v-if="isScanning" class="text-sm text-slate-500 flex items-center gap-2">
-							<svg class="w-4 h-4 animate-spin text-slate-600" viewBox="0 0 24 24" fill="none">
-								<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-									stroke-width="4">
-								</circle>
-								<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z">
-								</path>
-							</svg>
-							<span>Escaneando...</span>
+					<!-- Columna izquierda: Tabla de ensayos encontrados -->
+					<div>
+						<div class="max-h-64 overflow-y-auto _minimal-scroll">
+							<table class="text-xs border-collapse fixed-table scan-table w-full">
+								<colgroup>
+									<col class="col-ensayo" />
+									<col class="col-par" />
+									<col class="col-tbl" />
+									<col class="col-imp" />
+									<col class="col-ne" />
+									<col class="col-maq" />
+									<col style="width: 72px" />
+									<!-- Increased Acción to absorb freed width from Estado/Ne/Maq reductions -->
+									<col style="width: 212px" />
+								</colgroup>
+								<thead class="sticky top-0 bg-gradient-to-r from-slate-50 to-slate-100 z-10">
+									<tr>
+										<th
+											class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
+											Ensayo</th>
+										<th
+											class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
+											.PAR</th>
+										<th
+											class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
+											.TBL</th>
+										<th
+											class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
+											Estado</th>
+										<th
+											class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
+											Ne</th>
+										<th
+											class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
+											Maq.</th>
+										<th
+											class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
+											USTER</th>
+										<th
+											class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
+											Acción</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr v-for="(item, idx) in tensoDisplayList" :key="idx"
+										class="hover:bg-blue-50/30 cursor-pointer transition-colors duration-150"
+										:class="{ 'bg-blue-50': selectedTensoTestnr === item.testnr }"
+										@click="loadTensoTestFiles(item.testnr)">
+										<td
+											class="px-2 py-[0.3rem] border border-slate-200 text-xs text-center text-slate-700">
+											{{
+												item.testnr || '' }}</td>
+										<td class="px-2 py-[0.3rem] border border-slate-200 text-center text-xs"><input
+												type="checkbox" disabled :checked="item.hasPar" /></td>
+										<td class="px-2 py-[0.3rem] border border-slate-200 text-center text-xs"><input
+												type="checkbox" disabled :checked="item.hasTbl" /></td>
+										<td class="px-2 py-[0.3rem] border border-slate-200 text-center text-xs">
+											<span v-if="item.saved === true" title="Guardado en la base de datos">
+												<svg xmlns="http://www.w3.org/2000/svg"
+													class="h-4 w-4 text-green-600 mx-auto" fill="none"
+													viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+													<path stroke-linecap="round" stroke-linejoin="round"
+														d="M5 13l4 4L19 7" />
+												</svg>
+											</span>
+										</td>
+										<td
+											class="px-2 py-[0.3rem] border border-slate-200 text-center text-xs font-mono text-slate-700">
+											{{ item.nomcount || '' }}</td>
+										<td
+											class="px-2 py-[0.3rem] border border-slate-200 text-center text-xs font-mono text-slate-700">
+											{{ item.maschnr || '' }}</td>
+										<td class="px-2 py-[0.3rem] border border-slate-200 text-center text-xs"
+											@click.stop>
+											<input v-if="item.testnr" type="text" v-model="item.usterTestnr"
+												:placeholder="item.saved ? '05410' : ''" maxlength="5"
+												inputmode="numeric" :disabled="item.saved && !item.isEditing"
+												:ref="el => setInputRef(el, item.testnr)"
+												@input="formatUsterTestnr(item, $event)"
+												@keydown.enter="focusSaveButton(item)" :class="[
+													'w-full px-2 py-1 text-xs text-center border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono transition-colors',
+													item.saved && !item.isEditing ? 'bg-slate-100 cursor-not-allowed' : ''
+												]" />
+										</td>
+										<td class="px-2 py-[0.3rem] border border-slate-200 text-center text-xs"
+											@click.stop>
+											<!-- Botón Editar (solo si está guardado y no está editando) -->
+											<transition name="fade" mode="out-in">
+												<div v-if="item.testnr && item.saved && !item.isEditing"
+													class="flex items-center gap-1 justify-center">
+													<button @click.stop="startEditing(item)"
+														class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md">
+														<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
+															fill="none" viewBox="0 0 24 24" stroke="currentColor">
+															<path stroke-linecap="round" stroke-linejoin="round"
+																stroke-width="2"
+																d="M15.232 5.232l3.536 3.536M9 11l6-6 3 3-6 6H9v-3z" />
+														</svg>
+														Editar
+													</button>
+													<button v-if="!item.isEditing" @click.stop="deleteTensorapid(item)"
+														:disabled="isDeleting"
+														class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md disabled:opacity-50">
+														<svg xmlns="http://www.w3.org/2000/svg"
+															class="h-4 w-4 text-red-600" fill="none" viewBox="0 0 24 24"
+															stroke="currentColor">
+															<path stroke-linecap="round" stroke-linejoin="round"
+																stroke-width="2"
+																d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22M10 3h4a1 1 0 011 1v2H9V4a1 1 0 011-1z" />
+														</svg>
+														{{ isDeleting ? 'Eliminando...' : 'Eliminar' }}
+													</button>
+												</div>
+												<!-- Botones Guardar y Cancelar (si está editando o no está guardado) -->
+												<div v-else-if="item.testnr && item.usterTestnr"
+													class="flex gap-1 justify-center">
+													<button @click="saveToOracle(item)" :disabled="isSaving"
+														:ref="el => setSaveButtonRef(el, item.testnr)"
+														class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md disabled:opacity-50">
+														<svg xmlns="http://www.w3.org/2000/svg"
+															class="h-4 w-4 text-indigo-600" fill="none"
+															viewBox="0 0 24 24" stroke="currentColor">
+															<path stroke-linecap="round" stroke-linejoin="round"
+																stroke-width="2" d="M5 13l4 4L19 7" />
+														</svg>
+														<span>{{ isSaving ? 'Guardando...' : 'Guardar' }}</span>
+													</button>
+													<button v-if="item.isEditing" @click="cancelEditing(item)"
+														:disabled="isSaving"
+														class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md disabled:opacity-50">
+														<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
+															fill="none" viewBox="0 0 24 24" stroke="currentColor">
+															<path stroke-linecap="round" stroke-linejoin="round"
+																stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+														</svg>
+														Cancelar
+													</button>
+													<button v-if="!item.isEditing" @click.stop="deleteTensorapid(item)"
+														:disabled="isDeleting"
+														class="px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700 text-xs font-medium disabled:opacity-50 transition-colors duration-200 shadow-sm hover:shadow-md">
+														{{ isDeleting ? 'Eliminando...' : 'Eliminar' }}
+													</button>
+												</div>
+											</transition>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<div class="flex items-center gap-2 mt-3">
+							<div class="text-sm font-medium text-slate-600">{{ tensoScanStatus }}</div>
+							<div v-if="isScanning" class="text-sm text-slate-500 flex items-center gap-2">
+								<svg class="w-4 h-4 animate-spin text-slate-600" viewBox="0 0 24 24" fill="none">
+									<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+										stroke-width="4">
+									</circle>
+									<path class="opacity-75" fill="currentColor"
+										d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z">
+									</path>
+								</svg>
+								<span>Escaneando...</span>
+							</div>
 						</div>
 					</div>
-				</div>
-				<!-- Fin columna izquierda -->
+					<!-- Fin columna izquierda -->
 
-				<!-- Columna derecha: Tabla TBL (sin contenedor exterior) -->
-				<div v-show="parsedTblData.length">
-					<div class="overflow-auto _minimal-scroll border border-slate-200 rounded-xl max-h-96">
-						<table class="w-full text-sm border-collapse tbl-centered">
-							<colgroup>
-								<!-- Reduced by 40% from 40px -> 24px -->
-								<col style="width:24px" />
-								<!-- Reduced Test column by 40% (was 68px -> now ~41px) -->
-								<col class="tbl-col-test" />
-								<col style="width:48px" />
-								<col style="width:48px" />
-								<col class="tbl-col-tiempo" />
-								<col style="width:44px" />
-								<col style="width:32px" />
-								<col style="width:40px" />
-								<col style="width:40px" />
-							</colgroup>
-							<thead class="sticky top-0 bg-gradient-to-r from-slate-50 to-slate-100">
-								<tr>
-									<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">#</th>
-									<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">Test
-									</th>
-									<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">No.
-									</th>
-									<th
-										class="p-2 border border-slate-200 text-xs font-semibold text-slate-700 bg-blue-50">
-										Huso</th>
-									<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">
-										Tiempo Rotura</th>
-									<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">
-										Fuerza B
-									</th>
-									<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">
-										Elong.
-									</th>
-									<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">
-										Tenac.
-									</th>
-									<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">Trabajo
-									</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr v-for="(row, ri) in preparedTblPreview" :key="ri"
-									class="hover:bg-blue-50/30 transition-colors duration-150">
-									<td class="p-1.5 border border-slate-200 text-xs text-center text-slate-700">{{ ri +
-										1 }}</td>
-									<td class="p-1.5 border border-slate-200 text-xs font-mono text-slate-700">{{
-										row.TESTNR || '' }}</td>
-									<td class="p-1.5 border border-slate-200 text-xs font-mono text-slate-700">{{
-										row.HUSO_ENSAYOS || '' }}</td>
-									<td
-										class="p-1.5 border border-slate-200 text-xs font-mono bg-blue-50 text-center font-semibold text-slate-700">
-										{{ row.HUSO_NUMBER }}</td>
-									<td
-										class="p-1.5 border border-slate-200 text-xs font-mono text-right text-slate-700 tbl-td-tiempo">
-										{{ row.TIEMPO_ROTURA || '' }}</td>
-									<td
-										class="p-1.5 border border-slate-200 text-xs font-mono text-right text-slate-700">
-										{{ row.FUERZA_B || '' }}</td>
-									<td
-										class="p-1.5 border border-slate-200 text-xs font-mono text-right text-slate-700">
-										{{ row.ELONGACION || '' }}</td>
-									<td
-										class="p-1.5 border border-slate-200 text-xs font-mono text-right text-slate-700">
-										{{ row.TENACIDAD || '' }}</td>
-									<td
-										class="p-1.5 border border-slate-200 text-xs font-mono text-right text-slate-700">
-										{{ row.TRABAJO || '' }}</td>
-								</tr>
-							</tbody>
-						</table>
+					<!-- Columna derecha: Tabla TBL (sin contenedor exterior) -->
+					<div v-show="parsedTblData.length">
+						<div class="overflow-auto _minimal-scroll max-h-96">
+							<table class="w-full text-sm border-collapse tbl-centered">
+								<colgroup>
+									<!-- Reduced by 40% from 40px -> 24px -->
+									<col style="width:24px" />
+									<!-- Reduced Test column by 40% (was 68px -> now ~41px) -->
+									<col class="tbl-col-test" />
+									<col style="width:48px" />
+									<col style="width:48px" />
+									<col class="tbl-col-tiempo" />
+									<col style="width:44px" />
+									<col style="width:32px" />
+									<col style="width:40px" />
+									<col style="width:40px" />
+								</colgroup>
+								<thead class="sticky top-0 bg-gradient-to-r from-slate-50 to-slate-100">
+									<tr>
+										<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">#
+										</th>
+										<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">
+											Test
+										</th>
+										<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">No.
+										</th>
+										<th
+											class="p-2 border border-slate-200 text-xs font-semibold text-slate-700 bg-blue-50">
+											Huso</th>
+										<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">
+											Tiempo Rotura</th>
+										<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">
+											Fuerza B
+										</th>
+										<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">
+											Elong.
+										</th>
+										<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">
+											Tenac.
+										</th>
+										<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">
+											Trabajo
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr v-for="(row, ri) in preparedTblPreview" :key="ri"
+										class="hover:bg-blue-50/30 transition-colors duration-150">
+										<td class="p-1.5 border border-slate-200 text-xs text-center text-slate-700">{{
+											ri +
+											1 }}</td>
+										<td class="p-1.5 border border-slate-200 text-xs font-mono text-slate-700">{{
+											row.TESTNR || '' }}</td>
+										<td class="p-1.5 border border-slate-200 text-xs font-mono text-slate-700">{{
+											row.HUSO_ENSAYOS || '' }}</td>
+										<td
+											class="p-1.5 border border-slate-200 text-xs font-mono bg-blue-50 text-center font-semibold text-slate-700">
+											{{ row.HUSO_NUMBER }}</td>
+										<td
+											class="p-1.5 border border-slate-200 text-xs font-mono text-right text-slate-700 tbl-td-tiempo">
+											{{ row.TIEMPO_ROTURA || '' }}</td>
+										<td
+											class="p-1.5 border border-slate-200 text-xs font-mono text-right text-slate-700">
+											{{ row.FUERZA_B || '' }}</td>
+										<td
+											class="p-1.5 border border-slate-200 text-xs font-mono text-right text-slate-700">
+											{{ row.ELONGACION || '' }}</td>
+										<td
+											class="p-1.5 border border-slate-200 text-xs font-mono text-right text-slate-700">
+											{{ row.TENACIDAD || '' }}</td>
+										<td
+											class="p-1.5 border border-slate-200 text-xs font-mono text-right text-slate-700">
+											{{ row.TRABAJO || '' }}</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
 					</div>
-				</div>
-				<!-- Fin columna derecha -->
+					<!-- Fin columna derecha -->
 
-			</div>
-			<!-- Cierre del contenedor que agrupa filtros y tablas -->
+				</div>
+				<!-- Cierre del contenedor que agrupa filtros y tablas -->
 			</div>
 			<!-- Fin grid dos columnas -->
 
