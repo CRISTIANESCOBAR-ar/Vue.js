@@ -1534,19 +1534,20 @@ async function loadRows() {
     // Procesar cada fila: detectar "FLAME" en OBS y agregar al Ne si existe
     data = data.map(row => {
       const obs = String(row.OBS || '').trim()
-      
-      // Debug: mostrar TODOS los valores de OBS para los primeros 5 registros
-      if (data.indexOf(row) < 5) {
-        console.log(`Ensayo ${row.Ensayo} - Ne: ${row.Ne} - OBS: "${obs}" (tipo: ${typeof row.OBS}, null: ${row.OBS === null})`)
+
+      // Debug: mostrar específicamente el ensayo 00260
+      if (row.Ensayo === '00260' || row.Ensayo === '260') {
+        console.log(`🔍 DEBUG Ensayo ${row.Ensayo} - Ne: ${row.Ne} - OBS completo: "${obs}"`)
       }
-      
-      const flameMatch = obs.match(/\bFLAME\b/i)
+
+      // Buscar FLAME en el texto (sin requerir límites de palabra ya que puede estar pegado: /1FLAME)
+      const flameMatch = obs.toUpperCase().includes('FLAME')
 
       if (flameMatch) {
         // Agregar "Flame" al Ne y marcar la fila para resaltar
         const neOriginal = row.Ne != null ? String(row.Ne) : ''
         const newNe = neOriginal ? `${neOriginal}Flame` : 'Flame'
-        console.log('🔥 FLAME detectado - Ensayo:', row.Ensayo, 'Ne original:', neOriginal, 'Ne nuevo:', newNe, 'OBS:', obs)
+        console.log('🔥 FLAME detectado - Ensayo:', row.Ensayo, 'Ne original:', neOriginal, 'Ne nuevo:', newNe)
         return {
           ...row,
           Ne: newNe,
