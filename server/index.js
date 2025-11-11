@@ -455,6 +455,7 @@ app.get('/api/report/ensayo', async (req, res) => {
       Fecha: parRow ? formatDateShort(parRow.TIME_STAMP) : null, // dd/mm/yy
       OE: parRow ? parseMaschnr(parRow.MASCHNR).formatted : null, // e.g. '3 LIM'
       Ne: parRow ? formatNe(parRow.NOMCOUNT) : null,
+      Obs: parRow ? (parRow.OBS || null) : null,
 
       // From USTER_TBL, averages with 2 decimals
       'CVm %': fmtNumber(usterAgg.CVM_PERCENT_AVG, 2),

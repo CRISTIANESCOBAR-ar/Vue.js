@@ -311,9 +311,13 @@
               </svg>
             </button>
           </div>
-        </header>
+     </header>
 
-        <section class="flex-1 relative">
+     <!-- Observaciones (OBS) — tomada de la misma fuente que Fecha/OE/Ne (modalMeta.obs).
+       Se muestra en una línea propia debajo del header para no romper la alineación
+       del header principal ni de los botones de acción a la derecha. -->
+     <div v-if="modalMeta.obs" class="mx-8 w-full text-slate-600 text-sm mb-2">Obs.: <span class="text-slate-900 text-sm font-normal ml-1">{{ modalMeta.obs }}</span></div>
+     <section class="flex-1 relative">
           <!-- Always render content to preserve modal height; show spinner as overlay when loading -->
           <div>
             <div v-if="mergedRows.length === 0" class="text-sm text-slate-600 py-8 text-center">No hay datos para este
@@ -911,7 +915,11 @@ const modalMeta = computed(() => {
   const oe = meta?.OE ?? meta?.Oe ?? meta?.oe ?? '—'
   const ne = meta?.Ne ?? meta?.NE ?? meta?.ne ?? '—'
 
-  return { fechaStr, oe, ne, u, t }
+  // Observaciones: preferir campo USTER 'OBS' o variantes; normalizar a null si vacío
+  const obsRaw = meta?.OBS ?? meta?.Obs ?? meta?.observaciones ?? meta?.OBSERVACIONES ?? meta?.Observacion ?? meta?.observacion ?? null
+  const obs = (obsRaw == null || String(obsRaw).trim() === '') ? null : String(obsRaw).trim()
+
+  return { fechaStr, oe, ne, u, t, obs }
 })
 
 // Index within the current filtered list for the selected ensayo
@@ -1062,6 +1070,8 @@ async function openDetail(testnr) {
       const usterPayload = await usterRes.json()
       usterTblRows.value = Array.isArray(usterPayload.rows) ? usterPayload.rows : []
     }
+
+    // (OBS request removed — not displaying OBS in modal to preserve header layout)
 
     // Fetch TENSORAPID_TBL data (via TENSORAPID_PAR linkage)
     const tensorParRes = await fetch(`${backendUrl}/api/tensorapid/by-uster/${encodeURIComponent(testnr)}`)
