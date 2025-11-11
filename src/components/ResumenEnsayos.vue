@@ -160,7 +160,7 @@
               </thead>
               <tbody>
                 <tr v-for="(row, idx) in pagedRows" :key="idx"
-                  class="border-t border-slate-100 hover:bg-blue-50/30 transition-colors duration-150">
+                  :class="['border-t border-slate-100 hover:bg-blue-50/30 transition-colors duration-150', row._isFlame ? 'font-bold' : '']">
                   <td class="px-2 py-[0.3rem] text-center text-slate-700">{{ row.Ensayo }}</td>
                   <td class="px-2 py-[0.3rem] text-center text-slate-700">{{ row.Fecha }}</td>
                   <td class="px-2 py-[0.3rem] text-center text-slate-700">{{ row.OE }}</td>
@@ -1530,7 +1530,24 @@ async function loadRows() {
     if (!res.ok) throw new Error(await res.text())
     const payload = await res.json()
     let data = Array.isArray(payload.rows) ? payload.rows : []
-    
+
+    // Procesar cada fila: detectar "FLAME" en OBS y agregar al Ne si existe
+    data = data.map(row => {
+      const obs = String(row.OBS || '').trim().toUpperCase()
+      const flameMatch = obs.match(/\bFLAME\b/i)
+
+      if (flameMatch) {
+        // Agregar "Flame" al Ne y marcar la fila para resaltar
+        const neOriginal = row.Ne != null ? String(row.Ne) : ''
+        return {
+          ...row,
+          Ne: neOriginal ? `${neOriginal}Flame` : 'Flame',
+          _isFlame: true // flag interno para resaltar
+        }
+      }
+      return { ...row, _isFlame: false }
+    })
+
     // Ordenar por Fecha (descendente) y luego por Ensayo (descendente)
     data.sort((a, b) => {
       // Helper: parsear fecha dd/mm/yy a Date para comparar
@@ -1553,17 +1570,17 @@ async function loadRows() {
 
       const dateA = parseDate(a.Fecha)
       const dateB = parseDate(b.Fecha)
-      
+
       // Primero por fecha (descendente: más reciente primero)
       if (dateA > dateB) return -1
       if (dateA < dateB) return 1
-      
+
       // Si fechas iguales, ordenar por Ensayo (descendente: mayor primero)
       const ensayoA = String(a.Ensayo || '').trim()
       const ensayoB = String(b.Ensayo || '').trim()
       return ensayoB.localeCompare(ensayoA, undefined, { numeric: true })
     })
-    
+
     rows.value = data
   } catch (err) {
     console.error('Failed to load rows', err)
