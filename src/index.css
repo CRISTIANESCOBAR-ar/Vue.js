@@ -160,19 +160,23 @@ body {
 	/* Reduced by ~20% (82px -> 66px) to free horizontal space for Action */
 	width: 66px;
 }
+
 .col-par,
 .col-tbl {
 	/* Reduced by ~10% (53px -> 48px) */
 	width: 48px;
 }
+
 .col-imp {
 	/* Reduced by ~10% (65px -> 59px) */
 	width: 59px;
 }
+
 .col-ne {
 	/* Reduced by ~10% (49px -> 44px) */
 	width: 44px;
 }
+
 .col-maq {
 	/* Reduced by ~10% (74px -> 67px) */
 	width: 67px;

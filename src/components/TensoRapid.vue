@@ -37,9 +37,9 @@
 			</div>
 
 			<!-- Contenedor que agrupa filtros, tablas y estado -->
-			<div class="mt-4 bg-white rounded-2xl shadow-sm p-4 border border-slate-200">
+			<div class="mt-2 bg-white rounded-2xl shadow-sm p-4 border border-slate-200">
 				<!-- Top row: filtros a la izquierda y título Datos .TBL a la derecha (si hay datos) -->
-				<div class="mt-4 flex items-center justify-between gap-4">
+				<div class="mt-2 flex items-center justify-between gap-4">
 					<div class="flex items-center gap-4">
 						<label class="inline-flex items-center text-sm cursor-pointer">
 							<input type="radio" name="tenso-filter" v-model="filterMode" value="all"
@@ -64,7 +64,9 @@
 				</div>
 
 				<!-- Grid de dos columnas: tabla de ensayos a la izquierda y datos TBL a la derecha -->
-				<div class="mt-4 grid grid-cols-1 xl:grid-cols-2 gap-4 items-start">
+				<!-- Left column fixed, right column flexible to avoid TBL dropping below -->
+				<div class="mt-4 grid grid-cols-1 xl:grid-cols-2 gap-4 items-start"
+					style="grid-template-columns: 640px 1fr;">
 					<!-- Columna izquierda: Tabla de ensayos encontrados -->
 					<div>
 						<div class="max-h-64 overflow-y-auto _minimal-scroll">
