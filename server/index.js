@@ -1508,7 +1508,7 @@ app.get('/api/report/informe-completo', async (req, res) => {
         Ensayo: padTestnr(testnr),
         Fecha: formatDateShort(parRow.TIME_STAMP),
         OE: parseMaschnr(parRow.MASCHNR),
-        Ne: formatNe(parRow.NOMCOUNT),
+  Ne: formatNe(parRow.NOMCOUNT),
         'CVm %': fmtNumber(usterAgg.CVM_PERCENT_AVG, 2),
         'Delg -30%': fmtNumber(usterAgg.DELG_MINUS30_KM_AVG, 2),
         'Delg -40%': fmtNumber(usterAgg.DELG_MINUS40_KM_AVG, 2),
