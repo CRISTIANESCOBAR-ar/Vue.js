@@ -1529,7 +1529,42 @@ async function loadRows() {
     const res = await fetch(`${backendUrl}/api/report/informe-completo`)
     if (!res.ok) throw new Error(await res.text())
     const payload = await res.json()
-    rows.value = Array.isArray(payload.rows) ? payload.rows : []
+    let data = Array.isArray(payload.rows) ? payload.rows : []
+    
+    // Ordenar por Fecha (descendente) y luego por Ensayo (descendente)
+    data.sort((a, b) => {
+      // Helper: parsear fecha dd/mm/yy a Date para comparar
+      const parseDate = (dateStr) => {
+        if (!dateStr) return new Date(0)
+        const s = String(dateStr).trim()
+        // Intentar dd/mm/yy o dd/mm/yyyy
+        const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/)
+        if (m) {
+          const day = parseInt(m[1], 10)
+          const month = parseInt(m[2], 10) - 1 // 0-based
+          let year = parseInt(m[3], 10)
+          if (year < 100) year += year >= 70 ? 1900 : 2000
+          return new Date(year, month, day)
+        }
+        // Fallback: intentar parsear ISO o cualquier formato válido
+        const d = new Date(s)
+        return isNaN(d.getTime()) ? new Date(0) : d
+      }
+
+      const dateA = parseDate(a.Fecha)
+      const dateB = parseDate(b.Fecha)
+      
+      // Primero por fecha (descendente: más reciente primero)
+      if (dateA > dateB) return -1
+      if (dateA < dateB) return 1
+      
+      // Si fechas iguales, ordenar por Ensayo (descendente: mayor primero)
+      const ensayoA = String(a.Ensayo || '').trim()
+      const ensayoB = String(b.Ensayo || '').trim()
+      return ensayoB.localeCompare(ensayoA, undefined, { numeric: true })
+    })
+    
+    rows.value = data
   } catch (err) {
     console.error('Failed to load rows', err)
     Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo cargar el informe completo.' })
