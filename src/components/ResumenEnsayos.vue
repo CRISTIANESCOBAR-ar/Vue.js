@@ -1535,11 +1535,6 @@ async function loadRows() {
     data = data.map(row => {
       const obs = String(row.OBS || '').trim()
 
-      // Debug: mostrar específicamente el ensayo 00260
-      if (row.Ensayo === '00260' || row.Ensayo === '260') {
-        console.log(`🔍 DEBUG Ensayo ${row.Ensayo} - Ne: ${row.Ne} - OBS completo: "${obs}"`)
-      }
-
       // Buscar FLAME en el texto (sin requerir límites de palabra ya que puede estar pegado: /1FLAME)
       const flameMatch = obs.toUpperCase().includes('FLAME')
 
@@ -1547,7 +1542,6 @@ async function loadRows() {
         // Agregar "Flame" al Ne y marcar la fila para resaltar
         const neOriginal = row.Ne != null ? String(row.Ne) : ''
         const newNe = neOriginal ? `${neOriginal}Flame` : 'Flame'
-        console.log('🔥 FLAME detectado - Ensayo:', row.Ensayo, 'Ne original:', neOriginal, 'Ne nuevo:', newNe)
         return {
           ...row,
           Ne: newNe,
@@ -1555,9 +1549,7 @@ async function loadRows() {
         }
       }
       return { ...row, _isFlame: false }
-    })
-
-    // Ordenar por Fecha (descendente) y luego por Ensayo (descendente)
+    })    // Ordenar por Fecha (descendente) y luego por Ensayo (descendente)
     data.sort((a, b) => {
       // Helper: parsear fecha dd/mm/yy a Date para comparar
       const parseDate = (dateStr) => {
