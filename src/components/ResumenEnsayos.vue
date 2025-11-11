@@ -311,18 +311,19 @@
               </svg>
             </button>
           </div>
-     </header>
+        </header>
 
-     <!-- Observaciones (OBS) — tomada de la misma fuente que Fecha/OE/Ne (modalMeta.obs).
+        <!-- Observaciones (OBS) — tomada de la misma fuente que Fecha/OE/Ne (modalMeta.obs).
        Se muestra en una línea propia debajo del header para no romper la alineación
        del header principal ni de los botones de acción a la derecha. -->
-     <div v-if="modalMeta.obs" class="mx-8 w-full text-slate-600 text-sm mb-2">Obs.: <span class="text-slate-900 text-sm font-normal ml-1">{{ modalMeta.obs }}</span></div>
-     <section class="flex-1 relative">
+        <div v-if="modalMeta.obs" class="mx-8 w-full text-slate-600 text-sm mb-2">Obs.: <span
+            class="text-slate-900 text-sm font-normal ml-1">{{ modalMeta.obs }}</span></div>
+        <section class="flex-1 relative">
           <!-- Always render content to preserve modal height; show spinner as overlay when loading -->
           <div>
             <div v-if="mergedRows.length === 0" class="text-sm text-slate-600 py-8 text-center">No hay datos para este
               ensayo.</div>
-            <div v-else class="rounded-xl border border-slate-200 overflow-auto modal-scroll max-h-[calc(95vh-4rem)]">
+            <div v-else class="rounded-xl border border-slate-200 overflow-auto modal-scroll max-h-[calc(95vh-6rem)]">
               <table class="min-w-full text-xs">
                 <!-- Make the table wrapper the scroll container and use top-0 on thead so
                      the header sticks correctly inside the scrolling area. -->
@@ -854,6 +855,11 @@ const modalMeta = computed(() => {
   // Prefer the main report `rows` for meta (it contains Fecha / OE / Ne). Fallback to USTER or merged rows.
   let meta = (rows.value || []).find(r => String(r?.Ensayo) === String(u)) || null
   if (!meta) meta = (usterTblRows.value && usterTblRows.value[0]) || (mergedRows.value && mergedRows.value[0]) || {}
+  
+  // Debug: log meta to see what fields are available
+  if (selectedTestnr.value) {
+    console.log('modalMeta - selectedTestnr:', u, 'meta:', meta)
+  }
 
   const rawFecha = meta?.Fecha || meta?.fecha || meta?.FECHA || meta?.date || ''
   let fechaStr = '—'

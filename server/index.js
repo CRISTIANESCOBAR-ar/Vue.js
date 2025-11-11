@@ -455,7 +455,7 @@ app.get('/api/report/ensayo', async (req, res) => {
       Fecha: parRow ? formatDateShort(parRow.TIME_STAMP) : null, // dd/mm/yy
       OE: parRow ? parseMaschnr(parRow.MASCHNR).formatted : null, // e.g. '3 LIM'
       Ne: parRow ? formatNe(parRow.NOMCOUNT) : null,
-      Obs: parRow ? (parRow.OBS || null) : null,
+      Obs: parRow ? parRow.OBS || null : null,
 
       // From USTER_TBL, averages with 2 decimals
       'CVm %': fmtNumber(usterAgg.CVM_PERCENT_AVG, 2),
@@ -1352,7 +1352,7 @@ app.get('/api/report/informe-completo', async (req, res) => {
     }
 
     // 1) Fetch all USTER_PAR rows (descending by TESTNR, limit to recent 200)
-    const parSql = `SELECT TESTNR, TIME_STAMP, MASCHNR, NOMCOUNT
+    const parSql = `SELECT TESTNR, TIME_STAMP, MASCHNR, NOMCOUNT, OBS
       FROM ${SCHEMA_PREFIX}USTER_PAR
       ORDER BY TESTNR DESC
       FETCH FIRST 200 ROWS ONLY`
@@ -1509,7 +1509,8 @@ app.get('/api/report/informe-completo', async (req, res) => {
         Ensayo: padTestnr(testnr),
         Fecha: formatDateShort(parRow.TIME_STAMP),
         OE: parseMaschnr(parRow.MASCHNR),
-  Ne: formatNe(parRow.NOMCOUNT),
+        Ne: formatNe(parRow.NOMCOUNT),
+        OBS: parRow.OBS || null,
         'CVm %': fmtNumber(usterAgg.CVM_PERCENT_AVG, 2),
         'Delg -30%': fmtNumber(usterAgg.DELG_MINUS30_KM_AVG, 2),
         'Delg -40%': fmtNumber(usterAgg.DELG_MINUS40_KM_AVG, 2),
