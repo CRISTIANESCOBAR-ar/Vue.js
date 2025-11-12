@@ -1,3 +1,5 @@
+/* eslint-env node */
+/* global console */
 // Quick test harness for the getTestnrFromName logic
 function getTestnrFromName(name) {
   if (!name) return null
@@ -6,7 +8,7 @@ function getTestnrFromName(name) {
   let m = s.match(/STC\d{2}[_-]?(\d{5})/i)
   if (m && m[1]) return m[1]
   // Next, prefer an underscore-delimited 5-digit block: _00260_ or _00260.
-  m = s.match(/_(\d{5})(?:[_\.]|$)/)
+  m = s.match(/_(\d{5})(?:[_.]|$)/)
   if (m && m[1]) return m[1]
   // Fallback: any first sequence of 5 digits
   m = s.match(/(\d{5})/)
