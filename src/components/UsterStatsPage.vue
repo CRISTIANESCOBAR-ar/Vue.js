@@ -174,13 +174,31 @@ const stats = computed(() => {
         // Try ISO/recognized formats
         let d = new Date(s)
         if (!isNaN(d.getTime())) return d
-        // dd/mm/yy or dd/mm/yyyy or dd-mm-yy
+        // dd/mm/yy or mm/dd/yy or dd/mm/yyyy or dd-mm-yy
         let m = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/)
         if (m) {
-            let day = Number(m[1])
-            let mon = Number(m[2]) - 1
+            const part1 = Number(m[1])
+            const part2 = Number(m[2])
             let year = Number(m[3])
             if (year < 100) year += 2000
+
+            // Disambiguate formats:
+            // - if first part > 12 => it's day (dd/mm)
+            // - else if second part > 12 => it's day is second (mm/dd)
+            // - else ambiguous -> assume European dd/mm (user preference)
+            let day, mon
+            if (part1 > 12) {
+                day = part1
+                mon = part2 - 1
+            } else if (part2 > 12) {
+                // treat as mm/dd
+                day = part2
+                mon = part1 - 1
+            } else {
+                // ambiguous: default to European dd/mm
+                day = part1
+                mon = part2 - 1
+            }
             return new Date(year, mon, day)
         }
         // DD-MON-YY like 05-NOV-25
