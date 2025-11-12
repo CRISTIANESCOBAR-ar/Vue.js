@@ -171,7 +171,7 @@ const stats = computed(() => {
             if (n > 1000000000000) return new Date(n) // ms
             if (n > 1000000000) return new Date(n * 1000) // seconds
         }
-        
+
         // PRIORITY 1: explicit dd/mm/yyyy HH:mm or dd/mm/yy patterns (European format with optional time)
         let m = s.match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{2,4})(?:\s+\d{1,2}:\d{2})?$/)
         if (m) {
@@ -211,12 +211,12 @@ const stats = computed(() => {
                 return new Date(year, monIdx, Number(m[1]))
             }
         }
-        
+
         // PRIORITY 3: ISO formats and other recognized formats (may interpret as American mm/dd)
         // Only use as fallback after explicit European formats checked
         let d = new Date(s)
         if (!isNaN(d.getTime())) return d
-        
+
         return null
     }
 
