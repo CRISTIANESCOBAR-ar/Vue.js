@@ -165,9 +165,6 @@ const stats = computed(() => {
         // numbers -> epoch
         if (typeof t === 'number') return new Date(t)
         const s = String(t).trim()
-        
-        // DEBUG: log raw timestamp value
-        console.log('Parsing TIME_STAMP:', t, 'as string:', s)
         if (/^\d+$/.test(s)) {
             const n = Number(s)
             // if looks like epoch seconds or ms
@@ -175,8 +172,8 @@ const stats = computed(() => {
             if (n > 1000000000) return new Date(n * 1000) // seconds
         }
         
-        // PRIORITY 1: explicit dd/mm/yy or dd-mm-yy patterns (European format)
-        let m = s.match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{2,4})$/)
+        // PRIORITY 1: explicit dd/mm/yyyy HH:mm or dd/mm/yy patterns (European format with optional time)
+        let m = s.match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{2,4})(?:\s+\d{1,2}:\d{2})?$/)
         if (m) {
             const part1 = Number(m[1])
             const part2 = Number(m[2])
@@ -234,18 +231,8 @@ const stats = computed(() => {
         // choose a representative timestamp for this TESTNR: pick earliest available after robust parsing
         let chosenTs = null
         if (payload.timestamps && payload.timestamps.length > 0) {
-            // Debug logging (can be removed later)
-            if (payload.timestamps.length > 0 && typeof console !== 'undefined') {
-                console.log(`TESTNR ${testnr} - raw timestamps:`, payload.timestamps)
-            }
             const dates = payload.timestamps
-                .map(t => {
-                    const parsed = parseDateValue(t)
-                    if (typeof console !== 'undefined' && parsed) {
-                        console.log(`  "${t}" -> ${parsed.toLocaleDateString('es-ES')}`)
-                    }
-                    return parsed
-                })
+                .map(t => parseDateValue(t))
                 .filter(Boolean)
             if (dates.length > 0) {
                 dates.sort((a, b) => a - b)
