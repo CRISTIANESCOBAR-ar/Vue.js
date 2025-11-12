@@ -97,7 +97,7 @@
               <ResumenEnsayos />
             </div>
             <div v-else-if="active === 'graficos'">
-              <GraficosEnsayos />
+              <UsterStatsPage />
             </div>
             <div v-else-if="active === 'uster'">
               <Uster />
@@ -194,7 +194,7 @@ import Uster from './components/Uster.vue'
 import TensoRapid from './components/TensoRapid.vue'
 import SidebarItem from './components/SidebarItem.vue'
 import ResumenEnsayos from './components/ResumenEnsayos.vue'
-import GraficosEnsayos from './components/GraficosEnsayos.vue'
+import UsterStatsPage from './components/UsterStatsPage.vue'
 import FontSelector from './components/FontSelector.vue'
 import Swal from 'sweetalert2'
 import { useRegistroStore } from './stores/registro'

@@ -191,23 +191,50 @@ app.get('/api/uster/list', async (req, res) => {
 // Returns rows from USTER_TBL for a given TESTNR
 app.get('/api/uster/tbl', async (req, res) => {
   const testnr = req.query && req.query.testnr ? String(req.query.testnr) : null
-  if (!testnr) return res.status(400).json({ error: 'Missing testnr query parameter' })
 
   let conn
   try {
     await initPool()
     conn = await getConnection()
 
-    const sql = `SELECT * FROM ${SCHEMA_PREFIX}USTER_TBL WHERE TESTNR = :TESTNR ORDER BY SEQNO NULLS LAST`
-    const result = await conn.execute(
-      sql,
-      { TESTNR: testnr },
-      { outFormat: oracledb.OUT_FORMAT_OBJECT }
-    )
+    let sql, binds
+    if (testnr) {
+      sql = `SELECT * FROM ${SCHEMA_PREFIX}USTER_TBL WHERE TESTNR = :TESTNR ORDER BY TESTNR, SEQNO NULLS LAST`
+      binds = { TESTNR: testnr }
+    } else {
+      // Return all records for statistics
+      sql = `SELECT * FROM ${SCHEMA_PREFIX}USTER_TBL ORDER BY TESTNR, SEQNO NULLS LAST`
+      binds = {}
+    }
+
+    const result = await conn.execute(sql, binds, { outFormat: oracledb.OUT_FORMAT_OBJECT })
     const rows = result.rows || []
     res.json({ rows })
   } catch (err) {
-    globalThis.console.error('Error fetching USTER_TBL for', testnr, err)
+    globalThis.console.error('Error fetching USTER_TBL', testnr || 'all', err)
+    res.status(500).json({ error: String(err && err.message ? err.message : err) })
+  } finally {
+    try {
+      if (conn) await conn.close()
+    } catch (e) {
+      globalThis.console.error('close conn err', e)
+    }
+  }
+})
+
+// Get all USTER_PAR records (for NOMCOUNT selector)
+app.get('/api/uster/par', async (req, res) => {
+  let conn
+  try {
+    await initPool()
+    conn = await getConnection()
+
+    const sql = `SELECT TESTNR, NOMCOUNT, MASCHNR, LOTE, LABORANT, TIME_STAMP FROM ${SCHEMA_PREFIX}USTER_PAR ORDER BY TESTNR`
+    const result = await conn.execute(sql, {}, { outFormat: oracledb.OUT_FORMAT_OBJECT })
+    const rows = result.rows || []
+    res.json({ rows })
+  } catch (err) {
+    globalThis.console.error('Error fetching USTER_PAR', err)
     res.status(500).json({ error: String(err && err.message ? err.message : err) })
   } finally {
     try {
@@ -1132,23 +1159,27 @@ app.get('/api/tensorapid/by-uster/:uster', async (req, res) => {
 // Returns rows from TENSORAPID_TBL for a given TESTNR
 app.get('/api/tensorapid/tbl', async (req, res) => {
   const testnr = req.query && req.query.testnr ? String(req.query.testnr) : null
-  if (!testnr) return res.status(400).json({ error: 'Missing testnr query parameter' })
 
   let conn
   try {
     await initPool()
     conn = await getConnection()
 
-    const sql = `SELECT * FROM ${SCHEMA_PREFIX}TENSORAPID_TBL WHERE TESTNR = :TESTNR ORDER BY HUSO_NUMBER NULLS LAST`
-    const result = await conn.execute(
-      sql,
-      { TESTNR: testnr },
-      { outFormat: oracledb.OUT_FORMAT_OBJECT }
-    )
+    let sql, binds
+    if (testnr) {
+      sql = `SELECT * FROM ${SCHEMA_PREFIX}TENSORAPID_TBL WHERE TESTNR = :TESTNR ORDER BY HUSO_NUMBER NULLS LAST`
+      binds = { TESTNR: testnr }
+    } else {
+      // Return all records for statistics
+      sql = `SELECT * FROM ${SCHEMA_PREFIX}TENSORAPID_TBL ORDER BY TESTNR, HUSO_NUMBER NULLS LAST`
+      binds = {}
+    }
+
+    const result = await conn.execute(sql, binds, { outFormat: oracledb.OUT_FORMAT_OBJECT })
     const rows = result.rows || []
     res.json({ rows })
   } catch (err) {
-    globalThis.console.error('Error fetching TENSORAPID_TBL for', testnr, err)
+    globalThis.console.error('Error fetching TENSORAPID_TBL', testnr || 'all', err)
     res.status(500).json({ error: String(err && err.message ? err.message : err) })
   } finally {
     try {

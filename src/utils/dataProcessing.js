@@ -50,14 +50,15 @@ export function extractNumericValues(map, variable) {
 
 export function computeStatsPerTest(rows) {
   // rows: [{ testnr, values: [num...] }]
-  const out = rows.map(r => {
+  const out = rows.map((r) => {
     const vals = r.values || []
     const n = vals.length
     const mean = n ? vals.reduce((s, v) => s + v, 0) / n : null
-    const variance = n && mean != null ? vals.reduce((s, v) => s + Math.pow(v - mean, 2), 0) / n : null
+    const variance =
+      n && mean != null ? vals.reduce((s, v) => s + Math.pow(v - mean, 2), 0) / n : null
     const sd = variance != null ? Math.sqrt(variance) : null
-    const ucl = (mean != null && sd != null) ? mean + 3 * sd : null
-    const lcl = (mean != null && sd != null) ? mean - 3 * sd : null
+    const ucl = mean != null && sd != null ? mean + 3 * sd : null
+    const lcl = mean != null && sd != null ? mean - 3 * sd : null
     const outOfControl = []
     if (n && mean != null && sd != null) {
       for (let i = 0; i < vals.length; i++) {
@@ -76,7 +77,7 @@ export function computeStatsPerTest(rows) {
       outOfControl
     }
   })
-  // Sort by testnr (lexicographic ok if padded) 
+  // Sort by testnr (lexicographic ok if padded)
   out.sort((a, b) => String(a.testnr).localeCompare(String(b.testnr)))
   return out
 }

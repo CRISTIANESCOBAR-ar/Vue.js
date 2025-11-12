@@ -1,64 +1,201 @@
 <template>
-  <div class="p-4">
-    <h2 class="text-xl font-semibold mb-3">Uster - Estadísticas por TESTNR</h2>
+    <div class="p-4 h-screen flex flex-col">
+        <div v-if="isLoading" class="text-center py-12">
+            <div class="text-slate-600 text-lg">Cargando datos...</div>
+        </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div class="md:col-span-1">
-        <VariableSelector :variables="variables" v-model="selectedVar" />
-        <div class="text-sm text-slate-600 mb-2">Muestra: {{ stats.length }} TESTNR</div>
-        <StatsTable :stats="stats" />
-      </div>
-      <div class="md:col-span-2">
-        <StatsChart :stats="stats" :variableLabel="selectedVarLabel" />
-      </div>
+        <div v-else-if="error" class="text-center py-12">
+            <div class="text-red-600 mb-4">Error: {{ error }}</div>
+            <button @click="fetchData" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
+                Reintentar
+            </button>
+        </div>
+
+        <div v-else class="flex flex-col h-full">
+            <!-- Encabezado con selector y estadísticas en una línea -->
+            <div class="bg-white rounded shadow px-4 py-3 mb-3 flex-shrink-0">
+                <div class="flex flex-wrap items-center gap-4">
+                    <div class="flex items-center gap-2">
+                        <span class="font-semibold text-lg">Gráfico de Control de Titulo Ne:</span>
+                        <select v-model="selectedNomcount"
+                            class="px-3 py-1.5 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 font-semibold">
+                            <option :value="null">-- Seleccione --</option>
+                            <option v-for="nomcount in availableNomcounts" :key="nomcount" :value="nomcount">
+                                {{ nomcount }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <template v-if="selectedNomcount">
+                        <div class="flex items-center gap-1">
+                            <span class="text-slate-600">TESTNR:</span>
+                            <span class="font-semibold">{{ stats.length }}</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <span class="text-slate-600">Media Global:</span>
+                            <span class="font-semibold">{{ globalMean.toFixed(1) }}</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <span class="text-slate-600">UCL:</span>
+                            <span class="font-semibold text-red-600">{{ globalUcl.toFixed(1) }}</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <span class="text-slate-600">LCL:</span>
+                            <span class="font-semibold text-blue-600">{{ globalLcl.toFixed(1) }}</span>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <!-- Mostrar mensaje si no hay NOMCOUNT seleccionado -->
+            <div v-if="!selectedNomcount" class="text-center py-8 text-slate-500">
+                Por favor seleccione un título nominal para ver el gráfico de control
+            </div>
+
+            <!-- Gráfico maximizado -->
+            <div v-else class="bg-white rounded shadow p-4 flex-1 flex flex-col min-h-0">
+                <StatsChart :stats="stats" :globalMean="globalMean" :globalUcl="globalUcl" :globalLcl="globalLcl"
+                    variableLabel="TITULO" />
+            </div>
+        </div>
     </div>
-  </div>
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
-import VariableSelector from './uster-stats/VariableSelector.vue'
+import { ref, computed, onMounted } from 'vue'
 import StatsChart from './uster-stats/StatsChart.vue'
-import StatsTable from './uster-stats/StatsTable.vue'
-import { groupByTestnr, extractNumericValues, computeStatsPerTest } from '../utils/dataProcessing'
 
-// Props: the page expects a data object with four arrays or you can fetch inside the page
-const props = defineProps({ data: { type: Object, default: () => ({ uster_par: [], uster_tbl: [], tensorapid_par: [], tensorapid_tbl: [] }) } })
+// Data fetched from backend
+const usterTbl = ref([])
+const usterPar = ref([])
+const isLoading = ref(false)
+const error = ref(null)
 
-// Define available variables – label/value where value maps to a field name in the tables
-const variables = [
-  { label: 'TITULO', value: 'TITULO' },
-  { label: 'CVM_PERCENT', value: 'CVM_PERCENT' },
-  { label: 'DELG_MINUS30_KM', value: 'DELG_MINUS30_KM' },
-  { label: 'DELG_MINUS40_KM', value: 'DELG_MINUS40_KM' },
-  { label: 'DELG_MINUS50_KM', value: 'DELG_MINUS50_KM' },
-  { label: 'GRUE_35_KM', value: 'GRUE_35_KM' },
-  { label: 'GRUE_50_KM', value: 'GRUE_50_KM' },
-  { label: 'NEPS_140_KM', value: 'NEPS_140_KM' },
-  { label: 'NEPS_280_KM', value: 'NEPS_280_KM' },
-  { label: 'FUERZA_B', value: 'FUERZA_B' },
-  { label: 'ELONGACION', value: 'ELONGACION' },
-  { label: 'TENACIDAD', value: 'TENACIDAD' },
-  { label: 'TRABAJO', value: 'TRABAJO' }
-]
+// Selected NOMCOUNT
+const selectedNomcount = ref(null)
 
-const selectedVar = ref(variables[0].value)
+// Fetch data from backend
+async function fetchData() {
+    isLoading.value = true
+    error.value = null
+    try {
+        const backendUrl = (typeof window !== 'undefined' && window.location.hostname === 'localhost') ? 'http://localhost:3001' : ''
 
-const selectedVarLabel = computed(() => variables.find(v => v.value === selectedVar.value)?.label || selectedVar.value)
+        const [usterTblRes, usterParRes] = await Promise.all([
+            fetch(backendUrl + '/api/uster/tbl', { credentials: 'include' }),
+            fetch(backendUrl + '/api/uster/par', { credentials: 'include' })
+        ])
 
-// Process data
-const map = computed(() => groupByTestnr(props.data.uster_tbl || [], props.data.tensorapid_tbl || []))
+        if (!usterTblRes.ok || !usterParRes.ok) throw new Error('Error al cargar datos')
 
-const numericRows = computed(() => extractNumericValues(map.value, selectedVar.value))
+        const usterTblData = await usterTblRes.json()
+        const usterParData = await usterParRes.json()
 
-const stats = computed(() => computeStatsPerTest(numericRows.value))
+        usterTbl.value = usterTblData.rows || []
+        usterPar.value = usterParData.rows || []
+    } catch (err) {
+        console.error('Error fetching data:', err)
+        error.value = err.message
+    } finally {
+        isLoading.value = false
+    }
+}
 
-// Validate numeric data: if any testnr has no numeric values, warn
-watch(selectedVar, (nv) => {
-  const missing = numericRows.value.filter(r => !r.values || r.values.length === 0)
-  if (missing.length) {
-    console.warn(`Variable ${nv} no tiene valores numéricos para ${missing.length} TESTNR`) // show warnings in console
-  }
+// Get unique NOMCOUNT values
+const availableNomcounts = computed(() => {
+    const nomcounts = new Set()
+    for (const row of usterPar.value) {
+        if (row.NOMCOUNT != null && row.NOMCOUNT !== '') {
+            nomcounts.add(row.NOMCOUNT)
+        }
+    }
+    return Array.from(nomcounts).sort((a, b) => {
+        const numA = parseFloat(a)
+        const numB = parseFloat(b)
+        if (!isNaN(numA) && !isNaN(numB)) return numA - numB
+        return String(a).localeCompare(String(b))
+    })
+})
+
+// Get TESTNRs for selected NOMCOUNT
+const filteredTestnrs = computed(() => {
+    if (!selectedNomcount.value) return []
+    return usterPar.value
+        .filter(row => row.NOMCOUNT === selectedNomcount.value)
+        .map(row => row.TESTNR)
+        .filter(Boolean)
+})
+
+// Process data: group by TESTNR and compute stats for TITULO (filtered by selected NOMCOUNT)
+const stats = computed(() => {
+    if (!selectedNomcount.value) return []
+
+    // Filter TESTNR based on selected NOMCOUNT
+    const validTestnrs = new Set(filteredTestnrs.value)
+
+    // Group rows by TESTNR (only for TESTNRs matching selected NOMCOUNT)
+    const grouped = {}
+
+    for (const row of usterTbl.value) {
+        const testnr = row.TESTNR
+        if (!testnr || !validTestnrs.has(testnr)) continue
+
+        // Parse TITULO as number
+        const titulo = parseFloat(row.TITULO)
+        if (isNaN(titulo)) continue
+
+        if (!grouped[testnr]) {
+            grouped[testnr] = []
+        }
+        grouped[testnr].push(titulo)
+    }
+
+    // Compute mean for each TESTNR
+    const result = []
+    for (const [testnr, values] of Object.entries(grouped)) {
+        if (values.length === 0) continue
+
+        const mean = values.reduce((sum, v) => sum + v, 0) / values.length
+
+        result.push({
+            testnr,
+            n: values.length,
+            mean,
+            values
+        })
+    }
+
+    // Sort by TESTNR
+    result.sort((a, b) => String(a.testnr).localeCompare(String(b.testnr)))
+
+    return result
+})
+
+// Compute global statistics over all values
+const globalStats = computed(() => {
+    const allValues = stats.value.flatMap(s => s.values)
+
+    if (allValues.length === 0) {
+        return { mean: 0, sd: 0, ucl: 0, lcl: 0 }
+    }
+
+    const mean = allValues.reduce((sum, v) => sum + v, 0) / allValues.length
+
+    const variance = allValues.reduce((sum, v) => sum + Math.pow(v - mean, 2), 0) / allValues.length
+    const sd = Math.sqrt(variance)
+
+    const ucl = mean + 3 * sd
+    const lcl = mean - 3 * sd
+
+    return { mean, sd, ucl, lcl }
+})
+
+const globalMean = computed(() => globalStats.value.mean)
+const globalUcl = computed(() => globalStats.value.ucl)
+const globalLcl = computed(() => globalStats.value.lcl)
+
+onMounted(() => {
+    fetchData()
 })
 
 </script>
