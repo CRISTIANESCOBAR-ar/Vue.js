@@ -165,17 +165,18 @@ const stats = computed(() => {
         // numbers -> epoch
         if (typeof t === 'number') return new Date(t)
         const s = String(t).trim()
+        
+        // DEBUG: log raw timestamp value
+        console.log('Parsing TIME_STAMP:', t, 'as string:', s)
         if (/^\d+$/.test(s)) {
             const n = Number(s)
             // if looks like epoch seconds or ms
             if (n > 1000000000000) return new Date(n) // ms
             if (n > 1000000000) return new Date(n * 1000) // seconds
         }
-        // Try ISO/recognized formats
-        let d = new Date(s)
-        if (!isNaN(d.getTime())) return d
-        // dd/mm/yy or mm/dd/yy or dd/mm/yyyy or dd-mm-yy
-        let m = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/)
+        
+        // PRIORITY 1: explicit dd/mm/yy or dd-mm-yy patterns (European format)
+        let m = s.match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{2,4})$/)
         if (m) {
             const part1 = Number(m[1])
             const part2 = Number(m[2])
@@ -201,8 +202,8 @@ const stats = computed(() => {
             }
             return new Date(year, mon, day)
         }
-        // DD-MON-YY like 05-NOV-25
-        m = s.match(/^(\d{1,2})-([A-Za-z]{3})-(\d{2,4})$/)
+        // PRIORITY 2: DD-MON-YY like 05-NOV-25 (Oracle format)
+        m = s.match(/^(\d{1,2})-([A-Za-z]{3})-(\d{2,4})$/i)
         if (m) {
             const monNames = { JAN: 0, FEB: 1, MAR: 2, APR: 3, MAY: 4, JUN: 5, JUL: 6, AUG: 7, SEP: 8, OCT: 9, NOV: 10, DEC: 11 }
             const monStr = m[2].toUpperCase()
@@ -213,6 +214,12 @@ const stats = computed(() => {
                 return new Date(year, monIdx, Number(m[1]))
             }
         }
+        
+        // PRIORITY 3: ISO formats and other recognized formats (may interpret as American mm/dd)
+        // Only use as fallback after explicit European formats checked
+        let d = new Date(s)
+        if (!isNaN(d.getTime())) return d
+        
         return null
     }
 
@@ -227,8 +234,18 @@ const stats = computed(() => {
         // choose a representative timestamp for this TESTNR: pick earliest available after robust parsing
         let chosenTs = null
         if (payload.timestamps && payload.timestamps.length > 0) {
+            // Debug logging (can be removed later)
+            if (payload.timestamps.length > 0 && typeof console !== 'undefined') {
+                console.log(`TESTNR ${testnr} - raw timestamps:`, payload.timestamps)
+            }
             const dates = payload.timestamps
-                .map(t => parseDateValue(t))
+                .map(t => {
+                    const parsed = parseDateValue(t)
+                    if (typeof console !== 'undefined' && parsed) {
+                        console.log(`  "${t}" -> ${parsed.toLocaleDateString('es-ES')}`)
+                    }
+                    return parsed
+                })
                 .filter(Boolean)
             if (dates.length > 0) {
                 dates.sort((a, b) => a - b)
