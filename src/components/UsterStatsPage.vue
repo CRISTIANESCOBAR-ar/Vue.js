@@ -149,7 +149,13 @@ const stats = computed(() => {
         }
         grouped[testnr].values.push(titulo)
         // collect TIME_STAMP (if available) for later selection
-        if (row.TIME_STAMP) grouped[testnr].timestamps.push(row.TIME_STAMP)
+        let ts = row.TIME_STAMP
+        // if TIME_STAMP not present or not parseable, try to fallback to USTER_PAR entry for this TESTNR
+        if (!ts) {
+            const parRow = usterPar.value.find(p => p.TESTNR === testnr)
+            if (parRow && parRow.TIME_STAMP) ts = parRow.TIME_STAMP
+        }
+        if (ts) grouped[testnr].timestamps.push(ts)
     }
 
     // Compute mean for each TESTNR
