@@ -28,7 +28,7 @@
 
                     <template v-if="selectedNomcount">
                         <div class="flex items-center gap-1">
-                            <span class="text-slate-600">TESTNR:</span>
+                            <span class="text-slate-600">Ensayos:</span>
                             <span class="font-semibold">{{ stats.length }}</span>
                         </div>
                         <div class="flex items-center gap-1">
@@ -145,28 +145,63 @@ const stats = computed(() => {
         if (isNaN(titulo)) continue
 
         if (!grouped[testnr]) {
-            grouped[testnr] = []
+            grouped[testnr] = { values: [], timestamps: [] }
         }
-        grouped[testnr].push(titulo)
+        grouped[testnr].values.push(titulo)
+        // collect TIME_STAMP (if available) for later selection
+        if (row.TIME_STAMP) grouped[testnr].timestamps.push(row.TIME_STAMP)
     }
 
     // Compute mean for each TESTNR
     const result = []
-    for (const [testnr, values] of Object.entries(grouped)) {
+    for (const [testnr, payload] of Object.entries(grouped)) {
+        const values = payload.values || []
         if (values.length === 0) continue
 
         const mean = values.reduce((sum, v) => sum + v, 0) / values.length
+
+        // choose a representative timestamp for this TESTNR: pick earliest available
+        let chosenTs = null
+        if (payload.timestamps && payload.timestamps.length > 0) {
+            // convert to Date numbers when possible
+            const dates = payload.timestamps
+                .map(t => {
+                    const d = new Date(t)
+                    return isNaN(d.getTime()) ? null : d
+                })
+                .filter(Boolean)
+            if (dates.length > 0) {
+                dates.sort((a, b) => a - b)
+                chosenTs = dates[0]
+            }
+        }
+
+        // format timestamp as dd/mm/yy for display (fallback to TESTNR if missing)
+        let timestampFmt = null
+        let timestampISO = null
+        if (chosenTs) {
+            const dd = String(chosenTs.getDate()).padStart(2, '0')
+            const mm = String(chosenTs.getMonth() + 1).padStart(2, '0')
+            const yy = String(chosenTs.getFullYear()).slice(-2)
+            timestampFmt = `${dd}/${mm}/${yy}`
+            timestampISO = chosenTs.toISOString()
+        }
 
         result.push({
             testnr,
             n: values.length,
             mean,
-            values
+            values,
+            timestampISO,
+            timestampFmt
         })
     }
 
-    // Sort by TESTNR
-    result.sort((a, b) => String(a.testnr).localeCompare(String(b.testnr)))
+    // Sort by timestamp if available, otherwise by TESTNR
+    result.sort((a, b) => {
+        if (a.timestampISO && b.timestampISO) return String(a.timestampISO).localeCompare(String(b.timestampISO))
+        return String(a.testnr).localeCompare(String(b.testnr))
+    })
 
     return result
 })

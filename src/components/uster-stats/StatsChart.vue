@@ -19,7 +19,8 @@ const chartRef = ref(null)
 let chart = null
 
 function buildOption(data) {
-    const x = data.map(d => d.testnr)
+    // Use formatted timestamp (dd/mm/yy) as x axis label when available; fallback to TESTNR
+    const x = data.map(d => (d.timestampFmt ? d.timestampFmt : d.testnr))
     const y = data.map(d => d.mean)
 
     // Use global limits (constant across all TESTNR)
@@ -51,7 +52,7 @@ function buildOption(data) {
         xAxis: {
             type: 'category',
             data: x,
-            name: 'TESTNR',
+            name: 'Fecha',
             axisLabel: { rotate: 45, interval: 0 }
         },
         yAxis: {
