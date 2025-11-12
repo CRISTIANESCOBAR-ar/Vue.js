@@ -314,7 +314,15 @@ const filterShowSaved = ref(false)
 
 function getTestnrFromName(name) {
   if (!name) return null
-  const m = String(name).match(/(\d{5})/)
+  const s = String(name)
+  // First, prefer patterns like STCxx_00260 (common in low-number tests)
+  let m = s.match(/STC\d{2}[_-]?(\d{5})/i)
+  if (m && m[1]) return m[1]
+  // Next, prefer an underscore-delimited 5-digit block: _00260_ or _00260.
+  m = s.match(/_(\d{5})(?:[_.]|$)/)
+  if (m && m[1]) return m[1]
+  // Fallback: any first sequence of 5 digits
+  m = s.match(/(\d{5})/)
   return m ? m[1] : null
 }
 
@@ -977,14 +985,25 @@ async function updateTblFileWithTitulos() {
   try {
     // Encontrar el handle del archivo .TBL actual
     const it = scanList.value.find(x => String(x.testnr) === String(selectedTestnr.value))
-    if (!it || !it.tblHandle) {
-      console.warn('No se encontró el handle del archivo .TBL')
+    // Preferir el handle encontrado en la lista mapeada; si no existe, usar el handle actualmente cargado (tblFile)
+    const handle = (it && it.tblHandle) || tblFile.value || null
+    if (!handle) {
+      console.warn('No se encontró ningún handle para el archivo .TBL (ni en scanList ni en tblFile)')
       return false
     }
 
-    // Verificar si es un FileSystemFileHandle (no un File del fallback)
-    if (typeof it.tblHandle.createWritable !== 'function') {
-      console.warn('El archivo .TBL no soporta escritura (modo fallback)')
+    // Verificar si es un FileSystemFileHandle con capacidad de escritura (createWritable)
+    if (typeof handle.createWritable !== 'function') {
+      console.warn('El archivo .TBL no soporta escritura (modo fallback). handle:', handle)
+      try {
+        // Mostrar al usuario un aviso para re-seleccionar la carpeta si quiere guardar cambios en disco
+        await Swal.fire({
+          icon: 'info',
+          title: 'No es posible guardar aquí',
+          text: 'El archivo fue abierto mediante selección de archivos y no permite escribir de vuelta. Selecciona la carpeta usando "Seleccionar carpeta" para habilitar guardado.',
+          confirmButtonText: 'Seleccionar carpeta'
+        })
+      } catch { /* noop */ }
       return false
     }
 
@@ -1030,7 +1049,7 @@ async function updateTblFileWithTitulos() {
     const newContent = lines.join(lineEnding)
 
     // Escribir de vuelta al archivo usando File System Access API
-    const writable = await it.tblHandle.createWritable()
+    const writable = await handle.createWritable()
     await writable.write(newContent)
     await writable.close()
 
@@ -1225,6 +1244,16 @@ async function saveCurrentTest() {
       await nextTick();
     }
 
+    // Actualizar el archivo .TBL con los valores de Titulo editados ANTES de limpiar los campos en memoria
+    try {
+      const tblUpdated = await updateTblFileWithTitulos()
+      if (tblUpdated) {
+        console.log('Archivo .TBL actualizado con éxito')
+      }
+    } catch (err) {
+      console.warn('No se pudo actualizar el archivo .TBL (esto es normal en modo fallback):', err)
+    }
+
     // Limpia los inputs de TITULO correspondientes al TESTNR guardado
     try {
       for (let i = 0; i < tblData.value.length; i++) {
@@ -1281,16 +1310,6 @@ async function saveCurrentTest() {
         await nextTick()
       }
     } catch (err) { console.warn('auto-advance after save failed', err) }
-
-    // Actualizar el archivo .TBL con los valores de Titulo editados
-    try {
-      const tblUpdated = await updateTblFileWithTitulos()
-      if (tblUpdated) {
-        console.log('Archivo .TBL actualizado con éxito')
-      }
-    } catch (err) {
-      console.warn('No se pudo actualizar el archivo .TBL (esto es normal en modo fallback):', err)
-    }
 
     // Toast de éxito que desaparece automáticamente
     Swal.fire({
