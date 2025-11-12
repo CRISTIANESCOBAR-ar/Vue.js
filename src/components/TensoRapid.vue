@@ -710,7 +710,13 @@ async function focusNextEmptyUster(currentTestnr) {
 			.filter(it => !it.usterTestnr || String(it.usterTestnr).trim() === '')
 			.map(it => String(it.testnr))
 
-		if (candidates.length === 0) return false
+		if (candidates.length === 0) {
+			// No hay más ensayos sin USTER - limpiar la tabla "Datos .TBL"
+			parsedTblData.value = []
+			selectedTensoTestnr.value = ''
+			await nextTick()
+			return false
+		}
 
 		// Find position of currentTestnr in full list
 		const currentPos = full.findIndex(it => String(it.testnr) === String(currentTestnr))
@@ -734,6 +740,15 @@ async function focusNextEmptyUster(currentTestnr) {
 		if (!targetTestnr) return false
 		// allow DOM to settle if the row was removed/changed due to filtering
 		await nextTick()
+
+		// Cargar los datos del .TBL del siguiente ensayo para actualizar la tabla
+		try {
+			await loadSelectedTensoFiles(targetTestnr)
+			selectedTensoTestnr.value = targetTestnr
+		} catch (e) {
+			console.warn('Failed to load files for next test', targetTestnr, e)
+		}
+
 		const input = inputRefs.value[targetTestnr]
 		if (input && typeof input.focus === 'function') {
 			input.focus()
@@ -1349,6 +1364,7 @@ onMounted(() => {
 	/* default single-column (mobile) kept by Tailwind grid-cols-1 */
 	grid-template-columns: 1fr;
 }
+
 @media (min-width: 1280px) {
 	.tenso-grid {
 		grid-template-columns: 672px 1fr;
