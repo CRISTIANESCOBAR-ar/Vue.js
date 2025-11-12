@@ -158,6 +158,46 @@ const stats = computed(() => {
         if (ts) grouped[testnr].timestamps.push(ts)
     }
 
+    // helper: robust date parsing from various DB formats
+    function parseDateValue(t) {
+        if (!t) return null
+        if (t instanceof Date) return t
+        // numbers -> epoch
+        if (typeof t === 'number') return new Date(t)
+        const s = String(t).trim()
+        if (/^\d+$/.test(s)) {
+            const n = Number(s)
+            // if looks like epoch seconds or ms
+            if (n > 1000000000000) return new Date(n) // ms
+            if (n > 1000000000) return new Date(n * 1000) // seconds
+        }
+        // Try ISO/recognized formats
+        let d = new Date(s)
+        if (!isNaN(d.getTime())) return d
+        // dd/mm/yy or dd/mm/yyyy or dd-mm-yy
+        let m = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/)
+        if (m) {
+            let day = Number(m[1])
+            let mon = Number(m[2]) - 1
+            let year = Number(m[3])
+            if (year < 100) year += 2000
+            return new Date(year, mon, day)
+        }
+        // DD-MON-YY like 05-NOV-25
+        m = s.match(/^(\d{1,2})-([A-Za-z]{3})-(\d{2,4})$/)
+        if (m) {
+            const monNames = { JAN: 0, FEB: 1, MAR: 2, APR: 3, MAY: 4, JUN: 5, JUL: 6, AUG: 7, SEP: 8, OCT: 9, NOV: 10, DEC: 11 }
+            const monStr = m[2].toUpperCase()
+            const monIdx = monNames[monStr]
+            if (monIdx !== undefined) {
+                let year = Number(m[3])
+                if (year < 100) year += 2000
+                return new Date(year, monIdx, Number(m[1]))
+            }
+        }
+        return null
+    }
+
     // Compute mean for each TESTNR
     const result = []
     for (const [testnr, payload] of Object.entries(grouped)) {
@@ -166,15 +206,11 @@ const stats = computed(() => {
 
         const mean = values.reduce((sum, v) => sum + v, 0) / values.length
 
-        // choose a representative timestamp for this TESTNR: pick earliest available
+        // choose a representative timestamp for this TESTNR: pick earliest available after robust parsing
         let chosenTs = null
         if (payload.timestamps && payload.timestamps.length > 0) {
-            // convert to Date numbers when possible
             const dates = payload.timestamps
-                .map(t => {
-                    const d = new Date(t)
-                    return isNaN(d.getTime()) ? null : d
-                })
+                .map(t => parseDateValue(t))
                 .filter(Boolean)
             if (dates.length > 0) {
                 dates.sort((a, b) => a - b)
