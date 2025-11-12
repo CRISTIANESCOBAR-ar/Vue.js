@@ -157,7 +157,7 @@
 												<div v-if="item.testnr && item.saved && !item.isEditing"
 													class="flex items-center gap-1 justify-center">
 													<button @click.stop="startEditing(item)"
-														class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md">
+														class="inline-flex items-center justify-center w-28 gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md">
 														<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
 															fill="none" viewBox="0 0 24 24" stroke="currentColor">
 															<path stroke-linecap="round" stroke-linejoin="round"
@@ -168,7 +168,7 @@
 													</button>
 													<button v-if="!item.isEditing" @click.stop="deleteTensorapid(item)"
 														:disabled="isDeleting"
-														class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md disabled:opacity-50">
+														class="inline-flex items-center justify-center w-28 gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md disabled:opacity-50">
 														<svg xmlns="http://www.w3.org/2000/svg"
 															class="h-4 w-4 text-red-600" fill="none" viewBox="0 0 24 24"
 															stroke="currentColor">
@@ -184,7 +184,7 @@
 													class="flex gap-1 justify-center">
 													<button @click="saveToOracle(item)" :disabled="isSaving"
 														:ref="el => setSaveButtonRef(el, item.testnr)"
-														class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md disabled:opacity-50">
+														class="inline-flex items-center justify-center w-28 gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md disabled:opacity-50">
 														<svg xmlns="http://www.w3.org/2000/svg"
 															class="h-4 w-4 text-indigo-600" fill="none"
 															viewBox="0 0 24 24" stroke="currentColor">
@@ -195,7 +195,7 @@
 													</button>
 													<button v-if="item.isEditing" @click="cancelEditing(item)"
 														:disabled="isSaving"
-														class="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md disabled:opacity-50">
+														class="inline-flex items-center justify-center w-28 gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md disabled:opacity-50">
 														<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
 															fill="none" viewBox="0 0 24 24" stroke="currentColor">
 															<path stroke-linecap="round" stroke-linejoin="round"
@@ -205,7 +205,7 @@
 													</button>
 													<button v-if="!item.isEditing" @click.stop="deleteTensorapid(item)"
 														:disabled="isDeleting"
-														class="px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700 text-xs font-medium disabled:opacity-50 transition-colors duration-200 shadow-sm hover:shadow-md">
+														class="inline-flex items-center justify-center w-28 px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700 text-xs font-medium disabled:opacity-50 transition-colors duration-200 shadow-sm hover:shadow-md">
 														{{ isDeleting ? 'Eliminando...' : 'Eliminar' }}
 													</button>
 												</div>
