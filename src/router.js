@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginForm from './components/LoginForm.vue'
+import FontSelector from './components/FontSelector.vue'
 
 const routes = [
   {
@@ -9,6 +10,11 @@ const routes = [
   {
     path: '/login',
     component: LoginForm
+  },
+  {
+    path: '/fuentes',
+    component: FontSelector,
+    meta: { title: 'Selector de Fuentes' }
   }
 ]
 

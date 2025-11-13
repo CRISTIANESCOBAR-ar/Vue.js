@@ -4,6 +4,10 @@ import { defineStore } from 'pinia'
 export const useRegistroStore = defineStore('registro', {
   state: () => ({
     registros: []
+    ,
+    // filtros compartidos para sincronizar vistas
+    oeFilter: '',
+    neFilter: ''
   }),
   actions: {
     agregar(registro) {
@@ -17,6 +21,17 @@ export const useRegistroStore = defineStore('registro', {
     },
     reset() {
       this.registros.splice(0, this.registros.length)
+    }
+    ,
+    setOeFilter(v) {
+      this.oeFilter = v
+    },
+    setNeFilter(v) {
+      this.neFilter = v
+    },
+    resetFilters() {
+      this.oeFilter = ''
+      this.neFilter = ''
     }
   }
 })

@@ -1,142 +1,163 @@
 <template>
-	<div class="max-w-4xl mx-auto bg-white rounded shadow p-4">
-		<h3 class="text-lg font-medium mb-3">TensoRapid</h3>
+	<div class="w-full">
+		<div class="bg-white rounded-2xl shadow-xl p-4 md:p-5 mt-2 mb-4 border border-slate-200">
+			<h3 class="text-2xl font-semibold text-slate-800 mb-4">TensoRapid</h3>
 
-		<!-- Selector de carpeta -->
-		<div class="mt-3 flex items-center gap-3">
-			<label class="text-sm font-medium text-gray-700 mr-2 shrink-0">Carpeta TensoRapid:</label>
-			<div class="flex-1 min-w-0">
-				<div class="px-2 py-1 border rounded bg-gray-50 text-sm text-gray-800 truncate"
-					:title="tensoFolderPathFull">
-					{{ tensoFolderPathFull || 'Ninguna carpeta seleccionada' }}
+			<!-- Selector de carpeta -->
+			<div class="mt-3 flex items-center gap-3">
+				<label class="text-sm font-semibold text-slate-700 mr-2 shrink-0">Carpeta TensoRapid:</label>
+				<div class="flex-1 min-w-0">
+					<div class="px-3 py-2 border border-slate-300 rounded-lg bg-slate-50 text-sm text-slate-800 truncate"
+						:title="tensoFolderPathFull">
+						{{ tensoFolderPathFull || 'Ninguna carpeta seleccionada' }}
+					</div>
+				</div>
+				<div class="flex items-center gap-2">
+					<button @click="selectTensoFolder"
+						class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm font-medium transition-colors duration-200 shadow-sm hover:shadow-md">Seleccionar</button>
+					<button @click="refreshTensoFolder"
+						class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium transition-colors duration-200 shadow-sm hover:shadow-md">Actualizar</button>
+					<input ref="tensoFolderInputLocal" type="file" webkitdirectory directory multiple class="hidden"
+						@change="onTensoFolderInputChangeLocal" />
 				</div>
 			</div>
-			<div class="flex items-center gap-2">
-				<button @click="selectTensoFolder"
-					class="px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700 text-sm">Seleccionar</button>
-				<button @click="refreshTensoFolder"
-					class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 text-sm">Actualizar</button>
-				<input ref="tensoFolderInputLocal" type="file" webkitdirectory directory multiple class="hidden"
-					@change="onTensoFolderInputChangeLocal" />
-			</div>
-		</div>
 
-		<!-- Filtros: Todos / No guardados / Guardados -->
-		<div class="mt-3 flex items-center gap-4">
-			<label class="inline-flex items-center text-sm">
-				<input type="radio" name="tenso-filter" v-model="filterMode" value="all" class="mr-2" />
-				<span>Todos</span>
-			</label>
-			<label class="inline-flex items-center text-sm">
-				<input type="radio" name="tenso-filter" v-model="filterMode" value="not" class="mr-2" />
-				<span>No guardados</span>
-			</label>
-			<label class="inline-flex items-center text-sm">
-				<input type="radio" name="tenso-filter" v-model="filterMode" value="saved" class="mr-2" />
-				<span>Guardados</span>
-			</label>
-		</div>
-
-		<div class="mt-4">
-			<div class="scan-container max-h-64 overflow-y-auto">
-				<table class="text-sm border-collapse fixed-table scan-table w-full">
-					<colgroup>
-						<col style="width: 80px" />
-						<col style="width: 50px" />
-						<col style="width: 50px" />
-						<col style="width: 50px" />
-						<col style="width: 60px" />
-						<col style="width: 60px" />
-						<col style="width: 120px" />
-						<col style="width: 80px" />
-					</colgroup>
-					<thead class="sticky top-0 bg-gray-100 z-10">
-						<tr class="text-gray-700">
-							<th class="p-1 border text-xs text-center">Ensayo</th>
-							<th class="p-1 border text-xs text-center">.PAR</th>
-							<th class="p-1 border text-xs text-center">.TBL</th>
-							<th class="p-1 border text-xs text-center">Estado</th>
-							<th class="p-1 border text-xs text-center">Ne</th>
-							<th class="p-1 border text-xs text-center">Maq.</th>
-							<th class="p-1 border text-xs text-center">USTER</th>
-							<th class="p-1 border text-xs text-center">Acción</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr v-for="(item, idx) in tensoDisplayList" :key="idx" class="hover:bg-gray-50 cursor-pointer"
-							:class="{ 'bg-blue-50': selectedTensoTestnr === item.testnr }"
-							@click="loadTensoTestFiles(item.testnr)">
-							<td class="p-1 border text-xs text-center">{{ item.testnr || '' }}</td>
-							<td class="p-1 border text-center text-xs"><input type="checkbox" disabled
-									:checked="item.hasPar" /></td>
-							<td class="p-1 border text-center text-xs"><input type="checkbox" disabled
-									:checked="item.hasTbl" /></td>
-							<td class="p-1 border text-center text-xs">
-								<span v-if="item.saved === true" title="Guardado en la base de datos">
-									<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-600 mx-auto"
-										fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-										<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-									</svg>
-								</span>
-							</td>
-							<td class="p-1 border text-center text-xs font-mono">{{ item.nomcount || '' }}</td>
-							<td class="p-1 border text-center text-xs font-mono">{{ item.maschnr || '' }}</td>
-							<td class="p-1 border text-center text-xs" @click.stop>
-								<input v-if="item.testnr" 
-									type="text" 
-									v-model="item.usterTestnr" 
-									:placeholder="item.saved ? '05410' : ''"
-									maxlength="5" 
-									inputmode="numeric"
-									:disabled="item.saved && !item.isEditing"
-									:ref="el => setInputRef(el, item.testnr)"
-									@input="formatUsterTestnr(item, $event)"
-									@keydown.enter="focusSaveButton(item)"
-									:class="[
-										'w-full px-1 py-0.5 text-xs text-center border rounded focus:outline-none focus:ring-1 focus:ring-blue-400 font-mono',
-										item.saved && !item.isEditing ? 'bg-gray-100 cursor-not-allowed' : ''
-									]" />
-							</td>
-							<td class="p-1 border text-center text-xs" @click.stop>
-								<!-- Botón Editar (solo si está guardado y no está editando) -->
-								<button v-if="item.testnr && item.saved && !item.isEditing" @click="startEditing(item)"
-									class="px-2 py-0.5 bg-blue-600 text-white rounded hover:bg-blue-700 text-xs">
-									Editar
-								</button>
-								<!-- Botones Guardar y Cancelar (si está editando o no está guardado) -->
-								<div v-else-if="item.testnr && item.usterTestnr" class="flex gap-1 justify-center">
-									<button @click="saveToOracle(item)"
-										:disabled="isSaving"
-										:ref="el => setSaveButtonRef(el, item.testnr)"
-										class="px-2 py-0.5 bg-indigo-600 text-white rounded hover:bg-indigo-700 text-xs disabled:opacity-50">
-										{{ isSaving ? 'Guardando...' : 'Guardar' }}
-									</button>
-									<button v-if="item.isEditing" @click="cancelEditing(item)"
-										:disabled="isSaving"
-										class="px-2 py-0.5 bg-gray-500 text-white rounded hover:bg-gray-600 text-xs disabled:opacity-50">
-										Cancelar
-									</button>
-								</div>
-							</td>
-						</tr>
-					</tbody>
-				</table>
+			<!-- Filtros: Todos / No guardados / Guardados -->
+			<div class="mt-4 flex items-center gap-4">
+				<label class="inline-flex items-center text-sm cursor-pointer">
+					<input type="radio" name="tenso-filter" v-model="filterMode" value="all"
+						class="mr-2 text-indigo-600 focus:ring-indigo-500" />
+					<span class="text-slate-700 font-medium">Todos</span>
+				</label>
+				<label class="inline-flex items-center text-sm cursor-pointer">
+					<input type="radio" name="tenso-filter" v-model="filterMode" value="not"
+						class="mr-2 text-indigo-600 focus:ring-indigo-500" />
+					<span class="text-slate-700 font-medium">No guardados</span>
+				</label>
+				<label class="inline-flex items-center text-sm cursor-pointer">
+					<input type="radio" name="tenso-filter" v-model="filterMode" value="saved"
+						class="mr-2 text-indigo-600 focus:ring-indigo-500" />
+					<span class="text-slate-700 font-medium">Guardados</span>
+				</label>
 			</div>
-			<div class="flex items-center gap-2 mt-2">
-				<div class="text-sm text-gray-600">{{ tensoScanStatus }}</div>
-				<div v-if="isScanning" class="text-sm text-gray-500 flex items-center gap-2">
-					<svg class="w-4 h-4 animate-spin text-gray-600" viewBox="0 0 24 24" fill="none">
-						<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
-						</circle>
-						<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
-					</svg>
-					<span>Escaneando...</span>
+
+			<div class="mt-4">
+				<div class="scan-container max-h-64 overflow-y-auto _minimal-scroll rounded-xl border border-slate-200">
+					<table class="text-xs border-collapse fixed-table scan-table w-full">
+						<colgroup>
+							<col style="width: 80px" />
+							<col style="width: 50px" />
+							<col style="width: 50px" />
+							<col style="width: 50px" />
+							<col style="width: 60px" />
+							<col style="width: 60px" />
+							<col style="width: 120px" />
+							<col style="width: 80px" />
+						</colgroup>
+						<thead class="sticky top-0 bg-gradient-to-r from-slate-50 to-slate-100 z-10">
+							<tr>
+								<th
+									class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
+									Ensayo</th>
+								<th
+									class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
+									.PAR</th>
+								<th
+									class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
+									.TBL</th>
+								<th
+									class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
+									Estado</th>
+								<th
+									class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
+									Ne</th>
+								<th
+									class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
+									Maq.</th>
+								<th
+									class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
+									USTER</th>
+								<th
+									class="px-2 py-1 border border-slate-200 text-xs text-center font-semibold text-slate-700">
+									Acción</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="(item, idx) in tensoDisplayList" :key="idx"
+								class="hover:bg-blue-50/30 cursor-pointer transition-colors duration-150"
+								:class="{ 'bg-blue-50': selectedTensoTestnr === item.testnr }"
+								@click="loadTensoTestFiles(item.testnr)">
+								<td class="px-2 py-[0.3rem] border border-slate-200 text-xs text-center text-slate-700">
+									{{
+										item.testnr || '' }}</td>
+								<td class="px-2 py-[0.3rem] border border-slate-200 text-center text-xs"><input
+										type="checkbox" disabled :checked="item.hasPar" /></td>
+								<td class="px-2 py-[0.3rem] border border-slate-200 text-center text-xs"><input
+										type="checkbox" disabled :checked="item.hasTbl" /></td>
+								<td class="px-2 py-[0.3rem] border border-slate-200 text-center text-xs">
+									<span v-if="item.saved === true" title="Guardado en la base de datos">
+										<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-600 mx-auto"
+											fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+											<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+										</svg>
+									</span>
+								</td>
+								<td
+									class="px-2 py-[0.3rem] border border-slate-200 text-center text-xs font-mono text-slate-700">
+									{{ item.nomcount || '' }}</td>
+								<td
+									class="px-2 py-[0.3rem] border border-slate-200 text-center text-xs font-mono text-slate-700">
+									{{ item.maschnr || '' }}</td>
+								<td class="px-2 py-[0.3rem] border border-slate-200 text-center text-xs" @click.stop>
+									<input v-if="item.testnr" type="text" v-model="item.usterTestnr"
+										:placeholder="item.saved ? '05410' : ''" maxlength="5" inputmode="numeric"
+										:disabled="item.saved && !item.isEditing"
+										:ref="el => setInputRef(el, item.testnr)"
+										@input="formatUsterTestnr(item, $event)" @keydown.enter="focusSaveButton(item)"
+										:class="[
+											'w-full px-2 py-1 text-xs text-center border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono transition-colors',
+											item.saved && !item.isEditing ? 'bg-slate-100 cursor-not-allowed' : ''
+										]" />
+								</td>
+								<td class="px-2 py-[0.3rem] border border-slate-200 text-center text-xs" @click.stop>
+									<!-- Botón Editar (solo si está guardado y no está editando) -->
+									<button v-if="item.testnr && item.saved && !item.isEditing"
+										@click="startEditing(item)"
+										class="px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-xs font-medium transition-colors duration-200">
+										Editar
+									</button>
+									<!-- Botones Guardar y Cancelar (si está editando o no está guardado) -->
+									<div v-else-if="item.testnr && item.usterTestnr" class="flex gap-1 justify-center">
+										<button @click="saveToOracle(item)" :disabled="isSaving"
+											:ref="el => setSaveButtonRef(el, item.testnr)"
+											class="px-3 py-1 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-xs font-medium disabled:opacity-50 transition-colors duration-200">
+											{{ isSaving ? 'Guardando...' : 'Guardar' }}
+										</button>
+										<button v-if="item.isEditing" @click="cancelEditing(item)" :disabled="isSaving"
+											class="px-3 py-1 bg-slate-500 text-white rounded-lg hover:bg-slate-600 text-xs font-medium disabled:opacity-50 transition-colors duration-200">
+											Cancelar
+										</button>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="flex items-center gap-2 mt-3">
+					<div class="text-sm font-medium text-slate-600">{{ tensoScanStatus }}</div>
+					<div v-if="isScanning" class="text-sm text-slate-500 flex items-center gap-2">
+						<svg class="w-4 h-4 animate-spin text-slate-600" viewBox="0 0 24 24" fill="none">
+							<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+							</circle>
+							<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+						</svg>
+						<span>Escaneando...</span>
+					</div>
 				</div>
 			</div>
-		</div>
 
-		<!-- Preview area for PAR data - COMENTADO: Solo se muestra TBL -->
-		<!-- 
+			<!-- Preview area for PAR data - COMENTADO: Solo se muestra TBL -->
+			<!-- 
 		<div v-show="Object.keys(parsedParData).length" class="max-w-4xl mx-auto bg-white rounded shadow p-4 mt-4">
 			<h5 class="font-medium mb-2">Datos .PAR — TESTNR: {{ parsedParData.TESTNR || tblTestnr }}</h5>
 			<div class="overflow-auto border rounded">
@@ -158,45 +179,65 @@
 		</div>
 		-->
 
-		<!-- Preview area for TBL data -->
-		<div v-show="parsedTblData.length" class="max-w-4xl mx-auto bg-white rounded shadow p-4 mt-4">
-			<h5 class="font-medium mb-2">Datos .TBL — TESTNR: {{ tblTestnr }}</h5>
-			<div class="overflow-auto border rounded max-h-96">
-				<table class="w-full text-sm border-collapse">
-					<thead class="sticky top-0 bg-gray-100">
-						<tr class="text-gray-700">
-							<th class="p-1 border text-xs">#</th>
-							<th class="p-1 border text-xs">TESTNR</th>
-							<th class="p-1 border text-xs">No.</th>
-							<th class="p-1 border text-xs bg-blue-50">Huso</th>
-							<th class="p-1 border text-xs">TIEMPO_ROTURA</th>
-							<th class="p-1 border text-xs">FUERZA_B</th>
-							<th class="p-1 border text-xs">ELONGACION</th>
-							<th class="p-1 border text-xs">TENACIDAD</th>
-							<th class="p-1 border text-xs">TRABAJO</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr v-for="(row, ri) in preparedTblPreview" :key="ri">
-							<td class="p-1 border text-xs text-center">{{ ri + 1 }}</td>
-							<td class="p-1 border text-xs font-mono">{{ row.TESTNR || '' }}</td>
-							<td class="p-1 border text-xs font-mono">{{ row.HUSO_ENSAYOS || '' }}</td>
-							<td class="p-1 border text-xs font-mono bg-blue-50 text-center font-semibold">{{ row.HUSO_NUMBER }}</td>
-							<td class="p-1 border text-xs font-mono text-right">{{ row.TIEMPO_ROTURA || '' }}</td>
-							<td class="p-1 border text-xs font-mono text-right">{{ row.FUERZA_B || '' }}</td>
-							<td class="p-1 border text-xs font-mono text-right">{{ row.ELONGACION || '' }}</td>
-							<td class="p-1 border text-xs font-mono text-right">{{ row.TENACIDAD || '' }}</td>
-							<td class="p-1 border text-xs font-mono text-right">{{ row.TRABAJO || '' }}</td>
-						</tr>
-					</tbody>
-				</table>
+			<!-- Preview area for TBL data -->
+			<div v-show="parsedTblData.length"
+				class="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl p-5 mt-4 border border-slate-200">
+				<h5 class="font-semibold text-lg text-slate-800 mb-3">Datos .TBL — TESTNR: {{ tblTestnr }}</h5>
+				<div class="overflow-auto _minimal-scroll border border-slate-200 rounded-xl max-h-96">
+					<table class="w-full text-sm border-collapse">
+						<thead class="sticky top-0 bg-gradient-to-r from-slate-50 to-slate-100">
+							<tr>
+								<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">#</th>
+								<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">TESTNR</th>
+								<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">No.</th>
+								<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700 bg-blue-50">
+									Huso</th>
+								<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">
+									TIEMPO_ROTURA</th>
+								<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">FUERZA_B
+								</th>
+								<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">ELONGACION
+								</th>
+								<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">TENACIDAD
+								</th>
+								<th class="p-2 border border-slate-200 text-xs font-semibold text-slate-700">TRABAJO
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="(row, ri) in preparedTblPreview" :key="ri"
+								class="hover:bg-blue-50/30 transition-colors duration-150">
+								<td class="p-1.5 border border-slate-200 text-xs text-center text-slate-700">{{ ri + 1
+								}}</td>
+								<td class="p-1.5 border border-slate-200 text-xs font-mono text-slate-700">{{ row.TESTNR
+									|| '' }}</td>
+								<td class="p-1.5 border border-slate-200 text-xs font-mono text-slate-700">{{
+									row.HUSO_ENSAYOS || '' }}</td>
+								<td
+									class="p-1.5 border border-slate-200 text-xs font-mono bg-blue-50 text-center font-semibold text-slate-700">
+									{{
+										row.HUSO_NUMBER }}</td>
+								<td class="p-1.5 border border-slate-200 text-xs font-mono text-right text-slate-700">{{
+									row.TIEMPO_ROTURA || '' }}</td>
+								<td class="p-1.5 border border-slate-200 text-xs font-mono text-right text-slate-700">{{
+									row.FUERZA_B || '' }}</td>
+								<td class="p-1.5 border border-slate-200 text-xs font-mono text-right text-slate-700">{{
+									row.ELONGACION || '' }}</td>
+								<td class="p-1.5 border border-slate-200 text-xs font-mono text-right text-slate-700">{{
+									row.TENACIDAD || '' }}</td>
+								<td class="p-1.5 border border-slate-200 text-xs font-mono text-right text-slate-700">{{
+									row.TRABAJO || '' }}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch } from 'vue'
+import { ref, onMounted, computed, watch, nextTick } from 'vue'
 
 // UI state
 const tensoFolderInputLocal = ref(null)
@@ -407,6 +448,9 @@ async function saveToOracle(item) {
 		item.saved = true
 		item.isEditing = false
 
+		// Enfocar siguiente input vacío en la columna USTER
+		try { await focusNextEmptyUster(item.testnr) } catch (e) { console.warn('focusNextEmptyUster failed', e) }
+
 		// Toast de éxito
 		if (typeof Swal !== 'undefined') {
 			Swal.fire({
@@ -472,18 +516,18 @@ function setSaveButtonRef(el, testnr) {
 // Formatear USTER_TESTNR con padding de ceros (5 dígitos) y solo números
 function formatUsterTestnr(item, event) {
 	if (!item) return
-	
+
 	// Extraer solo números
 	let value = (event.target.value || '').replace(/\D/g, '')
-	
+
 	// Limitar a 5 caracteres
 	if (value.length > 5) {
 		value = value.slice(0, 5)
 	}
-	
+
 	// Actualizar el valor (sin padding mientras escribe)
 	item.usterTestnr = value
-	
+
 	// Si llegó a 5 dígitos, aplicar padding y enfocar botón Guardar
 	if (value.length === 5) {
 		// Padding con ceros a la izquierda
@@ -500,6 +544,68 @@ function focusSaveButton(item) {
 	if (button && typeof button.focus === 'function') {
 		button.focus()
 	}
+}
+
+// Focus the next input in the USTER column that is empty (after saving current)
+async function focusNextEmptyUster(currentTestnr) {
+	try {
+		// wait a tick so any reactive changes (saved flag, filters) are applied
+		await nextTick()
+		const full = Array.isArray(tensoScanList.value) ? tensoScanList.value : []
+		if (full.length === 0) return false
+
+		// Build candidate list (testnr) in the same order as full list, respecting current filter
+		const candidates = full
+			.filter(it => it && it.testnr)
+			.filter(it => {
+				if (filterMode.value === 'not') return !it.saved
+				if (filterMode.value === 'saved') return !!it.saved
+				return true
+			})
+			.filter(it => !it.usterTestnr || String(it.usterTestnr).trim() === '')
+			.map(it => String(it.testnr))
+
+		if (candidates.length === 0) return false
+
+		// Find position of currentTestnr in full list
+		const currentPos = full.findIndex(it => String(it.testnr) === String(currentTestnr))
+		// If currentTestnr itself is a candidate, just pick the next candidate in candidates order
+		const curIdxInCandidates = candidates.indexOf(String(currentTestnr))
+		let targetTestnr = null
+		if (curIdxInCandidates >= 0) {
+			// next candidate (wrap)
+			targetTestnr = candidates[(curIdxInCandidates + 1) % candidates.length]
+		} else {
+			// find first candidate whose index in full list is greater than currentPos
+			let found = null
+			for (const cand of candidates) {
+				const pos = full.findIndex(it => String(it.testnr) === String(cand))
+				if (pos > currentPos) { found = cand; break }
+			}
+			if (!found) found = candidates[0]
+			targetTestnr = found
+		}
+
+		if (!targetTestnr) return false
+		// allow DOM to settle if the row was removed/changed due to filtering
+		await nextTick()
+		const input = inputRefs.value[targetTestnr]
+		if (input && typeof input.focus === 'function') {
+			input.focus()
+			try { input.scrollIntoView({ block: 'center', behavior: 'smooth' }) } catch { /* ignore */ }
+			// add temporary highlight class
+			try {
+				input.classList.add('focus-highlight')
+				setTimeout(() => {
+					try { input.classList.remove('focus-highlight') } catch { /* ignore */ }
+				}, 600)
+			} catch { /* ignore */ }
+			return true
+		}
+	} catch (err) {
+		console.warn('focusNextEmptyUster error', err)
+	}
+	return false
 }
 
 // Helper: formatear USTER_TESTNR a 5 dígitos con padding
@@ -1050,6 +1156,16 @@ onMounted(() => {
 	})()
 })
 </script>
+
+<style scoped>
+.focus-highlight {
+	box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.4);
+	/* soft yellow halo */
+	background-color: #fff8db;
+	/* light yellow background */
+	transition: box-shadow 200ms ease, background-color 200ms ease;
+}
+</style>
 
 <style scoped>
 .scan-container {

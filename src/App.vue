@@ -39,10 +39,15 @@
       </div>
 
       <nav class="px-2 py-2 space-y-2">
-        <SidebarItem icon="📄" label="Carga de datos" :active="active === 'form'" :collapsed="collapsed"
+        <!-- Ocultadas: no funcionales para manejo Uster/TensoRapid -->
+        <SidebarItem v-if="false" icon="📄" label="Carga de datos" :active="active === 'form'" :collapsed="collapsed"
           @click="setActive('form')" />
-        <SidebarItem icon="📋" label="Registros" :active="active === 'list'" :collapsed="collapsed"
+        <SidebarItem v-if="false" icon="📋" label="Registros" :active="active === 'list'" :collapsed="collapsed"
           @click="setActive('list')" />
+        <SidebarItem icon="📑" label="Resumen" :active="active === 'resumen'" :collapsed="collapsed"
+          @click="setActive('resumen')" />
+        <SidebarItem icon="📊" label="Gráficos" :active="active === 'graficos'" :collapsed="collapsed"
+          @click="setActive('graficos')" />
         <SidebarItem icon="🧩" label="Uster" :active="active === 'uster'" :collapsed="collapsed"
           @click="setActive('uster')" />
         <SidebarItem icon="🧪" label="TensoRapid" :active="active === 'tenso'" :collapsed="collapsed"
@@ -88,6 +93,12 @@
             <FormRegistro ref="formRegistroRef" v-if="active === 'form'" :registros="registros" />
             <ListaRegistros v-else-if="active === 'list'" :registros="registros" :edit-index="editIndex"
               :mostrar-editar="true" @eliminar="eliminarRegistro" @actualizar="actualizarRegistro" />
+            <div v-else-if="active === 'resumen'">
+              <ResumenEnsayos />
+            </div>
+            <div v-else-if="active === 'graficos'">
+              <GraficosEnsayos />
+            </div>
             <div v-else-if="active === 'uster'">
               <Uster />
             </div>
@@ -136,6 +147,11 @@
                   publicada
                   y, si hay una versión nueva, se te ofrecerá actualizar (actualización via Service Worker si está
                   disponible).</p>
+
+                <!-- Vista previa de fuentes — componente de ayuda para elegir tipografías -->
+                <div class="mt-4">
+                  <FontSelector />
+                </div>
               </div>
             </div>
           </div>
@@ -143,18 +159,25 @@
         <!-- version moved to global footer -->
       </div>
     </main>
-    <!-- Global footer -->
-    <footer class="w-full border-t bg-white/50 dark:bg-gray-50 py-2">
+    <!-- Global footer (compact) -->
+    <footer class="w-full bg-transparent py-0">
       <div class="max-w-6xl mx-auto px-4 text-center text-xs text-gray-500">
+        <!-- Footer: versión oculta para ahorrar espacio visual. En modo desarrollo se mantiene el helper -->
+        <!--
+          Mantengo comentado el bloque de versión/build para pruebas futuras.
+          Para reactivar simplemente quitar estos comentarios HTML.
+
         <span v-if="appVersion">v{{ appVersion }}</span>
         <span v-if="appBuildNumber"> (build #{{ appBuildNumber }})</span>
         <span v-if="appCommitSha"> ({{ appCommitSha }})</span>
         <span v-if="appBuildTime"> · Publicado: {{ new Date(appBuildTime).toLocaleString() }}</span>
-        <!-- Developer helper: ejecutar prueba simulada de responsive en desarrollo -->
+        -->
+        <!-- Botón dev 'Simular responsive' comentado para ahorrar espacio visual; activar si se necesitan pruebas.
         <button v-if="isDev" @click="runResponsiveSimTest"
           class="ml-4 px-2 py-1 text-xs bg-gray-800 text-white rounded hover:bg-gray-700">
           Simular responsive
         </button>
+        -->
       </div>
     </footer>
   </div>
@@ -170,14 +193,17 @@ import ListaRegistros from './components/ListaRegistros.vue'
 import Uster from './components/Uster.vue'
 import TensoRapid from './components/TensoRapid.vue'
 import SidebarItem from './components/SidebarItem.vue'
+import ResumenEnsayos from './components/ResumenEnsayos.vue'
+import GraficosEnsayos from './components/GraficosEnsayos.vue'
+import FontSelector from './components/FontSelector.vue'
 import Swal from 'sweetalert2'
 import { useRegistroStore } from './stores/registro'
 
 const store = useRegistroStore()
 const registros = computed(() => store.registros)
 
-// Environment helper (evita usar import.meta directamente en templates)
-const isDev = typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.MODE !== 'production'
+
+// Environment helper removed: dev-only helpers were commented in template to reduce footer noise.
 
 const editIndex = ref(null)
 // ref para acceder al método expuesto en FormRegistro (focusRolada)
@@ -185,7 +211,7 @@ const formRegistroRef = ref(null)
 const sidebarVisible = ref(true)
 const collapsed = ref(false)
 const userHidden = ref(false) // true when user explicitly hid the sidebar with the X
-const active = ref('form')
+const active = ref('resumen')
 
 // track viewport width to decide push vs overlay behavior
 const windowWidth = ref(typeof window !== 'undefined' ? window.innerWidth : 1200)
@@ -201,6 +227,8 @@ const mainMargin = computed(() => {
 const headerTitle = computed(() => {
   if (active.value === 'form') return 'Carga de Datos'
   if (active.value === 'list') return 'Registros'
+  if (active.value === 'resumen') return 'Resumen de Ensayos'
+  if (active.value === 'graficos') return 'Gráficos de Ensayos'
   if (active.value === 'tenso') return 'TensoRapid'
   if (active.value === 'config') return 'Configuración'
   return 'Carga de Datos'
@@ -792,54 +820,7 @@ function maybeHideSidebar() {
   }
 }
 
-// --- Developer: prueba rápida simulada de flujo responsive ---
-async function runResponsiveSimTest() {
-  // Simula los anchos y registra la secuencia de estados en consola
-  const widths = [360, 800, 1200]
-  const results = []
-  // Helper sleep
-  const sleep = (ms) => new Promise(r => setTimeout(r, ms))
-
-  for (const w of widths) {
-    console.group(`Responsive test — width: ${w}px`)
-    // Abrir el sidebar como lo haría un usuario
-    sidebarVisible.value = true
-    // aproximar collapsed según breakpoint
-    collapsed.value = w >= 1024 ? false : true
-    console.log('opened ->', { sidebarVisible: sidebarVisible.value, collapsed: collapsed.value })
-
-    // Programar auto-hide según la lógica (simulamos llamando a scheduleHideSidebarWithDelay
-    // con el delay correspondiente en lugar de depender de window.innerWidth)
-    let delay
-    if (w < 768) delay = 1500
-    else if (w >= 768 && w < 1024) delay = 3000
-    else delay = 1000
-
-    // Llammos a scheduleHideSidebarWithDelay con el ms calculado para reproducir el comportamiento
-    scheduleHideSidebarWithDelay(delay)
-    console.log(`scheduled auto-hide in ${delay}ms`)
-
-    // esperar más que el delay para observar si se oculta
-    await sleep(delay + 250)
-    console.log('after wait ->', { sidebarVisible: sidebarVisible.value, collapsed: collapsed.value })
-
-    // Simular acción manual del usuario (toggle)
-    sidebarVisible.value = true
-    console.log('manually reopened ->', { sidebarVisible: sidebarVisible.value })
-    await sleep(200)
-    // cerrar manualmente
-    sidebarVisible.value = false
-    console.log('manually closed ->', { sidebarVisible: sidebarVisible.value })
-
-    results.push({ width: w, final: { sidebarVisible: sidebarVisible.value, collapsed: collapsed.value } })
-    console.groupEnd()
-    // pequeño descanso entre pruebas
-    await sleep(300)
-  }
-
-  console.info('Responsive simulation completed', results)
-  try { await Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Prueba responsive completada (ver consola)', showConfirmButton: false, timer: 2000 }) } catch { /* noop */ }
-}
+// Developer helper 'runResponsiveSimTest' removed - the dev button in the footer was commented out.
 
 async function eliminarRegistro(idx) {
   const r = store.registros[idx]
