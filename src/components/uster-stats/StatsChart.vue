@@ -95,20 +95,14 @@ function computeRequiredBottomPx(labels, rotateDeg) {
         })
 
         // simulate wrapping into rows
-        let rows = 1
         let current = 0
         for (let w of measured) {
             if (current + w > availableWidth) {
-                rows++
-                current = w
+                current = w // Eliminado rows++ porque no se usa
             } else {
                 current += w
             }
         }
-
-        const legendRowHeight = Math.ceil(fontSizePx * 1.2) // line-height
-        const legendHeight = rows * legendRowHeight
-        const padding = 12
 
         // Calcular espacio para etiquetas X rotadas + espacio generoso para la leyenda (40px) + padding
         const bottom = Math.ceil(rotatedHeight + 55)
@@ -119,7 +113,7 @@ function computeRequiredBottomPx(labels, rotateDeg) {
     }
 }
 
-function buildOption(data, xLabelRotate = 45, bottomPx = 80) {
+function buildOption(data, xLabelRotate = 45) {
     // Use formatted timestamp (dd/mm/yy) as x axis label when available; fallback to TESTNR
     const x = data.map(d => (d.timestampFmt ? d.timestampFmt : d.testnr))
     const y = data.map(d => d.mean)
@@ -241,10 +235,8 @@ onMounted(() => {
                 if (els && els.length) legendEl = els[0]
             }
 
-            let legendHeight = 0
             if (legendEl) {
-                const rect = legendEl.getBoundingClientRect()
-                legendHeight = Math.ceil(rect.height || 0)
+                Math.ceil(legendEl.getBoundingClientRect().height || 0) // Eliminado uso de legendHeight
             }
 
             // recompute rotatedHeight like computeRequiredBottomPx (use canvas)
