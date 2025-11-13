@@ -12,16 +12,22 @@
         </div>
 
         <div v-else class="flex flex-col h-full">
-            <!-- Encabezado con selector y estadísticas en una línea -->
+            <!-- Encabezado con selectores y estadísticas en una línea -->
             <div class="bg-white rounded shadow px-4 py-3 mb-3 flex-shrink-0">
                 <div class="flex flex-wrap items-center gap-4">
                     <div class="flex items-center gap-2">
-                        <span class="font-semibold text-lg">Gráfico de Control de Titulo Ne:</span>
+                        <span class="font-semibold text-lg">Gráfico de Control de {{ currentVariableLabel }}:</span>
                         <select v-model="selectedNomcount"
                             class="px-3 py-1.5 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 font-semibold">
-                            <option :value="null">-- Seleccione --</option>
+                            <option :value="null">-- Seleccione NOMCOUNT --</option>
                             <option v-for="nomcount in availableNomcounts" :key="nomcount" :value="nomcount">
                                 {{ nomcount }}
+                            </option>
+                        </select>
+                        <select v-model="selectedVariable"
+                            class="px-3 py-1.5 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option v-for="variable in availableVariables" :key="variable.key" :value="variable.key">
+                                {{ variable.label }}
                             </option>
                         </select>
                     </div>
@@ -55,7 +61,7 @@
             <!-- Gráfico maximizado -->
             <div v-else class="bg-white rounded shadow p-4 flex-1 flex flex-col min-h-0">
                 <StatsChart :stats="stats" :globalMean="globalMean" :globalUcl="globalUcl" :globalLcl="globalLcl"
-                    variableLabel="TITULO" />
+                    :variableLabel="currentVariableLabel" />
             </div>
         </div>
     </div>
@@ -71,8 +77,22 @@ const usterPar = ref([])
 const isLoading = ref(false)
 const error = ref(null)
 
-// Selected NOMCOUNT
+// Selected NOMCOUNT and variable
 const selectedNomcount = ref(null)
+const selectedVariable = ref('TITULO')
+
+// Available variables for selection
+const availableVariables = [
+    { key: 'TITULO', label: 'Titulo Ne' },
+    { key: 'CVM_PERCENT', label: 'CVM%' },
+    { key: 'DELG_MINUS30_KM', label: 'Delg -30% (km)' },
+    { key: 'DELG_MINUS40_KM', label: 'Delg -40% (km)' },
+    { key: 'DELG_MINUS50_KM', label: 'Delg -50% (km)' },
+    { key: 'GRUE_35_KM', label: 'Grue +35% (km)' },
+    { key: 'GRUE_50_KM', label: 'Grue +50% (km)' },
+    { key: 'NEPS_140_KM', label: 'Neps +140% (km)' },
+    { key: 'NEPS_280_KM', label: 'Neps +280% (km)' }
+]
 
 // Fetch data from backend
 async function fetchData() {
@@ -100,6 +120,12 @@ async function fetchData() {
         isLoading.value = false
     }
 }
+
+// Get current variable label for display
+const currentVariableLabel = computed(() => {
+    const variable = availableVariables.find(v => v.key === selectedVariable.value)
+    return variable ? variable.label : selectedVariable.value
+})
 
 // Get unique NOMCOUNT values
 const availableNomcounts = computed(() => {
@@ -140,14 +166,14 @@ const stats = computed(() => {
         const testnr = row.TESTNR
         if (!testnr || !validTestnrs.has(testnr)) continue
 
-        // Parse TITULO as number
-        const titulo = parseFloat(row.TITULO)
-        if (isNaN(titulo)) continue
+        // Parse selected variable as number
+        const variableValue = parseFloat(row[selectedVariable.value])
+        if (isNaN(variableValue)) continue
 
         if (!grouped[testnr]) {
             grouped[testnr] = { values: [], timestamps: [] }
         }
-        grouped[testnr].values.push(titulo)
+        grouped[testnr].values.push(variableValue)
         // collect TIME_STAMP (if available) for later selection
         let ts = row.TIME_STAMP
         // if TIME_STAMP not present or not parseable, try to fallback to USTER_PAR entry for this TESTNR
