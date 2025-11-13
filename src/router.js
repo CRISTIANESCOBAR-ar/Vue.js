@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import LoginForm from './components/LoginForm.vue'
 import FontSelector from './components/FontSelector.vue'
 import UsterStatsPage from './components/UsterStatsPage.vue'
+import ControlChartPage from './components/ControlChartPage.vue'
 
 const routes = [
   {
@@ -21,6 +22,11 @@ const routes = [
     path: '/stats',
     component: UsterStatsPage,
     meta: { title: 'Estadísticas por TESTNR' }
+  },
+  {
+    path: '/control-chart',
+    component: ControlChartPage,
+    meta: { title: 'Gráfico de Control' }
   }
 ]
 

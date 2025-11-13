@@ -11,11 +11,11 @@
     v-tippy="collapsed && label ? label : null"
   >
     <!-- Ícono -->
-    <span class="text-xl" aria-hidden="true">{{ icon }}</span>
+    <span class="text-xl" aria-hidden="true">📊</span>
 
     <!-- Etiqueta -->
     <span v-if="!collapsed" class="text-sm truncate block max-w-[10rem]">
-      {{ label }}
+      Gráfico de Control
     </span>
   </div>
 </template>
