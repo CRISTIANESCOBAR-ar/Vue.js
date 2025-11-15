@@ -1190,6 +1190,30 @@ app.get('/api/tensorapid/tbl', async (req, res) => {
   }
 })
 
+// GET /api/tensorapid/par
+// Returns all TENSORAPID_PAR records for mapping USTER_TESTNR to TENSORAPID TESTNR
+app.get('/api/tensorapid/par', async (req, res) => {
+  let conn
+  try {
+    await initPool()
+    conn = await getConnection()
+
+    const sql = `SELECT TESTNR, USTER_TESTNR FROM ${SCHEMA_PREFIX}TENSORAPID_PAR ORDER BY TESTNR`
+    const result = await conn.execute(sql, {}, { outFormat: oracledb.OUT_FORMAT_OBJECT })
+    const rows = result.rows || []
+    res.json({ rows })
+  } catch (err) {
+    globalThis.console.error('Error fetching TENSORAPID_PAR', err)
+    res.status(500).json({ error: String(err && err.message ? err.message : err) })
+  } finally {
+    try {
+      if (conn) await conn.close()
+    } catch (e) {
+      globalThis.console.error('close conn err', e)
+    }
+  }
+})
+
 /*
 DELETE /api/tensorapid/delete
 Body: { testnr: '...' }

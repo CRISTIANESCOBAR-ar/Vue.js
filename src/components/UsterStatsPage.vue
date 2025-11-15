@@ -20,8 +20,8 @@
                         <select v-model="selectedNomcount"
                             class="px-3 py-1.5 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 font-semibold">
                             <option :value="null">-- Seleccione NOMCOUNT --</option>
-                            <option v-for="nomcount in availableNomcounts" :key="nomcount" :value="nomcount">
-                                {{ nomcount }}
+                            <option v-for="item in availableNomcounts" :key="item.display" :value="item">
+                                {{ item.display }}
                             </option>
                         </select>
                         <select v-model="selectedVariable"
@@ -74,24 +74,31 @@ import StatsChart from './uster-stats/StatsChart.vue'
 // Data fetched from backend
 const usterTbl = ref([])
 const usterPar = ref([])
+const tensorapidTbl = ref([])
+const tensorapidPar = ref([])
 const isLoading = ref(false)
 const error = ref(null)
 
 // Selected NOMCOUNT and variable
+// selectedNomcount is now an object: { display: '9.5F', nomcount: 9.5, matclass: 'Hilo de fantasia' } or { display: '9', nomcount: 9, matclass: null }
 const selectedNomcount = ref(null)
 const selectedVariable = ref('TITULO')
 
 // Available variables for selection
 const availableVariables = [
-    { key: 'TITULO', label: 'Titulo Ne' },
-    { key: 'CVM_PERCENT', label: 'CVM%' },
-    { key: 'DELG_MINUS30_KM', label: 'Delg -30% (km)' },
-    { key: 'DELG_MINUS40_KM', label: 'Delg -40% (km)' },
-    { key: 'DELG_MINUS50_KM', label: 'Delg -50% (km)' },
-    { key: 'GRUE_35_KM', label: 'Grue +35% (km)' },
-    { key: 'GRUE_50_KM', label: 'Grue +50% (km)' },
-    { key: 'NEPS_140_KM', label: 'Neps +140% (km)' },
-    { key: 'NEPS_280_KM', label: 'Neps +280% (km)' }
+    { key: 'TITULO', label: 'Titulo Ne', source: 'uster' },
+    { key: 'CVM_PERCENT', label: 'CVM%', source: 'uster' },
+    { key: 'DELG_MINUS30_KM', label: 'Delg -30% (km)', source: 'uster' },
+    { key: 'DELG_MINUS40_KM', label: 'Delg -40% (km)', source: 'uster' },
+    { key: 'DELG_MINUS50_KM', label: 'Delg -50% (km)', source: 'uster' },
+    { key: 'GRUE_35_KM', label: 'Grue +35% (km)', source: 'uster' },
+    { key: 'GRUE_50_KM', label: 'Grue +50% (km)', source: 'uster' },
+    { key: 'NEPS_140_KM', label: 'Neps +140% (km)', source: 'uster' },
+    { key: 'NEPS_280_KM', label: 'Neps +280% (km)', source: 'uster' },
+    { key: 'FUERZA_B', label: 'Fuerza B', source: 'tensorapid' },
+    { key: 'ELONGACION', label: 'Elongación %', source: 'tensorapid' },
+    { key: 'TENACIDAD', label: 'Tenacidad', source: 'tensorapid' },
+    { key: 'TRABAJO', label: 'Trabajo', source: 'tensorapid' }
 ]
 
 // Fetch data from backend
@@ -101,9 +108,11 @@ async function fetchData() {
     try {
         const backendUrl = (typeof window !== 'undefined' && window.location.hostname === 'localhost') ? 'http://localhost:3001' : ''
 
-        const [usterTblRes, usterParRes] = await Promise.all([
+        const [usterTblRes, usterParRes, tensorapidTblRes, tensorapidParRes] = await Promise.all([
             fetch(backendUrl + '/api/uster/tbl', { credentials: 'include' }),
-            fetch(backendUrl + '/api/uster/par', { credentials: 'include' })
+            fetch(backendUrl + '/api/uster/par', { credentials: 'include' }),
+            fetch(backendUrl + '/api/tensorapid/tbl', { credentials: 'include' }),
+            fetch(backendUrl + '/api/tensorapid/par', { credentials: 'include' })
         ])
 
         if (!usterTblRes.ok || !usterParRes.ok) throw new Error('Error al cargar datos')
@@ -113,6 +122,17 @@ async function fetchData() {
 
         usterTbl.value = usterTblData.rows || []
         usterPar.value = usterParData.rows || []
+
+        // Load TENSORAPID data (optional, may not exist for all cases)
+        if (tensorapidTblRes.ok) {
+            const tensorapidTblData = await tensorapidTblRes.json()
+            tensorapidTbl.value = tensorapidTblData.rows || []
+        }
+        
+        if (tensorapidParRes.ok) {
+            const tensorapidParData = await tensorapidParRes.json()
+            tensorapidPar.value = tensorapidParData.rows || []
+        }
     } catch (err) {
         console.error('Error fetching data:', err)
         error.value = err.message
@@ -127,61 +147,151 @@ const currentVariableLabel = computed(() => {
     return variable ? variable.label : selectedVariable.value
 })
 
-// Get unique NOMCOUNT values
+// Get unique NOMCOUNT values with "F" suffix for "Hilo de fantasia"
 const availableNomcounts = computed(() => {
-    const nomcounts = new Set()
+    // Map to store unique combinations of NOMCOUNT + MATCLASS
+    const map = new Map()
+
     for (const row of usterPar.value) {
-        if (row.NOMCOUNT != null && row.NOMCOUNT !== '') {
-            nomcounts.add(row.NOMCOUNT)
+        if (row.NOMCOUNT == null || row.NOMCOUNT === '') continue
+
+        const nomcount = row.NOMCOUNT
+        const matclass = row.MATCLASS || null
+        const isFantasia = matclass && String(matclass).toLowerCase().includes('fantasia')
+
+        // Create a unique key: nomcount + matclass (or empty for non-fantasia)
+        const key = isFantasia ? `${nomcount}|${matclass}` : `${nomcount}|`
+
+        if (!map.has(key)) {
+            const display = isFantasia ? `${nomcount}F` : String(nomcount)
+            map.set(key, { display, nomcount, matclass: isFantasia ? matclass : null })
         }
     }
-    return Array.from(nomcounts).sort((a, b) => {
-        const numA = parseFloat(a)
-        const numB = parseFloat(b)
+
+    // Sort by numeric value of nomcount
+    return Array.from(map.values()).sort((a, b) => {
+        const numA = parseFloat(a.nomcount)
+        const numB = parseFloat(b.nomcount)
         if (!isNaN(numA) && !isNaN(numB)) return numA - numB
-        return String(a).localeCompare(String(b))
+        return String(a.nomcount).localeCompare(String(b.nomcount))
     })
 })
 
-// Get TESTNRs for selected NOMCOUNT
+// Get TESTNRs for selected NOMCOUNT (with MATCLASS filter for "Hilo de fantasia")
 const filteredTestnrs = computed(() => {
     if (!selectedNomcount.value) return []
+
+    const selected = selectedNomcount.value
+    const nomcountValue = selected.nomcount
+    const matclassValue = selected.matclass
+
     return usterPar.value
-        .filter(row => row.NOMCOUNT === selectedNomcount.value)
+        .filter(row => {
+            // Match NOMCOUNT
+            if (row.NOMCOUNT !== nomcountValue) return false
+
+            // If matclass is specified (fantasia), also match MATCLASS
+            if (matclassValue) {
+                const rowMatclass = row.MATCLASS || ''
+                return String(rowMatclass).toLowerCase().includes('fantasia')
+            }
+
+            // For non-fantasia, no additional filter needed
+            return true
+        })
         .map(row => row.TESTNR)
         .filter(Boolean)
 })
 
-// Process data: group by TESTNR and compute stats for TITULO (filtered by selected NOMCOUNT)
+// Process data: group by TESTNR and compute stats (handles both USTER and TENSORAPID variables)
 const stats = computed(() => {
     if (!selectedNomcount.value) return []
+
+    // Determine if the selected variable is from TENSORAPID
+    const currentVar = availableVariables.find(v => v.key === selectedVariable.value)
+    const isTensorapid = currentVar && currentVar.source === 'tensorapid'
 
     // Filter TESTNR based on selected NOMCOUNT
     const validTestnrs = new Set(filteredTestnrs.value)
 
-    // Group rows by TESTNR (only for TESTNRs matching selected NOMCOUNT)
+    // Build USTER_TESTNR to TENSORAPID_TESTNR mapping
+    const usterToTensorMap = new Map()
+    if (isTensorapid) {
+        console.log('🔍 TENSORAPID mode activated')
+        console.log('validTestnrs:', Array.from(validTestnrs))
+        console.log('tensorapidPar.value length:', tensorapidPar.value.length)
+        console.log('tensorapidTbl.value length:', tensorapidTbl.value.length)
+        
+        for (const parRow of tensorapidPar.value) {
+            if (parRow.USTER_TESTNR && parRow.TESTNR) {
+                if (!usterToTensorMap.has(parRow.USTER_TESTNR)) {
+                    usterToTensorMap.set(parRow.USTER_TESTNR, [])
+                }
+                usterToTensorMap.get(parRow.USTER_TESTNR).push(parRow.TESTNR)
+            }
+        }
+        console.log('usterToTensorMap size:', usterToTensorMap.size)
+        console.log('usterToTensorMap sample:', Array.from(usterToTensorMap.entries()).slice(0, 3))
+    }
+
+    // Group rows by TESTNR
     const grouped = {}
 
-    for (const row of usterTbl.value) {
-        const testnr = row.TESTNR
-        if (!testnr || !validTestnrs.has(testnr)) continue
+    if (isTensorapid) {
+        // For TENSORAPID variables: iterate over USTER TESTNRs, find corresponding TENSORAPID TESTNRs
+        console.log('🔎 Processing TENSORAPID data...')
+        for (const usterTestnr of validTestnrs) {
+            const tensorTestnrs = usterToTensorMap.get(usterTestnr) || []
+            console.log(`USTER ${usterTestnr} → TENSOR ${tensorTestnrs}`)
+            
+            for (const tensorTestnr of tensorTestnrs) {
+                // Find all TENSORAPID_TBL rows for this TESTNR
+                const tensorRows = tensorapidTbl.value.filter(r => r.TESTNR === tensorTestnr)
+                console.log(`  TENSOR ${tensorTestnr}: found ${tensorRows.length} rows`)
+                
+                for (const row of tensorRows) {
+                    const variableValue = parseFloat(row[selectedVariable.value])
+                    console.log(`    ${selectedVariable.value} = ${row[selectedVariable.value]} → ${variableValue}`)
+                    if (isNaN(variableValue)) continue
 
-        // Parse selected variable as number
-        const variableValue = parseFloat(row[selectedVariable.value])
-        if (isNaN(variableValue)) continue
+                    // Group by USTER_TESTNR (not TENSORAPID TESTNR) to align with dates
+                    if (!grouped[usterTestnr]) {
+                        grouped[usterTestnr] = { values: [], timestamps: [] }
+                    }
+                    grouped[usterTestnr].values.push(variableValue)
+                }
+            }
+            
+            // Get timestamp from USTER_PAR
+            const parRow = usterPar.value.find(p => p.TESTNR === usterTestnr)
+            if (parRow && parRow.TIME_STAMP && grouped[usterTestnr]) {
+                grouped[usterTestnr].timestamps.push(parRow.TIME_STAMP)
+            }
+        }
+        console.log('✅ Grouped data:', Object.keys(grouped).length, 'TESTNRs')
+    } else {
+        // For USTER variables: use existing logic
+        for (const row of usterTbl.value) {
+            const testnr = row.TESTNR
+            if (!testnr || !validTestnrs.has(testnr)) continue
 
-        if (!grouped[testnr]) {
-            grouped[testnr] = { values: [], timestamps: [] }
+            // Parse selected variable as number
+            const variableValue = parseFloat(row[selectedVariable.value])
+            if (isNaN(variableValue)) continue
+
+            if (!grouped[testnr]) {
+                grouped[testnr] = { values: [], timestamps: [] }
+            }
+            grouped[testnr].values.push(variableValue)
+            // collect TIME_STAMP (if available) for later selection
+            let ts = row.TIME_STAMP
+            // if TIME_STAMP not present or not parseable, try to fallback to USTER_PAR entry for this TESTNR
+            if (!ts) {
+                const parRow = usterPar.value.find(p => p.TESTNR === testnr)
+                if (parRow && parRow.TIME_STAMP) ts = parRow.TIME_STAMP
+            }
+            if (ts) grouped[testnr].timestamps.push(ts)
         }
-        grouped[testnr].values.push(variableValue)
-        // collect TIME_STAMP (if available) for later selection
-        let ts = row.TIME_STAMP
-        // if TIME_STAMP not present or not parseable, try to fallback to USTER_PAR entry for this TESTNR
-        if (!ts) {
-            const parRow = usterPar.value.find(p => p.TESTNR === testnr)
-            if (parRow && parRow.TIME_STAMP) ts = parRow.TIME_STAMP
-        }
-        if (ts) grouped[testnr].timestamps.push(ts)
     }
 
     // helper: robust date parsing from various DB formats
