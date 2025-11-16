@@ -1,18 +1,24 @@
 <template>
   <div class="w-full h-screen flex flex-col p-1">
     <main class="w-full flex-1 min-h-0 bg-white rounded-2xl shadow-xl px-4 py-3 border border-slate-200 flex flex-col">
+      <!-- Título móvil -->
+      <h3 class="md:hidden text-lg font-semibold text-slate-800 mb-3">Gráficos de Ensayos</h3>
+
       <!-- Controles móviles -->
       <div class="mb-3 md:hidden flex flex-col gap-2 flex-shrink-0">
         <!-- Fila: Ne + Métrica -->
         <div class="flex items-center gap-2">
-          <span class="text-sm text-slate-600">Ne</span>
-          <VueSelect v-model="ne" :options="neOptions" clearable :searchable class="w-[5ch] shrink-0" />
-          <select v-model="metric" class="px-2 py-1 border rounded-md text-sm flex-1 min-w-0 max-w-full">
+          <span class="text-sm text-slate-600 shrink-0">Ne</span>
+          <select v-model="ne" class="px-1 py-1 border rounded-md text-sm shrink-0" style="width: 5ch;">
+            <option value="">-</option>
+            <option v-for="opt in neOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+          </select>
+          <select v-model="metric" class="px-2 py-1 border rounded-md text-sm flex-1 min-w-0">
             <option v-for="m in metrics" :key="m.value" :value="m.value">{{ m.label }}</option>
           </select>
         </div>
         <!-- Fila: LCL, Prom., UCL -->
-        <div class="flex items-center gap-6 text-slate-700 text-sm">
+        <div class="flex items-center gap-4 text-slate-700 text-xs">
           <div><span class="font-semibold">LCL:</span> {{ format2(summary.lcl) }}</div>
           <div><span class="font-semibold">Prom.:</span> {{ format2(summary.mean) }}</div>
           <div><span class="font-semibold">UCL:</span> {{ format2(summary.ucl) }}</div>
