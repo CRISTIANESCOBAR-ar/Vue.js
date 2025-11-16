@@ -17,8 +17,8 @@
                 <!-- Encabezado con selectores y estadísticas compactos en una sola línea -->
                 <div class="bg-slate-50 rounded shadow-sm px-3 py-2 mb-3 flex-shrink-0 border border-slate-200">
                     <div class="flex flex-wrap items-center gap-3">
-                        <!-- Data Source Toggle con iconos + tooltips -->
-                        <div class="flex items-center gap-1 mr-3 border-r border-slate-200 pr-3">
+                        <!-- Data Source Toggle con iconos + tooltips (oculto en móvil) -->
+                        <div class="hidden md:flex items-center gap-1 mr-3 border-r border-slate-200 pr-3">
                             <button @click="changeDataSource('oracle')" :disabled="!isLocalhost"
                                 v-tippy="{ content: isLocalhost ? 'Datos desde Oracle (Localhost)' : 'Oracle solo disponible en localhost', placement: 'bottom', theme: 'custom' }"
                                 :aria-label="'Cambiar a Oracle'" :class="[
@@ -48,16 +48,8 @@
                         </div>
 
                         <div class="flex items-center gap-2">
-                            <!-- Título compacto: solo el nombre de la variable -->
-                            <span class="font-semibold text-base whitespace-nowrap">{{ currentVariableLabel }}</span>
-                            <!-- Selector NOMCOUNT estrecho para que quepa 9.5Flame con padding -->
-                            <select v-model="selectedNomcount"
-                                class="px-2 py-1 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 font-semibold min-w-[7.5rem] w-[8.5rem]">
-                                <option :value="null">-- Seleccione NOMCOUNT --</option>
-                                <option v-for="nomcount in availableNomcounts" :key="nomcount" :value="nomcount">
-                                    {{ nomcount }}
-                                </option>
-                            </select>
+                            <!-- Label y selector de variable -->
+                            <span class="text-slate-700 text-sm">Ver</span>
                             <select v-model="selectedVariable"
                                 class="px-2 py-1 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                 <option v-for="variable in availableVariables" :key="variable.key"
@@ -65,24 +57,33 @@
                                     {{ variable.label }}
                                 </option>
                             </select>
+
+                            <!-- Label y selector NOMCOUNT (Ne) -->
+                            <span class="text-slate-700 text-sm">Ne</span>
+                            <select v-model="selectedNomcount"
+                                class="px-2 py-1 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 font-semibold min-w-[7.5rem] w-[8.5rem]">
+                                <option v-for="nomcount in availableNomcounts" :key="nomcount" :value="nomcount">
+                                    {{ nomcount }}
+                                </option>
+                            </select>
                         </div>
 
                         <template v-if="selectedNomcount">
                             <div class="flex items-center gap-1">
-                                <span class="text-slate-600">Ensayos:</span>
+                                <span class="text-slate-600">Ens.:</span>
                                 <span class="font-semibold">{{ stats.length }}</span>
                             </div>
                             <div class="flex items-center gap-1">
-                                <span class="text-slate-600">Media Global:</span>
+                                <span class="text-slate-600">LCL:</span>
+                                <span class="font-semibold text-blue-600">{{ globalLcl.toFixed(1) }}</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <span class="text-slate-600">Prom.:</span>
                                 <span class="font-semibold">{{ globalMean.toFixed(1) }}</span>
                             </div>
                             <div class="flex items-center gap-1">
                                 <span class="text-slate-600">UCL:</span>
                                 <span class="font-semibold text-red-600">{{ globalUcl.toFixed(1) }}</span>
-                            </div>
-                            <div class="flex items-center gap-1">
-                                <span class="text-slate-600">LCL:</span>
-                                <span class="font-semibold text-blue-600">{{ globalLcl.toFixed(1) }}</span>
                             </div>
                         </template>
                     </div>
