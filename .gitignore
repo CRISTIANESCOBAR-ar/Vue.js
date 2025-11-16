@@ -26,3 +26,4 @@ ffmpeg/
 *.mp4
 ffmpeg_scene_log.txt
 wepage.html
+server/firebase/serviceAccountKey.json
