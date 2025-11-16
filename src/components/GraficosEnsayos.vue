@@ -48,7 +48,7 @@
           <span v-if="appliedOe" class="inline-block mr-2 px-2 py-0.5 bg-slate-100 text-slate-700 rounded">OE: {{
             appliedOe }}</span>
           <span v-if="appliedNe" class="inline-block px-2 py-0.5 bg-slate-100 text-slate-700 rounded">Ne: {{ appliedNe
-            }}</span>
+          }}</span>
         </template>
       </div>
 
@@ -69,9 +69,7 @@ import { ref, onMounted, onBeforeUnmount, watch, nextTick, computed } from 'vue'
 import * as echarts from 'echarts'
 import VueSelect from 'vue3-select-component'
 import { useRegistroStore } from '../stores/registro.js'
-
-// Use backendUrl when running locally (same heuristic as other components)
-const backendUrl = typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:3001' : ''
+import { fetchAllStatsData } from '../services/dataService'
 
 const loading = ref(false)
 const rows = ref([])
@@ -86,21 +84,11 @@ const ne = ref('')
 const appliedOe = ref('')
 const appliedNe = ref('')
 
-// helper: buscar valor por clave que contenga needle (case-insensitive)
-function findField(row, needle) {
-  if (!row) return undefined
-  const lk = needle.toLowerCase()
-  for (const k of Object.keys(row)) {
-    if (k && k.toLowerCase().includes(lk)) return row[k]
-  }
-  return undefined
-}
-
 // listas únicas para sugerencias (combobox)
 const availableOe = computed(() => {
   const s = new Set()
   for (const r of rows.value) {
-    const v = findField(r, 'oe')
+    const v = r.OE || r.oe
     if (v != null && String(v).trim() !== '') s.add(String(v))
   }
   return Array.from(s).sort()
@@ -109,7 +97,7 @@ const availableOe = computed(() => {
 const availableNe = computed(() => {
   const s = new Set()
   for (const r of rows.value) {
-    const v = findField(r, 'ne')
+    const v = r.Ne || r.ne
     if (v != null && String(v).trim() !== '') s.add(String(v))
   }
   return Array.from(s).sort()
@@ -184,24 +172,155 @@ function parseNum(v) {
 async function loadData() {
   loading.value = true
   noData.value = false
+  fetchError.value = null
+
   try {
-    const res = await fetch(`${backendUrl}/api/report/informe-completo`)
-    if (!res.ok) {
-      const txt = await res.text().catch(() => '')
-      throw new Error(`HTTP ${res.status} ${res.statusText} - ${txt.slice(0, 400)}`)
+    // Usar el mismo servicio que ResumenEnsayos
+    const allData = await fetchAllStatsData()
+
+    const usterParDocs = Array.isArray(allData.usterPar) ? allData.usterPar : []
+    const usterTblDocs = Array.isArray(allData.usterTbl) ? allData.usterTbl : []
+    const tensorParDocs = Array.isArray(allData.tensorapidPar) ? allData.tensorapidPar : []
+    const tensorTblDocs = Array.isArray(allData.tensorapidTbl) ? allData.tensorapidTbl : []
+
+    console.log('📊 Datos cargados desde Firebase:', {
+      usterPar: usterParDocs.length,
+      usterTbl: usterTblDocs.length,
+      tensorapidPar: tensorParDocs.length,
+      tensorapidTbl: tensorTblDocs.length
+    })
+
+    // Debug: mostrar primeros 3 documentos de usterPar para verificar estructura
+    console.log('🔍 Primeros 3 usterPar:', usterParDocs.slice(0, 3).map(p => ({
+      testnr: p.TESTNR || p.testnr,
+      nomcount: p.NOMCOUNT || p.nomcount,
+      matclass: p.MATCLASS || p.matclass
+    })))
+
+    // Helper: formatear fecha a dd/mm/yy
+    function formatFecha(val) {
+      if (!val) return ''
+      try {
+        let d
+        if (val.toDate) d = val.toDate()
+        else if (val instanceof Date) d = val
+        else if (typeof val === 'string') d = new Date(val)
+        else return ''
+
+        if (isNaN(d.getTime())) return ''
+        const dd = String(d.getDate()).padStart(2, '0')
+        const mm = String(d.getMonth() + 1).padStart(2, '0')
+        const yy = String(d.getFullYear()).slice(-2)
+        return `${dd}/${mm}/${yy}`
+      } catch {
+        return ''
+      }
     }
 
-    const ct = res.headers.get('content-type') || ''
-    if (!ct.includes('application/json')) {
-      // if server returned HTML (likely index.html or error page), include first part in message
-      const txt = await res.text().catch(() => '')
-      throw new Error(`Respuesta inesperada (no JSON): ${txt.slice(0, 400)}`)
+    // Helper: formatear OE (quitar ceros a la izquierda, separar letras)
+    function formatOE(val) {
+      if (!val) return ''
+      let s = String(val).trim()
+      if (/^0+\d+\s+\S+/.test(s)) {
+        s = s.replace(/^0+(\d+)\s+/, '$1 ')
+        return s
+      }
+      const m = s.match(/^0*(\d+)([A-Za-z]+)/)
+      if (m) return `${parseInt(m[1], 10)} ${m[2].toUpperCase()}`
+      if (/^0+\d+$/.test(s)) return String(parseInt(s, 10))
+      return s
     }
 
-    const payload = await res.json()
-    rows.value = Array.isArray(payload.rows) ? payload.rows : []
+    // Helper: formatear Ne con 'Flame' si es hilo de fantasía (igual que ResumenEnsayos)
+    function formatNe(nomcount, matclass) {
+      if (nomcount == null || nomcount === '') return ''
+      let ne = String(nomcount).trim()
+      if (matclass && String(matclass).toLowerCase() === 'hilo de fantasia') {
+        return ne + 'Flame'
+      }
+      return ne
+    }
+
+    // Agrupar USTER_TBL por TESTNR
+    const usterTblByTestnr = new Map()
+    usterTblDocs.forEach(row => {
+      const testnr = String(row.TESTNR || row.testnr || '')
+      if (!testnr) return
+      if (!usterTblByTestnr.has(testnr)) usterTblByTestnr.set(testnr, [])
+      usterTblByTestnr.get(testnr).push(row)
+    })
+
+    // Mapear USTER_TESTNR -> TENSORAPID_PAR TESTNRs
+    const tensorLinkMap = new Map()
+    tensorParDocs.forEach(row => {
+      const usterTestnr = String(row.USTER_TESTNR || row.uster_testnr || '')
+      const tensorTestnr = String(row.TESTNR || row.testnr || '')
+      if (!usterTestnr || !tensorTestnr) return
+      if (!tensorLinkMap.has(usterTestnr)) tensorLinkMap.set(usterTestnr, [])
+      tensorLinkMap.get(usterTestnr).push(tensorTestnr)
+    })
+
+    // Agrupar TENSORAPID_TBL por TESTNR
+    const tensorTblByTestnr = new Map()
+    tensorTblDocs.forEach(row => {
+      const testnr = String(row.TESTNR || row.testnr || '')
+      if (!testnr) return
+      if (!tensorTblByTestnr.has(testnr)) tensorTblByTestnr.set(testnr, [])
+      tensorTblByTestnr.get(testnr).push(row)
+    })
+
+    // Helper: calcular promedio de un campo
+    function calcAvg(rows, field) {
+      if (!rows || !rows.length) return null
+      const values = rows.map(r => {
+        const v = r[field] || r[field.toLowerCase()] || r[field.toUpperCase()]
+        return typeof v === 'number' ? v : parseFloat(v)
+      }).filter(v => !isNaN(v) && v != null)
+
+      if (!values.length) return null
+      const avg = values.reduce((a, b) => a + b, 0) / values.length
+      return Number(avg.toFixed(2))
+    }
+
+    // Construir filas para los gráficos
+    rows.value = usterParDocs.map(par => {
+      const testnr = String(par.TESTNR || par.testnr || '')
+      const usterRows = usterTblByTestnr.get(testnr) || []
+      const tensorTestnrs = tensorLinkMap.get(testnr) || []
+
+      // Agregar todas las filas de TensorRapid vinculadas
+      const tensorRows = []
+      tensorTestnrs.forEach(tt => {
+        const tRows = tensorTblByTestnr.get(tt) || []
+        tensorRows.push(...tRows)
+      })
+
+      return {
+        Ensayo: testnr,
+        Fecha: formatFecha(par.TIME_STAMP || par.time_stamp),
+        OE: formatOE(par.MASCHNR || par.maschnr),
+        Ne: formatNe(par.NOMCOUNT || par.nomcount, par.MATCLASS || par.matclass),
+        'CVm %': calcAvg(usterRows, 'CVM_PERCENT'),
+        'Delg -30%': calcAvg(usterRows, 'DELG_MINUS30_KM'),
+        'Delg -40%': calcAvg(usterRows, 'DELG_MINUS40_KM'),
+        'Delg -50%': calcAvg(usterRows, 'DELG_MINUS50_KM'),
+        'Grue +35%': calcAvg(usterRows, 'GRUE_35_KM'),
+        'Grue +50%': calcAvg(usterRows, 'GRUE_50_KM'),
+        'Neps +140%': calcAvg(usterRows, 'NEPS_140_KM'),
+        'Neps +280%': calcAvg(usterRows, 'NEPS_280_KM'),
+        'Titulo': calcAvg(usterRows, 'TITULO'),
+        'Fuerza B': calcAvg(tensorRows, 'FUERZA_B'),
+        'Elong. %': calcAvg(tensorRows, 'ELONGACION'),
+        'Tenac.': calcAvg(tensorRows, 'TENACIDAD'),
+        'Trabajo B': calcAvg(tensorRows, 'TRABAJO')
+      }
+    })
+
+    // Debug: mostrar todos los valores Ne para verificar
+    console.log('📋 Todos los Ne:', rows.value.map(r => ({ testnr: r.Ensayo, ne: r.Ne })))
+
   } catch (err) {
-    console.error('Failed to load report for charts', err)
+    console.error('Error cargando datos:', err)
     rows.value = []
     fetchError.value = String(err && err.message ? err.message : err) || 'Error desconocido al obtener datos'
   } finally {
@@ -230,15 +349,13 @@ function buildSeries() {
   const x = []
   const y = []
 
-  // use top-level findField helper
-
   const source = rows.value.filter(r => {
     if (appliedOe.value) {
-      const v = findField(r, 'oe')
+      const v = r.OE || r.oe
       if (!v || String(v).toLowerCase().indexOf(appliedOe.value.toLowerCase()) === -1) return false
     }
     if (appliedNe.value) {
-      const v = findField(r, 'ne')
+      const v = r.Ne || r.ne
       if (!v || String(v).toLowerCase().indexOf(appliedNe.value.toLowerCase()) === -1) return false
     }
     return true

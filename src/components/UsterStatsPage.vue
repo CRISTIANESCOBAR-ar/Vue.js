@@ -169,12 +169,23 @@ const currentVariableLabel = computed(() => {
     return variable ? variable.label : selectedVariable.value
 })
 
+// Helper: formatear Ne con 'Flame' si es hilo de fantasía
+function formatNe(nomcount, matclass) {
+    if (nomcount == null || nomcount === '') return ''
+    let ne = String(nomcount).trim()
+    if (matclass && String(matclass).toLowerCase() === 'hilo de fantasia') {
+        return ne + 'Flame'
+    }
+    return ne
+}
+
 // Get unique NOMCOUNT values
 const availableNomcounts = computed(() => {
     const nomcounts = new Set()
     for (const row of usterPar.value) {
         if (row.NOMCOUNT != null && row.NOMCOUNT !== '') {
-            nomcounts.add(row.NOMCOUNT)
+            const formattedNe = formatNe(row.NOMCOUNT, row.MATCLASS)
+            nomcounts.add(formattedNe)
         }
     }
     return Array.from(nomcounts).sort((a, b) => {
@@ -189,7 +200,7 @@ const availableNomcounts = computed(() => {
 const filteredTestnrs = computed(() => {
     if (!selectedNomcount.value) return []
     return usterPar.value
-        .filter(row => row.NOMCOUNT === selectedNomcount.value)
+        .filter(row => formatNe(row.NOMCOUNT, row.MATCLASS) === selectedNomcount.value)
         .map(row => row.TESTNR)
         .filter(Boolean)
 })

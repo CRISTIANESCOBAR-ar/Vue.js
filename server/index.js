@@ -290,7 +290,7 @@ app.get('/api/report/ensayo', async (req, res) => {
     conn = await getConnection()
 
     // 1) Fetch USTER_PAR row
-    const parSql = `SELECT TESTNR, TIME_STAMP, MASCHNR, NOMCOUNT FROM ${SCHEMA_PREFIX}USTER_PAR WHERE TESTNR = :TESTNR`
+    const parSql = `SELECT TESTNR, TIME_STAMP, MASCHNR, NOMCOUNT, MATCLASS FROM ${SCHEMA_PREFIX}USTER_PAR WHERE TESTNR = :TESTNR`
     const parRes = await conn.execute(
       parSql,
       { TESTNR: testnr },
@@ -418,16 +418,26 @@ app.get('/api/report/ensayo', async (req, res) => {
       return s.padStart(5, '0')
     }
 
-    function formatNe(val) {
+    function formatNe(val, matclass) {
       if (val == null || val === '') return null
       const n = Number(val)
       if (!Number.isFinite(n)) return null
+
+      let result
       // If has decimals, format with comma (12.5 -> "12,5")
       // If integer, return as integer (12 -> 12)
       if (n % 1 !== 0) {
-        return String(n).replace('.', ',')
+        result = String(n).replace('.', ',')
+      } else {
+        result = String(n)
       }
-      return n
+
+      // Add 'F' suffix if MATCLASS is 'Hilo de fantasia'
+      if (matclass && String(matclass).toLowerCase().trim() === 'hilo de fantasia') {
+        result += 'F'
+      }
+
+      return result
     }
 
     function formatDateShort(dt) {
@@ -481,7 +491,7 @@ app.get('/api/report/ensayo', async (req, res) => {
       Ensayo: padTestnr(testnr), // TESTNR formatted as 5 digits
       Fecha: parRow ? formatDateShort(parRow.TIME_STAMP) : null, // dd/mm/yy
       OE: parRow ? parseMaschnr(parRow.MASCHNR).formatted : null, // e.g. '3 LIM'
-      Ne: parRow ? formatNe(parRow.NOMCOUNT) : null,
+      Ne: parRow ? formatNe(parRow.NOMCOUNT, parRow.MATCLASS) : null,
       Obs: parRow ? parRow.OBS || null : null,
 
       // From USTER_TBL, averages with 2 decimals
@@ -1350,16 +1360,26 @@ app.get('/api/report/informe-completo', async (req, res) => {
       return s.padStart(5, '0')
     }
 
-    function formatNe(val) {
+    function formatNe(val, matclass) {
       if (val == null || val === '') return null
       const n = Number(val)
       if (!Number.isFinite(n)) return null
+
+      let result
       // If has decimals, format with comma (12.5 -> "12,5")
       // If integer, return as integer (12 -> 12)
       if (n % 1 !== 0) {
-        return String(n).replace('.', ',')
+        result = String(n).replace('.', ',')
+      } else {
+        result = String(n)
       }
-      return n
+
+      // Add 'F' suffix if MATCLASS is 'Hilo de fantasia'
+      if (matclass && String(matclass).toLowerCase().trim() === 'hilo de fantasia') {
+        result += 'F'
+      }
+
+      return result
     }
 
     function formatDateShort(dt) {
@@ -1409,7 +1429,7 @@ app.get('/api/report/informe-completo', async (req, res) => {
     }
 
     // 1) Fetch all USTER_PAR rows (descending by TESTNR, limit to recent 200)
-    const parSql = `SELECT TESTNR, TIME_STAMP, MASCHNR, NOMCOUNT, OBS
+    const parSql = `SELECT TESTNR, TIME_STAMP, MASCHNR, NOMCOUNT, MATCLASS, OBS
       FROM ${SCHEMA_PREFIX}USTER_PAR
       ORDER BY TESTNR DESC
       FETCH FIRST 200 ROWS ONLY`
@@ -1593,7 +1613,7 @@ app.get('/api/report/informe-completo', async (req, res) => {
         Ensayo: padTestnr(testnr),
         Fecha: formatDateShort(parRow.TIME_STAMP),
         OE: parseMaschnr(parRow.MASCHNR),
-        Ne: formatNe(parRow.NOMCOUNT),
+        Ne: formatNe(parRow.NOMCOUNT, parRow.MATCLASS),
         OBS: parRow.OBS || null,
         'CVm %': fmtNumber(usterAgg.CVM_PERCENT_AVG, 2),
         'Delg -30%': fmtNumber(usterAgg.DELG_MINUS30_KM_AVG, 2),

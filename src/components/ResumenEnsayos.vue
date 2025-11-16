@@ -682,7 +682,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import Swal from 'sweetalert2'
 import { toPng } from 'html-to-image'
 import ExcelJS from 'exceljs'
@@ -690,6 +690,7 @@ import { fetchAllStatsData } from '../services/dataService'
 
 const loading = ref(false)
 const rows = ref([])
+const allData = ref(null)
 
 // Search state
 const q = ref('')
@@ -698,6 +699,69 @@ const keystrokeTimes = ref([])
 const searchTimeout = ref(null)
 const debounceDefault = 500
 const debounceMsDisplay = ref(debounceDefault)
+
+// Formatea fecha a formato europeo dd/mm/yy
+function formatFechaEuropea(fecha) {
+  if (!fecha) return ''
+  let s = String(fecha).trim().replace(/[-.]/g, '/').replace(/\s.*/, '')
+  // ISO yyyy-mm-dd o yyyy/mm/dd
+  const iso = s.match(/^(\d{4})[/-](\d{1,2})[/-](\d{1,2})/)
+  if (iso) {
+    const dd = String(iso[3]).padStart(2, '0')
+    const mm = String(iso[2]).padStart(2, '0')
+    const yy = String(iso[1]).slice(-2)
+    return `${dd}/${mm}/${yy}`
+  }
+  // dd/mm/yyyy o dd/mm/yy
+  const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/)
+  if (m) {
+    const day = String(parseInt(m[1], 10)).padStart(2, '0')
+    const month = String(parseInt(m[2], 10)).padStart(2, '0')
+    const yy = m[3].length === 4 ? m[3].slice(-2) : m[3].padStart(2, '0')
+    return `${day}/${month}/${yy}`
+  }
+  // Fallback: Date
+  const d = new Date(s)
+  if (!isNaN(d.getTime())) {
+    const dd = String(d.getDate()).padStart(2, '0')
+    const mm = String(d.getMonth() + 1).padStart(2, '0')
+    const yy = String(d.getFullYear()).slice(-2)
+    return `${dd}/${mm}/${yy}`
+  }
+  return s
+}
+
+// Formatea Ne: usa NOMCOUNT y agrega 'Flame' si MATCLASS es 'Hilo de fantasia'
+function formatNe(nomcount, matclass) {
+  if (nomcount == null || nomcount === '') return ''
+  let ne = String(nomcount).trim()
+  if (matclass && String(matclass).toLowerCase() === 'hilo de fantasia') {
+    return ne + 'Flame'
+  }
+  return ne
+}
+
+// Formatea una celda de datos (números con decimales o valores vacíos)
+function fmtCell(val) {
+  if (val == null || val === '') return '—'
+  const s = String(val).trim()
+  if (s === '') return '—'
+  const n = Number(s)
+  if (!isNaN(n)) {
+    // Formatear con hasta 2 decimales, quitando ceros innecesarios
+    return Number(n.toFixed(2)).toString()
+  }
+  return s
+}
+
+// Formatea estadísticas (promedios)
+function fmtStat(val) {
+  if (val == null) return '—'
+  const n = Number(val)
+  if (isNaN(n)) return '—'
+  // Formatear con hasta 2 decimales, quitando ceros innecesarios
+  return Number(n.toFixed(2)).toString()
+}
 
 // Quick client-side filters for OE and Ne
 const oeQuery = ref('')
@@ -722,63 +786,45 @@ function onInput() {
   }
   const ms = Number(debounceMsDisplay.value || debounceDefault)
   searchTimeout.value = setTimeout(() => {
-    debouncedQ.value = (q.value || '').toString().trim().toLowerCase()
-    searchTimeout.value = null
+    debouncedQ.value = q.value
   }, ms)
 }
 
 function clearSearch() {
   q.value = ''
+  oeQuery.value = ''
+  neQuery.value = ''
   debouncedQ.value = ''
-  if (searchTimeout.value) {
-    clearTimeout(searchTimeout.value)
-    searchTimeout.value = null
-  }
 }
 
 const filteredRows = computed(() => {
   const term = (debouncedQ.value || '').toString().trim().toLowerCase()
   const oe = (oeQuery.value || '').toString().trim().toLowerCase()
   const ne = (neQuery.value || '').toString().trim().toLowerCase()
-
-  // If no filters, return all rows
-  if (!term && !oe && !ne) return rows.value || []
-
+  const list = rows.value || []
+  if (!term && !oe && !ne) return list
   const parts = term ? term.split(/\s+/).filter(Boolean) : []
-
-  return (rows.value || []).filter((r) => {
-    if (!r) return false
-
-    // Text search across selected fields
-    if (parts.length) {
-      const textMatch = parts.every((p) => {
-        return fieldsToCheck.value.some((field) => {
-          const val = r[field]
-          if (val == null || val === '') return false
-          return String(val).toLowerCase().includes(p)
-        })
+  return list.filter(r => {
+    // General text search
+    const textMatch = parts.every((p) => {
+      return fieldsToCheck.value.some(field => {
+        const val = r[field]
+        if (val == null) return false
+        return String(val).toLowerCase().includes(p)
       })
-      if (!textMatch) return false
-    }
-
-    // OE filter (client-side): substring match against r.OE
-    if (oe) {
+    })
+    // OE filter
+    const oeMatch = !oe || (() => {
       const v = r.OE == null ? '' : String(r.OE).toLowerCase()
-      if (!v.includes(oe)) return false
-    }
-
-    // Ne filter (client-side): substring match against r.Ne
-    if (ne) {
+      return v.includes(oe)
+    })()
+    // Ne filter
+    const neMatch = !ne || (() => {
       const v = r.Ne == null ? '' : String(r.Ne).toLowerCase()
-      if (!v.includes(ne)) return false
-    }
-
-    return true
+      return v.includes(ne)
+    })()
+    return textMatch && oeMatch && neMatch
   })
-})
-
-onUnmounted(() => {
-  if (searchTimeout.value) clearTimeout(searchTimeout.value)
 })
 
 // Pagination state for large result sets (client-side)
@@ -833,20 +879,133 @@ function goToPage() {
 watch(page, (v) => { gotoPage.value = v })
 
 
-
 // Modal state
 const modalVisible = ref(false)
 const modalLoading = ref(false)
 const selectedTestnr = ref(null)
 const usterTblRows = ref([])
-const tensorTblRows = ref([])
 const mergedRows = ref([])
 const combinedStats = ref({})
 const tensorTestnrs = ref([])
 
+// Watch selectedTestnr to load modal data
+watch(selectedTestnr, async (testnr) => {
+  if (!testnr) {
+    mergedRows.value = []
+    usterTblRows.value = []
+    tensorTestnrs.value = []
+    combinedStats.value = {}
+    return
+  }
+
+  modalLoading.value = true
+  try {
+    // Buscar datos en las tablas TBL existentes
+    const { usterTbl, tensorapidTbl, tensorapidPar } = allData.value || {}
+
+    // Filtrar filas USTER_TBL que coincidan con el TESTNR seleccionado
+    const usterRows = (usterTbl || []).filter(r =>
+      String(r.TESTNR || r.testnr || '') === String(testnr)
+    )
+    usterTblRows.value = usterRows
+
+    // Paso 1: Buscar TENSORAPID_PAR que tengan USTER_TESTNR = testnr seleccionado
+    const tensorParMatches = (tensorapidPar || []).filter(r => {
+      const usterTestnr = String(r.USTER_TESTNR || r.uster_testnr || r.usterTestnr || r.USTERTESTNR || '')
+      return usterTestnr === String(testnr)
+    })
+
+    // Paso 2: Obtener los TESTNR de esos TENSORAPID_PAR
+    const tensorTestnrsList = tensorParMatches.map(r => String(r.TESTNR || r.testnr || '')).filter(Boolean)
+    tensorTestnrs.value = tensorTestnrsList
+
+    // Paso 3: Buscar filas en TENSORAPID_TBL que coincidan con esos TESTNR
+    const tensorRows = (tensorapidTbl || []).filter(r => {
+      const tblTestnr = String(r.TESTNR || r.testnr || '')
+      return tensorTestnrsList.includes(tblTestnr)
+    })
+
+    // Merge: combinar filas por HUSO (NO en Uster, HUSO_NUMBER en Tensor)
+    const merged = []
+    const maxLen = Math.max(usterRows.length, tensorRows.length)
+
+    for (let i = 0; i < maxLen; i++) {
+      const uRow = usterRows[i] || {}
+      const tRow = tensorRows[i] || {}
+
+      merged.push({
+        NO: uRow.NO ?? uRow['NO_'] ?? tRow.HUSO_NUMBER ?? (i + 1),
+        TITULO: uRow.TITULO ?? uRow.titulo ?? '',
+        CVM_PERCENT: uRow['CVM_%'] ?? uRow.CVM_PERCENT ?? '',
+        DELG_MINUS30_KM: uRow['DELG_-30%'] ?? uRow.DELG_MINUS30_KM ?? '',
+        DELG_MINUS40_KM: uRow['DELG_-40%'] ?? uRow.DELG_MINUS40_KM ?? '',
+        DELG_MINUS50_KM: uRow['DELG_-50%'] ?? uRow.DELG_MINUS50_KM ?? '',
+        GRUE_35_KM: uRow['GRUE_+35%'] ?? uRow.GRUE_35_KM ?? '',
+        GRUE_50_KM: uRow['GRUE_+50%'] ?? uRow.GRUE_50_KM ?? '',
+        NEPS_140_KM: uRow['NEPS_+140%'] ?? uRow.NEPS_140_KM ?? '',
+        NEPS_280_KM: uRow['NEPS_+280%'] ?? uRow.NEPS_280_KM ?? '',
+        FUERZA_B: tRow.FUERZA_B ?? tRow.fuerza_b ?? '',
+        ELONGACION: tRow.ELONGACION ?? tRow.elongacion ?? '',
+        TENACIDAD: tRow.TENACIDAD ?? tRow.tenacidad ?? '',
+        TRABAJO: tRow.TRABAJO ?? tRow.trabajo ?? ''
+      })
+    }
+
+    mergedRows.value = merged
+
+    // Calcular estadísticas combinadas: avg, cv, sd, q95, max, min
+    const stats = {}
+    const fields = ['TITULO', 'CVM_PERCENT', 'DELG_MINUS30_KM', 'DELG_MINUS40_KM', 'DELG_MINUS50_KM',
+      'GRUE_35_KM', 'GRUE_50_KM', 'NEPS_140_KM', 'NEPS_280_KM',
+      'FUERZA_B', 'ELONGACION', 'TENACIDAD', 'TRABAJO']
+
+    fields.forEach(field => {
+      const values = merged
+        .map(row => row[field])
+        .filter(v => v !== null && v !== undefined && v !== '')
+        .map(v => Number(v))
+        .filter(n => !isNaN(n))
+
+      if (values.length > 0) {
+        // Promedio
+        const sum = values.reduce((a, b) => a + b, 0)
+        const avg = sum / values.length
+
+        // Desviación estándar (s)
+        const variance = values.reduce((acc, val) => acc + Math.pow(val - avg, 2), 0) / values.length
+        const sd = Math.sqrt(variance)
+
+        // Coeficiente de variación (CV%)
+        const cv = avg !== 0 ? (sd / avg) * 100 : null
+
+        // Máximo y Mínimo
+        const max = Math.max(...values)
+        const min = Math.min(...values)
+
+        // Q95 (percentil 95)
+        const sorted = [...values].sort((a, b) => a - b)
+        const index95 = Math.ceil(sorted.length * 0.95) - 1
+        const q95 = sorted[Math.max(0, index95)]
+
+        stats[field] = { avg, sd, cv, q95, max, min, count: values.length }
+      } else {
+        stats[field] = { avg: null, sd: null, cv: null, q95: null, max: null, min: null, count: 0 }
+      }
+    })
+
+    combinedStats.value = stats
+  } catch (error) {
+    console.error('Error loading modal data:', error)
+    mergedRows.value = []
+  } finally {
+    modalLoading.value = false
+  }
+})
+
 const modalMeta = computed(() => {
   const u = selectedTestnr.value || '—'
-  const t = (tensorTestnrs.value && tensorTestnrs.value[0]) || '—'
+  // Obtener el primer TESTNR de TensoRapid si existe
+  const t = (Array.isArray(tensorTestnrs.value) && tensorTestnrs.value.length > 0) ? tensorTestnrs.value[0] : '—'
   // Recuperar meta y fecha cruda
   let meta = (rows.value || []).find(r => String(r?.Ensayo) === String(u)) || null
   if (!meta) meta = (usterTblRows.value && usterTblRows.value[0]) || (mergedRows.value && mergedRows.value[0]) || {}
@@ -887,7 +1046,17 @@ const modalMeta = computed(() => {
   const oe = meta?.OE ?? meta?.Oe ?? meta?.oe ?? '—'
   const ne = meta?.Ne ?? meta?.NE ?? meta?.ne ?? '—'
   // Observaciones: preferir campo USTER 'OBS' o variantes; normalizar a null si vacío
-  const obsRaw = meta?.OBS ?? meta?.Obs ?? meta?.observaciones ?? meta?.OBSERVACIONES ?? meta?.Observacion ?? meta?.observacion ?? null
+  let obsRaw = meta?.OBS ?? meta?.Obs ?? meta?.observaciones ?? meta?.OBSERVACIONES ?? meta?.Observacion ?? meta?.observacion ?? null
+  // Si obsRaw es un objeto, intentar extraer el valor correcto
+  if (obsRaw && typeof obsRaw === 'object') {
+    // Detectar objetos internos de Oracle/Node (LOB streams) y descartarlos
+    if (obsRaw._readableState || obsRaw._writableState || obsRaw._parentObj || obsRaw.offset !== undefined) {
+      obsRaw = null
+    } else {
+      // Intentar extraer valor de objetos normales
+      obsRaw = obsRaw.value ?? obsRaw.text ?? obsRaw.obs ?? null
+    }
+  }
   const obs = (obsRaw == null || String(obsRaw).trim() === '') ? null : String(obsRaw).trim()
   return { fechaStr, oe, ne, u, t, obs }
 })
@@ -922,284 +1091,9 @@ function modalNext() {
   if (testnr != null) openDetail(testnr)
 }
 
-// Keyboard shortcuts when modal is open: Left = prev, Right = next, Escape = close
-function _handleModalKeydown(e) {
-  try {
-    if (!modalVisible.value) return
-    const active = (typeof window !== 'undefined' && window.document) ? window.document.activeElement?.tagName || '' : ''
-    // don't interfere when typing in inputs/selects/textareas
-    if (['INPUT', 'TEXTAREA', 'SELECT'].includes(String(active).toUpperCase())) return
-
-    if (e.key === 'ArrowLeft') {
-      e.preventDefault()
-      modalPrev()
-    } else if (e.key === 'ArrowRight') {
-      e.preventDefault()
-      modalNext()
-    } else if (e.key === 'Escape') {
-      e.preventDefault()
-      closeModal()
-    }
-  } catch {
-    // safe noop on any error
-  }
-}
-
-onMounted(() => {
-  // attach global key listener for modal navigation
-  window.addEventListener('keydown', _handleModalKeydown)
-})
-
-onUnmounted(() => {
-  window.removeEventListener('keydown', _handleModalKeydown)
-})
-
-// Format stat value (statistics rows)
-function fmtStat(v) {
-  if (v == null || v === '' || !Number.isFinite(v)) return '-'
-  // Eliminar decimales innecesarios: 180.00 → 180, 12.80 → 12.8
-  const formatted = v.toFixed(2)
-  return parseFloat(formatted).toString()
-}
-
-// Format cell value (raw data in modal)
-function fmtCell(v) {
-  if (v == null || v === '') return '-'
-  const n = Number(v)
-  if (!Number.isFinite(n)) return String(v)
-  // Eliminar decimales innecesarios: 180.00 → 180, 12.80 → 12.8
-  const formatted = n.toFixed(2)
-  return parseFloat(formatted).toString()
-}
-
-// Calculate statistics for a column
-function calculateStats(values) {
-  const nums = values.map(v => Number(v)).filter(n => Number.isFinite(n))
-  if (nums.length === 0) return { avg: null, cv: null, sd: null, q95: null, max: null, min: null }
-
-  const avg = nums.reduce((a, b) => a + b, 0) / nums.length
-  const variance = nums.reduce((sum, val) => sum + Math.pow(val - avg, 2), 0) / nums.length
-  const sd = Math.sqrt(variance)
-  const cv = avg !== 0 ? (sd / avg) * 100 : null
-
-  const sorted = [...nums].sort((a, b) => a - b)
-  const q95Index = Math.ceil(sorted.length * 0.95) - 1
-  const q95 = sorted[q95Index] || sorted[sorted.length - 1]
-
-  return {
-    avg,
-    cv,
-    sd,
-    q95,
-    max: Math.max(...nums),
-    min: Math.min(...nums)
-  }
-}
-
-// Parse TITULO string to number (same logic as backend)
-// Utilidad robusta para formatear fechas a dd/mm/yy
-function formatFechaEuropea(fecha) {
-  if (!fecha) return '—'
-  if (fecha instanceof Date) {
-    const dd = String(fecha.getDate()).padStart(2, '0')
-    const mm = String(fecha.getMonth() + 1).padStart(2, '0')
-    const yy = String(fecha.getFullYear()).slice(-2)
-    return `${dd}/${mm}/${yy}`
-  }
-  let s = String(fecha).trim().replace(/[-.]/g, '/').replace(/\s.*/, '')
-  // ISO yyyy-mm-dd o yyyy/mm/dd
-  const iso = s.match(/^(\d{4})[/-](\d{1,2})[/-](\d{1,2})/)
-  if (iso) {
-    const dd = String(iso[3]).padStart(2, '0')
-    const mm = String(iso[2]).padStart(2, '0')
-    const yy = String(iso[1]).slice(-2)
-    return `${dd}/${mm}/${yy}`
-  }
-  // dd/mm/yyyy o dd/mm/yy (primer grupo es día, segundo mes)
-  const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/)
-  if (m) {
-    const day = String(parseInt(m[1], 10)).padStart(2, '0')
-    const month = String(parseInt(m[2], 10)).padStart(2, '0')
-    const yy = m[3].length === 4 ? m[3].slice(-2) : m[3].padStart(2, '0')
-    return `${day}/${month}/${yy}`
-  }
-  // Fallback: intentar parsear como Date
-  const d = new Date(s)
-  if (!isNaN(d.getTime())) {
-    const dd = String(d.getDate()).padStart(2, '0')
-    const mm = String(d.getMonth() + 1).padStart(2, '0')
-    const yy = String(d.getFullYear()).slice(-2)
-    return `${dd}/${mm}/${yy}`
-  }
-  return s
-}
-function parseTituloToNumber(val) {
-  if (val == null) return null
-  let s = String(val).trim()
-  if (s === '') return null
-  let negative = false
-  const parMatch = s.match(/^\((.*)\)$/)
-  if (parMatch) {
-    negative = true
-    s = parMatch[1]
-  }
-  s = s.replace(/[^0-9.,-]/g, '')
-  if (s === '' || s === '-' || s === '.' || s === ',') return null
-  if (s.indexOf('.') !== -1 && s.indexOf(',') !== -1) {
-    s = s.replace(/\./g, '')
-    s = s.replace(/,/g, '.')
-  } else if (s.indexOf(',') !== -1 && s.indexOf('.') === -1) {
-    s = s.replace(/,/g, '.')
-  } else {
-    s = s.replace(/\.(?=\d{3}(?:\D|$))/g, '')
-  }
-  s = s.replace(/^\+/, '')
-  if (s === '' || s === '-') return null
-  const n = Number(s)
-  if (!Number.isFinite(n)) return null
-  return negative ? -n : n
-}
-
-async function openDetail(testnr) {
+function openDetail(testnr) {
   selectedTestnr.value = testnr
   modalVisible.value = true
-  modalLoading.value = true
-  usterTblRows.value = []
-  try {
-    // Usar solo Firebase en web
-    const allData = await fetchAllStatsData()
-    // Filtrar por testnr
-    usterTblRows.value = (allData.usterTbl || []).filter(row => String(row.TESTNR) === String(testnr))
-    // Buscar TESTNRs de tensorapid relacionados
-    const tensorapidPar = allData.tensorapidPar || []
-    const found = tensorapidPar.filter(r => String(r.USTER_TESTNR) === String(testnr)).map(r => r.TESTNR).filter(Boolean)
-    tensorTestnrs.value = found
-    tensorTblRows.value = (allData.tensorapidTbl || []).filter(row => found.includes(row.TESTNR))
-
-    // Combinar filas por NO
-    const usterMap = new Map()
-    usterTblRows.value.forEach(row => {
-      const no = row.NO_ || row.NO
-      usterMap.set(no, {
-        NO: no,
-        TITULO: row.TITULO,
-        CVM_PERCENT: fmtCell(row.CVM_PERCENT),
-        DELG_MINUS30_KM: fmtCell(row.DELG_MINUS30_KM),
-        DELG_MINUS40_KM: fmtCell(row.DELG_MINUS40_KM),
-        DELG_MINUS50_KM: fmtCell(row.DELG_MINUS50_KM),
-        GRUE_35_KM: fmtCell(row.GRUE_35_KM),
-        GRUE_50_KM: fmtCell(row.GRUE_50_KM),
-        NEPS_140_KM: fmtCell(row.NEPS_140_KM),
-        NEPS_280_KM: fmtCell(row.NEPS_280_KM),
-        FUERZA_B: '-',
-        ELONGACION: '-',
-        TENACIDAD: '-',
-        TRABAJO: '-',
-        Fecha: formatFechaEuropea(row.TIME_STAMP || row.Fecha || row.DATE || row.date)
-      })
-    })
-
-    const tensorMap = new Map()
-    tensorTblRows.value.forEach(row => {
-      const no = row.HUSO_NUMBER || row.NO_ || row.NO
-      tensorMap.set(no, {
-        FUERZA_B: fmtCell(row.FUERZA_B),
-        ELONGACION: fmtCell(row.ELONGACION),
-        TENACIDAD: fmtCell(row.TENACIDAD),
-        TRABAJO: fmtCell(row.TRABAJO)
-      })
-    })
-
-    // Combinar: si coinciden por NO, merge en la misma fila
-    const allNos = new Set([...usterMap.keys(), ...tensorMap.keys()])
-    const merged = []
-
-    allNos.forEach(no => {
-      const usterData = usterMap.get(no)
-      const tensorData = tensorMap.get(no)
-
-      if (usterData && tensorData) {
-        // Ambos existen, combinar
-        merged.push({
-          ...usterData,
-          FUERZA_B: tensorData.FUERZA_B,
-          ELONGACION: tensorData.ELONGACION,
-          TENACIDAD: tensorData.TENACIDAD,
-          TRABAJO: tensorData.TRABAJO
-        })
-      } else if (usterData) {
-        // Solo USTER
-        merged.push(usterData)
-      } else if (tensorData) {
-        // Solo TENSORAPID
-        merged.push({
-          NO: no,
-          TITULO: '-',
-          CVM_PERCENT: '-',
-          DELG_MINUS30_KM: '-',
-          DELG_MINUS40_KM: '-',
-          DELG_MINUS50_KM: '-',
-          GRUE_35_KM: '-',
-          GRUE_50_KM: '-',
-          NEPS_140_KM: '-',
-          NEPS_280_KM: '-',
-          FUERZA_B: tensorData.FUERZA_B,
-          ELONGACION: tensorData.ELONGACION,
-          TENACIDAD: tensorData.TENACIDAD,
-          TRABAJO: tensorData.TRABAJO,
-          Fecha: '—'
-        })
-      }
-    })
-
-    // Ordenar por fecha descendente (más reciente primero)
-    merged.sort((a, b) => {
-      const parseDate = (dateStr) => {
-        if (!dateStr) return new Date(0)
-        const s = String(dateStr).trim()
-        // dd/mm/yy o dd/mm/yyyy
-        const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/)
-        if (m) {
-          const day = parseInt(m[1], 10)
-          const month = parseInt(m[2], 10) - 1
-          let year = parseInt(m[3], 10)
-          if (year < 100) year += year >= 70 ? 1900 : 2000
-          return new Date(year, month, day)
-        }
-        // ISO o cualquier otro formato
-        const d = new Date(s)
-        return isNaN(d.getTime()) ? new Date(0) : d
-      }
-      const dateA = parseDate(a.Fecha)
-      const dateB = parseDate(b.Fecha)
-      if (dateA > dateB) return -1
-      if (dateA < dateB) return 1
-      // Si fechas iguales, ordenar por número de ensayo descendente
-      const ensayoA = Number(String(a.Ensayo).replace(/[^0-9]/g, ''))
-      const ensayoB = Number(String(b.Ensayo).replace(/[^0-9]/g, ''))
-      return ensayoB - ensayoA
-    })
-    // Definir columnas relevantes para estadísticas
-    const allCols = ['TITULO', 'CVM_PERCENT', 'DELG_MINUS30_KM', 'DELG_MINUS40_KM', 'DELG_MINUS50_KM', 'GRUE_35_KM', 'GRUE_50_KM', 'NEPS_140_KM', 'NEPS_280_KM', 'FUERZA_B', 'ELONGACION', 'TENACIDAD', 'TRABAJO']
-    allCols.forEach(col => {
-      let values = []
-      if (col === 'TITULO') {
-        values = usterTblRows.value.map(r => parseTituloToNumber(r.TITULO)).filter(v => v != null)
-      } else if (['FUERZA_B', 'ELONGACION', 'TENACIDAD', 'TRABAJO'].includes(col)) {
-        values = tensorTblRows.value.map(r => r[col]).filter(v => v != null)
-      } else {
-        values = usterTblRows.value.map(r => r[col]).filter(v => v != null)
-      }
-      combinedStats.value[col] = calculateStats(values)
-    })
-    // Guardar filas combinadas para el modal
-    mergedRows.value = merged
-  } catch (err) {
-    console.error('Error loading detail', err)
-    Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo cargar el detalle del ensayo.' })
-  } finally {
-    modalLoading.value = false
-  }
 }
 
 function closeModal() {
@@ -1517,30 +1411,59 @@ async function exportModalToExcel() {
   }
 }
 
+// Formatea OE: quita ceros a la izquierda y separa letras con espacio
+function formatOE(val) {
+  if (!val) return ''
+  let s = String(val).trim()
+  // Si ya hay espacio, solo quitar ceros a la izquierda del número
+  if (/^0+\d+\s+\S+/.test(s)) {
+    s = s.replace(/^0+(\d+)\s+/, '$1 ')
+    return s
+  }
+  // Si es tipo 002LIM o 003LP, separar número y letras
+  const m = s.match(/^0*(\d+)([A-Za-z]+)/)
+  if (m) {
+    return `${parseInt(m[1], 10)} ${m[2].toUpperCase()}`
+  }
+  // Si es solo número con ceros
+  if (/^0+\d+$/.test(s)) {
+    return String(parseInt(s, 10))
+  }
+  return s
+}
+
 async function loadRows() {
   loading.value = true
 
   try {
     // Usar solo Firebase en web
-    const allData = await fetchAllStatsData()
+    const allDataFetched = await fetchAllStatsData()
+    allData.value = allDataFetched
 
     // --- NUEVA LÓGICA: Combinar USTER_PAR con TENSORAPID_PAR (por USTER_PAR.TESTNR = TENSORAPID_PAR.USTER_TESTNR) ---
-    const parArr = Array.isArray(allData.usterPar) ? allData.usterPar : []
-    const tblArr = Array.isArray(allData.usterTbl) ? allData.usterTbl : []
-    const tensorTblArr = Array.isArray(allData.tensorapidTbl) ? allData.tensorapidTbl : []
-    const tensorParArr = Array.isArray(allData.tensorapidPar) ? allData.tensorapidPar : []
+    const parArr = Array.isArray(allDataFetched.usterPar) ? allDataFetched.usterPar : []
+    const tblArr = Array.isArray(allDataFetched.usterTbl) ? allDataFetched.usterTbl : []
+    const tensorTblArr = Array.isArray(allDataFetched.tensorapidTbl) ? allDataFetched.tensorapidTbl : []
+    const tensorParArr = Array.isArray(allDataFetched.tensorapidPar) ? allDataFetched.tensorapidPar : []
 
-    // Mapas por TESTNR
-    const tblMap = new Map()
+    // Mapas por TESTNR - agrupar TODAS las filas (no solo la primera)
+    const tblByTestnr = new Map()
     tblArr.forEach(row => {
       const testnr = String(row.TESTNR ?? row.testnr ?? row.Testnr ?? '')
-      if (testnr) tblMap.set(testnr, row)
+      if (testnr) {
+        if (!tblByTestnr.has(testnr)) tblByTestnr.set(testnr, [])
+        tblByTestnr.get(testnr).push(row)
+      }
     })
-    // Mapas por TESTNR para TENSORAPID_TBL
-    const tensorTblMap = new Map()
+
+    // Mapas por TESTNR para TENSORAPID_TBL - agrupar TODAS las filas
+    const tensorTblByTestnr = new Map()
     tensorTblArr.forEach(row => {
       const testnr = String(row.TESTNR ?? row.testnr ?? row.Testnr ?? '')
-      if (testnr) tensorTblMap.set(testnr, row)
+      if (testnr) {
+        if (!tensorTblByTestnr.has(testnr)) tensorTblByTestnr.set(testnr, [])
+        tensorTblByTestnr.get(testnr).push(row)
+      }
     })
 
     // Agrupar TENSORAPID_PAR por USTER_TESTNR
@@ -1552,10 +1475,25 @@ async function loadRows() {
       tensorParByUster.get(usterTestnr).push(row)
     })
 
+    // Función helper para calcular promedio de un campo
+    const calcAvg = (rows, field) => {
+      const values = rows
+        .map(r => r[field])
+        .filter(v => v !== null && v !== undefined && v !== '')
+        .map(v => Number(v))
+        .filter(n => !isNaN(n))
+
+      if (values.length === 0) return ''
+      const avg = values.reduce((a, b) => a + b, 0) / values.length
+      // Formatear: redondear a 2 decimales y quitar ceros innecesarios
+      return Number(avg.toFixed(2)).toString()
+    }
+
     // Para cada USTER_PAR, buscar el TENSORAPID_PAR más reciente (por fecha) que matchee
     let data = parArr.map(row => {
       const testnr = String(row.TESTNR ?? row.testnr ?? row.Testnr ?? '')
-      const tbl = tblMap.get(testnr) || {}
+      const tblRows = tblByTestnr.get(testnr) || []
+
       // Buscar matches en TENSORAPID_PAR
       let tensorapidMatch = []
       if (tensorParByUster.has(testnr)) {
@@ -1570,32 +1508,34 @@ async function loadRows() {
           return db - da
         })[0]
       }
-      // Buscar TENSORAPID_TBL por TESTNR de tensorPar
-      let tensorTbl = {}
+      // Buscar TENSORAPID_TBL rows por TESTNR de tensorPar
+      let tensorTblRows = []
       if (tensorPar && tensorPar.TESTNR) {
-        tensorTbl = tensorTblMap.get(String(tensorPar.TESTNR)) || {}
+        tensorTblRows = tensorTblByTestnr.get(String(tensorPar.TESTNR)) || []
       }
+
       // Forzar formato europeo en la fecha
       let fechaRaw = row.TIME_STAMP ? row.TIME_STAMP : (row.fecha ?? row.FECHA ?? '')
       let fecha = formatFechaEuropea(fechaRaw)
+
       return {
         Ensayo: testnr,
         Fecha: fecha,
-        OE: row.OE ?? row.OE_NRO ?? row.OE_NRO_1 ?? row.oe ?? row.OE_NRO_PAR ?? '',
-        Ne: row.Ne ?? row.NE ?? row.titulo ?? row.TITULO ?? '',
-        Titulo: tbl.TITULO ?? row.TITULO ?? row.titulo ?? row.Ne ?? row.NE ?? '',
-        'CVm %': tbl.CVM_PERCENT ?? '',
-        'Delg -30%': tbl.DELG_MINUS30_KM ?? '',
-        'Delg -40%': tbl.DELG_MINUS40_KM ?? '',
-        'Delg -50%': tbl.DELG_MINUS50_KM ?? '',
-        'Grue +35%': tbl.GRUE_35_KM ?? '',
-        'Grue +50%': tbl.GRUE_50_KM ?? '',
-        'Neps +140%': tbl.NEPS_140_KM ?? '',
-        'Neps +280%': tbl.NEPS_280_KM ?? '',
-        'Fuerza B': tensorPar && tensorTbl.FUERZA_B !== undefined ? tensorTbl.FUERZA_B : '',
-        'Elong. %': tensorPar && tensorTbl.ELONGACION !== undefined ? tensorTbl.ELONGACION : '',
-        'Tenac.': tensorPar && tensorTbl.TENACIDAD !== undefined ? tensorTbl.TENACIDAD : '',
-        'Trabajo B': tensorPar && tensorTbl.TRABAJO !== undefined ? tensorTbl.TRABAJO : '',
+        OE: formatOE(row.MASCHNR ?? row.OE ?? row.OE_NRO ?? row.OE_NRO_1 ?? row.oe ?? row.OE_NRO_PAR ?? ''),
+        Ne: formatNe(row.NOMCOUNT ?? row.Ne ?? row.NE ?? row.titulo ?? row.TITULO ?? '', row.MATCLASS),
+        Titulo: calcAvg(tblRows, 'TITULO'),
+        'CVm %': calcAvg(tblRows, 'CVM_PERCENT') || calcAvg(tblRows, 'CVM_%'),
+        'Delg -30%': calcAvg(tblRows, 'DELG_MINUS30_KM') || calcAvg(tblRows, 'DELG_-30%'),
+        'Delg -40%': calcAvg(tblRows, 'DELG_MINUS40_KM') || calcAvg(tblRows, 'DELG_-40%'),
+        'Delg -50%': calcAvg(tblRows, 'DELG_MINUS50_KM') || calcAvg(tblRows, 'DELG_-50%'),
+        'Grue +35%': calcAvg(tblRows, 'GRUE_35_KM') || calcAvg(tblRows, 'GRUE_+35%'),
+        'Grue +50%': calcAvg(tblRows, 'GRUE_50_KM') || calcAvg(tblRows, 'GRUE_+50%'),
+        'Neps +140%': calcAvg(tblRows, 'NEPS_140_KM') || calcAvg(tblRows, 'NEPS_+140%'),
+        'Neps +280%': calcAvg(tblRows, 'NEPS_280_KM') || calcAvg(tblRows, 'NEPS_+280%'),
+        'Fuerza B': calcAvg(tensorTblRows, 'FUERZA_B'),
+        'Elong. %': calcAvg(tensorTblRows, 'ELONGACION'),
+        'Tenac.': calcAvg(tensorTblRows, 'TENACIDAD'),
+        'Trabajo B': calcAvg(tensorTblRows, 'TRABAJO'),
         OBS: row.OBS ?? row.OBSERVACION ?? row.OBSERVACAO ?? row.OBS ?? '',
       }
     })
@@ -1603,45 +1543,12 @@ async function loadRows() {
     // (Opcional) Si quieres agregar los TENSORAPID_TBL que no tienen USTER_PAR, puedes hacerlo aquí igual que antes
     // tensorTblArr.forEach(tensorTbl => { ... })
 
-    // Función para formatear la fecha
-    function formatFecha(val) {
-      if (!val) return ''
-      if (val instanceof Date) {
-        const dd = String(val.getDate()).padStart(2, '0')
-        const mm = String(val.getMonth() + 1).padStart(2, '0')
-        const yy = String(val.getFullYear()).slice(-2)
-        return `${dd}/${mm}/${yy}`
-      }
-      // Si es string, intentar parsear
-      const d = new Date(val)
-      if (!isNaN(d.getTime())) {
-        const dd = String(d.getDate()).padStart(2, '0')
-        const mm = String(d.getMonth() + 1).padStart(2, '0')
-        const yy = String(d.getFullYear()).slice(-2)
-        return `${dd}/${mm}/${yy}`
-      }
-      return String(val)
-    }
 
-    // Procesar cada fila: detectar "FLAME" en OBS y agregar al Ne si existe
+    // Ne solo depende de NOMCOUNT y MATCLASS, sin lógica de OBS
     data = data.map(row => {
-      const obs = String(row.OBS || '').trim()
-
-      // Buscar FLAME en el texto (sin requerir límites de palabra ya que puede estar pegado: /1FLAME)
-      const flameMatch = obs.toUpperCase().includes('FLAME')
-
-      if (flameMatch) {
-        // Agregar "Flame" al Ne y marcar la fila para resaltar
-        const neOriginal = row.Ne != null ? String(row.Ne) : ''
-        const newNe = neOriginal ? `${neOriginal}Flame` : 'Flame'
-        return {
-          ...row,
-          Ne: newNe,
-          _isFlame: true // flag interno para resaltar
-        }
-      }
-      return { ...row, _isFlame: false }
-    })    // Ordenar por Fecha (descendente) y luego por Ensayo (descendente)
+      let isFlame = String(row.MATCLASS).toLowerCase() === 'hilo de fantasia'
+      return { ...row, _isFlame: isFlame }
+    }) // Ordenar por Fecha (descendente) y luego por Ensayo (descendente)
     data.sort((a, b) => {
       // Helper: parsear fecha dd/mm/yy a Date para comparar
       const parseDate = (dateStr) => {
@@ -1728,7 +1635,160 @@ async function loadRows() {
 
 async function exportToExcel() {
   try {
-    // ...existing code...
+    if (!filteredRows.value || filteredRows.value.length === 0) {
+      Swal.fire({ icon: 'warning', title: 'Sin datos', text: 'No hay registros para exportar.' })
+      return
+    }
+
+    // Headers in the order they appear in the table
+    const headers = [
+      'Huso',
+      'Fecha',
+      'Ne',
+      'OE Nro.',
+      'Titulo',
+      'CVm %',
+      'Delg -30%',
+      'Delg -40%',
+      'Delg -50%',
+      'Grue +35%',
+      'Grue +50%',
+      'Neps +140%',
+      'Neps +280%',
+      'Fuerza B',
+      'Elongación %',
+      'Tenacidad',
+      'Trabajo',
+      'Uster',
+      'TensoRapid'
+    ]
+
+    // Helper to coerce each cell value
+    const coerce = (raw) => {
+      if (raw == null || raw === '') return ''
+      if (typeof raw === 'number') return raw
+      const s = String(raw).trim()
+      const n = Number(s.replace(/,/g, '.').replace(/[^0-9.+\-eE]/g, ''))
+      return Number.isFinite(n) ? n : s
+    }
+
+    // Build body rows from filteredRows
+    const bodyRows = filteredRows.value.map(r => {
+      return [
+        coerce(r.huso),           // Huso
+        r.fecha || '',            // Fecha (already formatted as dd/mm/yy)
+        r.ne || '',               // Ne
+        r.oe || '',               // OE Nro.
+        coerce(r.titulo),         // Titulo
+        coerce(r.cvm),            // CVm %
+        coerce(r.delg30),         // Delg -30%
+        coerce(r.delg40),         // Delg -40%
+        coerce(r.delg50),         // Delg -50%
+        coerce(r.grue35),         // Grue +35%
+        coerce(r.grue50),         // Grue +50%
+        coerce(r.neps140),        // Neps +140%
+        coerce(r.neps280),        // Neps +280%
+        coerce(r.fuerzaB),        // Fuerza B
+        coerce(r.elongacion),     // Elongación %
+        coerce(r.tenacidad),      // Tenacidad
+        coerce(r.trabajo),        // Trabajo
+        r.u || '',                // Uster
+        r.t || ''                 // TensoRapid
+      ]
+    })
+
+    const workbook = new ExcelJS.Workbook()
+    workbook.creator = 'carga-datos-vue'
+    workbook.created = new Date()
+    const sheet = workbook.addWorksheet('Resumen')
+
+    // Freeze first 2 columns and first row
+    try {
+      sheet.views = [{ state: 'frozen', xSplit: 2, ySplit: 1, topLeftCell: 'C2', activeCell: 'C2' }]
+    } catch { /* ignore */ }
+
+    // Add headers
+    sheet.addRow(headers)
+
+    // Add data rows
+    bodyRows.forEach(r => sheet.addRow(r))
+
+    // Set column widths
+    sheet.columns = headers.map(h => ({ header: h, width: Math.max(10, String(h).length + 4) }))
+
+    // Header styling
+    const headerRow = sheet.getRow(1)
+    headerRow.font = { bold: true, color: { argb: 'FFFFFFFF' } }
+    headerRow.alignment = { horizontal: 'center', vertical: 'middle' }
+    headerRow.eachCell(cell => {
+      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF6366F1' } }
+      cell.border = { bottom: { style: 'thin', color: { argb: 'FFCCCCCC' } } }
+    })
+
+    // AutoFilter
+    const lastRowNumber = bodyRows.length + 1
+    const lastColNumber = headers.length
+    try {
+      sheet.autoFilter = { from: { row: 1, column: 1 }, to: { row: lastRowNumber, column: lastColNumber } }
+    } catch { /* ignore */ }
+
+    // Data row styling (alternating rows)
+    for (let rn = 2; rn <= lastRowNumber; rn++) {
+      const row = sheet.getRow(rn)
+      const isEven = (rn % 2) === 0
+      row.eachCell(cell => {
+        cell.alignment = { horizontal: 'center', vertical: 'middle' }
+        if (isEven) {
+          cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF8FAFF' } }
+        }
+      })
+    }
+
+    // Format Fecha column (column 2) as dates
+    const fechaIdx = headers.findIndex(h => String(h).toLowerCase().includes('fecha'))
+    if (fechaIdx !== -1) {
+      const col = sheet.getColumn(fechaIdx + 1)
+      col.numFmt = 'dd/mm/yyyy'
+      // Parse cell strings like dd/mm/yy into Date objects
+      sheet.eachRow((row, rowNumber) => {
+        if (rowNumber === 1) return
+        const cell = row.getCell(fechaIdx + 1)
+        const v = cell.value
+        if (v == null || v === '') return
+        if (v instanceof Date) return
+        // Try parse dd/mm/yy or dd/mm/yyyy
+        const s = String(v).trim()
+        const m = s.match(/^([0-9]{1,2})[-/.]([0-9]{1,2})[-/.]([0-9]{2,4})$/)
+        if (m) {
+          let d = parseInt(m[1], 10)
+          let mo = parseInt(m[2], 10)
+          let y = parseInt(m[3], 10)
+          if (y < 100) y += y >= 70 ? 1900 : 2000
+          const dt = new Date(y, mo - 1, d)
+          if (!isNaN(dt.getTime())) cell.value = dt
+        } else {
+          const dt = new Date(s)
+          if (!isNaN(dt.getTime())) cell.value = dt
+        }
+      })
+    }
+
+    // Generate file and download
+    const buffer = await workbook.xlsx.writeBuffer()
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    const now = new Date()
+    const pad = n => String(n).padStart(2, '0')
+    const ts = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`
+    link.href = url
+    link.setAttribute('download', `resumen-ensayos-${ts}.xlsx`)
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+
+    Swal.fire({ icon: 'success', title: 'Exportado', text: `${bodyRows.length} registros exportados a XLSX.`, timer: 1500, showConfirmButton: false })
   } catch (err) {
     console.error('Error exporting XLSX (ExcelJS)', err)
     Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo exportar a XLSX.' })

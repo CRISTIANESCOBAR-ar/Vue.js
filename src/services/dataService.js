@@ -1,21 +1,4 @@
-/* eslint-env browser */
-// Paginación real para USTER_PAR y TENSORAPID_PAR
-export async function fetchUsterParPaginated(pageSize = 25, lastDoc = null) {
-  if (currentSource === 'firebase') {
-    return firebaseService.getUsterParPaginated(pageSize, lastDoc)
-  } else {
-    // No paginación en Oracle, traer todo
-    return { docs: await fetchFromOracle('/api/uster/par'), lastVisible: null }
-  }
-}
-
-export async function fetchTensorapidParPaginated(pageSize = 25, lastDoc = null) {
-  if (currentSource === 'firebase') {
-    return firebaseService.getTensorapidParPaginated(pageSize, lastDoc)
-  } else {
-    return { docs: await fetchFromOracle('/api/tensorapid/par'), lastVisible: null }
-  }
-}
+/* eslint-env browser, node */
 /**
  * Unified Data Service
  * Abstracts data fetching from Oracle (API) or Firebase
@@ -25,9 +8,11 @@ import * as firebaseService from './firebaseService'
 
 // Data source: 'oracle' or 'firebase'
 // Default to firebase for production/remote access, oracle for localhost
+/* eslint-disable no-undef */
 const isLocalhost =
   typeof window !== 'undefined' &&
   (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+/* eslint-enable no-undef */
 
 let currentSource = isLocalhost ? 'oracle' : 'firebase'
 
@@ -38,6 +23,7 @@ export function setDataSource(source) {
   // Solo permitir 'oracle' si es localhost
   if (source === 'oracle' && !isLocalhost) {
     currentSource = 'firebase'
+    /* eslint-disable-next-line no-undef */
     console.warn('Oracle solo está disponible en entorno local. Usando Firebase.')
     return
   }
@@ -45,6 +31,7 @@ export function setDataSource(source) {
     throw new Error(`Invalid data source: ${source}`)
   }
   currentSource = source
+  /* eslint-disable-next-line no-undef */
   console.log(`📊 Data source changed to: ${currentSource}`)
 }
 
@@ -59,6 +46,7 @@ export function getDataSource() {
  * Fetch from Oracle API
  */
 async function fetchFromOracle(endpoint) {
+  /* eslint-disable-next-line no-undef */
   const response = await fetch(`http://localhost:3001${endpoint}`)
   if (!response.ok) {
     throw new Error(`Oracle API error: ${response.statusText}`)
@@ -132,6 +120,7 @@ export async function fetchAllStatsData() {
       source: currentSource
     }
   } catch (error) {
+    /* eslint-disable-next-line no-undef */
     console.error(`Error fetching data from ${currentSource}:`, error)
     throw error
   }
