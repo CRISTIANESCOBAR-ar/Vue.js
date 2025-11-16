@@ -1,10 +1,9 @@
 <template>
-  <div class="w-full pt-2 px-2 space-y-4 uster-component">
-    <!-- título mostrado movido a la pestaña del navegador -->
-
-    <div class="bg-white rounded-2xl shadow-xl px-6 py-5 border border-slate-200 space-y-4">
+  <div class="w-full h-screen flex flex-col p-1">
+    <main
+      class="w-full flex-1 min-h-0 bg-white rounded-2xl shadow-xl px-4 py-3 border border-slate-200 flex flex-col overflow-y-auto uster-component">
       <!-- Top: compact carpeta selector on a single line for desktop -->
-      <div>
+      <div class="flex-shrink-0 mb-3">
         <div class="flex items-center gap-3">
           <label class="text-sm font-semibold text-slate-700 mr-2 shrink-0">Carpeta de archivos Uster:</label>
 
@@ -259,8 +258,8 @@
       </div>
 
       <!-- Bottom: TBL import results (full width) -->
-      <div v-if="tblData.length" class="mt-4 rounded-xl border border-slate-200 overflow-hidden">
-        <div class="overflow-auto _minimal-scroll max-h-[70vh]" style="overflow-x:auto;">
+      <div v-if="tblData.length" class="mt-4 rounded-xl border border-slate-200">
+        <div class="_minimal-scroll" style="overflow-x:auto;">
           <table class="w-full text-sm border-collapse tbl-import-table compact-table"
             :style="{ minWidth: tblMinWidth + 'px', tableLayout: 'fixed' }">
             <colgroup>
@@ -268,7 +267,7 @@
               <col v-for="(c, ci) in tblColumns" :key="ci" :style="{ width: getColWidth(c) + 'px' }" />
             </colgroup>
             <thead>
-              <tr class="bg-gradient-to-r from-slate-50 to-slate-100 sticky top-0 z-20">
+              <tr class="bg-gradient-to-r from-slate-50 to-slate-100 sticky top-0">
                 <th class="px-3 py-3 text-center font-semibold text-slate-700 border-b border-slate-200 text-xs">#</th>
                 <th v-for="c in tblColumns" :key="c"
                   class="px-3 py-3 text-center font-semibold text-slate-700 border-b border-slate-200 text-xs">{{ c }}
@@ -285,7 +284,7 @@
           </table>
         </div>
       </div>
-    </div>
+    </main>
   </div>
 </template>
 

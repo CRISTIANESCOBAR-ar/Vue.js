@@ -4,6 +4,22 @@
       <div class="flex flex-col gap-2 mb-3 flex-shrink-0">
         <!-- Single top row: title, search, filters (center), refresh -->
         <div class="flex items-center gap-2">
+          <!-- Data source indicator -->
+          <div v-tippy="{ content: dataSourceTooltip, placement: 'bottom', theme: 'custom' }"
+            class="flex items-center justify-center w-8 h-8 rounded-full"
+            :class="dataSource === 'firebase' ? 'bg-orange-100 text-orange-600' : 'bg-blue-100 text-blue-600'">
+            <svg v-if="dataSource === 'firebase'" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24"
+              fill="currentColor">
+              <path
+                d="M3.89 15.672L6.255.461A.542.542 0 017.27.288l2.543 4.771zm16.794 3.692l-2.25-14a.54.54 0 00-.919-.295L3.316 19.365l7.856 4.427a1.621 1.621 0 001.588 0zM14.3 7.147l-1.82-3.482a.542.542 0 00-.96 0L3.53 17.984z" />
+            </svg>
+            <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+              <line x1="8" y1="21" x2="16" y2="21"></line>
+              <line x1="12" y1="17" x2="12" y2="21"></line>
+            </svg>
+          </div>
           <h3 class="text-xl font-semibold text-slate-800 whitespace-nowrap">Resumen de Ensayos</h3>
 
           <!-- search moved next to title -->
@@ -686,11 +702,19 @@ import { ref, computed, onMounted, watch } from 'vue'
 import Swal from 'sweetalert2'
 import { toPng } from 'html-to-image'
 import ExcelJS from 'exceljs'
-import { fetchAllStatsData } from '../services/dataService'
+import { fetchAllStatsData, getDataSource } from '../services/dataService'
 
 const loading = ref(false)
 const rows = ref([])
 const allData = ref(null)
+
+// Data source indicator
+const dataSource = computed(() => getDataSource())
+const dataSourceTooltip = computed(() => {
+  return dataSource.value === 'firebase'
+    ? 'Datos desde Firebase (Producción)'
+    : 'Datos desde Oracle (Localhost)'
+})
 
 // Search state
 const q = ref('')
@@ -1237,8 +1261,8 @@ async function exportModalToExcel() {
       return
     }
 
-    // Visible headers in the desired order: Huso first, then Fecha, Ne, OE Nro., Titulo, ... and finally Uster/TensoRapid
-    const headers = ['Huso', 'Fecha', 'Ne', 'OE Nro.', 'Titulo', 'CVm %', 'Delg -30%', 'Delg -40%', 'Delg -50%', 'Grue +35%', 'Grue +50%', 'Neps +140%', 'Neps +280%', 'Fuerza B', 'Elongación %', 'Tenacidad', 'Trabajo', 'Uster', 'TensoRapid']
+    // Headers: include Observaciones after Trabajo, then Uster/TensoRapid
+    const headers = ['Huso', 'Fecha', 'Ne', 'OE Nro.', 'Titulo', 'CVm %', 'Delg -30%', 'Delg -40%', 'Delg -50%', 'Grue +35%', 'Grue +50%', 'Neps +140%', 'Neps +280%', 'Fuerza B', 'Elongación %', 'Tenacidad', 'Trabajo', 'Observaciones', 'Uster', 'TensoRapid']
 
     // helper to coerce each cell value
     const coerce = (raw) => {
@@ -1250,7 +1274,7 @@ async function exportModalToExcel() {
     }
 
     // Build body rows with order matching `headers`
-    // Huso, Fecha, Ne, OE Nro., Titulo, CVm %, ... , Trabajo, Uster, TensoRapid
+    // Huso, Fecha, Ne, OE Nro., Titulo, CVm %, ... , Trabajo, Observaciones, Uster, TensoRapid
     const bodyRows = rows.map(r => {
       const rowVals = []
       // Huso (NO)
@@ -1277,6 +1301,8 @@ async function exportModalToExcel() {
       rowVals.push(coerce(r.ELONGACION))
       rowVals.push(coerce(r.TENACIDAD))
       rowVals.push(coerce(r.TRABAJO))
+      // Observaciones (from modalMeta.obs or per-row if exists)
+      rowVals.push((r.OBS ?? modalMeta.value.obs) || '')
       // Uster and TensoRapid identifiers (repeat for each row)
       rowVals.push(modalMeta.value.u || '')
       rowVals.push(modalMeta.value.t || '')
@@ -1294,12 +1320,35 @@ async function exportModalToExcel() {
 
     sheet.addRow(headers)
     bodyRows.forEach(r => sheet.addRow(r))
-    sheet.columns = headers.map(h => ({ header: h, width: Math.max(8, String(h).length + 6) }))
+    // Custom widths for modal export
+    const modalWidthMap = {
+      'Huso': 10,
+      'Fecha': 11,
+      'Ne': 7.29,
+      'OE Nro.': 8.29,
+      'Titulo': 8.14,
+      'CVm %': 7.5,
+      'Delg -30%': 7.5,
+      'Delg -40%': 7.5,
+      'Delg -50%': 7.5,
+      'Grue +35%': 7.5,
+      'Grue +50%': 7.5,
+      'Neps +140%': 7.5,
+      'Neps +280%': 7.5,
+      'Fuerza B': 7.5,
+      'Elongación %': 7.5,
+      'Tenacidad': 7.5,
+      'Trabajo': 7.5,
+      'Observaciones': 68.5,
+      'Uster': 10,
+      'TensoRapid': 11
+    }
+    sheet.columns = headers.map(h => ({ header: h, width: modalWidthMap[h] || Math.max(8, String(h).length + 4) }))
 
     // Header styling
     const headerRow = sheet.getRow(1)
     headerRow.font = { bold: true, color: { argb: 'FFFFFFFF' } }
-    headerRow.alignment = { horizontal: 'center', vertical: 'middle' }
+    headerRow.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true }
     headerRow.eachCell(cell => {
       cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF6366F1' } }
       cell.border = { bottom: { style: 'thin', color: { argb: 'FFCCCCCC' } } }
@@ -1309,9 +1358,40 @@ async function exportModalToExcel() {
     const lastColNumber = headers.length
     try { sheet.autoFilter = { from: { row: 1, column: 1 }, to: { row: lastRowNumber, column: lastColNumber } } } catch { /* ignore */ }
 
+    // Numeric columns for modal export: specific columns trim zeros, others 2 decimals; Neps as integers
+    try {
+      // Columns to show as integers (no decimals)
+      const trimCols = ['Delg -30%', 'Delg -40%', 'Delg -50%', 'Grue +35%', 'Grue +50%', 'Fuerza B']
+      trimCols.forEach(name => {
+        const idx = headers.indexOf(name)
+        if (idx !== -1) {
+          const col = sheet.getColumn(idx + 1)
+          col.numFmt = '0'
+        }
+      })
+      // Columns to force 2 decimals
+      const twoDecCols = ['Titulo', 'CVm %', 'Elongación %', 'Tenacidad', 'Trabajo']
+      twoDecCols.forEach(name => {
+        const idx = headers.indexOf(name)
+        if (idx !== -1) {
+          const col = sheet.getColumn(idx + 1)
+          col.numFmt = '0.00'
+        }
+      })
+        // Neps columns as integers
+        ;['Neps +140%', 'Neps +280%'].forEach(name => {
+          const idx = headers.indexOf(name)
+          if (idx !== -1) {
+            const col = sheet.getColumn(idx + 1)
+            col.numFmt = '0'
+          }
+        })
+    } catch { /* ignore */ }
+
     for (let rn = 2; rn <= lastRowNumber; rn++) {
       const row = sheet.getRow(rn)
       const isEven = (rn % 2) === 0
+      row.height = 18
       row.eachCell(cell => {
         cell.alignment = { horizontal: 'center', vertical: 'middle' }
         if (isEven) cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF8FAFF' } }
@@ -1360,7 +1440,8 @@ async function exportModalToExcel() {
         { key: 'min', label: 'Mín' }
       ]
 
-      // for each stat label, add a row with Label in the first column (Huso), then Fecha, Ne, OE, then values per metricCols, and finally Uster/TensoRapid
+      // for each stat label, add a row with Label in the first column (Huso), then Fecha, Ne, OE,
+      // then values per metricCols, then Observaciones, and finally Uster/TensoRapid
       statLabels.forEach(sl => {
         const rowVals = []
         // Label goes into the first column (Huso column for stats)
@@ -1379,12 +1460,14 @@ async function exportModalToExcel() {
           else rowVals.push(v)
         })
 
-        // Append Uster and TensoRapid identifiers to the statistics rows as well
+        // Append Observaciones, Uster and TensoRapid identifiers to the statistics rows as well
+        rowVals.push(modalMeta.value.obs || '')
         rowVals.push(modalMeta.value.u || '')
         rowVals.push(modalMeta.value.t || '')
 
         const r = sheet.addRow(rowVals)
-        r.eachCell(cell => { cell.alignment = { horizontal: 'center' } })
+        r.height = 18
+        r.eachCell(cell => { cell.alignment = { horizontal: 'center', vertical: 'middle' } })
       })
     } catch {
       // non-fatal
@@ -1518,6 +1601,11 @@ async function loadRows() {
       let fechaRaw = row.TIME_STAMP ? row.TIME_STAMP : (row.fecha ?? row.FECHA ?? '')
       let fecha = formatFechaEuropea(fechaRaw)
 
+      // TensoRapid test number (if present)
+      const tensorRapidTestnr = tensorPar && (tensorPar.TESTNR ?? tensorPar.testnr ?? tensorPar.Testnr)
+        ? String(tensorPar.TESTNR ?? tensorPar.testnr ?? tensorPar.Testnr)
+        : ''
+
       return {
         Ensayo: testnr,
         Fecha: fecha,
@@ -1537,6 +1625,7 @@ async function loadRows() {
         'Tenac.': calcAvg(tensorTblRows, 'TENACIDAD'),
         'Trabajo B': calcAvg(tensorTblRows, 'TRABAJO'),
         OBS: row.OBS ?? row.OBSERVACION ?? row.OBSERVACAO ?? row.OBS ?? '',
+        TensoRapid: tensorRapidTestnr,
       }
     })
 
@@ -1640,12 +1729,11 @@ async function exportToExcel() {
       return
     }
 
-    // Headers in the order they appear in the table
+    // Headers for export: move Uster (Ensayo) after OBS and add TensoRapid
     const headers = [
-      'Huso',
       'Fecha',
+      'OE',
       'Ne',
-      'OE Nro.',
       'Titulo',
       'CVm %',
       'Delg -30%',
@@ -1656,9 +1744,10 @@ async function exportToExcel() {
       'Neps +140%',
       'Neps +280%',
       'Fuerza B',
-      'Elongación %',
-      'Tenacidad',
-      'Trabajo',
+      'Elong. %',
+      'Tenac.',
+      'Trabajo B',
+      'OBS',
       'Uster',
       'TensoRapid'
     ]
@@ -1672,30 +1761,28 @@ async function exportToExcel() {
       return Number.isFinite(n) ? n : s
     }
 
-    // Build body rows from filteredRows
-    const bodyRows = filteredRows.value.map(r => {
-      return [
-        coerce(r.huso),           // Huso
-        r.fecha || '',            // Fecha (already formatted as dd/mm/yy)
-        r.ne || '',               // Ne
-        r.oe || '',               // OE Nro.
-        coerce(r.titulo),         // Titulo
-        coerce(r.cvm),            // CVm %
-        coerce(r.delg30),         // Delg -30%
-        coerce(r.delg40),         // Delg -40%
-        coerce(r.delg50),         // Delg -50%
-        coerce(r.grue35),         // Grue +35%
-        coerce(r.grue50),         // Grue +50%
-        coerce(r.neps140),        // Neps +140%
-        coerce(r.neps280),        // Neps +280%
-        coerce(r.fuerzaB),        // Fuerza B
-        coerce(r.elongacion),     // Elongación %
-        coerce(r.tenacidad),      // Tenacidad
-        coerce(r.trabajo),        // Trabajo
-        r.u || '',                // Uster
-        r.t || ''                 // TensoRapid
-      ]
-    })
+    // Build body rows in the new order (with OBS, Uster, TensoRapid at the end)
+    const bodyRows = filteredRows.value.map(r => [
+      r['Fecha'] || '',
+      r['OE'] || '',
+      r['Ne'] || '',
+      coerce(r['Titulo']),
+      coerce(r['CVm %']),
+      coerce(r['Delg -30%']),
+      coerce(r['Delg -40%']),
+      coerce(r['Delg -50%']),
+      coerce(r['Grue +35%']),
+      coerce(r['Grue +50%']),
+      coerce(r['Neps +140%']),
+      coerce(r['Neps +280%']),
+      coerce(r['Fuerza B']),
+      coerce(r['Elong. %']),
+      coerce(r['Tenac.']),
+      coerce(r['Trabajo B']),
+      r['OBS'] || '',
+      coerce(r['Ensayo']), // Uster test number (renamed)
+      r['TensoRapid'] || '' // present only if exists
+    ])
 
     const workbook = new ExcelJS.Workbook()
     workbook.creator = 'carga-datos-vue'
@@ -1712,14 +1799,35 @@ async function exportToExcel() {
 
     // Add data rows
     bodyRows.forEach(r => sheet.addRow(r))
-
-    // Set column widths
-    sheet.columns = headers.map(h => ({ header: h, width: Math.max(10, String(h).length + 4) }))
+    // Custom column widths mapping (Excel character units)
+    const widthMap = {
+      'Fecha': 10.5,
+      'OE': 7.29,
+      'Ne': 8.29,
+      'Titulo': 8.14,
+      'CVm %': 7.5,
+      'Delg -30%': 7.5,
+      'Delg -40%': 7.5,
+      'Delg -50%': 7.5,
+      'Grue +35%': 7.5,
+      'Grue +50%': 7.5,
+      'Neps +140%': 7.5,
+      'Neps +280%': 7.5,
+      'Fuerza B': 7.5,
+      'Elong. %': 7.5,
+      'Tenac.': 7.5,
+      'Trabajo B': 7.5,
+      'OBS': 68.5,
+      'Uster': 10,
+      'TensoRapid': 11
+    }
+    sheet.columns = headers.map(h => ({ header: h, width: widthMap[h] || Math.max(10, String(h).length + 2) }))
 
     // Header styling
     const headerRow = sheet.getRow(1)
     headerRow.font = { bold: true, color: { argb: 'FFFFFFFF' } }
-    headerRow.alignment = { horizontal: 'center', vertical: 'middle' }
+    headerRow.height = 30 // custom header row height
+    headerRow.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true }
     headerRow.eachCell(cell => {
       cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF6366F1' } }
       cell.border = { bottom: { style: 'thin', color: { argb: 'FFCCCCCC' } } }
@@ -1732,10 +1840,41 @@ async function exportToExcel() {
       sheet.autoFilter = { from: { row: 1, column: 1 }, to: { row: lastRowNumber, column: lastColNumber } }
     } catch { /* ignore */ }
 
+    // Numeric columns formats: specific columns trim trailing zeros, others 2 decimals; Neps as integers
+    try {
+      // Columns to show as integers (no decimals to avoid trailing separator)
+      const trimCols = ['Delg -30%', 'Delg -40%', 'Delg -50%', 'Grue +35%', 'Grue +50%', 'Fuerza B']
+      trimCols.forEach(name => {
+        const idx = headers.indexOf(name)
+        if (idx !== -1) {
+          const col = sheet.getColumn(idx + 1)
+          col.numFmt = '0'
+        }
+      })
+      // Columns to force 2 decimals
+      const twoDecCols = ['Titulo', 'CVm %', 'Elong. %', 'Tenac.', 'Trabajo B']
+      twoDecCols.forEach(name => {
+        const idx = headers.indexOf(name)
+        if (idx !== -1) {
+          const col = sheet.getColumn(idx + 1)
+          col.numFmt = '0.00'
+        }
+      })
+        // Neps columns as integers
+        ;['Neps +140%', 'Neps +280%'].forEach(name => {
+          const idx = headers.indexOf(name)
+          if (idx !== -1) {
+            const col = sheet.getColumn(idx + 1)
+            col.numFmt = '0'
+          }
+        })
+    } catch { /* ignore */ }
+
     // Data row styling (alternating rows)
     for (let rn = 2; rn <= lastRowNumber; rn++) {
       const row = sheet.getRow(rn)
       const isEven = (rn % 2) === 0
+      row.height = 18
       row.eachCell(cell => {
         cell.alignment = { horizontal: 'center', vertical: 'middle' }
         if (isEven) {
@@ -1744,7 +1883,7 @@ async function exportToExcel() {
       })
     }
 
-    // Format Fecha column (column 2) as dates
+    // Format Fecha column as dates
     const fechaIdx = headers.findIndex(h => String(h).toLowerCase().includes('fecha'))
     if (fechaIdx !== -1) {
       const col = sheet.getColumn(fechaIdx + 1)

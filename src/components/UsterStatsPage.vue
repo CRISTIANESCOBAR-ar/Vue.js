@@ -1,98 +1,112 @@
 <template>
-    <div class="p-4 h-screen flex flex-col">
-        <div v-if="isLoading" class="text-center py-12">
-            <div class="text-slate-600 text-lg">Cargando datos...</div>
-        </div>
+    <div class="w-full h-screen flex flex-col p-1">
+        <main
+            class="w-full flex-1 min-h-0 bg-white rounded-2xl shadow-xl px-4 py-3 border border-slate-200 flex flex-col">
+            <div v-if="isLoading" class="text-center py-12 flex-1">
+                <div class="text-slate-600 text-lg">Cargando datos...</div>
+            </div>
 
-        <div v-else-if="error" class="text-center py-12">
-            <div class="text-red-600 mb-4">Error: {{ error }}</div>
-            <button @click="fetchData" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
-                Reintentar
-            </button>
-        </div>
+            <div v-else-if="error" class="text-center py-12 flex-1">
+                <div class="text-red-600 mb-4">Error: {{ error }}</div>
+                <button @click="fetchData" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
+                    Reintentar
+                </button>
+            </div>
 
-        <div v-else class="flex flex-col h-full">
-            <!-- Encabezado con selectores y estadísticas en una línea -->
-            <div class="bg-white rounded shadow px-4 py-3 mb-3 flex-shrink-0">
-                <div class="flex flex-wrap items-center gap-4">
-                    <!-- Data Source Toggle -->
-                    <div class="flex items-center gap-2 mr-4 border-r border-slate-300 pr-4">
-                        <span class="text-sm font-medium text-slate-600">Fuente:</span>
-                        <button @click="changeDataSource('oracle')" :disabled="!isLocalhost" :class="[
-                            'px-3 py-1.5 rounded-md text-sm font-medium transition-colors',
-                            dataSource === 'oracle'
-                                ? 'bg-blue-600 text-white'
-                                : 'bg-slate-100 text-slate-600 hover:bg-slate-200',
-                            !isLocalhost ? 'opacity-50 cursor-not-allowed' : ''
-                        ]" title="Solo disponible en entorno local">
-                            🗄️ Oracle
-                        </button>
-                        <button @click="changeDataSource('firebase')" :class="[
-                            'px-3 py-1.5 rounded-md text-sm font-medium transition-colors',
-                            dataSource === 'firebase'
-                                ? 'bg-orange-600 text-white'
-                                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                        ]">
-                            🔥 Firebase
-                        </button>
+            <div v-else class="flex flex-col h-full">
+                <!-- Encabezado con selectores y estadísticas compactos en una sola línea -->
+                <div class="bg-slate-50 rounded shadow-sm px-3 py-2 mb-3 flex-shrink-0 border border-slate-200">
+                    <div class="flex flex-wrap items-center gap-3">
+                        <!-- Data Source Toggle con iconos + tooltips -->
+                        <div class="flex items-center gap-1 mr-3 border-r border-slate-200 pr-3">
+                            <button @click="changeDataSource('oracle')" :disabled="!isLocalhost"
+                                v-tippy="{ content: isLocalhost ? 'Datos desde Oracle (Localhost)' : 'Oracle solo disponible en localhost', placement: 'bottom', theme: 'custom' }"
+                                :aria-label="'Cambiar a Oracle'" :class="[
+                                    'inline-flex items-center justify-center w-8 h-8 rounded-full transition-colors',
+                                    dataSource === 'oracle' ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200',
+                                    !isLocalhost ? 'opacity-50 cursor-not-allowed' : ''
+                                ]">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2">
+                                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                                    <line x1="8" y1="21" x2="16" y2="21"></line>
+                                    <line x1="12" y1="17" x2="12" y2="21"></line>
+                                </svg>
+                            </button>
+                            <button @click="changeDataSource('firebase')"
+                                v-tippy="{ content: 'Datos desde Firebase (Producción)', placement: 'bottom', theme: 'custom' }"
+                                aria-label="Cambiar a Firebase" :class="[
+                                    'inline-flex items-center justify-center w-8 h-8 rounded-full transition-colors',
+                                    dataSource === 'firebase' ? 'bg-orange-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                                ]">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24"
+                                    fill="currentColor">
+                                    <path
+                                        d="M3.89 15.672L6.255.461A.542.542 0 017.27.288l2.543 4.771zm16.794 3.692l-2.25-14a.54.54 0 00-.919-.295L3.316 19.365l7.856 4.427a1.621 1.621 0 001.588 0zM14.3 7.147l-1.82-3.482a.542.542 0 00-.96 0L3.53 17.984z" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <!-- Título compacto: solo el nombre de la variable -->
+                            <span class="font-semibold text-base whitespace-nowrap">{{ currentVariableLabel }}</span>
+                            <!-- Selector NOMCOUNT estrecho para que quepa 9.5Flame con padding -->
+                            <select v-model="selectedNomcount"
+                                class="px-2 py-1 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 font-semibold min-w-[7.5rem] w-[8.5rem]">
+                                <option :value="null">-- Seleccione NOMCOUNT --</option>
+                                <option v-for="nomcount in availableNomcounts" :key="nomcount" :value="nomcount">
+                                    {{ nomcount }}
+                                </option>
+                            </select>
+                            <select v-model="selectedVariable"
+                                class="px-2 py-1 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <option v-for="variable in availableVariables" :key="variable.key"
+                                    :value="variable.key">
+                                    {{ variable.label }}
+                                </option>
+                            </select>
+                        </div>
+
+                        <template v-if="selectedNomcount">
+                            <div class="flex items-center gap-1">
+                                <span class="text-slate-600">Ensayos:</span>
+                                <span class="font-semibold">{{ stats.length }}</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <span class="text-slate-600">Media Global:</span>
+                                <span class="font-semibold">{{ globalMean.toFixed(1) }}</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <span class="text-slate-600">UCL:</span>
+                                <span class="font-semibold text-red-600">{{ globalUcl.toFixed(1) }}</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <span class="text-slate-600">LCL:</span>
+                                <span class="font-semibold text-blue-600">{{ globalLcl.toFixed(1) }}</span>
+                            </div>
+                        </template>
                     </div>
+                </div>
 
-                    <div class="flex items-center gap-2">
-                        <span class="font-semibold text-lg">Gráfico de Control de {{ currentVariableLabel }}:</span>
-                        <select v-model="selectedNomcount"
-                            class="px-3 py-1.5 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 font-semibold">
-                            <option :value="null">-- Seleccione NOMCOUNT --</option>
-                            <option v-for="nomcount in availableNomcounts" :key="nomcount" :value="nomcount">
-                                {{ nomcount }}
-                            </option>
-                        </select>
-                        <select v-model="selectedVariable"
-                            class="px-3 py-1.5 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                            <option v-for="variable in availableVariables" :key="variable.key" :value="variable.key">
-                                {{ variable.label }}
-                            </option>
-                        </select>
-                    </div>
+                <!-- Mostrar mensaje si no hay NOMCOUNT seleccionado -->
+                <div v-if="!selectedNomcount" class="text-center py-8 text-slate-500 flex-1">
+                    Por favor seleccione un título nominal para ver el gráfico de control
+                </div>
 
-                    <template v-if="selectedNomcount">
-                        <div class="flex items-center gap-1">
-                            <span class="text-slate-600">Ensayos:</span>
-                            <span class="font-semibold">{{ stats.length }}</span>
-                        </div>
-                        <div class="flex items-center gap-1">
-                            <span class="text-slate-600">Media Global:</span>
-                            <span class="font-semibold">{{ globalMean.toFixed(1) }}</span>
-                        </div>
-                        <div class="flex items-center gap-1">
-                            <span class="text-slate-600">UCL:</span>
-                            <span class="font-semibold text-red-600">{{ globalUcl.toFixed(1) }}</span>
-                        </div>
-                        <div class="flex items-center gap-1">
-                            <span class="text-slate-600">LCL:</span>
-                            <span class="font-semibold text-blue-600">{{ globalLcl.toFixed(1) }}</span>
-                        </div>
-                    </template>
+                <!-- Gráfico maximizado -->
+                <div v-else class="flex-1 flex flex-col min-h-0">
+                    <StatsChart :stats="stats" :globalMean="globalMean" :globalUcl="globalUcl" :globalLcl="globalLcl"
+                        :variableLabel="currentVariableLabel" />
                 </div>
             </div>
-
-            <!-- Mostrar mensaje si no hay NOMCOUNT seleccionado -->
-            <div v-if="!selectedNomcount" class="text-center py-8 text-slate-500">
-                Por favor seleccione un título nominal para ver el gráfico de control
-            </div>
-
-            <!-- Gráfico maximizado -->
-            <div v-else class="bg-white rounded shadow p-4 flex-1 flex flex-col min-h-0">
-                <StatsChart :stats="stats" :globalMean="globalMean" :globalUcl="globalUcl" :globalLcl="globalLcl"
-                    :variableLabel="currentVariableLabel" />
-            </div>
-        </div>
+        </main>
     </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import StatsChart from './uster-stats/StatsChart.vue'
-import { fetchAllStatsData, setDataSource, getDataSource } from '../services/dataService'
+import { fetchAllStatsData, setDataSource } from '../services/dataService'
 
 // Data fetched from backend
 const usterTbl = ref([])
@@ -156,7 +170,7 @@ async function fetchData() {
 function changeDataSource(newSource) {
     if (!isLocalhost && newSource === 'oracle') {
         // No permitir cambiar a oracle en producción
-        alert('La fuente Oracle solo está disponible en entorno local.')
+        console.warn('La fuente Oracle solo está disponible en entorno local.')
         return
     }
     dataSource.value = newSource

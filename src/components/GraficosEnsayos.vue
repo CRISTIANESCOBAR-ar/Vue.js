@@ -1,65 +1,86 @@
 <template>
-  <div class="w-full bg-white rounded-2xl shadow-xl px-4 py-3 border border-slate-200">
-    <div class="flex items-center justify-between mb-3">
-      <h3 class="text-lg font-semibold text-slate-800">Visualizador de Ensayos</h3>
-      <div class="flex items-center gap-3">
+  <div class="w-full h-screen flex flex-col p-1">
+    <main class="w-full flex-1 min-h-0 bg-white rounded-2xl shadow-xl px-4 py-3 border border-slate-200 flex flex-col">
+      <div class="flex items-center justify-between mb-3 flex-shrink-0">
         <div class="flex items-center gap-2">
-          <label class="text-sm text-slate-600">Métrica:</label>
-          <select v-model="metric" class="px-2 py-1 border rounded-md text-sm">
-            <option v-for="m in metrics" :key="m.value" :value="m.value">{{ m.label }}</option>
-          </select>
-        </div>
-
-        <!-- Filtros OE / Ne compactos -->
-        <div class="flex items-center gap-2">
-          <!-- Combobox: vue3-select-component for OE/Ne -->
-          <VueSelect v-model="oe" :options="oeOptions" clearable :searchable class="w-36" />
-          <VueSelect v-model="ne" :options="neOptions" clearable :searchable class="w-36" />
-
-          <button @click="applyFilters" class="px-2 py-1 bg-blue-600 text-white rounded text-sm">Aplicar</button>
-          <button @click="clearFilters" class="px-2 py-1 bg-white border rounded text-sm">Limpiar</button>
-        </div>
-      </div>
-    </div>
-
-    <div v-if="loading" class="text-sm text-slate-600 py-8 text-center">
-      <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-slate-300 border-t-blue-600"></div>
-      <p class="mt-2">Cargando datos para graficar...</p>
-    </div>
-
-    <div v-else>
-      <div v-if="fetchError" class="mb-3 p-3 rounded-md bg-red-50 border border-red-200 text-sm text-red-700">
-        <div class="flex items-start justify-between gap-3">
-          <div>
-            <div class="font-semibold">Error cargando datos</div>
-            <div class="mt-1">{{ fetchError }}</div>
+          <!-- Data source indicator -->
+          <div v-tippy="{ content: dataSourceTooltip, placement: 'bottom', theme: 'custom' }"
+            class="flex items-center justify-center w-8 h-8 rounded-full"
+            :class="dataSource === 'firebase' ? 'bg-orange-100 text-orange-600' : 'bg-blue-100 text-blue-600'">
+            <svg v-if="dataSource === 'firebase'" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24"
+              fill="currentColor">
+              <path
+                d="M3.89 15.672L6.255.461A.542.542 0 017.27.288l2.543 4.771zm16.794 3.692l-2.25-14a.54.54 0 00-.919-.295L3.316 19.365l7.856 4.427a1.621 1.621 0 001.588 0zM14.3 7.147l-1.82-3.482a.542.542 0 00-.96 0L3.53 17.984z" />
+            </svg>
+            <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+              <line x1="8" y1="21" x2="16" y2="21"></line>
+              <line x1="12" y1="17" x2="12" y2="21"></line>
+            </svg>
           </div>
+          <h3 class="text-lg font-semibold text-slate-800">Visualizador de Ensayos</h3>
+        </div>
+        <div class="flex items-center gap-3">
           <div class="flex items-center gap-2">
-            <button @click="loadData()" class="px-3 py-1 bg-white border rounded text-sm">Reintentar</button>
-            <button @click="loadSampleData()" class="px-3 py-1 bg-blue-600 text-white rounded text-sm">Usar datos de
-              ejemplo</button>
+            <label class="text-sm text-slate-600">Métrica:</label>
+            <select v-model="metric" class="px-2 py-1 border rounded-md text-sm">
+              <option v-for="m in metrics" :key="m.value" :value="m.value">{{ m.label }}</option>
+            </select>
+          </div>
+
+          <!-- Filtros OE / Ne compactos -->
+          <div class="flex items-center gap-2">
+            <!-- Combobox: vue3-select-component for OE/Ne -->
+            <VueSelect v-model="oe" :options="oeOptions" clearable :searchable class="w-36" />
+            <VueSelect v-model="ne" :options="neOptions" clearable :searchable class="w-36" />
+
+            <button @click="applyFilters" class="px-2 py-1 bg-blue-600 text-white rounded text-sm">Aplicar</button>
+            <button @click="clearFilters" class="px-2 py-1 bg-white border rounded text-sm">Limpiar</button>
           </div>
         </div>
       </div>
 
-      <div class="mb-3 text-sm text-slate-600">
-        <template v-if="appliedOe || appliedNe">
-          <span class="mr-2">Filtros aplicados:</span>
-          <span v-if="appliedOe" class="inline-block mr-2 px-2 py-0.5 bg-slate-100 text-slate-700 rounded">OE: {{
-            appliedOe }}</span>
-          <span v-if="appliedNe" class="inline-block px-2 py-0.5 bg-slate-100 text-slate-700 rounded">Ne: {{ appliedNe
-          }}</span>
-        </template>
+      <div v-if="loading" class="text-sm text-slate-600 py-8 text-center flex-1">
+        <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-slate-300 border-t-blue-600"></div>
+        <p class="mt-2">Cargando datos para graficar...</p>
       </div>
 
-      <div class="h-[48vh] md:h-[60vh] relative">
-        <div ref="chartEl" class="w-full h-full"></div>
-        <div v-if="noData" class="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div class="bg-white/80 px-4 py-2 rounded-md text-sm text-slate-700">No hay datos numéricos para la métrica
-            seleccionada.</div>
+      <div v-else class="flex-1 min-h-0 flex flex-col">
+        <div v-if="fetchError"
+          class="mb-3 p-3 rounded-md bg-red-50 border border-red-200 text-sm text-red-700 flex-shrink-0">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <div class="font-semibold">Error cargando datos</div>
+              <div class="mt-1">{{ fetchError }}</div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button @click="loadData()" class="px-3 py-1 bg-white border rounded text-sm">Reintentar</button>
+              <button @click="loadSampleData()" class="px-3 py-1 bg-blue-600 text-white rounded text-sm">Usar datos de
+                ejemplo</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3 text-sm text-slate-600 flex-shrink-0">
+          <template v-if="appliedOe || appliedNe">
+            <span class="mr-2">Filtros aplicados:</span>
+            <span v-if="appliedOe" class="inline-block mr-2 px-2 py-0.5 bg-slate-100 text-slate-700 rounded">OE: {{
+              appliedOe }}</span>
+            <span v-if="appliedNe" class="inline-block px-2 py-0.5 bg-slate-100 text-slate-700 rounded">Ne: {{ appliedNe
+            }}</span>
+          </template>
+        </div>
+
+        <div class="flex-1 min-h-0 relative">
+          <div ref="chartEl" class="w-full h-full"></div>
+          <div v-if="noData" class="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div class="bg-white/80 px-4 py-2 rounded-md text-sm text-slate-700">No hay datos numéricos para la métrica
+              seleccionada.</div>
+          </div>
         </div>
       </div>
-    </div>
+    </main>
   </div>
 </template>
 
@@ -69,7 +90,7 @@ import { ref, onMounted, onBeforeUnmount, watch, nextTick, computed } from 'vue'
 import * as echarts from 'echarts'
 import VueSelect from 'vue3-select-component'
 import { useRegistroStore } from '../stores/registro.js'
-import { fetchAllStatsData } from '../services/dataService'
+import { fetchAllStatsData, getDataSource } from '../services/dataService'
 
 const loading = ref(false)
 const rows = ref([])
@@ -77,6 +98,14 @@ const chartEl = ref(null)
 let chart = null
 const noData = ref(false)
 const fetchError = ref(null)
+
+// Data source indicator
+const dataSource = computed(() => getDataSource())
+const dataSourceTooltip = computed(() => {
+  return dataSource.value === 'firebase'
+    ? 'Datos desde Firebase (Producción)'
+    : 'Datos desde Oracle (Localhost)'
+})
 
 // filtros OE / Ne (inputs) y filtros aplicados
 const oe = ref('')
