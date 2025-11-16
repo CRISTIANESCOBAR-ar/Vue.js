@@ -2,19 +2,21 @@
   <div class="w-full h-screen flex flex-col p-1">
     <main class="w-full flex-1 min-h-0 bg-white rounded-2xl shadow-xl px-4 py-3 border border-slate-200 flex flex-col">
       <!-- Título móvil -->
-      <h3 class="md:hidden text-lg font-semibold text-slate-800 mb-3">Gráficos de Ensayos</h3>
+      <h3 class="xl:hidden text-lg font-semibold text-slate-800 mb-3">Gráficos de Ensayos</h3>
 
       <!-- Controles móviles -->
-      <div class="mb-3 md:hidden flex flex-col gap-2 flex-shrink-0">
+      <div class="mb-3 xl:hidden flex flex-col gap-2 flex-shrink-0">
         <!-- Fila: Ne (4 chars) + Ver (variable a graficar) -->
         <div class="flex items-center gap-2 w-full">
           <span class="text-sm text-slate-600 shrink-0">Ne:</span>
-          <select v-model="ne" class="px-1 py-1 border rounded-md text-sm shrink-0" style="width: 4.5ch; min-width: 4.5ch; max-width: 4.5ch;">
+          <select v-model="ne" class="px-1 py-1 border rounded-md text-sm shrink-0"
+            style="width: 4.5ch; min-width: 4.5ch; max-width: 4.5ch;">
             <option value="">-</option>
             <option v-for="opt in neOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
           </select>
           <span class="text-sm text-slate-600 shrink-0">Ver:</span>
-          <select v-model="metric" class="px-2 py-1 border rounded-md text-sm flex-1 min-w-0 overflow-hidden text-ellipsis">
+          <select v-model="metric"
+            class="px-2 py-1 border rounded-md text-sm flex-1 min-w-0 overflow-hidden text-ellipsis">
             <option v-for="m in metrics" :key="m.value" :value="m.value">{{ m.label }}</option>
           </select>
         </div>
@@ -27,16 +29,19 @@
       </div>
 
       <!-- Controles escritorio -->
-      <div class="hidden md:flex items-center justify-between mb-3 flex-shrink-0">
+      <div class="hidden xl:flex items-center justify-between mb-3 flex-shrink-0">
         <div class="flex items-center gap-2">
           <!-- Indicador de fuente de datos (solo escritorio) -->
           <div v-tippy="{ content: dataSourceTooltip, placement: 'bottom', theme: 'custom' }"
-            class="hidden md:flex items-center justify-center w-8 h-8 rounded-full"
+            class="flex items-center justify-center w-8 h-8 rounded-full"
             :class="dataSource === 'firebase' ? 'bg-orange-100 text-orange-600' : 'bg-blue-100 text-blue-600'">
-            <svg v-if="dataSource === 'firebase'" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M3.89 15.672L6.255.461A.542.542 0 017.27.288l2.543 4.771zm16.794 3.692l-2.25-14a.54.54 0 00-.919-.295L3.316 19.365l7.856 4.427a1.621 1.621 0 001.588 0zM14.3 7.147l-1.82-3.482a.542.542 0 00-.96 0L3.53 17.984z" />
+            <svg v-if="dataSource === 'firebase'" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24"
+              fill="currentColor">
+              <path
+                d="M3.89 15.672L6.255.461A.542.542 0 017.27.288l2.543 4.771zm16.794 3.692l-2.25-14a.54.54 0 00-.919-.295L3.316 19.365l7.856 4.427a1.621 1.621 0 001.588 0zM14.3 7.147l-1.82-3.482a.542.542 0 00-.96 0L3.53 17.984z" />
             </svg>
-            <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
               <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
               <line x1="8" y1="21" x2="16" y2="21"></line>
               <line x1="12" y1="17" x2="12" y2="21"></line>
@@ -93,7 +98,7 @@
         </div>
 
         <!-- Barra de resumen escritorio: Ens., LCL, Prom., UCL -->
-        <div class="hidden md:flex mb-3 items-center gap-6 text-slate-700 text-sm flex-shrink-0">
+        <div class="hidden xl:flex mb-3 items-center gap-6 text-slate-700 text-sm flex-shrink-0">
           <div><span class="font-semibold">Ens.:</span> {{ summary.count }}</div>
           <div><span class="font-semibold">LCL:</span> {{ format2(summary.lcl) }}</div>
           <div><span class="font-semibold">Prom.:</span> {{ format2(summary.mean) }}</div>
@@ -108,7 +113,9 @@
           </div>
         </div>
         <!-- Total de ensayos (solo móvil, bajo el gráfico) -->
-        <div class="mt-2 md:hidden text-sm text-slate-700 text-center"><span class="font-semibold">Total de ensayos:</span> {{ summary.count }}</div>
+        <div class="mt-2 xl:hidden text-sm text-slate-700 text-center"><span class="font-semibold">Total de
+            ensayos:</span> {{
+              summary.count }}</div>
       </div>
     </main>
   </div>
