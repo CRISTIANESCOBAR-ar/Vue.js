@@ -1,14 +1,14 @@
 /* eslint-env node */
 /**
  * import-firebase.js
- * 
+ *
  * Imports JSON files (from export-oracle.js) to Firebase Firestore.
- * 
+ *
  * Prerequisites:
  * 1. Firebase project created
  * 2. serviceAccountKey.json in this directory
  * 3. JSON files exist in ./data/ directory
- * 
+ *
  * Usage:
  *   cd server/firebase
  *   node import-firebase.js
@@ -36,16 +36,14 @@ const COLLECTIONS = [
 /**
  * Initialize Firebase Admin SDK
  */
-function initializeFirebase() {
+async function initializeFirebase() {
   try {
-    const serviceAccount = JSON.parse(
-      await fs.readFile(SERVICE_ACCOUNT_PATH, 'utf8')
-    )
-    
+    const serviceAccount = JSON.parse(await fs.readFile(SERVICE_ACCOUNT_PATH, 'utf8'))
+
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccount)
     })
-    
+
     return admin.firestore()
   } catch (err) {
     console.error('❌ Failed to initialize Firebase:', err.message)
@@ -65,32 +63,33 @@ function initializeFirebase() {
  */
 async function importCollection(db, fileName, collectionName, idField) {
   console.log(`\n📦 Importing ${collectionName}...`)
-  
+
   try {
     const filePath = path.join(DATA_DIR, fileName)
     const data = JSON.parse(await fs.readFile(filePath, 'utf8'))
-    
+
     if (!Array.isArray(data) || data.length === 0) {
       console.log(`   ⚠️  No data to import`)
       return { collection: collectionName, count: 0 }
     }
-    
+
     console.log(`   Found ${data.length} records`)
-    
+
     // Firestore has a limit of 500 writes per batch
     const BATCH_SIZE = 500
     let imported = 0
-    
+
     for (let i = 0; i < data.length; i += BATCH_SIZE) {
       const batch = db.batch()
       const chunk = data.slice(i, i + BATCH_SIZE)
-      
+
       for (const record of chunk) {
         // Use specified ID field or auto-generate
-        const docRef = idField && record[idField]
-          ? db.collection(collectionName).doc(String(record[idField]))
-          : db.collection(collectionName).doc()
-        
+        const docRef =
+          idField && record[idField]
+            ? db.collection(collectionName).doc(String(record[idField]))
+            : db.collection(collectionName).doc()
+
         // Convert ISO strings back to Firestore Timestamps
         const processedRecord = {}
         for (const [key, value] of Object.entries(record)) {
@@ -104,18 +103,17 @@ async function importCollection(db, fileName, collectionName, idField) {
             processedRecord[key] = value
           }
         }
-        
+
         batch.set(docRef, processedRecord)
         imported++
       }
-      
+
       await batch.commit()
       console.log(`   ✓ Batch ${Math.floor(i / BATCH_SIZE) + 1}: ${chunk.length} records`)
     }
-    
+
     console.log(`   ✅ Imported ${imported} records to ${collectionName}`)
     return { collection: collectionName, count: imported }
-    
   } catch (err) {
     console.error(`   ❌ Error importing ${collectionName}:`, err.message)
     throw err
@@ -140,7 +138,7 @@ async function verifyImport(db, collectionName) {
  */
 async function main() {
   console.log('🚀 Starting JSON to Firebase Import\n')
-  
+
   try {
     // Check if data files exist
     console.log('📁 Checking data files...')
@@ -149,47 +147,46 @@ async function main() {
       await fs.access(filePath)
       console.log(`   ✓ ${file}`)
     }
-    
+
     // Initialize Firebase
     console.log('\n🔥 Initializing Firebase...')
     const db = await initializeFirebase()
     console.log('   ✓ Firebase connected')
-    
+
     // Import each collection
     const results = []
     for (const { file, collection, idField } of COLLECTIONS) {
       const result = await importCollection(db, file, collection, idField)
       results.push(result)
     }
-    
+
     // Verify imports
     console.log('\n🔍 Verifying imports...')
     for (const { collection } of results) {
       const count = await verifyImport(db, collection)
       console.log(`   ${collection}: ${count} documents`)
     }
-    
+
     // Summary
     console.log('\n' + '='.repeat(50))
     console.log('📊 Import Summary:')
     console.log('='.repeat(50))
-    
+
     let totalRecords = 0
     for (const { collection, count } of results) {
       console.log(`  ${collection.padEnd(25)} ${count.toString().padStart(6)} records`)
       totalRecords += count
     }
-    
+
     console.log('  ' + '-'.repeat(48))
     console.log(`  ${'TOTAL'.padEnd(25)} ${totalRecords.toString().padStart(6)} records`)
     console.log('='.repeat(50))
-    
+
     console.log('\n✅ Import completed successfully!')
     console.log('\nNext steps:')
     console.log('  1. Visit Firebase Console to verify data')
     console.log('  2. Test queries in Firestore')
     console.log('  3. Run sync-bidirectional.js for ongoing sync')
-    
   } catch (err) {
     console.error('\n❌ Import failed:', err.message)
     console.error(err.stack)

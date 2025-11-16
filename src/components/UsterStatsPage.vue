@@ -15,6 +15,28 @@
             <!-- Encabezado con selectores y estadísticas en una línea -->
             <div class="bg-white rounded shadow px-4 py-3 mb-3 flex-shrink-0">
                 <div class="flex flex-wrap items-center gap-4">
+                    <!-- Data Source Toggle -->
+                    <div class="flex items-center gap-2 mr-4 border-r border-slate-300 pr-4">
+                        <span class="text-sm font-medium text-slate-600">Fuente:</span>
+                        <button @click="changeDataSource('oracle')" :disabled="!isLocalhost" :class="[
+                            'px-3 py-1.5 rounded-md text-sm font-medium transition-colors',
+                            dataSource === 'oracle'
+                                ? 'bg-blue-600 text-white'
+                                : 'bg-slate-100 text-slate-600 hover:bg-slate-200',
+                            !isLocalhost ? 'opacity-50 cursor-not-allowed' : ''
+                        ]" title="Solo disponible en entorno local">
+                            🗄️ Oracle
+                        </button>
+                        <button @click="changeDataSource('firebase')" :class="[
+                            'px-3 py-1.5 rounded-md text-sm font-medium transition-colors',
+                            dataSource === 'firebase'
+                                ? 'bg-orange-600 text-white'
+                                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                        ]">
+                            🔥 Firebase
+                        </button>
+                    </div>
+
                     <div class="flex items-center gap-2">
                         <span class="font-semibold text-lg">Gráfico de Control de {{ currentVariableLabel }}:</span>
                         <select v-model="selectedNomcount"
@@ -70,12 +92,17 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import StatsChart from './uster-stats/StatsChart.vue'
+import { fetchAllStatsData, setDataSource, getDataSource } from '../services/dataService'
 
 // Data fetched from backend
 const usterTbl = ref([])
 const usterPar = ref([])
+const tensorapidTbl = ref([])
+const tensorapidPar = ref([])
 const isLoading = ref(false)
 const error = ref(null)
+const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+const dataSource = ref(isLocalhost ? 'oracle' : 'firebase') // Forzar firebase en producción
 
 // Selected NOMCOUNT and variable
 const selectedNomcount = ref(null)
@@ -83,42 +110,57 @@ const selectedVariable = ref('TITULO')
 
 // Available variables for selection
 const availableVariables = [
-    { key: 'TITULO', label: 'Titulo Ne' },
-    { key: 'CVM_PERCENT', label: 'CVM%' },
-    { key: 'DELG_MINUS30_KM', label: 'Delg -30% (km)' },
-    { key: 'DELG_MINUS40_KM', label: 'Delg -40% (km)' },
-    { key: 'DELG_MINUS50_KM', label: 'Delg -50% (km)' },
-    { key: 'GRUE_35_KM', label: 'Grue +35% (km)' },
-    { key: 'GRUE_50_KM', label: 'Grue +50% (km)' },
-    { key: 'NEPS_140_KM', label: 'Neps +140% (km)' },
-    { key: 'NEPS_280_KM', label: 'Neps +280% (km)' }
+    { key: 'TITULO', label: 'Titulo Ne', source: 'uster' },
+    { key: 'CVM_PERCENT', label: 'CVM%', source: 'uster' },
+    { key: 'DELG_MINUS30_KM', label: 'Delg -30% (km)', source: 'uster' },
+    { key: 'DELG_MINUS40_KM', label: 'Delg -40% (km)', source: 'uster' },
+    { key: 'DELG_MINUS50_KM', label: 'Delg -50% (km)', source: 'uster' },
+    { key: 'GRUE_35_KM', label: 'Grue +35% (km)', source: 'uster' },
+    { key: 'GRUE_50_KM', label: 'Grue +50% (km)', source: 'uster' },
+    { key: 'NEPS_140_KM', label: 'Neps +140% (km)', source: 'uster' },
+    { key: 'NEPS_280_KM', label: 'Neps +280% (km)', source: 'uster' },
+    { key: 'FUERZA_B', label: 'Fuerza B (cN/tex)', source: 'tensorapid' },
+    { key: 'ELONGACION', label: 'Elongación (%)', source: 'tensorapid' },
+    { key: 'TENACIDAD', label: 'Tenacidad (cN/tex)', source: 'tensorapid' },
+    { key: 'TRABAJO', label: 'Trabajo (N*mm)', source: 'tensorapid' }
 ]
 
-// Fetch data from backend
+// Fetch data from backend (Oracle or Firebase)
 async function fetchData() {
     isLoading.value = true
     error.value = null
     try {
-        const backendUrl = (typeof window !== 'undefined' && window.location.hostname === 'localhost') ? 'http://localhost:3001' : ''
+        setDataSource(dataSource.value)
+        const data = await fetchAllStatsData()
 
-        const [usterTblRes, usterParRes] = await Promise.all([
-            fetch(backendUrl + '/api/uster/tbl', { credentials: 'include' }),
-            fetch(backendUrl + '/api/uster/par', { credentials: 'include' })
-        ])
+        usterTbl.value = data.usterTbl || []
+        usterPar.value = data.usterPar || []
+        tensorapidTbl.value = data.tensorapidTbl || []
+        tensorapidPar.value = data.tensorapidPar || []
 
-        if (!usterTblRes.ok || !usterParRes.ok) throw new Error('Error al cargar datos')
-
-        const usterTblData = await usterTblRes.json()
-        const usterParData = await usterParRes.json()
-
-        usterTbl.value = usterTblData.rows || []
-        usterPar.value = usterParData.rows || []
+        console.log(`✅ Datos cargados desde ${data.source}:`, {
+            usterPar: usterPar.value.length,
+            usterTbl: usterTbl.value.length,
+            tensorapidPar: tensorapidPar.value.length,
+            tensorapidTbl: tensorapidTbl.value.length
+        })
     } catch (err) {
         console.error('Error fetching data:', err)
         error.value = err.message
     } finally {
         isLoading.value = false
     }
+}
+
+// Change data source and reload
+function changeDataSource(newSource) {
+    if (!isLocalhost && newSource === 'oracle') {
+        // No permitir cambiar a oracle en producción
+        alert('La fuente Oracle solo está disponible en entorno local.')
+        return
+    }
+    dataSource.value = newSource
+    fetchData()
 }
 
 // Get current variable label for display
@@ -152,9 +194,13 @@ const filteredTestnrs = computed(() => {
         .filter(Boolean)
 })
 
-// Process data: group by TESTNR and compute stats for TITULO (filtered by selected NOMCOUNT)
+// Process data: group by TESTNR and compute stats (filtered by selected NOMCOUNT)
 const stats = computed(() => {
     if (!selectedNomcount.value) return []
+
+    // Detect if current variable is from TENSORAPID
+    const currentVar = availableVariables.find(v => v.key === selectedVariable.value)
+    const isTensorapid = currentVar?.source === 'tensorapid'
 
     // Filter TESTNR based on selected NOMCOUNT
     const validTestnrs = new Set(filteredTestnrs.value)
@@ -162,26 +208,66 @@ const stats = computed(() => {
     // Group rows by TESTNR (only for TESTNRs matching selected NOMCOUNT)
     const grouped = {}
 
-    for (const row of usterTbl.value) {
-        const testnr = row.TESTNR
-        if (!testnr || !validTestnrs.has(testnr)) continue
+    if (isTensorapid) {
+        // For TENSORAPID variables: map USTER_TESTNR -> TENSORAPID_TESTNR(s)
+        const usterToTensorMap = new Map()
+        for (const tpar of tensorapidPar.value) {
+            const usterTestnr = tpar.USTER_TESTNR
+            const tensorTestnr = tpar.TESTNR
+            if (!usterTestnr || !tensorTestnr) continue
 
-        // Parse selected variable as number
-        const variableValue = parseFloat(row[selectedVariable.value])
-        if (isNaN(variableValue)) continue
+            if (!usterToTensorMap.has(usterTestnr)) {
+                usterToTensorMap.set(usterTestnr, [])
+            }
+            usterToTensorMap.get(usterTestnr).push(tensorTestnr)
+        }
 
-        if (!grouped[testnr]) {
-            grouped[testnr] = { values: [], timestamps: [] }
+        // For each USTER TESTNR in validTestnrs, find corresponding TENSORAPID TESTNRs
+        for (const usterTestnr of validTestnrs) {
+            const tensorTestnrs = usterToTensorMap.get(usterTestnr) || []
+
+            for (const row of tensorapidTbl.value) {
+                if (!tensorTestnrs.includes(row.TESTNR)) continue
+
+                const variableValue = parseFloat(row[selectedVariable.value])
+                if (isNaN(variableValue)) continue
+
+                // Group by USTER_TESTNR (not TENSORAPID TESTNR) for consistent display
+                if (!grouped[usterTestnr]) {
+                    grouped[usterTestnr] = { values: [], timestamps: [] }
+                }
+                grouped[usterTestnr].values.push(variableValue)
+
+                // Get timestamp from USTER_PAR (for consistency across all variables)
+                const parRow = usterPar.value.find(p => p.TESTNR === usterTestnr)
+                if (parRow && parRow.TIME_STAMP) {
+                    grouped[usterTestnr].timestamps.push(parRow.TIME_STAMP)
+                }
+            }
         }
-        grouped[testnr].values.push(variableValue)
-        // collect TIME_STAMP (if available) for later selection
-        let ts = row.TIME_STAMP
-        // if TIME_STAMP not present or not parseable, try to fallback to USTER_PAR entry for this TESTNR
-        if (!ts) {
-            const parRow = usterPar.value.find(p => p.TESTNR === testnr)
-            if (parRow && parRow.TIME_STAMP) ts = parRow.TIME_STAMP
+    } else {
+        // For USTER variables: process normally
+        for (const row of usterTbl.value) {
+            const testnr = row.TESTNR
+            if (!testnr || !validTestnrs.has(testnr)) continue
+
+            // Parse selected variable as number
+            const variableValue = parseFloat(row[selectedVariable.value])
+            if (isNaN(variableValue)) continue
+
+            if (!grouped[testnr]) {
+                grouped[testnr] = { values: [], timestamps: [] }
+            }
+            grouped[testnr].values.push(variableValue)
+            // collect TIME_STAMP (if available) for later selection
+            let ts = row.TIME_STAMP
+            // if TIME_STAMP not present or not parseable, try to fallback to USTER_PAR entry for this TESTNR
+            if (!ts) {
+                const parRow = usterPar.value.find(p => p.TESTNR === testnr)
+                if (parRow && parRow.TIME_STAMP) ts = parRow.TIME_STAMP
+            }
+            if (ts) grouped[testnr].timestamps.push(ts)
         }
-        if (ts) grouped[testnr].timestamps.push(ts)
     }
 
     // helper: robust date parsing from various DB formats

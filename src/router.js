@@ -6,7 +6,7 @@ import UsterStatsPage from './components/UsterStatsPage.vue'
 const routes = [
   {
     path: '/',
-    redirect: '/login'
+    redirect: '/stats' // Redirect to stats page (works with Firebase)
   },
   {
     path: '/login',

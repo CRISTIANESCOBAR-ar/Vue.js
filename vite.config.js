@@ -15,6 +15,10 @@ export default defineConfig({
     vue(),
     VitePWA({
       registerType: 'autoUpdate',
+      workbox: {
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5 MB limit for large files
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}']
+      },
       includeAssets: ['favicon.ico', 'icons/icon-192x192.png', 'icons/icon-512x512.png'],
       manifest: {
         name: 'Carga de Datos',
