@@ -3,9 +3,9 @@
     <main class="w-full flex-1 min-h-0 bg-white rounded-2xl shadow-xl px-4 py-3 border border-slate-200 flex flex-col">
       <div class="flex items-center justify-between mb-3 flex-shrink-0">
         <div class="flex items-center gap-2">
-          <!-- Data source indicator -->
+          <!-- Data source indicator (oculto en móvil) -->
           <div v-tippy="{ content: dataSourceTooltip, placement: 'bottom', theme: 'custom' }"
-            class="flex items-center justify-center w-8 h-8 rounded-full"
+            class="hidden md:flex items-center justify-center w-8 h-8 rounded-full"
             :class="dataSource === 'firebase' ? 'bg-orange-100 text-orange-600' : 'bg-blue-100 text-blue-600'">
             <svg v-if="dataSource === 'firebase'" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24"
               fill="currentColor">
@@ -23,7 +23,7 @@
         </div>
         <div class="flex items-center gap-3">
           <div class="flex items-center gap-2">
-            <label class="text-sm text-slate-600">Métrica:</label>
+            <label class="text-sm text-slate-600">Ver</label>
             <select v-model="metric" class="px-2 py-1 border rounded-md text-sm">
               <option v-for="m in metrics" :key="m.value" :value="m.value">{{ m.label }}</option>
             </select>
@@ -33,6 +33,7 @@
           <div class="flex items-center gap-2">
             <!-- Combobox: vue3-select-component for OE/Ne -->
             <VueSelect v-model="oe" :options="oeOptions" clearable :searchable class="w-36" />
+            <span class="text-sm text-slate-600">Ne</span>
             <VueSelect v-model="ne" :options="neOptions" clearable :searchable class="w-36" />
 
             <button @click="applyFilters" class="px-2 py-1 bg-blue-600 text-white rounded text-sm">Aplicar</button>
@@ -70,6 +71,14 @@
             <span v-if="appliedNe" class="inline-block px-2 py-0.5 bg-slate-100 text-slate-700 rounded">Ne: {{ appliedNe
             }}</span>
           </template>
+        </div>
+
+        <!-- Barra de resumen: Ens., LCL, Prom., UCL (orden solicitado) -->
+        <div class="mb-3 flex items-center gap-6 text-slate-700 text-sm flex-shrink-0">
+          <div><span class="font-semibold">Ens.:</span> {{ summary.count }}</div>
+          <div><span class="font-semibold">LCL:</span> {{ format2(summary.lcl) }}</div>
+          <div><span class="font-semibold">Prom.:</span> {{ format2(summary.mean) }}</div>
+          <div><span class="font-semibold">UCL:</span> {{ format2(summary.ucl) }}</div>
         </div>
 
         <div class="flex-1 min-h-0 relative">
@@ -482,6 +491,24 @@ function renderChart() {
   }
 
   chart.setOption(option)
+}
+
+// Resumen para la barra (reacciona a filtros y métrica)
+const summary = computed(() => {
+  const { y } = buildSeries()
+  const count = y.length
+  if (count === 0) return { count: 0, mean: null, lcl: null, ucl: null }
+  const mean = y.reduce((a, b) => a + b, 0) / count
+  const variance = y.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / count
+  const std = Math.sqrt(variance)
+  const ucl = mean + 3 * std
+  const lcl = mean - 3 * std
+  return { count, mean, ucl, lcl }
+})
+
+function format2(v) {
+  if (v == null || Number.isNaN(v)) return '—'
+  return Number(v).toFixed(2)
 }
 
 onMounted(async () => {

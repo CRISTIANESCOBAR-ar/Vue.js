@@ -1,5 +1,11 @@
 <template>
-	<div class="w-full pt-2 px-2 space-y-4 tenso-component">
+	<!-- Mensaje móvil: deshabilitado en pantallas pequeñas -->
+	<div class="md:hidden p-4">
+		<div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-slate-700 text-sm">
+			Esta página de carga (TensoRapid) está disponible solo en escritorio (pantallas medianas o mayores).
+		</div>
+	</div>
+	<div class="hidden md:block w-full pt-2 px-2 space-y-4 tenso-component">
 		<div
 			class="bg-white rounded-2xl shadow-xl pt-4 pb-4 px-4 md:pt-5 md:pb-5 md:px-5 mt-2 mb-4 border border-slate-200">
 			<!-- Selector de carpeta (con título principal delante) -->

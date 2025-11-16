@@ -1,5 +1,11 @@
 <template>
-  <div class="w-full h-screen flex flex-col p-1">
+  <!-- Mensaje móvil: deshabilitado en pantallas pequeñas -->
+  <div class="md:hidden p-4">
+    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-slate-700 text-sm">
+      Esta página de carga (Uster) está disponible solo en escritorio (pantallas medianas o mayores).
+    </div>
+  </div>
+  <div class="hidden md:flex w-full h-screen flex-col p-1">
     <main
       class="w-full flex-1 min-h-0 bg-white rounded-2xl shadow-xl px-4 py-3 border border-slate-200 flex flex-col overflow-y-auto uster-component">
       <!-- Top: compact carpeta selector on a single line for desktop -->
