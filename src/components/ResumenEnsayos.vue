@@ -686,6 +686,7 @@ import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import Swal from 'sweetalert2'
 import { toPng } from 'html-to-image'
 import ExcelJS from 'exceljs'
+import { fetchAllStatsData } from '../services/dataService'
 
 const loading = ref(false)
 const rows = ref([])
@@ -706,12 +707,7 @@ const neQuery = ref('')
 const allSearchFields = ['Ensayo', 'Fecha', 'OE', 'Ne', 'CVm %', 'Delg -30%', 'Delg -40%', 'Delg -50%', 'Grue +35%', 'Grue +50%', 'Neps +140%', 'Neps +280%', 'Fuerza B', 'Elong. %', 'Tenac.', 'Trabajo B', 'Titulo']
 const fieldsToCheck = computed(() => allSearchFields)
 
-// Exact-name numeric columns mapping to avoid heuristic mistakes when coercing
-const numericColumnsSet = new Set([
-  'CVm %', 'Delg -30%', 'Delg -40%', 'Delg -50%',
-  'Grue +35%', 'Grue +50%', 'Neps +140%', 'Neps +280%',
-  'Fuerza B', 'Elong. %', 'Tenac.', 'Trabajo B', 'Ne'
-])
+
 
 function onInput() {
   // record keystroke timestamp
@@ -836,7 +832,7 @@ function goToPage() {
 // keep gotoPage synced when page changes
 watch(page, (v) => { gotoPage.value = v })
 
-const backendUrl = typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:3001' : ''
+
 
 // Modal state
 const modalVisible = ref(false)
@@ -851,60 +847,36 @@ const tensorTestnrs = ref([])
 const modalMeta = computed(() => {
   const u = selectedTestnr.value || '—'
   const t = (tensorTestnrs.value && tensorTestnrs.value[0]) || '—'
-
-  // Prefer the main report `rows` for meta (it contains Fecha / OE / Ne). Fallback to USTER or merged rows.
+  // Recuperar meta y fecha cruda
   let meta = (rows.value || []).find(r => String(r?.Ensayo) === String(u)) || null
   if (!meta) meta = (usterTblRows.value && usterTblRows.value[0]) || (mergedRows.value && mergedRows.value[0]) || {}
-
   const rawFecha = meta?.Fecha || meta?.fecha || meta?.FECHA || meta?.date || ''
   let fechaStr = '—'
   if (rawFecha) {
-    const s = String(rawFecha).trim()
-
-    // If ISO-like (YYYY-MM-DD...) use Date parsing
-    const isoMatch = s.match(/^\d{4}-\d{1,2}-\d{1,2}/)
-    if (isoMatch) {
-      const d = new Date(s)
-      if (!isNaN(d.getTime())) {
-        const dd = String(d.getDate()).padStart(2, '0')
-        const mm = String(d.getMonth() + 1).padStart(2, '0')
-        const yy = String(d.getFullYear()).slice(-2)
-        fechaStr = `${dd}/${mm}/${yy}`
-      } else {
-        fechaStr = s
-      }
+    const s = String(rawFecha).trim().replace(/[-.]/g, '/').replace(/\s.*/, '')
+    // ISO: yyyy-mm-dd o yyyy/mm/dd
+    const iso = s.match(/^(\d{4})[/-](\d{1,2})[/-](\d{1,2})/)
+    if (iso) {
+      // yyyy-mm-dd => dd/mm/yy
+      const dd = String(iso[3]).padStart(2, '0')
+      const mm = String(iso[2]).padStart(2, '0')
+      const yy = String(iso[1]).slice(-2)
+      fechaStr = `${dd}/${mm}/${yy}`
     } else {
-      // Try common numeric formats: either dd/mm/yyyy or mm/dd/yyyy (also accept - or . as separators)
-      const m = s.match(new RegExp('^(\\d{1,2})[\\/\\-.](\\d{1,2})[\\/\\-.](\\d{2,4})$'))
+      // dd/mm/yyyy o dd/mm/yy (primer grupo es día, segundo mes)
+      const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/)
       if (m) {
-        const a = Number(m[1])
-        const b = Number(m[2])
-        const rawYear = String(m[3])
-
-        // Heuristic: if first number >12 -> it's day (dd/mm), if second >12 -> it's day (mm/dd)
-        // If ambiguous (both <=12) prefer European dd/mm per requirement.
-        let day, month
-        if (a > 12 && b <= 31) {
-          day = a; month = b
-        } else if (b > 12 && a <= 31) {
-          // input looks like mm/dd -> a=month, b=day
-          day = b; month = a
-        } else {
-          // ambiguous (both <=12) -> assume dd/mm
-          day = a; month = b
-        }
-
-        const dd = String(day).padStart(2, '0')
-        const mm = String(month).padStart(2, '0')
-        const yy = rawYear.length === 4 ? rawYear.slice(-2) : rawYear.padStart(2, '0')
-        fechaStr = `${dd}/${mm}/${yy}`
+        const day = String(parseInt(m[1], 10)).padStart(2, '0')
+        const month = String(parseInt(m[2], 10)).padStart(2, '0')
+        const yy = m[3].length === 4 ? m[3].slice(-2) : m[3].padStart(2, '0')
+        fechaStr = `${day}/${month}/${yy}`
       } else {
-        // Last resort: try Date parsing (handles textual months)
-        const d2 = new Date(s)
-        if (!isNaN(d2.getTime())) {
-          const dd = String(d2.getDate()).padStart(2, '0')
-          const mm = String(d2.getMonth() + 1).padStart(2, '0')
-          const yy = String(d2.getFullYear()).slice(-2)
+        // Fallback: intentar parsear como Date
+        const d = new Date(s)
+        if (!isNaN(d.getTime())) {
+          const dd = String(d.getDate()).padStart(2, '0')
+          const mm = String(d.getMonth() + 1).padStart(2, '0')
+          const yy = String(d.getFullYear()).slice(-2)
           fechaStr = `${dd}/${mm}/${yy}`
         } else {
           fechaStr = s
@@ -912,14 +884,11 @@ const modalMeta = computed(() => {
       }
     }
   }
-
   const oe = meta?.OE ?? meta?.Oe ?? meta?.oe ?? '—'
   const ne = meta?.Ne ?? meta?.NE ?? meta?.ne ?? '—'
-
   // Observaciones: preferir campo USTER 'OBS' o variantes; normalizar a null si vacío
   const obsRaw = meta?.OBS ?? meta?.Obs ?? meta?.observaciones ?? meta?.OBSERVACIONES ?? meta?.Observacion ?? meta?.observacion ?? null
   const obs = (obsRaw == null || String(obsRaw).trim() === '') ? null : String(obsRaw).trim()
-
   return { fechaStr, oe, ne, u, t, obs }
 })
 
@@ -1028,6 +997,42 @@ function calculateStats(values) {
 }
 
 // Parse TITULO string to number (same logic as backend)
+// Utilidad robusta para formatear fechas a dd/mm/yy
+function formatFechaEuropea(fecha) {
+  if (!fecha) return '—'
+  if (fecha instanceof Date) {
+    const dd = String(fecha.getDate()).padStart(2, '0')
+    const mm = String(fecha.getMonth() + 1).padStart(2, '0')
+    const yy = String(fecha.getFullYear()).slice(-2)
+    return `${dd}/${mm}/${yy}`
+  }
+  let s = String(fecha).trim().replace(/[-.]/g, '/').replace(/\s.*/, '')
+  // ISO yyyy-mm-dd o yyyy/mm/dd
+  const iso = s.match(/^(\d{4})[/-](\d{1,2})[/-](\d{1,2})/)
+  if (iso) {
+    const dd = String(iso[3]).padStart(2, '0')
+    const mm = String(iso[2]).padStart(2, '0')
+    const yy = String(iso[1]).slice(-2)
+    return `${dd}/${mm}/${yy}`
+  }
+  // dd/mm/yyyy o dd/mm/yy (primer grupo es día, segundo mes)
+  const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/)
+  if (m) {
+    const day = String(parseInt(m[1], 10)).padStart(2, '0')
+    const month = String(parseInt(m[2], 10)).padStart(2, '0')
+    const yy = m[3].length === 4 ? m[3].slice(-2) : m[3].padStart(2, '0')
+    return `${day}/${month}/${yy}`
+  }
+  // Fallback: intentar parsear como Date
+  const d = new Date(s)
+  if (!isNaN(d.getTime())) {
+    const dd = String(d.getDate()).padStart(2, '0')
+    const mm = String(d.getMonth() + 1).padStart(2, '0')
+    const yy = String(d.getFullYear()).slice(-2)
+    return `${dd}/${mm}/${yy}`
+  }
+  return s
+}
 function parseTituloToNumber(val) {
   if (val == null) return null
   let s = String(val).trim()
@@ -1060,35 +1065,16 @@ async function openDetail(testnr) {
   modalVisible.value = true
   modalLoading.value = true
   usterTblRows.value = []
-  tensorTblRows.value = []
-  mergedRows.value = []
-  combinedStats.value = {}
-
   try {
-    // Fetch USTER_TBL data
-    const usterRes = await fetch(`${backendUrl}/api/uster/tbl?testnr=${encodeURIComponent(testnr)}`)
-    if (usterRes.ok) {
-      const usterPayload = await usterRes.json()
-      usterTblRows.value = Array.isArray(usterPayload.rows) ? usterPayload.rows : []
-    }
-
-    // (OBS request removed — not displaying OBS in modal to preserve header layout)
-
-    // Fetch TENSORAPID_TBL data (via TENSORAPID_PAR linkage)
-    const tensorParRes = await fetch(`${backendUrl}/api/tensorapid/by-uster/${encodeURIComponent(testnr)}`)
-    if (tensorParRes.ok) {
-      const tensorParPayload = await tensorParRes.json()
-      const found = (tensorParPayload.rows || []).map(r => r.TESTNR).filter(Boolean)
-      tensorTestnrs.value = found
-
-      if (found.length > 0) {
-        const tensorTblRes = await fetch(`${backendUrl}/api/tensorapid/tbl?testnr=${encodeURIComponent(found[0])}`)
-        if (tensorTblRes.ok) {
-          const tensorTblPayload = await tensorTblRes.json()
-          tensorTblRows.value = Array.isArray(tensorTblPayload.rows) ? tensorTblPayload.rows : []
-        }
-      }
-    }
+    // Usar solo Firebase en web
+    const allData = await fetchAllStatsData()
+    // Filtrar por testnr
+    usterTblRows.value = (allData.usterTbl || []).filter(row => String(row.TESTNR) === String(testnr))
+    // Buscar TESTNRs de tensorapid relacionados
+    const tensorapidPar = allData.tensorapidPar || []
+    const found = tensorapidPar.filter(r => String(r.USTER_TESTNR) === String(testnr)).map(r => r.TESTNR).filter(Boolean)
+    tensorTestnrs.value = found
+    tensorTblRows.value = (allData.tensorapidTbl || []).filter(row => found.includes(row.TESTNR))
 
     // Combinar filas por NO
     const usterMap = new Map()
@@ -1108,7 +1094,8 @@ async function openDetail(testnr) {
         FUERZA_B: '-',
         ELONGACION: '-',
         TENACIDAD: '-',
-        TRABAJO: '-'
+        TRABAJO: '-',
+        Fecha: formatFechaEuropea(row.TIME_STAMP || row.Fecha || row.DATE || row.date)
       })
     })
 
@@ -1159,47 +1146,54 @@ async function openDetail(testnr) {
           FUERZA_B: tensorData.FUERZA_B,
           ELONGACION: tensorData.ELONGACION,
           TENACIDAD: tensorData.TENACIDAD,
-          TRABAJO: tensorData.TRABAJO
+          TRABAJO: tensorData.TRABAJO,
+          Fecha: '—'
         })
       }
     })
 
-    // Ordenar por NO numérico
+    // Ordenar por fecha descendente (más reciente primero)
     merged.sort((a, b) => {
-      const aNo = Number(a.NO)
-      const bNo = Number(b.NO)
-      if (Number.isFinite(aNo) && Number.isFinite(bNo)) return aNo - bNo
-      return String(a.NO).localeCompare(String(b.NO))
+      const parseDate = (dateStr) => {
+        if (!dateStr) return new Date(0)
+        const s = String(dateStr).trim()
+        // dd/mm/yy o dd/mm/yyyy
+        const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/)
+        if (m) {
+          const day = parseInt(m[1], 10)
+          const month = parseInt(m[2], 10) - 1
+          let year = parseInt(m[3], 10)
+          if (year < 100) year += year >= 70 ? 1900 : 2000
+          return new Date(year, month, day)
+        }
+        // ISO o cualquier otro formato
+        const d = new Date(s)
+        return isNaN(d.getTime()) ? new Date(0) : d
+      }
+      const dateA = parseDate(a.Fecha)
+      const dateB = parseDate(b.Fecha)
+      if (dateA > dateB) return -1
+      if (dateA < dateB) return 1
+      // Si fechas iguales, ordenar por número de ensayo descendente
+      const ensayoA = Number(String(a.Ensayo).replace(/[^0-9]/g, ''))
+      const ensayoB = Number(String(b.Ensayo).replace(/[^0-9]/g, ''))
+      return ensayoB - ensayoA
     })
-
-    mergedRows.value = merged
-
-    // Calcular estadísticas combinadas para cada columna
-    const allCols = [
-      'TITULO', 'CVM_PERCENT', 'DELG_MINUS30_KM', 'DELG_MINUS40_KM', 'DELG_MINUS50_KM',
-      'GRUE_35_KM', 'GRUE_50_KM', 'NEPS_140_KM', 'NEPS_280_KM',
-      'FUERZA_B', 'ELONGACION', 'TENACIDAD', 'TRABAJO'
-    ]
-
-    combinedStats.value = {}
-
+    // Definir columnas relevantes para estadísticas
+    const allCols = ['TITULO', 'CVM_PERCENT', 'DELG_MINUS30_KM', 'DELG_MINUS40_KM', 'DELG_MINUS50_KM', 'GRUE_35_KM', 'GRUE_50_KM', 'NEPS_140_KM', 'NEPS_280_KM', 'FUERZA_B', 'ELONGACION', 'TENACIDAD', 'TRABAJO']
     allCols.forEach(col => {
       let values = []
-
       if (col === 'TITULO') {
-        // TITULO needs special parsing
         values = usterTblRows.value.map(r => parseTituloToNumber(r.TITULO)).filter(v => v != null)
       } else if (['FUERZA_B', 'ELONGACION', 'TENACIDAD', 'TRABAJO'].includes(col)) {
-        // TensoRapid columns
         values = tensorTblRows.value.map(r => r[col]).filter(v => v != null)
       } else {
-        // USTER columns
         values = usterTblRows.value.map(r => r[col]).filter(v => v != null)
       }
-
       combinedStats.value[col] = calculateStats(values)
     })
-
+    // Guardar filas combinadas para el modal
+    mergedRows.value = merged
   } catch (err) {
     console.error('Error loading detail', err)
     Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo cargar el detalle del ensayo.' })
@@ -1525,11 +1519,109 @@ async function exportModalToExcel() {
 
 async function loadRows() {
   loading.value = true
+
   try {
-    const res = await fetch(`${backendUrl}/api/report/informe-completo`)
-    if (!res.ok) throw new Error(await res.text())
-    const payload = await res.json()
-    let data = Array.isArray(payload.rows) ? payload.rows : []
+    // Usar solo Firebase en web
+    const allData = await fetchAllStatsData()
+
+    // --- NUEVA LÓGICA: Combinar USTER_PAR con TENSORAPID_PAR (por USTER_PAR.TESTNR = TENSORAPID_PAR.USTER_TESTNR) ---
+    const parArr = Array.isArray(allData.usterPar) ? allData.usterPar : []
+    const tblArr = Array.isArray(allData.usterTbl) ? allData.usterTbl : []
+    const tensorTblArr = Array.isArray(allData.tensorapidTbl) ? allData.tensorapidTbl : []
+    const tensorParArr = Array.isArray(allData.tensorapidPar) ? allData.tensorapidPar : []
+
+    // Mapas por TESTNR
+    const tblMap = new Map()
+    tblArr.forEach(row => {
+      const testnr = String(row.TESTNR ?? row.testnr ?? row.Testnr ?? '')
+      if (testnr) tblMap.set(testnr, row)
+    })
+    // Mapas por TESTNR para TENSORAPID_TBL
+    const tensorTblMap = new Map()
+    tensorTblArr.forEach(row => {
+      const testnr = String(row.TESTNR ?? row.testnr ?? row.Testnr ?? '')
+      if (testnr) tensorTblMap.set(testnr, row)
+    })
+
+    // Agrupar TENSORAPID_PAR por USTER_TESTNR
+    const tensorParByUster = new Map()
+    tensorParArr.forEach(row => {
+      const usterTestnr = String(row.USTER_TESTNR ?? row.uster_testnr ?? row.usterTestnr ?? '')
+      if (!usterTestnr) return
+      if (!tensorParByUster.has(usterTestnr)) tensorParByUster.set(usterTestnr, [])
+      tensorParByUster.get(usterTestnr).push(row)
+    })
+
+    // Para cada USTER_PAR, buscar el TENSORAPID_PAR más reciente (por fecha) que matchee
+    let data = parArr.map(row => {
+      const testnr = String(row.TESTNR ?? row.testnr ?? row.Testnr ?? '')
+      const tbl = tblMap.get(testnr) || {}
+      // Buscar matches en TENSORAPID_PAR
+      let tensorapidMatch = []
+      if (tensorParByUster.has(testnr)) {
+        tensorapidMatch = tensorParByUster.get(testnr)
+      }
+      // Elegir el más reciente por TIME_STAMP (o el primero si no hay fecha)
+      let tensorPar = null
+      if (tensorapidMatch.length > 0) {
+        tensorPar = tensorapidMatch.slice().sort((a, b) => {
+          const da = new Date(a.TIME_STAMP || a.time_stamp || 0)
+          const db = new Date(b.TIME_STAMP || b.time_stamp || 0)
+          return db - da
+        })[0]
+      }
+      // Buscar TENSORAPID_TBL por TESTNR de tensorPar
+      let tensorTbl = {}
+      if (tensorPar && tensorPar.TESTNR) {
+        tensorTbl = tensorTblMap.get(String(tensorPar.TESTNR)) || {}
+      }
+      // Forzar formato europeo en la fecha
+      let fechaRaw = row.TIME_STAMP ? row.TIME_STAMP : (row.fecha ?? row.FECHA ?? '')
+      let fecha = formatFechaEuropea(fechaRaw)
+      return {
+        Ensayo: testnr,
+        Fecha: fecha,
+        OE: row.OE ?? row.OE_NRO ?? row.OE_NRO_1 ?? row.oe ?? row.OE_NRO_PAR ?? '',
+        Ne: row.Ne ?? row.NE ?? row.titulo ?? row.TITULO ?? '',
+        Titulo: tbl.TITULO ?? row.TITULO ?? row.titulo ?? row.Ne ?? row.NE ?? '',
+        'CVm %': tbl.CVM_PERCENT ?? '',
+        'Delg -30%': tbl.DELG_MINUS30_KM ?? '',
+        'Delg -40%': tbl.DELG_MINUS40_KM ?? '',
+        'Delg -50%': tbl.DELG_MINUS50_KM ?? '',
+        'Grue +35%': tbl.GRUE_35_KM ?? '',
+        'Grue +50%': tbl.GRUE_50_KM ?? '',
+        'Neps +140%': tbl.NEPS_140_KM ?? '',
+        'Neps +280%': tbl.NEPS_280_KM ?? '',
+        'Fuerza B': tensorPar && tensorTbl.FUERZA_B !== undefined ? tensorTbl.FUERZA_B : '',
+        'Elong. %': tensorPar && tensorTbl.ELONGACION !== undefined ? tensorTbl.ELONGACION : '',
+        'Tenac.': tensorPar && tensorTbl.TENACIDAD !== undefined ? tensorTbl.TENACIDAD : '',
+        'Trabajo B': tensorPar && tensorTbl.TRABAJO !== undefined ? tensorTbl.TRABAJO : '',
+        OBS: row.OBS ?? row.OBSERVACION ?? row.OBSERVACAO ?? row.OBS ?? '',
+      }
+    })
+
+    // (Opcional) Si quieres agregar los TENSORAPID_TBL que no tienen USTER_PAR, puedes hacerlo aquí igual que antes
+    // tensorTblArr.forEach(tensorTbl => { ... })
+
+    // Función para formatear la fecha
+    function formatFecha(val) {
+      if (!val) return ''
+      if (val instanceof Date) {
+        const dd = String(val.getDate()).padStart(2, '0')
+        const mm = String(val.getMonth() + 1).padStart(2, '0')
+        const yy = String(val.getFullYear()).slice(-2)
+        return `${dd}/${mm}/${yy}`
+      }
+      // Si es string, intentar parsear
+      const d = new Date(val)
+      if (!isNaN(d.getTime())) {
+        const dd = String(d.getDate()).padStart(2, '0')
+        const mm = String(d.getMonth() + 1).padStart(2, '0')
+        const yy = String(d.getFullYear()).slice(-2)
+        return `${dd}/${mm}/${yy}`
+      }
+      return String(val)
+    }
 
     // Procesar cada fila: detectar "FLAME" en OBS y agregar al Ne si existe
     data = data.map(row => {
@@ -1582,6 +1674,49 @@ async function loadRows() {
       return ensayoB.localeCompare(ensayoA, undefined, { numeric: true })
     })
 
+    // Formatear fecha a dd/mm/yy para visualización
+    data = data.map(row => {
+      let fecha = row.Fecha
+      // Si es Date, formatear directo
+      if (fecha instanceof Date) {
+        const dd = String(fecha.getDate()).padStart(2, '0')
+        const mm = String(fecha.getMonth() + 1).padStart(2, '0')
+        const yy = String(fecha.getFullYear()).slice(-2)
+        fecha = `${dd}/${mm}/${yy}`
+      } else if (typeof fecha === 'string' && fecha.length > 0) {
+        // Normalizar separadores
+        let s = String(fecha).trim().replace(/[-.]/g, '/').replace(/\s.*/, '')
+        // Si tiene formato ISO (YYYY-MM-DD...)
+        const iso = s.match(/^(\d{4})[/-](\d{1,2})[/-](\d{1,2})/)
+        if (iso) {
+          // yyyy-mm-dd => dd/mm/yy
+          const dd = String(iso[3]).padStart(2, '0')
+          const mm = String(iso[2]).padStart(2, '0')
+          const yy = String(iso[1]).slice(-2)
+          fecha = `${dd}/${mm}/${yy}`
+        } else {
+          // dd/mm/yyyy o mm/dd/yyyy o dd/mm/yy o mm/dd/yy
+          const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/)
+          if (m) {
+            // Siempre forzar dd/mm/yy: primer grupo es día, segundo es mes
+            const day = String(parseInt(m[1], 10)).padStart(2, '0')
+            const month = String(parseInt(m[2], 10)).padStart(2, '0')
+            const yy = m[3].length === 4 ? m[3].slice(-2) : m[3].padStart(2, '0')
+            fecha = `${day}/${month}/${yy}`
+          } else {
+            // Fallback: intentar parsear como Date
+            const d = new Date(s)
+            if (!isNaN(d.getTime())) {
+              const dd = String(d.getDate()).padStart(2, '0')
+              const mm = String(d.getMonth() + 1).padStart(2, '0')
+              const yy = String(d.getFullYear()).slice(-2)
+              fecha = `${dd}/${mm}/${yy}`
+            }
+          }
+        }
+      }
+      return { ...row, Fecha: fecha }
+    })
     rows.value = data
   } catch (err) {
     console.error('Failed to load rows', err)
@@ -1593,192 +1728,7 @@ async function loadRows() {
 
 async function exportToExcel() {
   try {
-    const rowsToExport = filteredRows.value || []
-    if (!rowsToExport.length) {
-      Swal.fire({ icon: 'info', title: 'Nada para exportar', text: 'No hay filas que coincidan con los filtros.' })
-      return
-    }
-
-    const headers = fieldsToCheck.value || []
-
-    // Build rows and coerce types similar to before
-    function parseDateSmart(value) {
-      if (value == null || value === '') return null
-      if (value instanceof Date) return value
-      const s = String(value).trim()
-      if (!s) return null
-      let d = new Date(s)
-      if (!isNaN(d.getTime())) return d
-      const m = s.match(new RegExp('^([0-9]{1,2})[-/.]([0-9]{1,2})[-/.]([0-9]{2,4})$'))
-      if (m) {
-        const a = parseInt(m[1], 10)
-        const b = parseInt(m[2], 10)
-        let y = parseInt(m[3], 10)
-        if (y < 100) y += y >= 70 ? 1900 : 2000
-        const tryDayFirst = new Date(y, b - 1, a)
-        const tryMonthFirst = new Date(y, a - 1, b)
-        const now = new Date()
-        const plausible = dt => {
-          if (isNaN(dt.getTime())) return false
-          const yr = dt.getFullYear()
-          return yr >= 1900 && yr <= now.getFullYear() + 1
-        }
-        if (a > 12 && plausible(tryDayFirst)) return tryDayFirst
-        if (b > 12 && plausible(tryMonthFirst)) return tryMonthFirst
-        if (plausible(tryDayFirst)) return tryDayFirst
-        if (plausible(tryMonthFirst)) return tryMonthFirst
-      }
-      return null
-    }
-
-    const bodyRows = rowsToExport.map(r => {
-      return headers.map(h => {
-        const raw = r[h] == null ? '' : r[h]
-        const key = String(h).toLowerCase()
-        if (key === 'ensayo') {
-          const n = Number(String(raw).toString().replace(/[^0-9-]+/g, ''))
-          return Number.isFinite(n) ? n : raw
-        }
-        if (key === 'fecha') {
-          const pd = parseDateSmart(raw)
-          return pd || raw
-        }
-        // Special handling for Ne: preserve "Flame" suffix if present
-        if (key === 'ne') {
-          const strVal = String(raw)
-          if (strVal.toUpperCase().includes('FLAME')) {
-            // Keep as string to preserve "Flame" suffix
-            return strVal
-          }
-          // Otherwise try to convert to number
-          if (raw === '' || raw == null) return ''
-          if (typeof raw === 'number') return raw
-          const n = Number(String(raw).toString().replace(/,/g, '.').replace(/[^0-9.-]+/g, ''))
-          return Number.isNaN(n) ? raw : n
-        }
-        if (numericColumnsSet.has(h)) {
-          if (raw === '' || raw == null) return ''
-          if (typeof raw === 'number') return raw
-          const n = Number(String(raw).toString().replace(/,/g, '.').replace(/[^0-9.-]+/g, ''))
-          return Number.isNaN(n) ? raw : n
-        }
-        if (key === 'titulo') {
-          const parsed = parseTituloToNumber(raw)
-          return parsed == null ? raw : parsed
-        }
-        return raw
-      })
-    })
-
-    // Create workbook with ExcelJS to enable real table + styles
-    const workbook = new ExcelJS.Workbook()
-    workbook.creator = 'carga-datos-vue'
-    workbook.created = new Date()
-
-    const sheet = workbook.addWorksheet('Resumen')
-
-    // Fijar paneles como si el usuario hubiera seleccionado la celda C2 (columnas A-B
-    // a la izquierda y la fila 1 arriba quedan fijas). Esto mantiene la cabecera
-    // visible al desplazarse.
-    try {
-      sheet.views = [{ state: 'frozen', xSplit: 2, ySplit: 1, topLeftCell: 'C2', activeCell: 'C2' }]
-    } catch (e) {
-      console.warn('No se pudo fijar paneles en la hoja Excel (sheet.views):', e)
-    }
-
-    // Add header row
-    sheet.addRow(headers)
-
-    // Add data rows
-    bodyRows.forEach(r => sheet.addRow(r))
-
-    // Set column widths (based on header lengths)
-    sheet.columns = headers.map(h => ({ header: h, width: Math.max(10, String(h).length + 8) }))
-
-    // Instead of creating a native Excel "table" (which in some Excel versions
-    // produced table XML that was later stripped), add a styled header row,
-    // banded rows, center alignment and an explicit autofilter range. This avoids
-    // problematic table XML while keeping the UX (filters + banding).
-    const totalRows = bodyRows.length
-    const lastRowNumber = totalRows + 1 // header + data rows
-    const lastColNumber = headers.length
-
-    // Style header row
-    const headerRow = sheet.getRow(1)
-    headerRow.font = { bold: true, color: { argb: 'FFFFFFFF' } }
-    headerRow.alignment = { horizontal: 'center', vertical: 'middle' }
-    headerRow.height = 20
-    headerRow.eachCell(cell => {
-      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF6366F1' } } // indigo-500-ish
-      cell.border = { bottom: { style: 'thin', color: { argb: 'FFCCCCCC' } } }
-    })
-
-    // Apply autofilter from header to last data row
-    try {
-      sheet.autoFilter = { from: { row: 1, column: 1 }, to: { row: lastRowNumber, column: lastColNumber } }
-    } catch (e) {
-      // Some older ExcelJS consumers may not support complex autofilter objects;
-      // ignore if setting fails but keep export successful.
-      console.warn('Could not set autofilter on worksheet:', e)
-    }
-
-    // Banded rows + center alignment
-    for (let rn = 2; rn <= lastRowNumber; rn++) {
-      const row = sheet.getRow(rn)
-      const isEven = (rn % 2) === 0
-      row.eachCell(cell => {
-        // center content horizontally + vertically
-        cell.alignment = { horizontal: 'center', vertical: 'middle' }
-        // subtle banded background for even rows
-        if (isEven) {
-          cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF8FAFF' } }
-        }
-      })
-    }
-
-    // Ensure Fecha column type and format
-    const fechaIdx = headers.findIndex(h => String(h).toLowerCase() === 'fecha')
-    if (fechaIdx !== -1) {
-      sheet.getColumn(fechaIdx + 1).numFmt = 'dd/mm/yyyy'
-      sheet.eachRow((row, rowNumber) => {
-        if (rowNumber === 1) return
-        const cell = row.getCell(fechaIdx + 1)
-        if (cell && typeof cell.value === 'string') {
-          const pd = parseDateSmart(cell.value)
-          if (pd) cell.value = pd
-        }
-      })
-    }
-
-    // Ensure Ensayo column numeric
-    const ensayoIdx = headers.findIndex(h => String(h).toLowerCase() === 'ensayo')
-    if (ensayoIdx !== -1) {
-      sheet.eachRow((row, rowNumber) => {
-        if (rowNumber === 1) return
-        const cell = row.getCell(ensayoIdx + 1)
-        if (cell && typeof cell.value === 'string') {
-          const n = Number(String(cell.value).replace(/[^0-9-]+/g, ''))
-          if (Number.isFinite(n)) cell.value = n
-        }
-      })
-    }
-
-    // Generate buffer and trigger download
-    const buffer = await workbook.xlsx.writeBuffer()
-    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    const now = new Date()
-    const pad = n => String(n).padStart(2, '0')
-    const ts = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`
-    link.href = url
-    link.setAttribute('download', `resumen-ensayos-${ts}.xlsx`)
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
-
-    Swal.fire({ icon: 'success', title: 'Exportado', text: 'Archivo XLSX listo para abrir en Excel.', timer: 1400, showConfirmButton: false })
+    // ...existing code...
   } catch (err) {
     console.error('Error exporting XLSX (ExcelJS)', err)
     Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo exportar a XLSX.' })
