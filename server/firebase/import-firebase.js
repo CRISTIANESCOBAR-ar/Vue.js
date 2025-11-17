@@ -200,8 +200,10 @@ async function main() {
 }
 
 // Run if called directly
-if (import.meta.url === `file://${process.argv[1]}`) {
-  main()
-}
+// Always run main() to be compatible across platforms (Windows paths)
+main().catch((err) => {
+  console.error('Fatal error:', err)
+  process.exit(1)
+})
 
 export { importCollection, verifyImport }
