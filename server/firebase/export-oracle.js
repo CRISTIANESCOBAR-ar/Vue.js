@@ -56,14 +56,21 @@ async function exportTable(conn, tableName, fileName) {
 
   try {
     const sql = `SELECT * FROM ${SCHEMA_PREFIX}${tableName} ORDER BY TESTNR`
-    const result = await conn.execute(
-      sql,
-      {},
-      {
-        outFormat: oracledb.OUT_FORMAT_OBJECT,
-        maxRows: 0 // No limit
-      }
-    )
+    // Map CLOBs to strings where needed to avoid Node streams in JSON
+    const fetchInfo = {}
+    if (tableName === 'USTER_PAR') {
+      fetchInfo.OBS = { type: oracledb.STRING }
+    }
+    if (tableName === 'TENSORAPID_PAR') {
+      fetchInfo.COMMENT_TEXT = { type: oracledb.STRING }
+      fetchInfo.PAR_JSON = { type: oracledb.STRING }
+    }
+
+    const result = await conn.execute(sql, {}, {
+      outFormat: oracledb.OUT_FORMAT_OBJECT,
+      maxRows: 0, // No limit
+      ...(Object.keys(fetchInfo).length ? { fetchInfo } : {})
+    })
 
     const rows = result.rows || []
     console.log(`   ✓ Found ${rows.length} records`)
@@ -77,6 +84,17 @@ async function exportTable(conn, tableName, fileName) {
         } else {
           obj[key] = value
         }
+      }
+      // Normalize/comment handling for TENSORAPID_PAR: prefer COMMENT as string and drop COMMENT_TEXT
+      if (tableName === 'TENSORAPID_PAR') {
+        if (typeof obj.COMMENT_TEXT === 'string' && obj.COMMENT_TEXT.trim() !== '') {
+          // If COMMENT is empty, populate it from COMMENT_TEXT
+          if (!obj.COMMENT || String(obj.COMMENT).trim() === '') {
+            obj.COMMENT = obj.COMMENT_TEXT
+          }
+        }
+        // Remove COMMENT_TEXT to avoid Firestore map/stream fields
+        delete obj.COMMENT_TEXT
       }
       return obj
     })
@@ -165,12 +183,10 @@ async function main() {
   }
 }
 
-// Run if called directly
-if (import.meta.url === `file://${process.argv[1]}`) {
-  main().catch((err) => {
-    console.error('Fatal error:', err)
-    process.exit(1)
-  })
-}
+// Always run main()
+main().catch((err) => {
+  console.error('Fatal error:', err)
+  process.exit(1)
+})
 
 export { exportTable, getConnection }

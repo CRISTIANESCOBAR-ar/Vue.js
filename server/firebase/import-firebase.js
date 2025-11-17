@@ -84,6 +84,11 @@ async function importCollection(db, fileName, collectionName, idField) {
       const chunk = data.slice(i, i + BATCH_SIZE)
 
       for (const record of chunk) {
+        // Sanitize records before upload (avoid problematic fields)
+        if (collectionName === 'tensorapid_par' || collectionName === 'TENSORAPID_PAR') {
+          // Drop COMMENT_TEXT if present in JSON
+          if ('COMMENT_TEXT' in record) delete record.COMMENT_TEXT
+        }
         // Use specified ID field or auto-generate
         const docRef =
           idField && record[idField]
