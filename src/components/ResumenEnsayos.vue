@@ -329,11 +329,17 @@
           </div>
         </header>
 
-        <!-- Observaciones (OBS) — tomada de la misma fuente que Fecha/OE/Ne (modalMeta.obs).
-       Se muestra en una línea propia debajo del header para no romper la alineación
-       del header principal ni de los botones de acción a la derecha. -->
-        <div v-if="modalMeta.obs" class="mx-8 w-full text-slate-600 text-sm mb-2">Obs.: <span
-            class="text-slate-900 text-sm font-normal ml-1">{{ modalMeta.obs }}</span></div>
+        <!-- Observaciones (OBS) y Lab. Uster (LABORANT) — en línea debajo del header -->
+        <div v-if="modalMeta.obs || modalMeta.laborant" class="mx-8 flex items-center gap-4 text-slate-600 text-sm mb-2">
+          <div v-if="modalMeta.obs">
+            <span>Obs.:</span>
+            <span class="text-slate-900 text-sm font-normal ml-1">{{ modalMeta.obs }}</span>
+          </div>
+          <div v-if="modalMeta.laborant">
+            <span>Lab. Uster:</span>
+            <span class="text-slate-900 text-sm font-normal ml-1">{{ modalMeta.laborant }}</span>
+          </div>
+        </div>
         <section class="flex-1 relative">
           <!-- Always render content to preserve modal height; show spinner as overlay when loading -->
           <div>
@@ -1082,7 +1088,10 @@ const modalMeta = computed(() => {
     }
   }
   const obs = (obsRaw == null || String(obsRaw).trim() === '') ? null : String(obsRaw).trim()
-  return { fechaStr, oe, ne, u, t, obs }
+  // Laborant: extraer de meta (viene en campo LABORANT)
+  let laborantRaw = meta?.LABORANT ?? meta?.Laborant ?? meta?.laborant ?? null
+  const laborant = (laborantRaw == null || String(laborantRaw).trim() === '') ? null : String(laborantRaw).trim()
+  return { fechaStr, oe, ne, u, t, obs, laborant }
 })
 
 // Index within the current filtered list for the selected ensayo
