@@ -3,11 +3,18 @@
  * Los campos OBS que contienen objetos stream de Node.js se limpiarán (null)
  */
 
-const admin = require('firebase-admin')
-const path = require('path')
+import admin from 'firebase-admin'
+import fs from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
 
-// Inicializar Firebase Admin
-const serviceAccount = require('./serviceAccountKey.json')
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+// Inicializar Firebase Admin (leer JSON de credenciales en ESM)
+const serviceAccount = JSON.parse(
+  fs.readFileSync(path.join(__dirname, 'serviceAccountKey.json'), 'utf8')
+)
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)

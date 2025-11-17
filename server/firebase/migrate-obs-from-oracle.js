@@ -3,9 +3,17 @@
  * Lee los campos CLOB correctamente y los sube como strings
  */
 
-const oracledb = require('oracledb')
-const admin = require('firebase-admin')
-require('dotenv').config({ path: '../.env' })
+import oracledb from 'oracledb'
+import admin from 'firebase-admin'
+import dotenv from 'dotenv'
+import fs from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+dotenv.config({ path: '../.env' })
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 // Configuración Oracle
 const dbConfig = {
@@ -16,8 +24,10 @@ const dbConfig = {
 
 const SCHEMA_PREFIX = process.env.SCHEMA_PREFIX || ''
 
-// Inicializar Firebase Admin
-const serviceAccount = require('./serviceAccountKey.json')
+// Inicializar Firebase Admin (leer JSON de credenciales en ESM)
+const serviceAccount = JSON.parse(
+  fs.readFileSync(path.join(__dirname, 'serviceAccountKey.json'), 'utf8')
+)
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
@@ -71,7 +81,7 @@ async function uploadOBSToFirebase(obsData) {
   console.log('📤 Subiendo OBS a Firebase...\n')
 
   try {
-    const batch = db.batch()
+    let batch = db.batch()
     let batchCount = 0
     let updatedCount = 0
 
@@ -81,8 +91,9 @@ async function uploadOBSToFirebase(obsData) {
 
       // Solo actualizar si hay contenido real
       if (obs && obs.length > 0) {
-        const docRef = db.collection('USTER_PAR').doc(testnr)
-        batch.update(docRef, { OBS: obs })
+        const docRef = db.collection('USTER_PAR').doc(String(testnr))
+        // Usar set con merge para evitar fallos si el doc no existe
+        batch.set(docRef, { OBS: obs }, { merge: true })
 
         console.log(`   ✓ ${testnr}: "${obs.substring(0, 50)}${obs.length > 50 ? '...' : ''}"`)
 
@@ -93,6 +104,8 @@ async function uploadOBSToFirebase(obsData) {
         if (batchCount >= 500) {
           await batch.commit()
           console.log(`   💾 Batch commit (${batchCount} documentos)\n`)
+          // Reiniciar batch después del commit
+          batch = db.batch()
           batchCount = 0
         }
       }
