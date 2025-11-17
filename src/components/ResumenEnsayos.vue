@@ -1076,7 +1076,11 @@ const modalMeta = computed(() => {
   const oe = meta?.OE ?? meta?.Oe ?? meta?.oe ?? '—'
   const ne = meta?.Ne ?? meta?.NE ?? meta?.ne ?? '—'
   // Observaciones: preferir campo USTER 'OBS' o variantes; normalizar a null si vacío
-  let obsRaw = meta?.OBS ?? meta?.Obs ?? meta?.observaciones ?? meta?.OBSERVACIONES ?? meta?.Observacion ?? meta?.observacion ?? null
+  let obsRaw = meta?.OBS ?? meta?.Obs ?? meta?.obs ?? meta?.observaciones ?? meta?.OBSERVACIONES ?? meta?.Observacion ?? meta?.observacion ?? null
+  // Debug: verificar qué tiene meta
+  if (u === '05496' || u === '05497') {
+    console.log('DEBUG modalMeta para', u, ':', { meta, obsRaw, hasOBS: 'OBS' in (meta || {}) })
+  }
   // Si obsRaw es un objeto, intentar extraer el valor correcto
   if (obsRaw && typeof obsRaw === 'object') {
     // Detectar objetos internos de Oracle/Node (LOB streams) y descartarlos
@@ -1633,7 +1637,8 @@ async function loadRows() {
         'Elong. %': calcAvg(tensorTblRows, 'ELONGACION'),
         'Tenac.': calcAvg(tensorTblRows, 'TENACIDAD'),
         'Trabajo B': calcAvg(tensorTblRows, 'TRABAJO'),
-        OBS: row.OBS ?? row.OBSERVACION ?? row.OBSERVACAO ?? row.OBS ?? '',
+        OBS: row.OBS ?? row.OBSERVACION ?? row.OBSERVACAO ?? row.obs ?? '',
+        LABORANT: row.LABORANT ?? row.Laborant ?? row.laborant ?? '',
         TensoRapid: tensorRapidTestnr,
       }
     })
