@@ -1,35 +1,15 @@
 <template>
-  <div class="w-full h-screen flex flex-col p-1">
+  <!-- Mensaje móvil: deshabilitado en pantallas pequeñas -->
+  <div class="md:hidden p-4">
+    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-slate-700 text-sm">
+      Esta página de gráficos está disponible solo en escritorio (pantallas medianas o mayores).
+    </div>
+  </div>
+  
+  <div class="hidden md:flex w-full h-screen flex-col p-1">
     <main class="w-full flex-1 min-h-0 bg-white rounded-2xl shadow-xl px-4 py-3 border border-slate-200 flex flex-col">
-      <!-- Título móvil -->
-      <h3 class="xl:hidden text-lg font-semibold text-slate-800 mb-3">Gráficos de Ensayos</h3>
-
-      <!-- Controles móviles -->
-      <div class="mb-3 xl:hidden flex flex-col gap-2 flex-shrink-0">
-        <!-- Fila: Ne (4 chars) + Ver (variable a graficar) -->
-        <div class="flex items-center gap-2 w-full">
-          <span class="text-sm text-slate-600 shrink-0">Ne:</span>
-          <select v-model="ne" class="px-1 py-1 border rounded-md text-sm shrink-0"
-            style="width: 4.5ch; min-width: 4.5ch; max-width: 4.5ch;">
-            <option value="">-</option>
-            <option v-for="opt in neOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
-          </select>
-          <span class="text-sm text-slate-600 shrink-0">Ver:</span>
-          <select v-model="metric"
-            class="px-2 py-1 border rounded-md text-sm flex-1 min-w-0 overflow-hidden text-ellipsis">
-            <option v-for="m in metrics" :key="m.value" :value="m.value">{{ m.label }}</option>
-          </select>
-        </div>
-        <!-- Fila: LCL, Prom., UCL -->
-        <div class="flex items-center gap-4 text-slate-700 text-xs flex-wrap">
-          <div class="whitespace-nowrap"><span class="font-semibold">LCL:</span> {{ format2(summary.lcl) }}</div>
-          <div class="whitespace-nowrap"><span class="font-semibold">Prom.:</span> {{ format2(summary.mean) }}</div>
-          <div class="whitespace-nowrap"><span class="font-semibold">UCL:</span> {{ format2(summary.ucl) }}</div>
-        </div>
-      </div>
-
       <!-- Controles escritorio -->
-      <div class="hidden xl:flex items-center justify-between mb-3 flex-shrink-0">
+      <div class="flex items-center justify-between mb-3 flex-shrink-0">
         <div class="flex items-center gap-2">
           <!-- Indicador de fuente de datos (solo escritorio) -->
           <div v-tippy="{ content: dataSourceTooltip, placement: 'bottom', theme: 'custom' }"
@@ -98,7 +78,7 @@
         </div>
 
         <!-- Barra de resumen escritorio: Ens., LCL, Prom., UCL -->
-        <div class="hidden xl:flex mb-3 items-center gap-6 text-slate-700 text-sm flex-shrink-0">
+        <div class="flex mb-3 items-center gap-6 text-slate-700 text-sm flex-shrink-0">
           <div><span class="font-semibold">Ens.:</span> {{ summary.count }}</div>
           <div><span class="font-semibold">LCL:</span> {{ format2(summary.lcl) }}</div>
           <div><span class="font-semibold">Prom.:</span> {{ format2(summary.mean) }}</div>
@@ -112,10 +92,6 @@
               seleccionada.</div>
           </div>
         </div>
-        <!-- Total de ensayos (solo móvil, bajo el gráfico) -->
-        <div class="mt-2 xl:hidden text-sm text-slate-700 text-center"><span class="font-semibold">Total de
-            ensayos:</span> {{
-              summary.count }}</div>
       </div>
     </main>
   </div>
