@@ -1,99 +1,141 @@
 <template>
-  <!-- Mensaje móvil: deshabilitado en pantallas pequeñas -->
-  <div class="md:hidden p-4">
-    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-slate-700 text-sm">
-      Esta página de gráficos está disponible solo en escritorio (pantallas medianas o mayores).
+  <div class="w-full h-screen flex flex-col p-1">
+    <!-- Debug badge (solo visible en desarrollo) -->
+    <div v-if="showDebug" class="fixed bottom-2 right-2 z-50 bg-black/70 text-white text-xs px-2 py-1 rounded shadow">
+      w: {{ viewportWidth }} | isMobile: {{ isMobile }}
     </div>
-  </div>
-  
-  <div class="hidden md:flex w-full h-screen flex-col p-1">
-    <main class="w-full flex-1 min-h-0 bg-white rounded-2xl shadow-xl px-4 py-3 border border-slate-200 flex flex-col">
-      <!-- Controles escritorio -->
-      <div class="flex items-center justify-between mb-3 flex-shrink-0">
-        <div class="flex items-center gap-2">
-          <!-- Indicador de fuente de datos (solo escritorio) -->
-          <div v-tippy="{ content: dataSourceTooltip, placement: 'bottom', theme: 'custom' }"
-            class="flex items-center justify-center w-8 h-8 rounded-full"
-            :class="dataSource === 'firebase' ? 'bg-orange-100 text-orange-600' : 'bg-blue-100 text-blue-600'">
-            <svg v-if="dataSource === 'firebase'" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24"
-              fill="currentColor">
-              <path
-                d="M3.89 15.672L6.255.461A.542.542 0 017.27.288l2.543 4.771zm16.794 3.692l-2.25-14a.54.54 0 00-.919-.295L3.316 19.365l7.856 4.427a1.621 1.621 0 001.588 0zM14.3 7.147l-1.82-3.482a.542.542 0 00-.96 0L3.53 17.984z" />
-            </svg>
-            <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2">
-              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-              <line x1="8" y1="21" x2="16" y2="21"></line>
-              <line x1="12" y1="17" x2="12" y2="21"></line>
-            </svg>
-          </div>
-          <h3 class="text-lg font-semibold text-slate-800">Visualizador de Ensayos</h3>
+    <!-- Layout móvil controlado por runtime (isMobile) -->
+    <template v-if="isMobile">
+      <main
+        class="w-full flex-1 min-h-0 bg-white rounded-2xl shadow-xl px-4 py-3 border border-slate-200 flex flex-col">
+        <h3 class="text-lg font-semibold text-slate-800 mb-3">Gráficos de Ensayos</h3>
+        <!-- Fila 1: Ne (4.5ch) + Ver (métrica) -->
+        <div class="mb-2 flex items-center gap-3 w-full">
+          <span class="text-sm text-slate-600 shrink-0">Ne:</span>
+          <select v-model="ne" class="px-1 py-1 border rounded-md text-sm shrink-0"
+            style="width:4.5ch;min-width:4.5ch;max-width:4.5ch;">
+            <option value="">-</option>
+            <option v-for="opt in neOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+          </select>
+          <span class="text-sm text-slate-600 shrink-0">Ver:</span>
+          <select v-model="metric"
+            class="px-2 py-1 border rounded-md text-sm flex-1 min-w-0 overflow-hidden text-ellipsis">
+            <option v-for="m in metrics" :key="m.value" :value="m.value">{{ m.label }}</option>
+          </select>
         </div>
-        <div class="flex items-center gap-3">
-          <div class="flex items-center gap-2">
-            <label class="text-sm text-slate-600">Ver</label>
-            <select v-model="metric" class="px-2 py-1 border rounded-md text-sm">
-              <option v-for="m in metrics" :key="m.value" :value="m.value">{{ m.label }}</option>
-            </select>
-          </div>
-          <div class="flex items-center gap-2">
-            <VueSelect v-model="oe" :options="oeOptions" clearable :searchable class="w-36" />
-            <span class="text-sm text-slate-600">Ne</span>
-            <VueSelect v-model="ne" :options="neOptions" clearable :searchable class="w-36" />
-            <button @click="applyFilters" class="px-2 py-1 bg-blue-600 text-white rounded text-sm">Aplicar</button>
-            <button @click="clearFilters" class="px-2 py-1 bg-white border rounded text-sm">Limpiar</button>
-          </div>
+        <!-- Fila 2: LCL, Prom., UCL -->
+        <div class="mb-3 flex items-center gap-4 text-slate-700 text-xs flex-wrap">
+          <div class="whitespace-nowrap"><span class="font-semibold">LCL:</span> {{ format2(summary.lcl) }}</div>
+          <div class="whitespace-nowrap"><span class="font-semibold">Prom.:</span> {{ format2(summary.mean) }}</div>
+          <div class="whitespace-nowrap"><span class="font-semibold">UCL:</span> {{ format2(summary.ucl) }}</div>
         </div>
-      </div>
+        <div v-if="loading" class="text-sm text-slate-600 py-8 text-center flex-1">
+          <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-slate-300 border-t-blue-600"></div>
+          <p class="mt-2">Cargando datos para graficar...</p>
+        </div>
+        <div v-else class="flex-1 min-h-0 flex flex-col">
+          <div class="flex-1 min-h-0 relative">
+            <div ref="chartEl" class="w-full h-full"></div>
+            <div v-if="noData" class="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div class="bg-white/80 px-4 py-2 rounded-md text-sm text-slate-700">No hay datos numéricos para la
+                métrica seleccionada.</div>
+            </div>
+          </div>
+          <div class="mt-2 text-sm text-slate-700 text-center"><span class="font-semibold">Total de ensayos:</span> {{
+            summary.count }}</div>
+        </div>
+      </main>
+    </template>
 
-      <div v-if="loading" class="text-sm text-slate-600 py-8 text-center flex-1">
-        <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-slate-300 border-t-blue-600"></div>
-        <p class="mt-2">Cargando datos para graficar...</p>
-      </div>
-
-      <div v-else class="flex-1 min-h-0 flex flex-col">
-        <div v-if="fetchError"
-          class="mb-3 p-3 rounded-md bg-red-50 border border-red-200 text-sm text-red-700 flex-shrink-0">
-          <div class="flex items-start justify-between gap-3">
-            <div>
-              <div class="font-semibold">Error cargando datos</div>
-              <div class="mt-1">{{ fetchError }}</div>
+    <!-- Layout escritorio -->
+    <template v-else>
+      <main
+        class="w-full flex-1 min-h-0 bg-white rounded-2xl shadow-xl px-4 py-3 border border-slate-200 flex flex-col">
+        <div class="flex items-center justify-between mb-3 flex-shrink-0">
+          <div class="flex items-center gap-2">
+            <div v-tippy="{ content: dataSourceTooltip, placement: 'bottom', theme: 'custom' }"
+              class="flex items-center justify-center w-8 h-8 rounded-full"
+              :class="dataSource === 'firebase' ? 'bg-orange-100 text-orange-600' : 'bg-blue-100 text-blue-600'">
+              <svg v-if="dataSource === 'firebase'" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
+                viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M3.89 15.672L6.255.461A.542.542 0 017.27.288l2.543 4.771zm16.794 3.692l-2.25-14a.54.54 0 00-.919-.295L3.316 19.365l7.856 4.427a1.621 1.621 0 001.588 0zM14.3 7.147l-1.82-3.482a.542.542 0 00-.96 0L3.53 17.984z" />
+              </svg>
+              <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-slate-800">Visualizador de Ensayos</h3>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2">
+              <label class="text-sm text-slate-600">Ver</label>
+              <select v-model="metric" class="px-2 py-1 border rounded-md text-sm">
+                <option v-for="m in metrics" :key="m.value" :value="m.value">{{ m.label }}</option>
+              </select>
             </div>
             <div class="flex items-center gap-2">
-              <button @click="loadData()" class="px-3 py-1 bg-white border rounded text-sm">Reintentar</button>
-              <button @click="loadSampleData()" class="px-3 py-1 bg-blue-600 text-white rounded text-sm">Usar datos de
-                ejemplo</button>
+              <VueSelect v-model="oe" :options="oeOptions" clearable :searchable class="w-36" />
+              <span class="text-sm text-slate-600">Ne</span>
+              <VueSelect v-model="ne" :options="neOptions" clearable :searchable class="w-36" />
+              <button @click="applyFilters" class="px-2 py-1 bg-blue-600 text-white rounded text-sm">Aplicar</button>
+              <button @click="clearFilters" class="px-2 py-1 bg-white border rounded text-sm">Limpiar</button>
             </div>
           </div>
         </div>
 
-        <div class="mb-3 text-sm text-slate-600 flex-shrink-0">
-          <template v-if="appliedOe || appliedNe">
-            <span class="mr-2">Filtros aplicados:</span>
-            <span v-if="appliedOe" class="inline-block mr-2 px-2 py-0.5 bg-slate-100 text-slate-700 rounded">OE: {{
-              appliedOe }}</span>
-            <span v-if="appliedNe" class="inline-block px-2 py-0.5 bg-slate-100 text-slate-700 rounded">Ne: {{ appliedNe
-            }}</span>
-          </template>
+        <div v-if="loading" class="text-sm text-slate-600 py-8 text-center flex-1">
+          <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-slate-300 border-t-blue-600"></div>
+          <p class="mt-2">Cargando datos para graficar...</p>
         </div>
 
-        <!-- Barra de resumen escritorio: Ens., LCL, Prom., UCL -->
-        <div class="flex mb-3 items-center gap-6 text-slate-700 text-sm flex-shrink-0">
-          <div><span class="font-semibold">Ens.:</span> {{ summary.count }}</div>
-          <div><span class="font-semibold">LCL:</span> {{ format2(summary.lcl) }}</div>
-          <div><span class="font-semibold">Prom.:</span> {{ format2(summary.mean) }}</div>
-          <div><span class="font-semibold">UCL:</span> {{ format2(summary.ucl) }}</div>
-        </div>
+        <div v-else class="flex-1 min-h-0 flex flex-col">
+          <div v-if="fetchError"
+            class="mb-3 p-3 rounded-md bg-red-50 border border-red-200 text-sm text-red-700 flex-shrink-0">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <div class="font-semibold">Error cargando datos</div>
+                <div class="mt-1">{{ fetchError }}</div>
+              </div>
+              <div class="flex items-center gap-2">
+                <button @click="loadData()" class="px-3 py-1 bg-white border rounded text-sm">Reintentar</button>
+                <button @click="loadSampleData()" class="px-3 py-1 bg-blue-600 text-white rounded text-sm">Usar datos de
+                  ejemplo</button>
+              </div>
+            </div>
+          </div>
 
-        <div class="flex-1 min-h-0 relative">
-          <div ref="chartEl" class="w-full h-full"></div>
-          <div v-if="noData" class="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div class="bg-white/80 px-4 py-2 rounded-md text-sm text-slate-700">No hay datos numéricos para la métrica
-              seleccionada.</div>
+          <div class="mb-3 text-sm text-slate-600 flex-shrink-0">
+            <template v-if="appliedOe || appliedNe">
+              <span class="mr-2">Filtros aplicados:</span>
+              <span v-if="appliedOe" class="inline-block mr-2 px-2 py-0.5 bg-slate-100 text-slate-700 rounded">OE: {{
+                appliedOe }}</span>
+              <span v-if="appliedNe" class="inline-block px-2 py-0.5 bg-slate-100 text-slate-700 rounded">Ne: {{
+                appliedNe }}</span>
+            </template>
+          </div>
+
+          <div class="flex mb-3 items-center gap-6 text-slate-700 text-sm flex-shrink-0">
+            <div><span class="font-semibold">Ens.:</span> {{ summary.count }}</div>
+            <div><span class="font-semibold">LCL:</span> {{ format2(summary.lcl) }}</div>
+            <div><span class="font-semibold">Prom.:</span> {{ format2(summary.mean) }}</div>
+            <div><span class="font-semibold">UCL:</span> {{ format2(summary.ucl) }}</div>
+          </div>
+
+          <div class="flex-1 min-h-0 relative">
+            <div ref="chartEl" class="w-full h-full"></div>
+            <div v-if="noData" class="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div class="bg-white/80 px-4 py-2 rounded-md text-sm text-slate-700">No hay datos numéricos para la
+                métrica
+                seleccionada.</div>
+            </div>
           </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </template>
   </div>
 </template>
 
@@ -111,6 +153,31 @@ const chartEl = ref(null)
 let chart = null
 const noData = ref(false)
 const fetchError = ref(null)
+
+// Debug state
+const showDebug = ref(import.meta?.env?.DEV === true)
+const viewportWidth = ref(typeof window !== 'undefined' ? window.innerWidth : 0)
+
+// Runtime flag para layout móvil (<768px) con matchMedia para mayor precisión
+const isMobile = ref(typeof window !== 'undefined' ? window.innerWidth < 768 : false)
+let mq = null
+if (typeof window !== 'undefined') {
+  mq = window.matchMedia('(max-width: 767px)')
+  isMobile.value = mq.matches
+}
+function updateIsMobile() {
+  const width = typeof window !== 'undefined' ? window.innerWidth : 1024
+  const mediaMatch = mq ? mq.matches : (width < 768)
+  isMobile.value = mediaMatch
+}
+function handleResize() {
+  updateIsMobile()
+  viewportWidth.value = typeof window !== 'undefined' ? window.innerWidth : 0
+  // Redimensionar chart si existe para evitar cortes
+  if (chart) {
+    try { chart.resize() } catch { /* ignore */ }
+  }
+}
 
 // Data source indicator
 const dataSource = computed(() => getDataSource())
@@ -519,11 +586,22 @@ onMounted(async () => {
   await loadData()
   await nextTick()
   renderChart()
-  window.addEventListener('resize', () => chart && chart.resize())
+  window.addEventListener('resize', handleResize)
+  // Log inicial para diagnóstico
+  console.log('[GraficosEnsayos] mount width=', viewportWidth.value, 'isMobile=', isMobile.value)
+  if (mq) {
+    try {
+      mq.addEventListener('change', (e) => {
+        isMobile.value = e.matches
+        viewportWidth.value = typeof window !== 'undefined' ? window.innerWidth : 0
+        console.log('[GraficosEnsayos] matchMedia change width=', viewportWidth.value, 'isMobile=', isMobile.value)
+      })
+    } catch { /* ignore */ }
+  }
 })
 
 onBeforeUnmount(() => {
-  try { window.removeEventListener('resize', () => chart && chart.resize()) } catch { /* ignore */ }
+  try { window.removeEventListener('resize', handleResize) } catch { /* ignore */ }
   try { chart && chart.dispose() } catch { /* ignore */ }
 })
 

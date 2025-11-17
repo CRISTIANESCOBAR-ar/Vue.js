@@ -1,7 +1,13 @@
 <template>
-    <div class="w-full h-screen flex flex-col p-1">
+    <div class="w-full h-screen flex flex-col p-1 overflow-hidden">
+        <!-- Debug badge desarrollo -->
+        <div v-if="showDebug"
+            class="fixed bottom-2 right-2 z-50 bg-black/70 text-white text-xs px-2 py-1 rounded shadow">
+            w: {{ viewportWidth }} | isMobile: {{ isMobile }}
+        </div>
+
         <main
-            class="w-full flex-1 min-h-0 bg-white rounded-2xl shadow-xl px-4 py-3 border border-slate-200 flex flex-col">
+            class="w-full flex-1 min-h-0 bg-white rounded-2xl shadow-xl px-4 py-3 border border-slate-200 flex flex-col overflow-hidden">
             <div v-if="isLoading" class="text-center py-12 flex-1">
                 <div class="text-slate-600 text-lg">Cargando datos...</div>
             </div>
@@ -13,8 +19,56 @@
                 </button>
             </div>
 
+            <!-- Layout móvil (<768px) -->
+            <template v-else-if="isMobile">
+                <div class="flex flex-col h-full">
+                    <!-- Fila 1: Ne (4ch) + Ver (métrica flexible) -->
+                    <div class="mb-2 flex items-center gap-3 w-full flex-shrink-0">
+                        <span class="text-sm text-slate-600 shrink-0">Ne:</span>
+                        <select v-model="selectedNomcount" class="px-1 py-1 border rounded-md text-sm shrink-0"
+                            style="width:9.5ch;min-width:9.5ch;max-width:9.5ch;">
+                            <option :value="null">-</option>
+                            <option v-for="nomcount in availableNomcounts" :key="nomcount" :value="nomcount">
+                                {{ nomcount }}
+                            </option>
+                        </select>
+                        <span class="text-sm text-slate-600 shrink-0">Ver:</span>
+                        <select v-model="selectedVariable"
+                            class="px-1 py-1 border rounded-md text-sm flex-1 min-w-0 max-w-full overflow-hidden text-ellipsis">
+                            <option v-for="variable in availableVariables" :key="variable.key" :value="variable.key">
+                                {{ variable.label }}
+                            </option>
+                        </select>
+                    </div>
+                    <!-- Fila 2: LCL, Prom., UCL -->
+                    <div v-if="selectedNomcount"
+                        class="mb-3 flex items-center gap-4 text-slate-700 text-xs flex-wrap flex-shrink-0">
+                        <div class="whitespace-nowrap"><span class="font-semibold">LCL:</span> <span
+                                class="text-blue-600 font-semibold">{{ globalLcl.toFixed(1) }}</span></div>
+                        <div class="whitespace-nowrap"><span class="font-semibold">Prom.:</span> {{
+                            globalMean.toFixed(1) }}</div>
+                        <div class="whitespace-nowrap"><span class="font-semibold">UCL:</span> <span
+                                class="text-red-600 font-semibold">{{ globalUcl.toFixed(1) }}</span></div>
+                        <div class="whitespace-nowrap"><span class="font-semibold">Ensayos:</span> {{ stats.length }}
+                        </div>
+                    </div>
+                    <!-- Mensaje si no hay Ne seleccionado -->
+                    <div v-if="!selectedNomcount" class="text-center py-8 text-slate-500 flex-1">
+                        Por favor seleccione un título nominal para ver el gráfico de control
+                    </div>
+                    <!-- Gráfico maximizado -->
+                    <div v-else class="flex-1 flex flex-col min-h-0 overflow-hidden">
+                        <div class="flex-1 min-h-0 overflow-hidden">
+                            <StatsChart :stats="stats" :globalMean="globalMean" :globalUcl="globalUcl"
+                                :globalLcl="globalLcl" :variableLabel="currentVariableLabel" />
+                        </div>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Layout escritorio (>=768px) -->
             <div v-else class="flex flex-col h-full">
-                <!-- Encabezado con selectores y estadísticas compactos en una sola línea -->
+                <!-- Encabezado con orden: Ne, Ver, LCL, Promedio, UCL, Total de ensayos -->
                 <div class="bg-slate-50 rounded shadow-sm px-3 py-2 mb-3 flex-shrink-0 border border-slate-200">
                     <div class="flex flex-wrap items-center gap-3">
                         <!-- Data Source Toggle con iconos + tooltips (oculto en móvil) -->
@@ -47,8 +101,15 @@
                             </button>
                         </div>
 
+                        <!-- Orden requerido: Ne, Ver, LCL, Promedio, UCL, Total de ensayos -->
                         <div class="flex items-center gap-2">
-                            <!-- Label y selector de variable -->
+                            <span class="text-slate-700 text-sm">Ne</span>
+                            <select v-model="selectedNomcount"
+                                class="px-2 py-1 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 font-semibold min-w-[7.5rem] w-[8.5rem]">
+                                <option v-for="nomcount in availableNomcounts" :key="nomcount" :value="nomcount">
+                                    {{ nomcount }}
+                                </option>
+                            </select>
                             <span class="text-slate-700 text-sm">Ver</span>
                             <select v-model="selectedVariable"
                                 class="px-2 py-1 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
@@ -57,33 +118,24 @@
                                     {{ variable.label }}
                                 </option>
                             </select>
-
-                            <!-- Label y selector NOMCOUNT (Ne) -->
-                            <span class="text-slate-700 text-sm">Ne</span>
-                            <select v-model="selectedNomcount"
-                                class="px-2 py-1 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 font-semibold min-w-[7.5rem] w-[8.5rem]">
-                                <option v-for="nomcount in availableNomcounts" :key="nomcount" :value="nomcount">
-                                    {{ nomcount }}
-                                </option>
-                            </select>
                         </div>
 
                         <template v-if="selectedNomcount">
-                            <div class="flex items-center gap-1">
-                                <span class="text-slate-600">Ens.:</span>
-                                <span class="font-semibold">{{ stats.length }}</span>
-                            </div>
                             <div class="flex items-center gap-1">
                                 <span class="text-slate-600">LCL:</span>
                                 <span class="font-semibold text-blue-600">{{ globalLcl.toFixed(1) }}</span>
                             </div>
                             <div class="flex items-center gap-1">
-                                <span class="text-slate-600">Prom.:</span>
+                                <span class="text-slate-600">Promedio:</span>
                                 <span class="font-semibold">{{ globalMean.toFixed(1) }}</span>
                             </div>
                             <div class="flex items-center gap-1">
                                 <span class="text-slate-600">UCL:</span>
                                 <span class="font-semibold text-red-600">{{ globalUcl.toFixed(1) }}</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <span class="text-slate-600">Total de ensayos:</span>
+                                <span class="font-semibold">{{ stats.length }}</span>
                             </div>
                         </template>
                     </div>
@@ -95,7 +147,7 @@
                 </div>
 
                 <!-- Gráfico maximizado -->
-                <div v-else class="flex-1 flex flex-col min-h-0">
+                <div v-else class="flex-1 flex flex-col min-h-0 overflow-hidden">
                     <StatsChart :stats="stats" :globalMean="globalMean" :globalUcl="globalUcl" :globalLcl="globalLcl"
                         :variableLabel="currentVariableLabel" />
                 </div>
@@ -105,7 +157,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import StatsChart from './uster-stats/StatsChart.vue'
 import { fetchAllStatsData, setDataSource } from '../services/dataService'
 
@@ -118,6 +170,25 @@ const isLoading = ref(false)
 const error = ref(null)
 const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
 const dataSource = ref(isLocalhost ? 'oracle' : 'firebase') // Forzar firebase en producción
+
+// Runtime flag para layout móvil (<768px) con matchMedia
+const showDebug = ref(import.meta?.env?.DEV === true)
+const viewportWidth = ref(typeof window !== 'undefined' ? window.innerWidth : 0)
+const isMobile = ref(typeof window !== 'undefined' ? window.innerWidth < 768 : false)
+let mq = null
+if (typeof window !== 'undefined') {
+    mq = window.matchMedia('(max-width: 767px)')
+    isMobile.value = mq.matches
+}
+function updateIsMobile() {
+    const width = typeof window !== 'undefined' ? window.innerWidth : 1024
+    const mediaMatch = mq ? mq.matches : (width < 768)
+    isMobile.value = mediaMatch
+}
+function handleResize() {
+    updateIsMobile()
+    viewportWidth.value = typeof window !== 'undefined' ? window.innerWidth : 0
+}
 
 // Selected NOMCOUNT and variable
 const selectedNomcount = ref(null)
@@ -433,6 +504,21 @@ const globalLcl = computed(() => globalStats.value.lcl)
 
 onMounted(() => {
     fetchData()
+    window.addEventListener('resize', handleResize)
+    console.log('[UsterStatsPage] mount width=', viewportWidth.value, 'isMobile=', isMobile.value)
+    if (mq) {
+        try {
+            mq.addEventListener('change', (e) => {
+                isMobile.value = e.matches
+                viewportWidth.value = typeof window !== 'undefined' ? window.innerWidth : 0
+                console.log('[UsterStatsPage] matchMedia change width=', viewportWidth.value, 'isMobile=', isMobile.value)
+            })
+        } catch { /* ignore */ }
+    }
+})
+
+onBeforeUnmount(() => {
+    try { window.removeEventListener('resize', handleResize) } catch { /* ignore */ }
 })
 
 </script>

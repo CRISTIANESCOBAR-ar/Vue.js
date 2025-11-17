@@ -1,7 +1,6 @@
 <template>
     <div class="w-full h-full">
-        <!-- altura dinámica: resta espacio del header (aprox 60px) y deja margen para leyenda -->
-        <div ref="chartRef" class="w-full" style="min-height:400px; height:calc(100vh - 200px);"></div>
+        <div ref="chartRef" class="w-full h-full" style="min-height:260px;"></div>
     </div>
 </template>
 
@@ -81,7 +80,7 @@ function computeRequiredBottomPx(labels, rotateDeg) {
         // rotated bounding box height approximation: |sin(theta)*textWidth| + |cos(theta)*fontSize|
         const rotatedHeight = Math.abs(Math.sin(rad)) * maxW + Math.abs(Math.cos(rad)) * fontSizePx
         // dynamically estimate legend height by simulating legend item layout
-        const legendItems = ['Media por TESTNR', 'Media Global', 'UCL (+3σ)', 'LCL (-3σ)']
+        const legendItems = ['Promedio Día', 'Media Global', 'LCL (-3σ)', 'UCL (+3σ)']
         const containerWidth = container.clientWidth || container.offsetWidth || 800
         // available width for legend is container width minus left/right grid margins (3% each)
         const availableWidth = Math.max(200, Math.floor(containerWidth * (1 - 0.03 - 0.03)))
@@ -143,9 +142,9 @@ function buildOption(data, xLabelRotate = 45) {
                 return result
             }
         },
-        // always place legend at the bottom; if labels are vertical, increase bottom space so labels fit
-        legend: { data: ['Media por TESTNR', 'Media Global', 'UCL (+3σ)', 'LCL (-3σ)'], bottom: 0, left: 'center' },
-        // adjust grid to use more horizontal and vertical space; use fixed 90px bottom for legend + labels
+        // Leyenda centrada y reordenada
+        legend: { data: ['Promedio Día', 'Media Global', 'LCL (-3σ)', 'UCL (+3σ)'], bottom: 0, left: 'center' },
+        // Grid ajustado para usar todo el alto disponible del contenedor
         grid: { left: '3%', right: '3%', top: '6%', bottom: 90, containLabel: false },
         xAxis: {
             type: 'category',
@@ -162,7 +161,7 @@ function buildOption(data, xLabelRotate = 45) {
         },
         series: [
             {
-                name: 'Media por TESTNR',
+                name: 'Promedio Día',
                 type: 'line',
                 data: y,
                 smooth: false,
@@ -179,16 +178,16 @@ function buildOption(data, xLabelRotate = 45) {
                 showSymbol: false
             },
             {
-                name: 'UCL (+3σ)',
+                name: 'LCL (-3σ)',
                 type: 'line',
-                data: ucl,
+                data: lcl,
                 lineStyle: { type: 'dashed', color: '#ef4444', width: 2 },
                 showSymbol: false
             },
             {
-                name: 'LCL (-3σ)',
+                name: 'UCL (+3σ)',
                 type: 'line',
-                data: lcl,
+                data: ucl,
                 lineStyle: { type: 'dashed', color: '#ef4444', width: 2 },
                 showSymbol: false
             }
