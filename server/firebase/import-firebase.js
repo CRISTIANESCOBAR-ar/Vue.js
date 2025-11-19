@@ -27,11 +27,27 @@ const SERVICE_ACCOUNT_PATH = path.join(__dirname, 'serviceAccountKey.json')
 
 // Firestore collection mapping
 const COLLECTIONS = [
-  { file: 'uster_par.json', collection: 'uster_par', idField: 'TESTNR' },
-  { file: 'uster_tbl.json', collection: 'uster_tbl', idField: null }, // Auto-generated IDs
-  { file: 'tensorapid_par.json', collection: 'tensorapid_par', idField: 'TESTNR' },
-  { file: 'tensorapid_tbl.json', collection: 'tensorapid_tbl', idField: null }
+  { file: 'uster_par.json', collection: 'USTER_PAR', idField: 'TESTNR' },
+  { file: 'uster_tbl.json', collection: 'USTER_TBL', idField: null }, // Deterministic IDs below
+  { file: 'tensorapid_par.json', collection: 'TENSORAPID_PAR', idField: 'TESTNR' },
+  { file: 'tensorapid_tbl.json', collection: 'TENSORAPID_TBL', idField: null }
 ]
+
+function computeTblDocId(collection, record, index) {
+  const testnr = String(record.TESTNR ?? record.testnr ?? '')
+  let no =
+    record.NO ??
+    record['NO_'] ??
+    record.NO_ ??
+    record.HUSO_NUMBER ??
+    record.HUSO ??
+    record.huso ??
+    record.no ??
+    index + 1
+  const n = Number(no)
+  if (!Number.isNaN(n)) no = n
+  return `${testnr}_${no}`
+}
 
 /**
  * Initialize Firebase Admin SDK
@@ -83,33 +99,87 @@ async function importCollection(db, fileName, collectionName, idField) {
       const batch = db.batch()
       const chunk = data.slice(i, i + BATCH_SIZE)
 
-      for (const record of chunk) {
+      for (let j = 0; j < chunk.length; j++) {
+        const record = chunk[j]
         // Sanitize records before upload (avoid problematic fields)
         if (collectionName === 'tensorapid_par' || collectionName === 'TENSORAPID_PAR') {
           // Drop COMMENT_TEXT if present in JSON
           if ('COMMENT_TEXT' in record) delete record.COMMENT_TEXT
         }
-        // Use specified ID field or auto-generate
-        const docRef =
-          idField && record[idField]
-            ? db.collection(collectionName).doc(String(record[idField]))
-            : db.collection(collectionName).doc()
+        // Use specified ID field or deterministic composite key for *_tbl
+        let docRef
+        if (idField && record[idField]) {
+          docRef = db.collection(collectionName).doc(String(record[idField]))
+        } else if (/_tbl$/i.test(collectionName)) {
+          const docId = computeTblDocId(collectionName, record, i + j)
+          docRef = db.collection(collectionName).doc(docId)
+        } else {
+          docRef = db.collection(collectionName).doc()
+        }
 
-        // Convert ISO strings back to Firestore Timestamps
+        // Convert date strings to Firestore Timestamps
+        // Handles: ISO format, Oracle DD/MM/YYYY HH:MM format, and Unix timestamps
         const processedRecord = {}
         for (const [key, value] of Object.entries(record)) {
-          if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T/.test(value)) {
+          if (typeof value === 'string') {
+            // ISO format: YYYY-MM-DDTHH:mm:ss
+            if (/^\d{4}-\d{2}-\d{2}T/.test(value)) {
+              try {
+                processedRecord[key] = admin.firestore.Timestamp.fromDate(new Date(value))
+              } catch {
+                processedRecord[key] = value
+              }
+            }
+            // European format from Oracle: DD/MM/YYYY HH:MM
+            else if (/^\d{2}\/\d{2}\/\d{4}\s+\d{2}:\d{2}/.test(value)) {
+              try {
+                const [datePart, timePart] = value.split(' ')
+                const [day, month, year] = datePart.split('/').map(Number)
+                const [hour, minute] = timePart.split(':').map(Number)
+                const date = new Date(year, month - 1, day, hour, minute)
+                processedRecord[key] = admin.firestore.Timestamp.fromDate(date)
+              } catch {
+                processedRecord[key] = value
+              }
+            }
+            // Unix timestamp as string (10 digits = seconds)
+            else if (/^\d{10}$/.test(value) && (key === 'TIME' || key.includes('TIMESTAMP') || key.includes('TIME'))) {
+              try {
+                const timestamp = parseInt(value, 10)
+                const date = new Date(timestamp * 1000)
+                if (!isNaN(date.getTime())) {
+                  processedRecord[key] = admin.firestore.Timestamp.fromDate(date)
+                } else {
+                  processedRecord[key] = value
+                }
+              } catch {
+                processedRecord[key] = value
+              }
+            }
+            else {
+              processedRecord[key] = value
+            }
+          } 
+          // Unix timestamp (number) - convert to Firestore Timestamp
+          else if (typeof value === 'number' && (key === 'TIME' || key.includes('TIMESTAMP') || key.includes('TIME'))) {
             try {
-              processedRecord[key] = admin.firestore.Timestamp.fromDate(new Date(value))
+              // Unix timestamps are in seconds, JS Date expects milliseconds
+              const date = new Date(value * 1000)
+              if (!isNaN(date.getTime())) {
+                processedRecord[key] = admin.firestore.Timestamp.fromDate(date)
+              } else {
+                processedRecord[key] = value
+              }
             } catch {
               processedRecord[key] = value
             }
-          } else {
+          }
+          else {
             processedRecord[key] = value
           }
         }
 
-        batch.set(docRef, processedRecord)
+        batch.set(docRef, processedRecord, { merge: true })
         imported++
       }
 

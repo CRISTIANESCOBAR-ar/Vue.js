@@ -330,7 +330,8 @@
         </header>
 
         <!-- Observaciones (OBS) y Lab. Uster (LABORANT) — en línea debajo del header -->
-        <div v-if="modalMeta.obs || modalMeta.laborant" class="mx-8 flex items-center gap-4 text-slate-600 text-sm mb-2">
+        <div v-if="modalMeta.obs || modalMeta.laborant"
+          class="mx-8 flex items-center gap-4 text-slate-600 text-sm mb-2">
           <div v-if="modalMeta.obs">
             <span>Obs.:</span>
             <span class="text-slate-900 text-sm font-normal ml-1">{{ modalMeta.obs }}</span>
@@ -934,9 +935,30 @@ watch(selectedTestnr, async (testnr) => {
     const { usterTbl, tensorapidTbl, tensorapidPar } = allData.value || {}
 
     // Filtrar filas USTER_TBL que coincidan con el TESTNR seleccionado
-    const usterRows = (usterTbl || []).filter(r =>
+    let usterRows = (usterTbl || []).filter(r =>
       String(r.TESTNR || r.testnr || '') === String(testnr)
     )
+
+    // Deduplicar por combinacion TESTNR+NO (algunos datasets en Firebase traen duplicados)
+    const dedupe = (arr, getKey) => {
+      const seen = new Set()
+      const out = []
+      for (const item of arr) {
+        let k
+        try { k = getKey(item) } catch { k = undefined }
+        if (!k) { out.push(item); continue }
+        if (seen.has(k)) continue
+        seen.add(k)
+        out.push(item)
+      }
+      return out
+    }
+    usterRows = dedupe(usterRows, (r) => {
+      const tn = String(r.TESTNR || r.testnr || '')
+      const no = String(r.NO ?? r['NO_'] ?? r.HUSO ?? r.huso ?? '')
+      return tn && no ? `${tn}#${no}` : undefined
+    })
+
     usterTblRows.value = usterRows
 
     // Paso 1: Buscar TENSORAPID_PAR que tengan USTER_TESTNR = testnr seleccionado
@@ -950,9 +972,16 @@ watch(selectedTestnr, async (testnr) => {
     tensorTestnrs.value = tensorTestnrsList
 
     // Paso 3: Buscar filas en TENSORAPID_TBL que coincidan con esos TESTNR
-    const tensorRows = (tensorapidTbl || []).filter(r => {
+    let tensorRows = (tensorapidTbl || []).filter(r => {
       const tblTestnr = String(r.TESTNR || r.testnr || '')
       return tensorTestnrsList.includes(tblTestnr)
+    })
+
+    // Deduplicar por TESTNR+HUSO_NUMBER en TENSORAPID_TBL
+    tensorRows = dedupe(tensorRows, (r) => {
+      const tn = String(r.TESTNR || r.testnr || '')
+      const no = String(r.HUSO_NUMBER ?? r.NO ?? r.no ?? '')
+      return tn && no ? `${tn}#${no}` : undefined
     })
 
     // Merge: combinar filas por HUSO (NO en Uster, HUSO_NUMBER en Tensor)
@@ -1619,6 +1648,17 @@ async function loadRows() {
         ? String(tensorPar.TESTNR ?? tensorPar.testnr ?? tensorPar.Testnr)
         : ''
 
+      // Debug: log para ver OBS
+      const obsValue = row.OBS ?? row.OBSERVACION ?? row.OBSERVACAO ?? row.obs ?? ''
+      const laborantValue = row.LABORANT ?? row.Laborant ?? row.laborant ?? ''
+      if (testnr === '05496' || testnr === '05497') {
+        console.log('DEBUG loadRows para', testnr, ':', {
+          rawOBS: row.OBS,
+          obsValue,
+          laborantValue,
+          allRowData: row  // Ver TODO el objeto
+        })
+      }
       return {
         Ensayo: testnr,
         Fecha: fecha,
@@ -1637,8 +1677,8 @@ async function loadRows() {
         'Elong. %': calcAvg(tensorTblRows, 'ELONGACION'),
         'Tenac.': calcAvg(tensorTblRows, 'TENACIDAD'),
         'Trabajo B': calcAvg(tensorTblRows, 'TRABAJO'),
-        OBS: row.OBS ?? row.OBSERVACION ?? row.OBSERVACAO ?? row.obs ?? '',
-        LABORANT: row.LABORANT ?? row.Laborant ?? row.laborant ?? '',
+        OBS: obsValue,
+        LABORANT: laborantValue,
         TensoRapid: tensorRapidTestnr,
       }
     })

@@ -16,44 +16,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Aquino Kevin",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "10/1FLAME Rotor:72.000-Cardina:9.500-Tension:0.997 ALFA 5.35 HD-100-25",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -81,44 +44,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Aquino Kevin",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "10/1FLAME Rotor:72.000-Cardina:9.500-Tension:0.997 ALFA 5.35 HD-100-25",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -146,44 +72,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "GARCIA ALBERTO",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "9.5/1FLAME Rotor:80.000-Cardina:9.500-Tension:1000 ALFA 5.35 HD-100-25",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -211,44 +100,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Muniz Alicia",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.004 ALFA:5.30(PAR)",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -276,44 +128,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Muniz Alicia",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.004 ALFA:5.30(IMPAR)",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -341,44 +156,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "GARCIA ALBERTO",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:0.999  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -406,44 +184,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "GARCIA ALBERTO",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "7/1Nec Rotor:80.000 Cardina:9.500 Tension:0.981 ALFA:5.30(rotor 40 XTC-BD)",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -471,44 +212,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Aquino Kevin",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:1.002  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -536,44 +240,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Aquino Kevin",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "9/1Nec Rotor:80.000 Cardina:9.500 Tension:0.994  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -601,44 +268,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Muniz Alicia",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.004 ALFA:5.30(IMPAR)",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -666,44 +296,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Muniz Alicia",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.004 ALFA:5.30(PAR)",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -731,44 +324,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "GARCIA ALBERTO",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:0.999  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -796,44 +352,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "GARCIA ALBERTO",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "7/1Nec Rotor:80.000 Cardina:9.500 Tension:0.981 ALFA:5.30(rotor 40 XTC-BD)",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -861,44 +380,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Aquino Kevin",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "9/1Nec Rotor:80.000 Cardina:9.500 Tension:0.994  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -926,44 +408,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Aquino Kevin",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:1.002  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -991,44 +436,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Muniz Alicia",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.004 ALFA:5.30(PAR)",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -1056,44 +464,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Muniz Alicia",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.004 ALFA:5.30(IMPAR)",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -1121,44 +492,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "GARCIA ALBERTO",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:0.999  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -1186,44 +520,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "GARCIA ALBERTO",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "7/1Nec Rotor:80.000 Cardina:9.500 Tension:0.981 ALFA:5.30(rotor 40 XTC-BD)",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -1251,44 +548,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Aquino Kevin",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "9/1Nec Rotor:80.000 Cardina:9.500 Tension:0.994  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -1316,44 +576,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Aquino Kevin",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:1.002  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -1381,44 +604,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Muniz Alicia",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.004 ALFA:5.30(IMPAR)",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -1446,44 +632,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Muniz Alicia",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.004 ALFA:5.30(PAR)",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -1511,44 +660,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "GARCIA ALBERTO",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "7/1Nec Rotor:80.000 Cardina:9.500 Tension:0.981 ALFA:5.30(rotor 40 XTC-BD)",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -1576,44 +688,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "GARCIA ALBERTO",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:0.999  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -1641,44 +716,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Aquino Kevin",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:0.999  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -1706,44 +744,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "GARCIA ALBERTO",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:0.999  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -1771,44 +772,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "GARCIA ALBERTO",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.004 ALFA:5.30(PAR)",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -1836,44 +800,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "GARCIA ALBERTO",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.004 ALFA:5.30(IMPAR)",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -1901,44 +828,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Aquino Kevin",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "7/1Nec Rotor:80.000 Cardina:9.500 Tension:0.981 ALFA:5.30(rotor 40 XTC-BD)",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -1966,44 +856,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Aquino Kevin",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:1.002  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -2031,44 +884,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Aquino Kevin",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -2096,44 +912,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Muniz Alicia",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005 ALFA:5.30(PAR)",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -2161,44 +940,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Muniz Alicia",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005 ALFA:5.30(IMPAR)",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -2226,44 +968,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "GARCIA ALBERTO",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:0.999  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -2291,44 +996,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "GARCIA ALBERTO",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "7/1Nec Rotor:80.000 Cardina:9.500 Tension:0.981 ALFA:5.30(rotor 40 XTC-BD)",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -2356,44 +1024,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Aquino Kevin",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -2421,44 +1052,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Muniz Alicia",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005 ALFA:5.30(PAR)",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -2486,44 +1080,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Muniz Alicia",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005 ALFA:5.30(IMPAR)",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -2551,44 +1108,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "GARCIA ALBERTO",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:0.999  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -2616,44 +1136,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "GARCIA ALBERTO",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "7/1Nec Rotor:80.000 Cardina:9.500 Tension:0.981 ALFA:5.30(rotor 40 XTC-BD)",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -2681,44 +1164,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Aquino Kevin",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -2746,44 +1192,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Aquino Kevin",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:1.002  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -2811,44 +1220,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Muniz Alicia",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -2876,44 +1248,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Muniz Alicia",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005 ALFA:5.30(PAR)",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -2941,44 +1276,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Muniz Alicia",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005 ALFA:5.30(IMPAR)",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -3006,44 +1304,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "GARCIA ALBERTO",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:0.999  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -3071,44 +1332,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "GARCIA ALBERTO",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "7/1Nec Rotor:80.000 Cardina:9.500 Tension:0.981 ALFA:5.30(rotor 40 XTC-BD)",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -3136,44 +1360,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "GARCIA ALBERTO",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:1.002  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -3201,44 +1388,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Muniz Alicia",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -3266,44 +1416,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Muniz Alicia",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -3331,44 +1444,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Muniz Alicia",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -3396,44 +1472,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "GARCIA ALBERTO",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "9/1Nec Rotor:80.000 Cardina:9.500 Tension:0.994  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -3461,44 +1500,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "GARCIA ALBERTO",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:1.002  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -3526,44 +1528,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Muniz Alicia",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -3591,44 +1556,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Muniz Alicia",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -3656,44 +1584,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "GARCIA ALBERTO",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "9/1Nec Rotor:80.000 Cardina:9.500 Tension:0.994  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -3721,44 +1612,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "GARCIA ALBERTO",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:1.002  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -3786,44 +1640,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Aquino Kevin",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -3851,44 +1668,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "GARCIA ALBERTO",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "7/1Nec Rotor:80.000 Cardina:9.500 Tension:0.981 ALFA:5.30(rotor 40 XTC-BD)",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -3916,44 +1696,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "GARCIA ALBERTO",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -3981,44 +1724,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Aquino Kevin",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -4046,44 +1752,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Aquino Kevin",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -4111,44 +1780,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Aquino Kevin",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:1.002  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -4176,44 +1808,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Muniz Alicia",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -4241,44 +1836,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Muniz Alicia",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -4306,44 +1864,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "GARCIA ALBERTO",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "7/1Nec Rotor:80.000 Cardina:9.500 Tension:0.981 ALFA:5.30(rotor 40 XTC-BD)",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -4371,44 +1892,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "GARCIA ALBERTO",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:1.002  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -4436,44 +1920,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Aquino Kevin",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -4501,44 +1948,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Muniz Alicia",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -4566,44 +1976,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Muniz Alicia",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -4631,44 +2004,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "GARCIA ALBERTO",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "7/1Nec Rotor:80.000 Cardina:9.500 Tension:0.981 ALFA:5.30(rotor 40 XTC-BD)",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -4696,44 +2032,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "GARCIA ALBERTO",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:0.999  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -4761,44 +2060,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Aquino Kevin",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:1.002  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -4826,44 +2088,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Muniz Alicia",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -4891,44 +2116,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Muniz Alicia",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -4956,44 +2144,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "GARCIA ALBERTO",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:1.007  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -5021,44 +2172,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "GARCIA ALBERTO",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "7/1Nec Rotor:80.000 Cardina:9.500 Tension:0.981 ALFA:5.30(rotor 40 XTC-BD)",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -5086,44 +2200,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Aquino Kevin",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:1.002  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -5151,44 +2228,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Aquino Kevin",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:0.999  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -5216,44 +2256,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Aquino Kevin",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "14/1Nec Rotor:100.000 Cardina:9.500 Tension:0.998  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -5281,44 +2284,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Muniz Alicia",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -5346,44 +2312,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Muniz Alicia",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -5411,44 +2340,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "Muniz Alicia",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:1.007  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -5476,44 +2368,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "GARCIA ALBERTO",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:0.999  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -5541,44 +2396,7 @@
     "FB_LONG": null,
     "FB_PORC": 0,
     "LABORANT": "GARCIA ALBERTO",
-    "OBS": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    },
+    "OBS": "14/1Nec Rotor:100.000 Cardina:9.500 Tension:0.998  alfa:5.3",
     "TUNAME": "UT5-1",
     "GROUPS": "10",
     "WITHIN": "1",
@@ -5588,5 +2406,677 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-14T15:07:17.656Z"
+  },
+  {
+    "TESTNR": "05493",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "14/11/2025 17:10",
+    "LOTE": "HD-100-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "009",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 7,
+    "NOMTWIST": "552",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "Aquino Kevin",
+    "OBS": "7/1Nec Rotor:80.000 Cardina:9.500 Tension:0.981 ALFA:5.30(rotor 40 XTC-BD)",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-17T13:25:19.104Z"
+  },
+  {
+    "TESTNR": "05494",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "14/11/2025 17:59",
+    "LOTE": "HD-100-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "010",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 10,
+    "NOMTWIST": "660",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "Aquino Kevin",
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:1.002  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-17T13:25:44.075Z"
+  },
+  {
+    "TESTNR": "05495",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "15/11/2025 00:00",
+    "LOTE": "HD-100-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "003 LP",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 12.5,
+    "NOMTWIST": "738",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "Muniz Alicia",
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-17T13:26:24.258Z"
+  },
+  {
+    "TESTNR": "05496",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "15/11/2025 00:38",
+    "LOTE": "HD-100-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "003 LIM",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 12.5,
+    "NOMTWIST": "738",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "Muniz Alicia",
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-17T13:35:18.423Z"
+  },
+  {
+    "TESTNR": "05497",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "15/11/2025 08:08",
+    "LOTE": "HD-100-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "007",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 10,
+    "NOMTWIST": "660",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "GARCIA ALBERTO",
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:0.999  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-17T13:29:52.391Z"
+  },
+  {
+    "TESTNR": "05498",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "15/11/2025 08:55",
+    "LOTE": "HD-100-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "002LIM",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 10,
+    "NOMTWIST": "660",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "GARCIA ALBERTO",
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:1.007  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-17T13:30:27.672Z"
+  },
+  {
+    "TESTNR": "05499",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "15/11/2025 16:49",
+    "LOTE": "HD-100-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "009",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 7,
+    "NOMTWIST": "552",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "Aquino Kevin",
+    "OBS": "7/1Nec Rotor:80.000 Cardina:9.500 Tension:0.981 ALFA:5.30(rotor 40 XTC-BD)",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-17T13:30:56.959Z"
+  },
+  {
+    "TESTNR": "05500",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "15/11/2025 17:31",
+    "LOTE": "HD-100-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "010",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 10,
+    "NOMTWIST": "660",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "Aquino Kevin",
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:1.002  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-17T13:32:10.309Z"
+  },
+  {
+    "TESTNR": "05501",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "17/11/2025 08:48",
+    "LOTE": "HD-100-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "003 LP",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 12.5,
+    "NOMTWIST": "738",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "GARCIA ALBERTO",
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-17T13:32:46.029Z"
+  },
+  {
+    "TESTNR": "05502",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "17/11/2025 09:23",
+    "LOTE": "HD-100-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "003 LI",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 12.5,
+    "NOMTWIST": "738",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "GARCIA ALBERTO",
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-17T13:33:11.397Z"
+  },
+  {
+    "TESTNR": "05503",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "17/11/2025 09:59",
+    "LOTE": "HD-100-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "002LIM",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 10,
+    "NOMTWIST": "660",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "GARCIA ALBERTO",
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:1.007  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-19T14:25:57.811Z"
+  },
+  {
+    "TESTNR": "05504",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "17/11/2025 16:04",
+    "LOTE": "HD-100-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "009",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 7,
+    "NOMTWIST": "552",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "Aquino Kevin",
+    "OBS": "7/1Nec Rotor:80.000 Cardina:9.500 Tension:0.981 ALFA:5.30(rotor 40 XTC-BD)",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-19T14:22:49.645Z"
+  },
+  {
+    "TESTNR": "05505",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "17/11/2025 16:43",
+    "LOTE": "HD-100-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "007",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 10,
+    "NOMTWIST": "660",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "Aquino Kevin",
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:0.999  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-19T14:23:25.546Z"
+  },
+  {
+    "TESTNR": "05506",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "17/11/2025 17:47",
+    "LOTE": "HD-100-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "010",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 10,
+    "NOMTWIST": "660",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "Aquino Kevin",
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:1.002  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-19T14:24:06.221Z"
+  },
+  {
+    "TESTNR": "05507",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "18/11/2025 00:00",
+    "LOTE": "HD-100-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "003 LP",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 12.5,
+    "NOMTWIST": "738",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "Muniz Alicia",
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-19T14:26:45.973Z"
+  },
+  {
+    "TESTNR": "05508",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "18/11/2025 00:36",
+    "LOTE": "HD-100-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "003 LIM",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 12.5,
+    "NOMTWIST": "738",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "Muniz Alicia",
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-19T14:27:23.516Z"
+  },
+  {
+    "TESTNR": "05509",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "18/11/2025 08:18",
+    "LOTE": "HD-100-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "002LIM",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 10,
+    "NOMTWIST": "660",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "GARCIA ALBERTO",
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:1.007  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-19T14:29:05.022Z"
+  },
+  {
+    "TESTNR": "05510",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "18/11/2025 09:16",
+    "LOTE": "HD-100-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "007",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 10,
+    "NOMTWIST": "660",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "GARCIA ALBERTO",
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:0.998  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-19T14:29:30.949Z"
+  },
+  {
+    "TESTNR": "05511",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "18/11/2025 15:58",
+    "LOTE": "HD-100-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "009",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 7,
+    "NOMTWIST": "552",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "Aquino Kevin",
+    "OBS": "7/1Nec Rotor:80.000 Cardina:9.500 Tension:0.981 ALFA:5.30(rotor 40 XTC-BD)",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-19T14:29:58.035Z"
+  },
+  {
+    "TESTNR": "05512",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "18/11/2025 17:02",
+    "LOTE": "HD-100-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "010",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 10,
+    "NOMTWIST": "660",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "Aquino Kevin",
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:1.002  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-19T14:31:56.557Z"
+  },
+  {
+    "TESTNR": "05513",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "19/11/2025 00:01",
+    "LOTE": "HD-100-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "003 LIM",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 12.5,
+    "NOMTWIST": "738",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "Muniz Alicia",
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-19T14:32:19.028Z"
+  },
+  {
+    "TESTNR": "05514",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "19/11/2025 00:34",
+    "LOTE": "HD-100-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "003 LP",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 12.5,
+    "NOMTWIST": "738",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "Muniz Alicia",
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-19T14:32:55.852Z"
+  },
+  {
+    "TESTNR": "05515",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "19/11/2025 07:56",
+    "LOTE": "HD-100-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "002LIM",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 10,
+    "NOMTWIST": "660",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "GARCIA ALBERTO",
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:1.007  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-19T14:34:16.922Z"
+  },
+  {
+    "TESTNR": "05516",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "19/11/2025 08:46",
+    "LOTE": "HD-100-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "007",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 10,
+    "NOMTWIST": "660",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "GARCIA ALBERTO",
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:0.998  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-19T14:34:54.739Z"
   }
 ]

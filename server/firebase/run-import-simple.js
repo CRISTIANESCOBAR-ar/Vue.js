@@ -17,6 +17,24 @@ const COLLECTIONS = [
   { file: 'tensorapid_tbl.json', collection: 'TENSORAPID_TBL', idField: null }
 ]
 
+function computeTblDocId(collection, doc, index) {
+  const testnr = String(doc.TESTNR ?? doc.testnr ?? '')
+  // USTER_TBL usa NO/NO_
+  // TENSORAPID_TBL usa HUSO_NUMBER (o NO en algunos casos)
+  let no =
+    doc.NO ??
+    doc['NO_'] ??
+    doc.NO_ ??
+    doc.HUSO_NUMBER ??
+    doc.HUSO ??
+    doc.huso ??
+    doc.no ??
+    index + 1
+  const n = Number(no)
+  if (!Number.isNaN(n)) no = n
+  return `${testnr}_${no}`
+}
+
 console.log('🚀 Starting Firebase import...\n')
 
 try {
@@ -62,12 +80,18 @@ try {
       const batch = db.batch()
       const chunk = converted.slice(i, i + batchSize)
 
-      for (const doc of chunk) {
-        const docId = config.idField
-          ? String(doc[config.idField])
-          : db.collection(config.collection).doc().id
+      for (let j = 0; j < chunk.length; j++) {
+        const doc = chunk[j]
+        let docId
+        if (config.idField) {
+          docId = String(doc[config.idField])
+        } else if (config.collection === 'USTER_TBL' || config.collection === 'TENSORAPID_TBL') {
+          docId = computeTblDocId(config.collection, doc, i + j)
+        } else {
+          docId = db.collection(config.collection).doc().id
+        }
         const docRef = db.collection(config.collection).doc(docId)
-        batch.set(docRef, doc)
+        batch.set(docRef, doc, { merge: true })
       }
 
       await batch.commit()

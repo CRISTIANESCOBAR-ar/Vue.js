@@ -229,8 +229,15 @@ app.get('/api/uster/par', async (req, res) => {
     await initPool()
     conn = await getConnection()
 
-    const sql = `SELECT TESTNR, NOMCOUNT, MASCHNR, LOTE, LABORANT, TIME_STAMP, MATCLASS FROM ${SCHEMA_PREFIX}USTER_PAR ORDER BY TESTNR`
-    const result = await conn.execute(sql, {}, { outFormat: oracledb.OUT_FORMAT_OBJECT })
+    const sql = `SELECT TESTNR, NOMCOUNT, MASCHNR, LOTE, LABORANT, TIME_STAMP, MATCLASS, OBS FROM ${SCHEMA_PREFIX}USTER_PAR ORDER BY TESTNR`
+    const result = await conn.execute(
+      sql,
+      {},
+      {
+        outFormat: oracledb.OUT_FORMAT_OBJECT,
+        fetchInfo: { OBS: { type: oracledb.STRING } }
+      }
+    )
     const rows = result.rows || []
     res.json({ rows })
   } catch (err) {

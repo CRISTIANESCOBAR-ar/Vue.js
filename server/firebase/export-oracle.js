@@ -66,11 +66,15 @@ async function exportTable(conn, tableName, fileName) {
       fetchInfo.PAR_JSON = { type: oracledb.STRING }
     }
 
-    const result = await conn.execute(sql, {}, {
-      outFormat: oracledb.OUT_FORMAT_OBJECT,
-      maxRows: 0, // No limit
-      ...(Object.keys(fetchInfo).length ? { fetchInfo } : {})
-    })
+    const result = await conn.execute(
+      sql,
+      {},
+      {
+        outFormat: oracledb.OUT_FORMAT_OBJECT,
+        maxRows: 0, // No limit
+        ...(Object.keys(fetchInfo).length ? { fetchInfo } : {})
+      }
+    )
 
     const rows = result.rows || []
     console.log(`   ✓ Found ${rows.length} records`)

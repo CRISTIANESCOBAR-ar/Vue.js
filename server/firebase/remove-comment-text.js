@@ -46,7 +46,9 @@ async function removeFieldFromCollection(collectionName, fieldName) {
 
     if (batchCount >= BATCH_LIMIT) {
       await batch.commit()
-      console.log(`   💾 Commit de batch (${batchCount} updates) - procesados ${processed}/${snap.size}`)
+      console.log(
+        `   💾 Commit de batch (${batchCount} updates) - procesados ${processed}/${snap.size}`
+      )
       batch = db.batch()
       batchCount = 0
     }
@@ -54,7 +56,7 @@ async function removeFieldFromCollection(collectionName, fieldName) {
 
   if (batchCount > 0) {
     await batch.commit()
-    console.log(`   💾 Commit final (${batchCount} updates)`) 
+    console.log(`   💾 Commit final (${batchCount} updates)`)
   }
 
   console.log(`   ✅ Campo eliminado en ${modified} documentos`)

@@ -12,7 +12,7 @@
     "NOMTWIST": 666,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "AQUINO KEVIN",
-    "COMMENT": null,
+    "COMMENT": "10/1FL Rotor 72.000-Cardina 9.500-Tension 0.997-Alfa 5.35",
     "LOTE": "HD-100-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -38,45 +38,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-11T13:58:59.398Z",
-    "UPDATED_AT": "2025-11-11T13:58:59.398Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-11T13:58:59.398Z"
   },
   {
     "TESTNR": "000071",
@@ -91,7 +53,7 @@
     "NOMTWIST": 666,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "MUNIZ ALICIA",
-    "COMMENT": null,
+    "COMMENT": "10/1FL Rotor 72.000-Cardina 9.500-Tension 0.997-Alfa 5.35",
     "LOTE": "HD-100-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -117,45 +79,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-11T15:03:52.318Z",
-    "UPDATED_AT": "2025-11-11T18:12:21.721Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-11T18:12:21.721Z"
   },
   {
     "TESTNR": "000072",
@@ -170,7 +94,7 @@
     "NOMTWIST": 655,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "GARCIA ALBERTO",
-    "COMMENT": null,
+    "COMMENT": "9.5/1FL- Rotor 80000 Cardina 9500 Tension 1000 Alfa 5.35 HD-100-25",
     "LOTE": "HD-100-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -196,45 +120,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-11T15:02:11.108Z",
-    "UPDATED_AT": "2025-11-11T15:02:11.108Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-11T15:02:11.108Z"
   },
   {
     "TESTNR": "001705",
@@ -275,45 +161,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-05T13:06:09.421Z",
-    "UPDATED_AT": "2025-11-10T18:22:14.818Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T18:22:14.818Z"
   },
   {
     "TESTNR": "001706",
@@ -354,45 +202,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-05T13:43:17.666Z",
-    "UPDATED_AT": "2025-11-05T13:43:17.666Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-05T13:43:17.666Z"
   },
   {
     "TESTNR": "001707",
@@ -433,45 +243,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-05T15:01:52.600Z",
-    "UPDATED_AT": "2025-11-10T03:59:30.707Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T03:59:30.707Z"
   },
   {
     "TESTNR": "001708",
@@ -486,7 +258,7 @@
     "NOMTWIST": 552,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "GARCIA ALBERTO",
-    "COMMENT": null,
+    "COMMENT": "7/1NEC Rotor 80.000 - Cardina 9.500 - Tension 0.981 - Alfa 5.3",
     "LOTE": "HV-56-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -512,45 +284,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-06T14:39:50.636Z",
-    "UPDATED_AT": "2025-11-10T03:55:16.060Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T03:55:16.060Z"
   },
   {
     "TESTNR": "001709",
@@ -565,7 +299,7 @@
     "NOMTWIST": 626,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "AQUINO KEVIN",
-    "COMMENT": null,
+    "COMMENT": "9/1NEC Rotor 80.000 - Cardina 9.500 - Tension 0.994 - Alfa 5.3",
     "LOTE": "HV-56-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -591,45 +325,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-06T14:40:00.485Z",
-    "UPDATED_AT": "2025-11-10T03:48:35.558Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T03:48:35.558Z"
   },
   {
     "TESTNR": "001710",
@@ -644,7 +340,7 @@
     "NOMTWIST": 660,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "AQUINO KEVIN",
-    "COMMENT": null,
+    "COMMENT": "10/1NEC Rotor 80.000 - Cardina 9.500 - Tension 1.002 - Alfa 5.3",
     "LOTE": "HD-99-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -670,45 +366,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-06T14:40:18.478Z",
-    "UPDATED_AT": "2025-11-10T03:50:33.137Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T03:50:33.137Z"
   },
   {
     "TESTNR": "001711",
@@ -723,7 +381,7 @@
     "NOMTWIST": 738,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "MUNIZ ALICIA",
-    "COMMENT": null,
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.004 - Alfa 5.3",
     "LOTE": "HV-56-25 LADO PAR",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -749,45 +407,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-06T14:40:49.392Z",
-    "UPDATED_AT": "2025-11-06T14:40:49.392Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-06T14:40:49.392Z"
   },
   {
     "TESTNR": "001712",
@@ -802,7 +422,7 @@
     "NOMTWIST": 738,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "MUNIZ ALICIA",
-    "COMMENT": null,
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.004 - Alfa 5.3",
     "LOTE": "HV-56-25 LADO IMPAR",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -828,45 +448,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-06T14:40:55.623Z",
-    "UPDATED_AT": "2025-11-10T03:46:48.381Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T03:46:48.381Z"
   },
   {
     "TESTNR": "001713",
@@ -881,7 +463,7 @@
     "NOMTWIST": 660,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "GARCIA ALBERTO",
-    "COMMENT": null,
+    "COMMENT": "10/1NEC Rotor 80.000 - Cardina 9.500 - Tension 0.999 - Alfa 5.3",
     "LOTE": "HD-99-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -907,45 +489,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-06T14:41:01.973Z",
-    "UPDATED_AT": "2025-11-10T03:36:17.066Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T03:36:17.066Z"
   },
   {
     "TESTNR": "001714",
@@ -960,7 +504,7 @@
     "NOMTWIST": 552,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "GARCIA ALBERTO",
-    "COMMENT": null,
+    "COMMENT": "7/1NEC Rotor 80.000 - Cardina 9.500 - Tension 0.981 - Alfa 5.3",
     "LOTE": null,
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -986,45 +530,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-06T14:41:13.215Z",
-    "UPDATED_AT": "2025-11-10T03:34:15.278Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T03:34:15.278Z"
   },
   {
     "TESTNR": "001715",
@@ -1039,7 +545,7 @@
     "NOMTWIST": 626,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "AQUINO KEVIN",
-    "COMMENT": null,
+    "COMMENT": "9/1NEC Rotor 80.000 - Cardina 9.500 - Tension 0.994 - Alfa 5.3",
     "LOTE": "HV-56-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -1065,45 +571,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-06T14:41:26.150Z",
-    "UPDATED_AT": "2025-11-06T14:41:26.150Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-06T14:41:26.150Z"
   },
   {
     "TESTNR": "001716",
@@ -1118,7 +586,7 @@
     "NOMTWIST": 660,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "AQUINO KEVIN",
-    "COMMENT": null,
+    "COMMENT": "10/1NEC Rotor 80.000 - Cardina 9.500 - Tension 1.002 - Alfa 5.3",
     "LOTE": "HD-99-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -1144,45 +612,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-06T14:41:39.370Z",
-    "UPDATED_AT": "2025-11-06T14:41:39.370Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-06T14:41:39.370Z"
   },
   {
     "TESTNR": "001717",
@@ -1197,7 +627,7 @@
     "NOMTWIST": 738,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "MUNIZ ALICIA",
-    "COMMENT": null,
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.004 - Alfa 5.3",
     "LOTE": "HV-56-25 LADO PAR",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -1223,45 +653,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-06T14:41:57.601Z",
-    "UPDATED_AT": "2025-11-06T14:41:57.601Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-06T14:41:57.601Z"
   },
   {
     "TESTNR": "001718",
@@ -1276,7 +668,7 @@
     "NOMTWIST": 738,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "MUNIZ ALICIA",
-    "COMMENT": null,
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.004 - Alfa 5.3",
     "LOTE": "HV-56-25 LADO IMPAR",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -1302,45 +694,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-06T14:42:03.458Z",
-    "UPDATED_AT": "2025-11-06T14:42:03.458Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-06T14:42:03.458Z"
   },
   {
     "TESTNR": "001719",
@@ -1355,7 +709,7 @@
     "NOMTWIST": 660,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "GARCIA ALBERTO",
-    "COMMENT": null,
+    "COMMENT": "10/1NEC Rotor 80.000 - Cardina 9.500 - Tension 0.999 - Alfa 5.3",
     "LOTE": "HD-99-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -1381,45 +735,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-06T14:42:11.518Z",
-    "UPDATED_AT": "2025-11-10T03:32:00.190Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T03:32:00.190Z"
   },
   {
     "TESTNR": "001720",
@@ -1434,7 +750,7 @@
     "NOMTWIST": 552,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "GARCIA ALBERTO",
-    "COMMENT": null,
+    "COMMENT": "7/1NEC Rotor 80.000 - Cardina 9.500 - Tension 0.981 - Alfa 5.3",
     "LOTE": "HV-56-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -1460,45 +776,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-06T14:42:20.137Z",
-    "UPDATED_AT": "2025-11-10T03:30:03.550Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T03:30:03.550Z"
   },
   {
     "TESTNR": "001721",
@@ -1513,7 +791,7 @@
     "NOMTWIST": 626,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "AQUINO KEVIN",
-    "COMMENT": null,
+    "COMMENT": "9/1NEC Rotor 80.000 - Cardina 9.500 - Tension 0.994 - Alfa 5.3",
     "LOTE": "HV-56-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -1539,45 +817,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-06T14:42:25.711Z",
-    "UPDATED_AT": "2025-11-10T03:28:19.290Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T03:28:19.290Z"
   },
   {
     "TESTNR": "001722",
@@ -1592,7 +832,7 @@
     "NOMTWIST": 660,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "AQUINO KEVIN",
-    "COMMENT": null,
+    "COMMENT": "10/1NEC Rotor 80.000 - Cardina 9.500 - Tension 1.002 - Alfa 5.3",
     "LOTE": "HD-99-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -1618,45 +858,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-06T14:42:41.259Z",
-    "UPDATED_AT": "2025-11-10T03:26:31.598Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T03:26:31.598Z"
   },
   {
     "TESTNR": "001723",
@@ -1671,7 +873,7 @@
     "NOMTWIST": 738,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "MUNIZ ALICIA",
-    "COMMENT": null,
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.004 - Alfa 5.3",
     "LOTE": "HV-56-25 LADO PAR",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -1697,45 +899,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-06T14:43:06.286Z",
-    "UPDATED_AT": "2025-11-10T03:24:44.515Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T03:24:44.515Z"
   },
   {
     "TESTNR": "001724",
@@ -1750,7 +914,7 @@
     "NOMTWIST": 738,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "MUNIZ ALICIA",
-    "COMMENT": null,
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.004 - Alfa 5.3",
     "LOTE": "HV-56-25 LADO IMPAR",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -1776,45 +940,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-06T14:43:12.645Z",
-    "UPDATED_AT": "2025-11-06T14:43:12.645Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-06T14:43:12.645Z"
   },
   {
     "TESTNR": "001725",
@@ -1829,7 +955,7 @@
     "NOMTWIST": 660,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "MUNIZ ALICIA",
-    "COMMENT": null,
+    "COMMENT": "10/1NEC Rotor 80.000 - Cardina 9.500 - Tension 0.999 - Alfa 5.3",
     "LOTE": "HD-99-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -1855,45 +981,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-06T14:43:19.568Z",
-    "UPDATED_AT": "2025-11-06T14:43:19.568Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-06T14:43:19.568Z"
   },
   {
     "TESTNR": "001726",
@@ -1908,7 +996,7 @@
     "NOMTWIST": 552,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "MUNIZ ALICIA",
-    "COMMENT": null,
+    "COMMENT": "7/1NEC Rotor 80.000 - Cardina 9.500 - Tension 0.981 - Alfa 5.3",
     "LOTE": "HV-56-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -1934,45 +1022,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-06T14:43:25.743Z",
-    "UPDATED_AT": "2025-11-06T14:43:25.743Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-06T14:43:25.743Z"
   },
   {
     "TESTNR": "001727",
@@ -1987,7 +1037,7 @@
     "NOMTWIST": 660,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "MUNIZ ALICIA",
-    "COMMENT": null,
+    "COMMENT": "10/1NEC Rotor 80.000 - Cardina 9.500 - Tension 1.002 - Alfa 5.3",
     "LOTE": "HD-99-95",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -2013,45 +1063,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-06T14:43:36.151Z",
-    "UPDATED_AT": "2025-11-06T14:43:36.151Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-06T14:43:36.151Z"
   },
   {
     "TESTNR": "001728",
@@ -2066,7 +1078,7 @@
     "NOMTWIST": 738,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "GARCIA ALBERTO",
-    "COMMENT": null,
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.005 - Alfa 5.3",
     "LOTE": "HV-56-25 LADO PAR",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -2092,45 +1104,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-06T14:43:58.856Z",
-    "UPDATED_AT": "2025-11-10T03:19:01.244Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T03:19:01.244Z"
   },
   {
     "TESTNR": "001729",
@@ -2145,7 +1119,7 @@
     "NOMTWIST": 738,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "GARCIA ALBERTO",
-    "COMMENT": null,
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.005 - Alfa 5.3",
     "LOTE": "HV-56-25 LADO IMPAR",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -2171,45 +1145,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-06T16:43:00.140Z",
-    "UPDATED_AT": "2025-11-10T03:16:55.653Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T03:16:55.653Z"
   },
   {
     "TESTNR": "001730",
@@ -2224,7 +1160,7 @@
     "NOMTWIST": 660,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "GARCIA ALBERTO",
-    "COMMENT": null,
+    "COMMENT": "10/1NEC Rotor 80.000 - Cardina 9.500 - Tension 0.999 - Alfa 5.3",
     "LOTE": "HD-99-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -2250,45 +1186,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-06T16:43:21.567Z",
-    "UPDATED_AT": "2025-11-10T03:21:36.659Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T03:21:36.659Z"
   },
   {
     "TESTNR": "001731",
@@ -2303,7 +1201,7 @@
     "NOMTWIST": 660,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "AQUINO KEVIN",
-    "COMMENT": null,
+    "COMMENT": "10/1NEC Rotor 80.000 - Cardina 9.500 - Tension 1.002 - Alfa 5.3",
     "LOTE": "HD-99-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -2329,45 +1227,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-06T16:43:47.763Z",
-    "UPDATED_AT": "2025-11-10T03:06:07.313Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T03:06:07.313Z"
   },
   {
     "TESTNR": "001732",
@@ -2382,7 +1242,7 @@
     "NOMTWIST": 552,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "AQUINO KEVIN",
-    "COMMENT": null,
+    "COMMENT": "7/1NEC Rotor 80.000 - Cardina 9.500 - Tension 0.981 - Alfa 5.3",
     "LOTE": "HV-56-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -2408,45 +1268,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-06T16:44:00.132Z",
-    "UPDATED_AT": "2025-11-10T03:14:28.171Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T03:14:28.171Z"
   },
   {
     "TESTNR": "001733",
@@ -2461,7 +1283,7 @@
     "NOMTWIST": 738,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "AQUINO KEVIN",
-    "COMMENT": null,
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.005 - Alfa 5.3",
     "LOTE": "HD-100-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -2487,45 +1309,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-06T16:44:11.186Z",
-    "UPDATED_AT": "2025-11-10T03:03:58.599Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T03:03:58.599Z"
   },
   {
     "TESTNR": "001734",
@@ -2540,7 +1324,7 @@
     "NOMTWIST": 738,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "MUNIZ ALICIA",
-    "COMMENT": null,
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.005 - Alfa 5.3",
     "LOTE": "HD-100-25   (PAR)",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -2566,45 +1350,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-06T17:05:09.235Z",
-    "UPDATED_AT": "2025-11-06T17:05:09.235Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-06T17:05:09.235Z"
   },
   {
     "TESTNR": "001735",
@@ -2619,7 +1365,7 @@
     "NOMTWIST": 738,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "MUNIZ ALICIA",
-    "COMMENT": null,
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.005 - Alfa 5.3",
     "LOTE": "HD-100-25   (IMPAR)",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -2645,45 +1391,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-06T17:07:39.676Z",
-    "UPDATED_AT": "2025-11-06T17:07:39.676Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-06T17:07:39.676Z"
   },
   {
     "TESTNR": "001736",
@@ -2698,7 +1406,7 @@
     "NOMTWIST": 660,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "GARCIA ALBERTO",
-    "COMMENT": null,
+    "COMMENT": "10/1NEC Rotor 80.000 - Cardina 9.500 - Tension 0.999 - Alfa 5.3",
     "LOTE": "HD-100-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -2724,45 +1432,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-06T17:08:43.467Z",
-    "UPDATED_AT": "2025-11-10T03:01:59.299Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T03:01:59.299Z"
   },
   {
     "TESTNR": "001737",
@@ -2777,7 +1447,7 @@
     "NOMTWIST": 552,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "GARCIA ALBERTO",
-    "COMMENT": null,
+    "COMMENT": "7/1NEC Rotor 80.000 - Cardina 9.500 - Tension 0.981 - Alfa 5.3",
     "LOTE": "HD-100-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -2803,45 +1473,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-06T17:13:25.026Z",
-    "UPDATED_AT": "2025-11-10T02:58:37.257Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T02:58:37.257Z"
   },
   {
     "TESTNR": "001738",
@@ -2856,7 +1488,7 @@
     "NOMTWIST": 738,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "AQUINO KEVIN",
-    "COMMENT": null,
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.005 - Alfa 5.3",
     "LOTE": "HD-100-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -2882,45 +1514,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-06T17:17:47.909Z",
-    "UPDATED_AT": "2025-11-10T02:56:45.020Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T02:56:45.020Z"
   },
   {
     "TESTNR": "001739",
@@ -2935,7 +1529,7 @@
     "NOMTWIST": 738,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "MUNIZ ALICIA",
-    "COMMENT": null,
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.005 - Alfa 5.3",
     "LOTE": "HD-100-25   (PAR)",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -2961,45 +1555,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-06T17:21:30.458Z",
-    "UPDATED_AT": "2025-11-06T17:21:30.458Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-06T17:21:30.458Z"
   },
   {
     "TESTNR": "001740",
@@ -3014,7 +1570,7 @@
     "NOMTWIST": 738,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "MUNIZ ALICIA",
-    "COMMENT": null,
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.005 - Alfa 5.3",
     "LOTE": "HD-100-25   (IMPAR)",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -3040,45 +1596,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-06T17:22:02.208Z",
-    "UPDATED_AT": "2025-11-06T17:22:02.208Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-06T17:22:02.208Z"
   },
   {
     "TESTNR": "001741",
@@ -3093,7 +1611,7 @@
     "NOMTWIST": 660,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "GARCIA ALBERTO",
-    "COMMENT": null,
+    "COMMENT": "10/1NEC Rotor 80.000 - Cardina 9.500 - Tension 0.999 - Alfa 5.3",
     "LOTE": "HD-100-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -3119,45 +1637,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-06T17:22:15.129Z",
-    "UPDATED_AT": "2025-11-10T02:54:30.635Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T02:54:30.635Z"
   },
   {
     "TESTNR": "001742",
@@ -3172,7 +1652,7 @@
     "NOMTWIST": 552,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "GARCIA ALBERTO",
-    "COMMENT": null,
+    "COMMENT": "7/1NEC Rotor 80.000 - Cardina 9.500 - Tension 0.981 - Alfa 5.3",
     "LOTE": "HD-100-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -3198,45 +1678,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-06T17:22:22.757Z",
-    "UPDATED_AT": "2025-11-10T00:35:00.048Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T00:35:00.048Z"
   },
   {
     "TESTNR": "001743",
@@ -3251,7 +1693,7 @@
     "NOMTWIST": 738,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "AQUINO KEVIN",
-    "COMMENT": null,
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.005 - Alfa 5.3",
     "LOTE": "HD-100-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -3277,45 +1719,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-10T00:17:55.387Z",
-    "UPDATED_AT": "2025-11-10T00:17:55.387Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T00:17:55.387Z"
   },
   {
     "TESTNR": "001744",
@@ -3330,7 +1734,7 @@
     "NOMTWIST": 660,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "AQUINO KEVIN",
-    "COMMENT": null,
+    "COMMENT": "10/1NEC Rotor 80.000 - Cardina 9.500 - Tension 1.002 - Alfa 5.3",
     "LOTE": "HD-100-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -3356,45 +1760,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-10T00:18:12.813Z",
-    "UPDATED_AT": "2025-11-10T00:18:12.813Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T00:18:12.813Z"
   },
   {
     "TESTNR": "001745",
@@ -3409,7 +1775,7 @@
     "NOMTWIST": 738,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "MUNIZ ALICIA",
-    "COMMENT": null,
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.005 - Alfa 5.3",
     "LOTE": "HD-100-25   (IMPAR)",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -3435,45 +1801,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-10T00:19:11.482Z",
-    "UPDATED_AT": "2025-11-10T00:19:11.482Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T00:19:11.482Z"
   },
   {
     "TESTNR": "001746",
@@ -3488,7 +1816,7 @@
     "NOMTWIST": 738,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "MUNIZ ALICIA",
-    "COMMENT": null,
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.005 - Alfa 5.3",
     "LOTE": "HD-100-25   (PAR)",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -3514,45 +1842,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-10T00:19:20.970Z",
-    "UPDATED_AT": "2025-11-10T03:00:38.255Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T03:00:38.255Z"
   },
   {
     "TESTNR": "001747",
@@ -3567,7 +1857,7 @@
     "NOMTWIST": 738,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "MUNIZ ALICIA",
-    "COMMENT": null,
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.005 - Alfa 5.3",
     "LOTE": "HD-100-25   (IMPAR)",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -3593,45 +1883,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-10T00:19:34.257Z",
-    "UPDATED_AT": "2025-11-10T00:19:34.257Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T00:19:34.257Z"
   },
   {
     "TESTNR": "001748",
@@ -3646,7 +1898,7 @@
     "NOMTWIST": 660,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "GARCIA ALBERTO",
-    "COMMENT": null,
+    "COMMENT": "10/1NEC Rotor 80.000 - Cardina 9.500 - Tension 0.999 - Alfa 5.3",
     "LOTE": "HD-100-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -3672,45 +1924,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-10T00:19:44.404Z",
-    "UPDATED_AT": "2025-11-10T00:31:34.578Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T00:31:34.578Z"
   },
   {
     "TESTNR": "001749",
@@ -3725,7 +1939,7 @@
     "NOMTWIST": 552,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "GARCIA ALBERTO",
-    "COMMENT": null,
+    "COMMENT": "7/1NEC Rotor 80.000 - Cardina 9.500 - Tension 0.981 - Alfa 5.3",
     "LOTE": "HD-100-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -3751,45 +1965,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-10T00:20:04.436Z",
-    "UPDATED_AT": "2025-11-10T00:27:45.572Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T00:27:45.572Z"
   },
   {
     "TESTNR": "001750",
@@ -3804,7 +1980,7 @@
     "NOMTWIST": 660,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "GARCIA ALBERTO",
-    "COMMENT": null,
+    "COMMENT": "10/1NEC Rotor 80.000 - Cardina 9.500 - Tension 1.002 - Alfa 5.3",
     "LOTE": "HD-100-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -3830,45 +2006,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-10T00:20:13.926Z",
-    "UPDATED_AT": "2025-11-10T00:24:03.128Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T00:24:03.128Z"
   },
   {
     "TESTNR": "001751",
@@ -3883,7 +2021,7 @@
     "NOMTWIST": 738,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "MUNIZ ALICIA",
-    "COMMENT": null,
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.005 - Alfa 5.3",
     "LOTE": "HD-100-25   (IMPAR)",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -3909,45 +2047,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-10T14:44:51.433Z",
-    "UPDATED_AT": "2025-11-10T14:44:51.433Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T14:44:51.433Z"
   },
   {
     "TESTNR": "001752",
@@ -3962,7 +2062,7 @@
     "NOMTWIST": 738,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "MUNIZ ALICIA",
-    "COMMENT": null,
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.005 - Alfa 5.3",
     "LOTE": "HD-100-25   (PAR)",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -3988,45 +2088,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-10T14:44:57.495Z",
-    "UPDATED_AT": "2025-11-10T14:44:57.495Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T14:44:57.495Z"
   },
   {
     "TESTNR": "001753",
@@ -4041,7 +2103,7 @@
     "NOMTWIST": 738,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "MUNIZ ALICIA",
-    "COMMENT": null,
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.005 - Alfa 5.3",
     "LOTE": "HD-100-25   (IMPAR)",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -4067,45 +2129,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-10T14:45:04.263Z",
-    "UPDATED_AT": "2025-11-10T14:45:04.263Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T14:45:04.263Z"
   },
   {
     "TESTNR": "001754",
@@ -4120,7 +2144,7 @@
     "NOMTWIST": 626,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "GARCIA ALBERTO",
-    "COMMENT": null,
+    "COMMENT": "9/1NEC Rotor 80.000 - Cardina 9.500 - Tension 0.994 - Alfa 5.3",
     "LOTE": "HD-100-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -4146,45 +2170,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-10T14:45:11.027Z",
-    "UPDATED_AT": "2025-11-10T14:45:11.027Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T14:45:11.027Z"
   },
   {
     "TESTNR": "001755",
@@ -4199,7 +2185,7 @@
     "NOMTWIST": 660,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "GARCIA ALBERTO",
-    "COMMENT": null,
+    "COMMENT": "10/1NEC Rotor 80.000 - Cardina 9.500 - Tension 1.002 - Alfa 5.3",
     "LOTE": "HD-100-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -4225,45 +2211,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-10T14:45:20.059Z",
-    "UPDATED_AT": "2025-11-10T14:45:20.059Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T14:45:20.059Z"
   },
   {
     "TESTNR": "001756",
@@ -4278,7 +2226,7 @@
     "NOMTWIST": 738,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "MUNIZ ALICIA",
-    "COMMENT": null,
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.005 - Alfa 5.3",
     "LOTE": "HD-100-25   (PAR)",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -4304,45 +2252,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-10T14:46:22.170Z",
-    "UPDATED_AT": "2025-11-10T14:46:22.170Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T14:46:22.170Z"
   },
   {
     "TESTNR": "001757",
@@ -4357,7 +2267,7 @@
     "NOMTWIST": 738,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "MUNIZ ALICIA",
-    "COMMENT": null,
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.005 - Alfa 5.3",
     "LOTE": "HD-100-25   (IMPAR)",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -4383,45 +2293,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-10T14:46:28.503Z",
-    "UPDATED_AT": "2025-11-10T14:46:28.503Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T14:46:28.503Z"
   },
   {
     "TESTNR": "001758",
@@ -4436,7 +2308,7 @@
     "NOMTWIST": 626,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "MUNIZ ALICIA",
-    "COMMENT": null,
+    "COMMENT": "9/1NEC Rotor 80.000 - Cardina 9.500 - Tension 0.994 - Alfa 5.3",
     "LOTE": "HD-100-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -4462,45 +2334,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-10T14:46:38.173Z",
-    "UPDATED_AT": "2025-11-11T13:29:30.940Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-11T13:29:30.940Z"
   },
   {
     "TESTNR": "001759",
@@ -4515,7 +2349,7 @@
     "NOMTWIST": 660,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "MUNIZ ALICIA",
-    "COMMENT": null,
+    "COMMENT": "10/1NEC Rotor 80.000 - Cardina 9.500 - Tension 1.002 - Alfa 5.3",
     "LOTE": "HD-100-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -4541,45 +2375,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-10T14:46:45.142Z",
-    "UPDATED_AT": "2025-11-11T13:26:39.666Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-11T13:26:39.666Z"
   },
   {
     "TESTNR": "001760",
@@ -4594,7 +2390,7 @@
     "NOMTWIST": 738,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "MUNIZ ALICIA",
-    "COMMENT": null,
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.005 - Alfa 5.3",
     "LOTE": "HD-100-25   (IMPAR)",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -4620,45 +2416,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-10T14:46:54.720Z",
-    "UPDATED_AT": "2025-11-10T14:46:54.720Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-10T14:46:54.720Z"
   },
   {
     "TESTNR": "001761",
@@ -4673,7 +2431,7 @@
     "NOMTWIST": 738,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "GARCIA ALBERTO",
-    "COMMENT": null,
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.005 - Alfa 5.3",
     "LOTE": "HD-100-25   (IMPAR)",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -4699,45 +2457,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-11T15:02:19.416Z",
-    "UPDATED_AT": "2025-11-11T18:09:40.517Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-11T18:09:40.517Z"
   },
   {
     "TESTNR": "001762",
@@ -4752,7 +2472,7 @@
     "NOMTWIST": 552,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "GARCIA ALBERTO",
-    "COMMENT": null,
+    "COMMENT": "7/1NEC Rotor 80.000 - Cardina 9.500 - Tension 0.981 - Alfa 5.3",
     "LOTE": "HD-100-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -4778,45 +2498,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-11T15:02:47.203Z",
-    "UPDATED_AT": "2025-11-11T15:02:47.203Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-11T15:02:47.203Z"
   },
   {
     "TESTNR": "001763",
@@ -4831,7 +2513,7 @@
     "NOMTWIST": 660,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "AQUINO KEVIN",
-    "COMMENT": null,
+    "COMMENT": "10/1NEC Rotor 80.000 - Cardina 9.500 - Tension 1.002 - Alfa 5.3",
     "LOTE": "HD-100-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -4857,45 +2539,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-12T15:26:41.454Z",
-    "UPDATED_AT": "2025-11-12T15:26:41.454Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-12T15:26:41.454Z"
   },
   {
     "TESTNR": "001764",
@@ -4910,7 +2554,7 @@
     "NOMTWIST": 738,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "AQUINO KEVIN",
-    "COMMENT": null,
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.005 - Alfa 5.3",
     "LOTE": "HD-100-25 LADO PAR",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -4936,45 +2580,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-12T15:40:36.487Z",
-    "UPDATED_AT": "2025-11-12T15:40:36.487Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-12T15:40:36.487Z"
   },
   {
     "TESTNR": "001765",
@@ -4989,7 +2595,7 @@
     "NOMTWIST": 738,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "AQUINO KEVIN",
-    "COMMENT": null,
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.005 - Alfa 5.3",
     "LOTE": "HD-100-25 LADO IMPAR",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -5015,45 +2621,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-12T15:46:42.522Z",
-    "UPDATED_AT": "2025-11-12T15:46:42.522Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-12T15:46:42.522Z"
   },
   {
     "TESTNR": "001766",
@@ -5068,7 +2636,7 @@
     "NOMTWIST": 738,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "MUNIZ ALICIA",
-    "COMMENT": null,
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.005 - Alfa 5.3",
     "LOTE": "HD-100-25 LADO PAR",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -5094,45 +2662,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-12T15:47:05.778Z",
-    "UPDATED_AT": "2025-11-12T15:47:05.778Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-12T15:47:05.778Z"
   },
   {
     "TESTNR": "001767",
@@ -5147,7 +2677,7 @@
     "NOMTWIST": 738,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "MUNIZ ALICIA",
-    "COMMENT": null,
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.005 - Alfa 5.3",
     "LOTE": "HD-100-25 LADO IMPAR",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -5173,45 +2703,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-12T15:47:21.910Z",
-    "UPDATED_AT": "2025-11-12T15:47:21.910Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-12T15:47:21.910Z"
   },
   {
     "TESTNR": "001768",
@@ -5226,7 +2718,7 @@
     "NOMTWIST": 552,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "GARCIA ALBERTO",
-    "COMMENT": null,
+    "COMMENT": "7/1NEC Rotor 80.000 - Cardina 9.500 - Tension 0.981 - Alfa 5.3",
     "LOTE": "HD-100-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -5252,45 +2744,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-12T15:47:30.249Z",
-    "UPDATED_AT": "2025-11-12T15:47:30.249Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-12T15:47:30.249Z"
   },
   {
     "TESTNR": "001769",
@@ -5305,7 +2759,7 @@
     "NOMTWIST": 660,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "GARCIA ALBERTO",
-    "COMMENT": null,
+    "COMMENT": "10/1NEC Rotor 80.000 - Cardina 9.500 - Tension 1.002 - Alfa 5.3",
     "LOTE": "HD-100-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -5331,45 +2785,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-12T15:47:38.761Z",
-    "UPDATED_AT": "2025-11-12T15:47:38.761Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-12T15:47:38.761Z"
   },
   {
     "TESTNR": "001770",
@@ -5384,7 +2800,7 @@
     "NOMTWIST": 738,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "AQUINO KEVIN",
-    "COMMENT": null,
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.005 - Alfa 5.3",
     "LOTE": "HD-100-25 LADO IMPAR",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -5410,45 +2826,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-13T13:47:43.748Z",
-    "UPDATED_AT": "2025-11-13T14:15:14.028Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-13T14:15:14.028Z"
   },
   {
     "TESTNR": "001771",
@@ -5463,7 +2841,7 @@
     "NOMTWIST": 738,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "MUNIZ ALICIA",
-    "COMMENT": null,
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.005 - Alfa 5.3",
     "LOTE": "HD-100-25 LADO PAR",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -5489,45 +2867,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-13T13:48:08.756Z",
-    "UPDATED_AT": "2025-11-13T13:48:08.756Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-13T13:48:08.756Z"
   },
   {
     "TESTNR": "001772",
@@ -5542,7 +2882,7 @@
     "NOMTWIST": 738,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "MUNIZ ALICIA",
-    "COMMENT": null,
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.005 - Alfa 5.3",
     "LOTE": "HD-100-25 LADO PAR",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -5568,45 +2908,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-13T13:48:15.491Z",
-    "UPDATED_AT": "2025-11-13T13:48:15.491Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-13T13:48:15.491Z"
   },
   {
     "TESTNR": "001773",
@@ -5621,7 +2923,7 @@
     "NOMTWIST": 660,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "GARCIA ALBERTO",
-    "COMMENT": null,
+    "COMMENT": "10/1NEC Rotor 80.000 - Cardina 9.500 - Tension 1.001 - Alfa 5.3",
     "LOTE": "HD-100-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -5647,45 +2949,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-13T13:48:36.830Z",
-    "UPDATED_AT": "2025-11-13T13:48:36.830Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-13T13:48:36.830Z"
   },
   {
     "TESTNR": "001774",
@@ -5700,7 +2964,7 @@
     "NOMTWIST": 552,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "GARCIA ALBERTO",
-    "COMMENT": null,
+    "COMMENT": "7/1NEC Rotor 80.000 - Cardina 9.500 - Tension 0.981 - Alfa 5.3",
     "LOTE": "HD-100-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -5726,45 +2990,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-13T13:48:47.558Z",
-    "UPDATED_AT": "2025-11-13T13:48:47.558Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-13T13:48:47.558Z"
   },
   {
     "TESTNR": "001775",
@@ -5779,7 +3005,7 @@
     "NOMTWIST": 660,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "AQUINO KEVIN",
-    "COMMENT": null,
+    "COMMENT": "10/1NEC Rotor 80.000 - Cardina 9.500 - Tension 1.002 - Alfa 5.3",
     "LOTE": "HD-100-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -5805,45 +3031,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-14T15:08:40.833Z",
-    "UPDATED_AT": "2025-11-14T15:08:40.833Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-14T15:08:40.833Z"
   },
   {
     "TESTNR": "001776",
@@ -5858,7 +3046,7 @@
     "NOMTWIST": 738,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "MUNIZ ALICIA",
-    "COMMENT": null,
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.005 - Alfa 5.3",
     "LOTE": "HD-100-25 LADO PAR",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -5884,45 +3072,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-14T15:09:06.323Z",
-    "UPDATED_AT": "2025-11-14T15:09:06.323Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-14T15:09:06.323Z"
   },
   {
     "TESTNR": "001777",
@@ -5937,7 +3087,7 @@
     "NOMTWIST": 738,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "MUNIZ ALICIA",
-    "COMMENT": null,
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.005 - Alfa 5.3",
     "LOTE": "HD-100-25 LADO IMPAR",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -5963,45 +3113,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-14T15:09:15.725Z",
-    "UPDATED_AT": "2025-11-14T15:09:15.725Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-14T15:09:15.725Z"
   },
   {
     "TESTNR": "001778",
@@ -6016,7 +3128,7 @@
     "NOMTWIST": 660,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "GARCIA ALBERTO",
-    "COMMENT": null,
+    "COMMENT": "10/1NEC Rotor 80.000 - Cardina 9.500 - Tension 1.007 - Alfa 5.3",
     "LOTE": "HD-100-25 LADO IMPAR",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -6042,45 +3154,7 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-14T15:09:22.269Z",
-    "UPDATED_AT": "2025-11-14T15:09:22.269Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-14T15:09:22.269Z"
   },
   {
     "TESTNR": "001780",
@@ -6095,7 +3169,7 @@
     "NOMTWIST": 552,
     "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
     "LABORANT": "GARCIA ALBERTO",
-    "COMMENT": null,
+    "COMMENT": "7/1NEC Rotor 80.000 - Cardina 9.500 - Tension 0.981 - Alfa 5.3",
     "LOTE": "HD-100-25",
     "TUNAME": "UTR4",
     "GROUPS": 10,
@@ -6121,44 +3195,1072 @@
     "EVALTIMERET": 30,
     "PRELOADCYCLESRET": 0,
     "CREATED_AT": "2025-11-14T15:09:31.925Z",
-    "UPDATED_AT": "2025-11-14T15:09:31.925Z",
-    "COMMENT_TEXT": {
-      "_events": {},
-      "_readableState": {
-        "highWaterMark": 16384,
-        "buffer": [],
-        "bufferIndex": 0,
-        "length": 0,
-        "pipes": [],
-        "awaitDrainWriters": null
-      },
-      "_writableState": {
-        "highWaterMark": 16384,
-        "length": 0,
-        "corked": 0,
-        "writelen": 0,
-        "bufferedIndex": 0,
-        "pendingcb": 0
-      },
-      "allowHalfOpen": true,
-      "offset": 1,
-      "_isActive": false,
-      "_eventsCount": 1,
-      "_parentObj": {
-        "_rowCache": [],
-        "_processingStarted": false,
-        "_convertedToStream": false,
-        "_allowGetRowCall": false,
-        "_isActive": false,
-        "_parentObj": {
-          "_events": {},
-          "_eventsCount": 0,
-          "_dbObjectClasses": {},
-          "_requestQueue": [],
-          "_inProgress": false,
-          "_closing": false
-        }
-      }
-    }
+    "UPDATED_AT": "2025-11-14T15:09:31.925Z"
+  },
+  {
+    "TESTNR": "001781",
+    "USTER_TESTNR": "05487",
+    "CATALOG": "CATALOG STC44",
+    "TIME": "1763141523",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "ACT",
+    "MASCHNR": "008",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 14,
+    "NOMTWIST": 751,
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "LABORANT": "AQUINO KEVIN",
+    "COMMENT": "14/1NEC Rotor 100.000 - Cardina 9.500 - Tension 0.998 - Alfa 5.3",
+    "LOTE": "HD-100-25",
+    "TUNAME": "UTR4",
+    "GROUPS": 10,
+    "WITHIN": 5,
+    "TOTAL": 50,
+    "UNSPOOLGROUPS": 1,
+    "LENGTH": 500,
+    "EXTSPEED": 5000,
+    "PRETENSION": 21.1,
+    "CLAMPPRESSURE": 30,
+    "CYCLEFORCELL": 1,
+    "CYCLEFORCEUL": 2,
+    "NMBOFFORCECYCLES": 5,
+    "CYCLELONGLL": 1,
+    "CYCLELONGUL": 4,
+    "NMBOFELONGCYCLES": 5,
+    "FORCEF1REL": 1,
+    "ELONGATIONE1REL": 0,
+    "EVALTIMEREL": 30,
+    "PRELOADCYCLESREL": 0,
+    "FORCEF1RET": 0,
+    "ELONGATIONE1RET": 4,
+    "EVALTIMERET": 30,
+    "PRELOADCYCLESRET": 0,
+    "CREATED_AT": "2025-11-17T13:36:08.333Z",
+    "UPDATED_AT": "2025-11-17T13:36:08.333Z"
+  },
+  {
+    "TESTNR": "001782",
+    "USTER_TESTNR": "05486",
+    "CATALOG": "CATALOG STC44",
+    "TIME": "1763142630",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "ACT",
+    "MASCHNR": "007",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 10,
+    "NOMTWIST": 660,
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "LABORANT": "AQUINO KEVIN",
+    "COMMENT": "10/1NEC Rotor 80.000 - Cardina 9.500 - Tension 1.001 - Alfa 5.3",
+    "LOTE": "HD-100-25",
+    "TUNAME": "UTR4",
+    "GROUPS": 10,
+    "WITHIN": 5,
+    "TOTAL": 50,
+    "UNSPOOLGROUPS": 1,
+    "LENGTH": 500,
+    "EXTSPEED": 5000,
+    "PRETENSION": 29.5,
+    "CLAMPPRESSURE": 30,
+    "CYCLEFORCELL": 1,
+    "CYCLEFORCEUL": 2,
+    "NMBOFFORCECYCLES": 5,
+    "CYCLELONGLL": 1,
+    "CYCLELONGUL": 4,
+    "NMBOFELONGCYCLES": 5,
+    "FORCEF1REL": 1,
+    "ELONGATIONE1REL": 0,
+    "EVALTIMEREL": 30,
+    "PRELOADCYCLESREL": 0,
+    "FORCEF1RET": 0,
+    "ELONGATIONE1RET": 4,
+    "EVALTIMERET": 30,
+    "PRELOADCYCLESRET": 0,
+    "CREATED_AT": "2025-11-17T13:36:13.295Z",
+    "UPDATED_AT": "2025-11-17T13:36:13.295Z"
+  },
+  {
+    "TESTNR": "001783",
+    "USTER_TESTNR": "05485",
+    "CATALOG": "CATALOG STC44",
+    "TIME": "1763143482",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "ACT",
+    "MASCHNR": "010",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 10,
+    "NOMTWIST": 660,
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "LABORANT": "AQUINO KEVIN",
+    "COMMENT": "10/1NEC Rotor 80.000 - Cardina 9.500 - Tension 1.002 - Alfa 5.3",
+    "LOTE": "HD-100-25",
+    "TUNAME": "UTR4",
+    "GROUPS": 10,
+    "WITHIN": 5,
+    "TOTAL": 50,
+    "UNSPOOLGROUPS": 1,
+    "LENGTH": 500,
+    "EXTSPEED": 5000,
+    "PRETENSION": 29.5,
+    "CLAMPPRESSURE": 30,
+    "CYCLEFORCELL": 1,
+    "CYCLEFORCEUL": 2,
+    "NMBOFFORCECYCLES": 5,
+    "CYCLELONGLL": 1,
+    "CYCLELONGUL": 4,
+    "NMBOFELONGCYCLES": 5,
+    "FORCEF1REL": 1,
+    "ELONGATIONE1REL": 0,
+    "EVALTIMEREL": 30,
+    "PRELOADCYCLESREL": 0,
+    "FORCEF1RET": 0,
+    "ELONGATIONE1RET": 4,
+    "EVALTIMERET": 30,
+    "PRELOADCYCLESRET": 0,
+    "CREATED_AT": "2025-11-17T13:36:19.913Z",
+    "UPDATED_AT": "2025-11-17T13:36:19.913Z"
+  },
+  {
+    "TESTNR": "001784",
+    "USTER_TESTNR": "05490",
+    "CATALOG": "CATALOG STC44",
+    "TIME": "1763162612",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "ACT",
+    "MASCHNR": "002 LIM",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 10,
+    "NOMTWIST": 660,
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "LABORANT": "MUNIZ ALICIA",
+    "COMMENT": "10/1NEC Rotor 80.000 - Cardina 9.500 - Tension 1.007 - Alfa 5.3",
+    "LOTE": "HD-100-25   (IMPAR)",
+    "TUNAME": "UTR4",
+    "GROUPS": 10,
+    "WITHIN": 5,
+    "TOTAL": 50,
+    "UNSPOOLGROUPS": 1,
+    "LENGTH": 500,
+    "EXTSPEED": 5000,
+    "PRETENSION": 29.5,
+    "CLAMPPRESSURE": 30,
+    "CYCLEFORCELL": 1,
+    "CYCLEFORCEUL": 2,
+    "NMBOFFORCECYCLES": 5,
+    "CYCLELONGLL": 1,
+    "CYCLELONGUL": 4,
+    "NMBOFELONGCYCLES": 5,
+    "FORCEF1REL": 1,
+    "ELONGATIONE1REL": 0,
+    "EVALTIMEREL": 30,
+    "PRELOADCYCLESREL": 0,
+    "FORCEF1RET": 0,
+    "ELONGATIONE1RET": 4,
+    "EVALTIMERET": 30,
+    "PRELOADCYCLESRET": 0,
+    "CREATED_AT": "2025-11-17T13:36:42.005Z",
+    "UPDATED_AT": "2025-11-17T13:36:42.005Z"
+  },
+  {
+    "TESTNR": "001785",
+    "USTER_TESTNR": "05488",
+    "CATALOG": "CATALOG STC44",
+    "TIME": "1763163961",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "ACT",
+    "MASCHNR": "003 LP",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 12.5,
+    "NOMTWIST": 738,
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "LABORANT": "MUNIZ ALICIA",
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.005 - Alfa 5.3",
+    "LOTE": "HD-100-25   (PAR)",
+    "TUNAME": "UTR4",
+    "GROUPS": 10,
+    "WITHIN": 5,
+    "TOTAL": 50,
+    "UNSPOOLGROUPS": 1,
+    "LENGTH": 500,
+    "EXTSPEED": 5000,
+    "PRETENSION": 23.6,
+    "CLAMPPRESSURE": 30,
+    "CYCLEFORCELL": 1,
+    "CYCLEFORCEUL": 2,
+    "NMBOFFORCECYCLES": 5,
+    "CYCLELONGLL": 1,
+    "CYCLELONGUL": 4,
+    "NMBOFELONGCYCLES": 5,
+    "FORCEF1REL": 1,
+    "ELONGATIONE1REL": 0,
+    "EVALTIMEREL": 30,
+    "PRELOADCYCLESREL": 0,
+    "FORCEF1RET": 0,
+    "ELONGATIONE1RET": 4,
+    "EVALTIMERET": 30,
+    "PRELOADCYCLESRET": 0,
+    "CREATED_AT": "2025-11-17T13:36:46.738Z",
+    "UPDATED_AT": "2025-11-17T13:36:46.738Z"
+  },
+  {
+    "TESTNR": "001787",
+    "USTER_TESTNR": "05489",
+    "CATALOG": "CATALOG STC44",
+    "TIME": "1763165724",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "ACT",
+    "MASCHNR": "003 LIM",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 12.5,
+    "NOMTWIST": 738,
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "LABORANT": "MUNIZ ALICIA",
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.005 - Alfa 5.3",
+    "LOTE": "HD-100-25 LADO IMPAR",
+    "TUNAME": "UTR4",
+    "GROUPS": 10,
+    "WITHIN": 5,
+    "TOTAL": 50,
+    "UNSPOOLGROUPS": 1,
+    "LENGTH": 500,
+    "EXTSPEED": 5000,
+    "PRETENSION": 23.6,
+    "CLAMPPRESSURE": 30,
+    "CYCLEFORCELL": 1,
+    "CYCLEFORCEUL": 2,
+    "NMBOFFORCECYCLES": 5,
+    "CYCLELONGLL": 1,
+    "CYCLELONGUL": 4,
+    "NMBOFELONGCYCLES": 5,
+    "FORCEF1REL": 1,
+    "ELONGATIONE1REL": 0,
+    "EVALTIMEREL": 30,
+    "PRELOADCYCLESREL": 0,
+    "FORCEF1RET": 0,
+    "ELONGATIONE1RET": 4,
+    "EVALTIMERET": 30,
+    "PRELOADCYCLESRET": 0,
+    "CREATED_AT": "2025-11-17T13:41:48.015Z",
+    "UPDATED_AT": "2025-11-17T13:41:48.015Z"
+  },
+  {
+    "TESTNR": "001788",
+    "USTER_TESTNR": "05491",
+    "CATALOG": "CATALOG STC44",
+    "TIME": "1763188192",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "ACT",
+    "MASCHNR": "007",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 10,
+    "NOMTWIST": 660,
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "LABORANT": "GARCIA ALBERTO",
+    "COMMENT": "10/1NEC Rotor 80.000 - Cardina 9.500 - Tension 1.002 - Alfa 5.3",
+    "LOTE": "HD-100-25",
+    "TUNAME": "UTR4",
+    "GROUPS": 10,
+    "WITHIN": 5,
+    "TOTAL": 50,
+    "UNSPOOLGROUPS": 1,
+    "LENGTH": 500,
+    "EXTSPEED": 5000,
+    "PRETENSION": 29.5,
+    "CLAMPPRESSURE": 30,
+    "CYCLEFORCELL": 1,
+    "CYCLEFORCEUL": 2,
+    "NMBOFFORCECYCLES": 5,
+    "CYCLELONGLL": 1,
+    "CYCLELONGUL": 4,
+    "NMBOFELONGCYCLES": 5,
+    "FORCEF1REL": 1,
+    "ELONGATIONE1REL": 0,
+    "EVALTIMEREL": 30,
+    "PRELOADCYCLESREL": 0,
+    "FORCEF1RET": 0,
+    "ELONGATIONE1RET": 4,
+    "EVALTIMERET": 30,
+    "PRELOADCYCLESRET": 0,
+    "CREATED_AT": "2025-11-17T13:42:14.164Z",
+    "UPDATED_AT": "2025-11-17T13:42:14.164Z"
+  },
+  {
+    "TESTNR": "001789",
+    "USTER_TESTNR": "05492",
+    "CATALOG": "CATALOG STC44",
+    "TIME": "1763190984",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "ACT",
+    "MASCHNR": "008",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 14,
+    "NOMTWIST": 751,
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "LABORANT": "GARCIA ALBERTO",
+    "COMMENT": "14/1NEC Rotor 100.000 - Cardina 9.500 - Tension 0.998 - Alfa 5.3",
+    "LOTE": "HD-100-25",
+    "TUNAME": "UTR4",
+    "GROUPS": 10,
+    "WITHIN": 5,
+    "TOTAL": 50,
+    "UNSPOOLGROUPS": 1,
+    "LENGTH": 500,
+    "EXTSPEED": 5000,
+    "PRETENSION": 21.1,
+    "CLAMPPRESSURE": 30,
+    "CYCLEFORCELL": 1,
+    "CYCLEFORCEUL": 2,
+    "NMBOFFORCECYCLES": 5,
+    "CYCLELONGLL": 1,
+    "CYCLELONGUL": 4,
+    "NMBOFELONGCYCLES": 5,
+    "FORCEF1REL": 1,
+    "ELONGATIONE1REL": 0,
+    "EVALTIMEREL": 30,
+    "PRELOADCYCLESREL": 0,
+    "FORCEF1RET": 0,
+    "ELONGATIONE1RET": 4,
+    "EVALTIMERET": 30,
+    "PRELOADCYCLESRET": 0,
+    "CREATED_AT": "2025-11-17T13:42:26.104Z",
+    "UPDATED_AT": "2025-11-17T13:42:26.104Z"
+  },
+  {
+    "TESTNR": "001790",
+    "USTER_TESTNR": "05493",
+    "CATALOG": "CATALOG STC44",
+    "TIME": "1763223383",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "ACT",
+    "MASCHNR": "009",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 7,
+    "NOMTWIST": 552,
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "LABORANT": "AQUINO KEVIN",
+    "COMMENT": "7/1NEC Rotor 80.000 - Cardina 9.500 - Tension 0.981 - Alfa 5.3",
+    "LOTE": "HD-100-25",
+    "TUNAME": "UTR4",
+    "GROUPS": 10,
+    "WITHIN": 5,
+    "TOTAL": 50,
+    "UNSPOOLGROUPS": 1,
+    "LENGTH": 500,
+    "EXTSPEED": 5000,
+    "PRETENSION": 42.2,
+    "CLAMPPRESSURE": 30,
+    "CYCLEFORCELL": 1,
+    "CYCLEFORCEUL": 2,
+    "NMBOFFORCECYCLES": 5,
+    "CYCLELONGLL": 1,
+    "CYCLELONGUL": 4,
+    "NMBOFELONGCYCLES": 5,
+    "FORCEF1REL": 1,
+    "ELONGATIONE1REL": 0,
+    "EVALTIMEREL": 30,
+    "PRELOADCYCLESREL": 0,
+    "FORCEF1RET": 0,
+    "ELONGATIONE1RET": 4,
+    "EVALTIMERET": 30,
+    "PRELOADCYCLESRET": 0,
+    "CREATED_AT": "2025-11-17T13:42:30.123Z",
+    "UPDATED_AT": "2025-11-17T13:42:30.123Z"
+  },
+  {
+    "TESTNR": "001791",
+    "USTER_TESTNR": "05494",
+    "CATALOG": "CATALOG STC44",
+    "TIME": "1763225812",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "ACT",
+    "MASCHNR": "010",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 10,
+    "NOMTWIST": 660,
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "LABORANT": "AQUINO KEVIN",
+    "COMMENT": "10/1NEC Rotor 80.000 - Cardina 9.500 - Tension 1.002 - Alfa 5.3",
+    "LOTE": "HD-100-25",
+    "TUNAME": "UTR4",
+    "GROUPS": 10,
+    "WITHIN": 5,
+    "TOTAL": 50,
+    "UNSPOOLGROUPS": 1,
+    "LENGTH": 500,
+    "EXTSPEED": 5000,
+    "PRETENSION": 29.5,
+    "CLAMPPRESSURE": 30,
+    "CYCLEFORCELL": 1,
+    "CYCLEFORCEUL": 2,
+    "NMBOFFORCECYCLES": 5,
+    "CYCLELONGLL": 1,
+    "CYCLELONGUL": 4,
+    "NMBOFELONGCYCLES": 5,
+    "FORCEF1REL": 1,
+    "ELONGATIONE1REL": 0,
+    "EVALTIMEREL": 30,
+    "PRELOADCYCLESREL": 0,
+    "FORCEF1RET": 0,
+    "ELONGATIONE1RET": 4,
+    "EVALTIMERET": 30,
+    "PRELOADCYCLESRET": 0,
+    "CREATED_AT": "2025-11-17T13:42:46.861Z",
+    "UPDATED_AT": "2025-11-17T13:42:46.861Z"
+  },
+  {
+    "TESTNR": "001792",
+    "USTER_TESTNR": "05498",
+    "CATALOG": "CATALOG STC44",
+    "TIME": "1763256951",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "ACT",
+    "MASCHNR": "002 LIM",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 10,
+    "NOMTWIST": 660,
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "LABORANT": "MUNIZ ALICIA",
+    "COMMENT": "10/1NEC Rotor 80.000 - Cardina 9.500 - Tension 1.007 - Alfa 5.3",
+    "LOTE": "HD-100-25   (IMPAR)",
+    "TUNAME": "UTR4",
+    "GROUPS": 10,
+    "WITHIN": 5,
+    "TOTAL": 50,
+    "UNSPOOLGROUPS": 1,
+    "LENGTH": 500,
+    "EXTSPEED": 5000,
+    "PRETENSION": 29.5,
+    "CLAMPPRESSURE": 30,
+    "CYCLEFORCELL": 1,
+    "CYCLEFORCEUL": 2,
+    "NMBOFFORCECYCLES": 5,
+    "CYCLELONGLL": 1,
+    "CYCLELONGUL": 4,
+    "NMBOFELONGCYCLES": 5,
+    "FORCEF1REL": 1,
+    "ELONGATIONE1REL": 0,
+    "EVALTIMEREL": 30,
+    "PRELOADCYCLESREL": 0,
+    "FORCEF1RET": 0,
+    "ELONGATIONE1RET": 4,
+    "EVALTIMERET": 30,
+    "PRELOADCYCLESRET": 0,
+    "CREATED_AT": "2025-11-17T13:43:17.493Z",
+    "UPDATED_AT": "2025-11-17T13:43:17.493Z"
+  },
+  {
+    "TESTNR": "001793",
+    "USTER_TESTNR": "05495",
+    "CATALOG": "CATALOG STC44",
+    "TIME": "1763257713",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "ACT",
+    "MASCHNR": "003 LP",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 12.5,
+    "NOMTWIST": 738,
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "LABORANT": "MUNIZ ALICIA",
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.005 - Alfa 5.3",
+    "LOTE": "HD-100-25   (PAR)",
+    "TUNAME": "UTR4",
+    "GROUPS": 10,
+    "WITHIN": 5,
+    "TOTAL": 50,
+    "UNSPOOLGROUPS": 1,
+    "LENGTH": 500,
+    "EXTSPEED": 5000,
+    "PRETENSION": 23.6,
+    "CLAMPPRESSURE": 30,
+    "CYCLEFORCELL": 1,
+    "CYCLEFORCEUL": 2,
+    "NMBOFFORCECYCLES": 5,
+    "CYCLELONGLL": 1,
+    "CYCLELONGUL": 4,
+    "NMBOFELONGCYCLES": 5,
+    "FORCEF1REL": 1,
+    "ELONGATIONE1REL": 0,
+    "EVALTIMEREL": 30,
+    "PRELOADCYCLESREL": 0,
+    "FORCEF1RET": 0,
+    "ELONGATIONE1RET": 4,
+    "EVALTIMERET": 30,
+    "PRELOADCYCLESRET": 0,
+    "CREATED_AT": "2025-11-17T13:43:27.044Z",
+    "UPDATED_AT": "2025-11-17T13:43:27.044Z"
+  },
+  {
+    "TESTNR": "001794",
+    "USTER_TESTNR": "05496",
+    "CATALOG": "CATALOG STC44",
+    "TIME": "1763258514",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "ACT",
+    "MASCHNR": "003 LIM",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 12.5,
+    "NOMTWIST": 738,
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "LABORANT": "MUNIZ ALICIA",
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.005 - Alfa 5.3",
+    "LOTE": "HD-100-25 LADO IMPAR",
+    "TUNAME": "UTR4",
+    "GROUPS": 10,
+    "WITHIN": 5,
+    "TOTAL": 50,
+    "UNSPOOLGROUPS": 1,
+    "LENGTH": 500,
+    "EXTSPEED": 5000,
+    "PRETENSION": 23.6,
+    "CLAMPPRESSURE": 30,
+    "CYCLEFORCELL": 1,
+    "CYCLEFORCEUL": 2,
+    "NMBOFFORCECYCLES": 5,
+    "CYCLELONGLL": 1,
+    "CYCLELONGUL": 4,
+    "NMBOFELONGCYCLES": 5,
+    "FORCEF1REL": 1,
+    "ELONGATIONE1REL": 0,
+    "EVALTIMEREL": 30,
+    "PRELOADCYCLESREL": 0,
+    "FORCEF1RET": 0,
+    "ELONGATIONE1RET": 4,
+    "EVALTIMERET": 30,
+    "PRELOADCYCLESRET": 0,
+    "CREATED_AT": "2025-11-17T13:43:33.018Z",
+    "UPDATED_AT": "2025-11-17T13:43:33.018Z"
+  },
+  {
+    "TESTNR": "001795",
+    "USTER_TESTNR": "05497",
+    "CATALOG": "CATALOG STC44",
+    "TIME": "1763259314",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "ACT",
+    "MASCHNR": "007",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 10,
+    "NOMTWIST": 660,
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "LABORANT": "MUNIZ ALICIA",
+    "COMMENT": "10/1NEC Rotor 80.000 - Cardina 9.500 - Tension 1.002 - Alfa 5.3",
+    "LOTE": "HD-100-25",
+    "TUNAME": "UTR4",
+    "GROUPS": 10,
+    "WITHIN": 5,
+    "TOTAL": 50,
+    "UNSPOOLGROUPS": 1,
+    "LENGTH": 500,
+    "EXTSPEED": 5000,
+    "PRETENSION": 29.5,
+    "CLAMPPRESSURE": 30,
+    "CYCLEFORCELL": 1,
+    "CYCLEFORCEUL": 2,
+    "NMBOFFORCECYCLES": 5,
+    "CYCLELONGLL": 1,
+    "CYCLELONGUL": 4,
+    "NMBOFELONGCYCLES": 5,
+    "FORCEF1REL": 1,
+    "ELONGATIONE1REL": 0,
+    "EVALTIMEREL": 30,
+    "PRELOADCYCLESREL": 0,
+    "FORCEF1RET": 0,
+    "ELONGATIONE1RET": 4,
+    "EVALTIMERET": 30,
+    "PRELOADCYCLESRET": 0,
+    "CREATED_AT": "2025-11-17T13:43:39.563Z",
+    "UPDATED_AT": "2025-11-17T13:43:39.563Z"
+  },
+  {
+    "TESTNR": "001796",
+    "USTER_TESTNR": "05499",
+    "CATALOG": "CATALOG STC44",
+    "TIME": "1763260069",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "ACT",
+    "MASCHNR": "009",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 7,
+    "NOMTWIST": 552,
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "LABORANT": "MUNIZ ALICIA",
+    "COMMENT": "7/1NEC Rotor 80.000 - Cardina 9.500 - Tension 0.981 - Alfa 5.3",
+    "LOTE": "HD-100-25",
+    "TUNAME": "UTR4",
+    "GROUPS": 10,
+    "WITHIN": 5,
+    "TOTAL": 50,
+    "UNSPOOLGROUPS": 1,
+    "LENGTH": 500,
+    "EXTSPEED": 5000,
+    "PRETENSION": 42.2,
+    "CLAMPPRESSURE": 30,
+    "CYCLEFORCELL": 1,
+    "CYCLEFORCEUL": 2,
+    "NMBOFFORCECYCLES": 5,
+    "CYCLELONGLL": 1,
+    "CYCLELONGUL": 4,
+    "NMBOFELONGCYCLES": 5,
+    "FORCEF1REL": 1,
+    "ELONGATIONE1REL": 0,
+    "EVALTIMEREL": 30,
+    "PRELOADCYCLESREL": 0,
+    "FORCEF1RET": 0,
+    "ELONGATIONE1RET": 4,
+    "EVALTIMERET": 30,
+    "PRELOADCYCLESRET": 0,
+    "CREATED_AT": "2025-11-17T13:43:44.499Z",
+    "UPDATED_AT": "2025-11-17T13:43:44.499Z"
+  },
+  {
+    "TESTNR": "001797",
+    "USTER_TESTNR": "05500",
+    "CATALOG": "CATALOG STC44",
+    "TIME": "1763260888",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "ACT",
+    "MASCHNR": "010",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 10,
+    "NOMTWIST": 660,
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "LABORANT": "MUNIZ ALICIA",
+    "COMMENT": "10/1NEC Rotor 80.000 - Cardina 9.500 - Tension 1.002 - Alfa 5.3",
+    "LOTE": "HD-100-25",
+    "TUNAME": "UTR4",
+    "GROUPS": 10,
+    "WITHIN": 5,
+    "TOTAL": 50,
+    "UNSPOOLGROUPS": 1,
+    "LENGTH": 500,
+    "EXTSPEED": 5000,
+    "PRETENSION": 29.5,
+    "CLAMPPRESSURE": 30,
+    "CYCLEFORCELL": 1,
+    "CYCLEFORCEUL": 2,
+    "NMBOFFORCECYCLES": 5,
+    "CYCLELONGLL": 1,
+    "CYCLELONGUL": 4,
+    "NMBOFELONGCYCLES": 5,
+    "FORCEF1REL": 1,
+    "ELONGATIONE1REL": 0,
+    "EVALTIMEREL": 30,
+    "PRELOADCYCLESREL": 0,
+    "FORCEF1RET": 0,
+    "ELONGATIONE1RET": 4,
+    "EVALTIMERET": 30,
+    "PRELOADCYCLESRET": 0,
+    "CREATED_AT": "2025-11-17T13:43:50.725Z",
+    "UPDATED_AT": "2025-11-17T13:43:50.725Z"
+  },
+  {
+    "TESTNR": "001798",
+    "USTER_TESTNR": "05503",
+    "CATALOG": "CATALOG STC44",
+    "TIME": "1763449758",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "ACT",
+    "MASCHNR": "002 LIM",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 10,
+    "NOMTWIST": 660,
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "LABORANT": "GARCIA ALBERTO",
+    "COMMENT": "10/1NEC Rotor 80.000 - Cardina 9.500 - Tension 1.007 - Alfa 5.3",
+    "LOTE": "HD-100-25",
+    "TUNAME": "UTR4",
+    "GROUPS": 10,
+    "WITHIN": 5,
+    "TOTAL": 50,
+    "UNSPOOLGROUPS": 1,
+    "LENGTH": 500,
+    "EXTSPEED": 5000,
+    "PRETENSION": 29.5,
+    "CLAMPPRESSURE": 30,
+    "CYCLEFORCELL": 1,
+    "CYCLEFORCEUL": 2,
+    "NMBOFFORCECYCLES": 5,
+    "CYCLELONGLL": 1,
+    "CYCLELONGUL": 4,
+    "NMBOFELONGCYCLES": 5,
+    "FORCEF1REL": 1,
+    "ELONGATIONE1REL": 0,
+    "EVALTIMEREL": 30,
+    "PRELOADCYCLESREL": 0,
+    "FORCEF1RET": 0,
+    "ELONGATIONE1RET": 4,
+    "EVALTIMERET": 30,
+    "PRELOADCYCLESRET": 0,
+    "CREATED_AT": "2025-11-19T14:35:56.727Z",
+    "UPDATED_AT": "2025-11-19T14:35:56.727Z"
+  },
+  {
+    "TESTNR": "001799",
+    "USTER_TESTNR": "05501",
+    "CATALOG": "CATALOG STC44",
+    "TIME": "1763450878",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "ACT",
+    "MASCHNR": "003 LP",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 12.5,
+    "NOMTWIST": 738,
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "LABORANT": "GARCIA ALBERTO",
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.005 - Alfa 5.3",
+    "LOTE": "HD-100-25",
+    "TUNAME": "UTR4",
+    "GROUPS": 10,
+    "WITHIN": 5,
+    "TOTAL": 50,
+    "UNSPOOLGROUPS": 1,
+    "LENGTH": 500,
+    "EXTSPEED": 5000,
+    "PRETENSION": 23.6,
+    "CLAMPPRESSURE": 30,
+    "CYCLEFORCELL": 1,
+    "CYCLEFORCEUL": 2,
+    "NMBOFFORCECYCLES": 5,
+    "CYCLELONGLL": 1,
+    "CYCLELONGUL": 4,
+    "NMBOFELONGCYCLES": 5,
+    "FORCEF1REL": 1,
+    "ELONGATIONE1REL": 0,
+    "EVALTIMEREL": 30,
+    "PRELOADCYCLESREL": 0,
+    "FORCEF1RET": 0,
+    "ELONGATIONE1RET": 4,
+    "EVALTIMERET": 30,
+    "PRELOADCYCLESRET": 0,
+    "CREATED_AT": "2025-11-19T14:36:05.338Z",
+    "UPDATED_AT": "2025-11-19T14:36:05.338Z"
+  },
+  {
+    "TESTNR": "001800",
+    "USTER_TESTNR": "05502",
+    "CATALOG": "CATALOG STC44",
+    "TIME": "1763451974",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "ACT",
+    "MASCHNR": "003 LIM",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 12.5,
+    "NOMTWIST": 738,
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "LABORANT": "GARCIA ALBERTO",
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.005 - Alfa 5.3",
+    "LOTE": "HD-100-25",
+    "TUNAME": "UTR4",
+    "GROUPS": 10,
+    "WITHIN": 5,
+    "TOTAL": 50,
+    "UNSPOOLGROUPS": 1,
+    "LENGTH": 500,
+    "EXTSPEED": 5000,
+    "PRETENSION": 23.6,
+    "CLAMPPRESSURE": 30,
+    "CYCLEFORCELL": 1,
+    "CYCLEFORCEUL": 2,
+    "NMBOFFORCECYCLES": 5,
+    "CYCLELONGLL": 1,
+    "CYCLELONGUL": 4,
+    "NMBOFELONGCYCLES": 5,
+    "FORCEF1REL": 1,
+    "ELONGATIONE1REL": 0,
+    "EVALTIMEREL": 30,
+    "PRELOADCYCLESREL": 0,
+    "FORCEF1RET": 0,
+    "ELONGATIONE1RET": 4,
+    "EVALTIMERET": 30,
+    "PRELOADCYCLESRET": 0,
+    "CREATED_AT": "2025-11-19T14:36:21.489Z",
+    "UPDATED_AT": "2025-11-19T14:36:21.489Z"
+  },
+  {
+    "TESTNR": "001801",
+    "USTER_TESTNR": "05504",
+    "CATALOG": "CATALOG STC44",
+    "TIME": "1763481276",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "ACT",
+    "MASCHNR": "009",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 7,
+    "NOMTWIST": 552,
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "LABORANT": "AQUINO KEVIN",
+    "COMMENT": "7/1NEC Rotor 80.000 - Cardina 9.500 - Tension 0.981 - Alfa 5.3",
+    "LOTE": "HD-100-25",
+    "TUNAME": "UTR4",
+    "GROUPS": 10,
+    "WITHIN": 5,
+    "TOTAL": 50,
+    "UNSPOOLGROUPS": 1,
+    "LENGTH": 500,
+    "EXTSPEED": 5000,
+    "PRETENSION": 42.2,
+    "CLAMPPRESSURE": 30,
+    "CYCLEFORCELL": 1,
+    "CYCLEFORCEUL": 2,
+    "NMBOFFORCECYCLES": 5,
+    "CYCLELONGLL": 1,
+    "CYCLELONGUL": 4,
+    "NMBOFELONGCYCLES": 5,
+    "FORCEF1REL": 1,
+    "ELONGATIONE1REL": 0,
+    "EVALTIMEREL": 30,
+    "PRELOADCYCLESREL": 0,
+    "FORCEF1RET": 0,
+    "ELONGATIONE1RET": 4,
+    "EVALTIMERET": 30,
+    "PRELOADCYCLESRET": 0,
+    "CREATED_AT": "2025-11-19T14:36:35.634Z",
+    "UPDATED_AT": "2025-11-19T14:36:35.634Z"
+  },
+  {
+    "TESTNR": "001802",
+    "USTER_TESTNR": "05505",
+    "CATALOG": "CATALOG STC44",
+    "TIME": "1763482400",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "ACT",
+    "MASCHNR": "007",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 10,
+    "NOMTWIST": 660,
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "LABORANT": "AQUINO KEVIN",
+    "COMMENT": "10/1NEC Rotor 80.000 - Cardina 9.500 - Tension 1.002 - Alfa 5.3",
+    "LOTE": "HD-100-25",
+    "TUNAME": "UTR4",
+    "GROUPS": 10,
+    "WITHIN": 5,
+    "TOTAL": 50,
+    "UNSPOOLGROUPS": 1,
+    "LENGTH": 500,
+    "EXTSPEED": 5000,
+    "PRETENSION": 29.5,
+    "CLAMPPRESSURE": 30,
+    "CYCLEFORCELL": 1,
+    "CYCLEFORCEUL": 2,
+    "NMBOFFORCECYCLES": 5,
+    "CYCLELONGLL": 1,
+    "CYCLELONGUL": 4,
+    "NMBOFELONGCYCLES": 5,
+    "FORCEF1REL": 1,
+    "ELONGATIONE1REL": 0,
+    "EVALTIMEREL": 30,
+    "PRELOADCYCLESREL": 0,
+    "FORCEF1RET": 0,
+    "ELONGATIONE1RET": 4,
+    "EVALTIMERET": 30,
+    "PRELOADCYCLESRET": 0,
+    "CREATED_AT": "2025-11-19T14:36:45.342Z",
+    "UPDATED_AT": "2025-11-19T14:36:45.342Z"
+  },
+  {
+    "TESTNR": "001803",
+    "USTER_TESTNR": "05506",
+    "CATALOG": "CATALOG STC44",
+    "TIME": "1763483381",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "ACT",
+    "MASCHNR": "010",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 10,
+    "NOMTWIST": 660,
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "LABORANT": "AQUINO KEVIN",
+    "COMMENT": "10/1NEC Rotor 80.000 - Cardina 9.500 - Tension 1.002 - Alfa 5.3",
+    "LOTE": "HD-100-25",
+    "TUNAME": "UTR4",
+    "GROUPS": 10,
+    "WITHIN": 5,
+    "TOTAL": 50,
+    "UNSPOOLGROUPS": 1,
+    "LENGTH": 500,
+    "EXTSPEED": 5000,
+    "PRETENSION": 29.5,
+    "CLAMPPRESSURE": 30,
+    "CYCLEFORCELL": 1,
+    "CYCLEFORCEUL": 2,
+    "NMBOFFORCECYCLES": 5,
+    "CYCLELONGLL": 1,
+    "CYCLELONGUL": 4,
+    "NMBOFELONGCYCLES": 5,
+    "FORCEF1REL": 1,
+    "ELONGATIONE1REL": 0,
+    "EVALTIMEREL": 30,
+    "PRELOADCYCLESREL": 0,
+    "FORCEF1RET": 0,
+    "ELONGATIONE1RET": 4,
+    "EVALTIMERET": 30,
+    "PRELOADCYCLESRET": 0,
+    "CREATED_AT": "2025-11-19T14:36:58.375Z",
+    "UPDATED_AT": "2025-11-19T14:36:58.375Z"
+  },
+  {
+    "TESTNR": "001804",
+    "USTER_TESTNR": "05507",
+    "CATALOG": "CATALOG STC44",
+    "TIME": "1763516883",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "ACT",
+    "MASCHNR": "003 LP",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 12.5,
+    "NOMTWIST": 738,
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "LABORANT": "MUNIZ ALICIA",
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.005 - Alfa 5.3",
+    "LOTE": "HD-100-25   (PAR)",
+    "TUNAME": "UTR4",
+    "GROUPS": 10,
+    "WITHIN": 5,
+    "TOTAL": 50,
+    "UNSPOOLGROUPS": 1,
+    "LENGTH": 500,
+    "EXTSPEED": 5000,
+    "PRETENSION": 23.6,
+    "CLAMPPRESSURE": 30,
+    "CYCLEFORCELL": 1,
+    "CYCLEFORCEUL": 2,
+    "NMBOFFORCECYCLES": 5,
+    "CYCLELONGLL": 1,
+    "CYCLELONGUL": 4,
+    "NMBOFELONGCYCLES": 5,
+    "FORCEF1REL": 1,
+    "ELONGATIONE1REL": 0,
+    "EVALTIMEREL": 30,
+    "PRELOADCYCLESREL": 0,
+    "FORCEF1RET": 0,
+    "ELONGATIONE1RET": 4,
+    "EVALTIMERET": 30,
+    "PRELOADCYCLESRET": 0,
+    "CREATED_AT": "2025-11-19T14:37:13.591Z",
+    "UPDATED_AT": "2025-11-19T14:37:13.591Z"
+  },
+  {
+    "TESTNR": "001805",
+    "USTER_TESTNR": "05508",
+    "CATALOG": "CATALOG STC44",
+    "TIME": "1763517883",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "ACT",
+    "MASCHNR": "003 LIM",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 12.5,
+    "NOMTWIST": 738,
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "LABORANT": "MUNIZ ALICIA",
+    "COMMENT": "12.5/1NEC Rotor 90.000 - Cardina 9.500 - Tension 1.005 - Alfa 5.3",
+    "LOTE": "HD-100-25 LADO IMPAR",
+    "TUNAME": "UTR4",
+    "GROUPS": 10,
+    "WITHIN": 5,
+    "TOTAL": 50,
+    "UNSPOOLGROUPS": 1,
+    "LENGTH": 500,
+    "EXTSPEED": 5000,
+    "PRETENSION": 23.6,
+    "CLAMPPRESSURE": 30,
+    "CYCLEFORCELL": 1,
+    "CYCLEFORCEUL": 2,
+    "NMBOFFORCECYCLES": 5,
+    "CYCLELONGLL": 1,
+    "CYCLELONGUL": 4,
+    "NMBOFELONGCYCLES": 5,
+    "FORCEF1REL": 1,
+    "ELONGATIONE1REL": 0,
+    "EVALTIMEREL": 30,
+    "PRELOADCYCLESREL": 0,
+    "FORCEF1RET": 0,
+    "ELONGATIONE1RET": 4,
+    "EVALTIMERET": 30,
+    "PRELOADCYCLESRET": 0,
+    "CREATED_AT": "2025-11-19T14:37:20.986Z",
+    "UPDATED_AT": "2025-11-19T14:37:20.986Z"
+  },
+  {
+    "TESTNR": "001806",
+    "USTER_TESTNR": "05509",
+    "CATALOG": "CATALOG STC44",
+    "TIME": "1763532861",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "ACT",
+    "MASCHNR": "002 LIM",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 10,
+    "NOMTWIST": 660,
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "LABORANT": "GARCIA ALBERTO",
+    "COMMENT": "10/1NEC Rotor 80.000 - Cardina 9.500 - Tension 1.007 - Alfa 5.3",
+    "LOTE": "HD-100-25 LADO IMPAR",
+    "TUNAME": "UTR4",
+    "GROUPS": 10,
+    "WITHIN": 5,
+    "TOTAL": 50,
+    "UNSPOOLGROUPS": 1,
+    "LENGTH": 500,
+    "EXTSPEED": 5000,
+    "PRETENSION": 29.5,
+    "CLAMPPRESSURE": 30,
+    "CYCLEFORCELL": 1,
+    "CYCLEFORCEUL": 2,
+    "NMBOFFORCECYCLES": 5,
+    "CYCLELONGLL": 1,
+    "CYCLELONGUL": 4,
+    "NMBOFELONGCYCLES": 5,
+    "FORCEF1REL": 1,
+    "ELONGATIONE1REL": 0,
+    "EVALTIMEREL": 30,
+    "PRELOADCYCLESREL": 0,
+    "FORCEF1RET": 0,
+    "ELONGATIONE1RET": 4,
+    "EVALTIMERET": 30,
+    "PRELOADCYCLESRET": 0,
+    "CREATED_AT": "2025-11-19T14:37:29.980Z",
+    "UPDATED_AT": "2025-11-19T14:37:29.980Z"
+  },
+  {
+    "TESTNR": "001807",
+    "USTER_TESTNR": "05510",
+    "CATALOG": "CATALOG STC44",
+    "TIME": "1763534021",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "ACT",
+    "MASCHNR": "007",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 10,
+    "NOMTWIST": 660,
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "LABORANT": "GARCIA ALBERTO",
+    "COMMENT": "10/1NEC Rotor 80.000 - Cardina 9.500 - Tension 0.998 - Alfa 5.3",
+    "LOTE": "HD-100-25",
+    "TUNAME": "UTR4",
+    "GROUPS": 10,
+    "WITHIN": 5,
+    "TOTAL": 50,
+    "UNSPOOLGROUPS": 1,
+    "LENGTH": 500,
+    "EXTSPEED": 5000,
+    "PRETENSION": 29.5,
+    "CLAMPPRESSURE": 30,
+    "CYCLEFORCELL": 1,
+    "CYCLEFORCEUL": 2,
+    "NMBOFFORCECYCLES": 5,
+    "CYCLELONGLL": 1,
+    "CYCLELONGUL": 4,
+    "NMBOFELONGCYCLES": 5,
+    "FORCEF1REL": 1,
+    "ELONGATIONE1REL": 0,
+    "EVALTIMEREL": 30,
+    "PRELOADCYCLESREL": 0,
+    "FORCEF1RET": 0,
+    "ELONGATIONE1RET": 4,
+    "EVALTIMERET": 30,
+    "PRELOADCYCLESRET": 0,
+    "CREATED_AT": "2025-11-19T14:37:37.008Z",
+    "UPDATED_AT": "2025-11-19T14:37:37.008Z"
   }
 ]
