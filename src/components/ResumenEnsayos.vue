@@ -178,7 +178,7 @@
                 <tr v-for="(row, idx) in pagedRows" :key="idx"
                   :class="['border-t border-slate-100 hover:bg-blue-50/30 transition-colors duration-150', row._isFlame ? 'font-bold' : '']">
                   <td class="px-2 py-[0.3rem] text-center text-slate-700">{{ row.Ensayo }}</td>
-                  <td class="px-2 py-[0.3rem] text-center text-slate-700">{{ row.Fecha }}</td>
+                  <td class="px-2 py-[0.3rem] text-center text-slate-700 whitespace-nowrap">{{ displayFecha(row.Fecha) }}</td>
                   <td class="px-2 py-[0.3rem] text-center text-slate-700">{{ row.OE }}</td>
                   <td class="px-2 py-[0.3rem] text-center text-slate-700">{{ row.Ne }}</td>
                   <td class="px-2 py-[0.3rem] text-center text-slate-700">{{ row.Titulo }}</td>
@@ -760,6 +760,40 @@ function formatFechaEuropea(fecha) {
     return `${dd}/${mm}/${yy}`
   }
   return s
+}
+
+// Forma segura para mostrar una fecha en la UI: acepta Date, timestamp numérico o string
+function displayFecha(fecha) {
+  if (!fecha && fecha !== 0) return ''
+  // Si ya es Date
+  if (fecha instanceof Date) {
+    const dd = String(fecha.getDate()).padStart(2, '0')
+    const mm = String(fecha.getMonth() + 1).padStart(2, '0')
+    const yy = String(fecha.getFullYear()).slice(-2)
+    return `${dd}/${mm}/${yy}`
+  }
+
+  // Si es número (epoch seconds or ms)
+  if (typeof fecha === 'number') {
+    const n = Number(fecha)
+    if (!Number.isFinite(n)) return ''
+    // heurística: > 1e12 -> ms, >1e9 -> sec
+    const d = n > 1000000000000 ? new Date(n) : (n > 1000000000 ? new Date(n * 1000) : new Date(n))
+    if (!isNaN(d.getTime())) {
+      const dd = String(d.getDate()).padStart(2, '0')
+      const mm = String(d.getMonth() + 1).padStart(2, '0')
+      const yy = String(d.getFullYear()).slice(-2)
+      return `${dd}/${mm}/${yy}`
+    }
+    return ''
+  }
+
+  // Para strings delegar a formatFechaEuropea (maneja ISO y dd/mm)
+  try {
+    return formatFechaEuropea(String(fecha))
+  } catch {
+    return String(fecha)
+  }
 }
 
 // Formatea Ne: usa NOMCOUNT y agrega 'Flame' si MATCLASS es 'Hilo de fantasia'
