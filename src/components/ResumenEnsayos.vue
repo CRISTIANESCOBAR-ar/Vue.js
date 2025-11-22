@@ -178,7 +178,8 @@
                 <tr v-for="(row, idx) in pagedRows" :key="idx"
                   :class="['border-t border-slate-100 hover:bg-blue-50/30 transition-colors duration-150', row._isFlame ? 'font-bold' : '']">
                   <td class="px-2 py-[0.3rem] text-center text-slate-700">{{ row.Ensayo }}</td>
-                  <td class="px-2 py-[0.3rem] text-center text-slate-700 whitespace-nowrap">{{ displayFecha(row.Fecha) }}</td>
+                  <td class="px-2 py-[0.3rem] text-center text-slate-700 whitespace-nowrap">{{
+                    displayFecha(getPreferredFecha(row)) }}</td>
                   <td class="px-2 py-[0.3rem] text-center text-slate-700">{{ row.OE }}</td>
                   <td class="px-2 py-[0.3rem] text-center text-slate-700">{{ row.Ne }}</td>
                   <td class="px-2 py-[0.3rem] text-center text-slate-700">{{ row.Titulo }}</td>
@@ -790,10 +791,44 @@ function displayFecha(fecha) {
 
   // Para strings delegar a formatFechaEuropea (maneja ISO y dd/mm)
   try {
-    return formatFechaEuropea(String(fecha))
+    const s = String(fecha).trim()
+    // Si la cadena es sólo el nombre del día (Mon/Tue/Wed...) o día completo, no confiar en eso
+    if (/^(?:mon|tue|wed|thu|fri|sat|sun)$/i.test(s) || /^(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday)$/i.test(s)) {
+      return ''
+    }
+    return formatFechaEuropea(s)
   } catch {
     return String(fecha)
   }
+}
+
+// Selecciona la mejor fecha disponible dentro de un objeto `row`.
+// Prioriza `TIME_STAMP` (Date o numeric), luego `TIME`, luego `Fecha`/`fecha`.
+function getPreferredFecha(row) {
+  if (!row || typeof row !== 'object') return ''
+
+  const candidates = ['TIME_STAMP', 'TIME', 'TIMESTAMP', 'Fecha', 'FECHA', 'fecha', 'date']
+  for (const key of candidates) {
+    const v = row[key]
+    if (v == null || v === '') continue
+
+    // Si ya es Date
+    if (v instanceof Date) return v
+    // Si es número plausible
+    if (typeof v === 'number' && Number.isFinite(v)) return v
+    // Si es un objeto con toDate (Firestore Timestamp), intentar convertir
+    if (typeof v === 'object' && typeof v.toDate === 'function') return v.toDate()
+    // Si es string, solo retornar si NO es un weekday-only (esos los filtrará displayFecha)
+    if (typeof v === 'string') {
+      const s = v.trim()
+      // Si es solo día de semana, skip y continuar buscando
+      if (/^(?:mon|tue|wed|thu|fri|sat|sun)$/i.test(s) || /^(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday)$/i.test(s)) {
+        continue
+      }
+      return v
+    }
+  }
+  return ''
 }
 
 // Formatea Ne: usa NOMCOUNT y agrega 'Flame' si MATCLASS es 'Hilo de fantasia'
@@ -1099,42 +1134,23 @@ const modalMeta = computed(() => {
   const u = selectedTestnr.value || '—'
   // Obtener el primer TESTNR de TensoRapid si existe
   const t = (Array.isArray(tensorTestnrs.value) && tensorTestnrs.value.length > 0) ? tensorTestnrs.value[0] : '—'
-  // Recuperar meta y fecha cruda
+  // Recuperar meta del row que ya tiene TIME_STAMP preservado
   let meta = (rows.value || []).find(r => String(r?.Ensayo) === String(u)) || null
   if (!meta) meta = (usterTblRows.value && usterTblRows.value[0]) || (mergedRows.value && mergedRows.value[0]) || {}
-  const rawFecha = meta?.Fecha || meta?.fecha || meta?.FECHA || meta?.date || ''
+
+  // Usar TIME_STAMP directamente (ya es Date object desde loadRows)
+  const rawFecha = meta?.TIME_STAMP ?? meta?.TIME ?? meta?.TIMESTAMP ?? null
+
   let fechaStr = '—'
-  if (rawFecha) {
-    const s = String(rawFecha).trim().replace(/[-.]/g, '/').replace(/\s.*/, '')
-    // ISO: yyyy-mm-dd o yyyy/mm/dd
-    const iso = s.match(/^(\d{4})[/-](\d{1,2})[/-](\d{1,2})/)
-    if (iso) {
-      // yyyy-mm-dd => dd/mm/yy
-      const dd = String(iso[3]).padStart(2, '0')
-      const mm = String(iso[2]).padStart(2, '0')
-      const yy = String(iso[1]).slice(-2)
-      fechaStr = `${dd}/${mm}/${yy}`
-    } else {
-      // dd/mm/yyyy o dd/mm/yy (primer grupo es día, segundo mes)
-      const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/)
-      if (m) {
-        const day = String(parseInt(m[1], 10)).padStart(2, '0')
-        const month = String(parseInt(m[2], 10)).padStart(2, '0')
-        const yy = m[3].length === 4 ? m[3].slice(-2) : m[3].padStart(2, '0')
-        fechaStr = `${day}/${month}/${yy}`
-      } else {
-        // Fallback: intentar parsear como Date
-        const d = new Date(s)
-        if (!isNaN(d.getTime())) {
-          const dd = String(d.getDate()).padStart(2, '0')
-          const mm = String(d.getMonth() + 1).padStart(2, '0')
-          const yy = String(d.getFullYear()).slice(-2)
-          fechaStr = `${dd}/${mm}/${yy}`
-        } else {
-          fechaStr = s
-        }
-      }
-    }
+  // Si rawFecha es Date, formatear directamente
+  if (rawFecha instanceof Date && !isNaN(rawFecha.getTime())) {
+    const dd = String(rawFecha.getDate()).padStart(2, '0')
+    const mm = String(rawFecha.getMonth() + 1).padStart(2, '0')
+    const yy = String(rawFecha.getFullYear()).slice(-2)
+    fechaStr = `${dd}/${mm}/${yy}`
+  } else if (rawFecha) {
+    // Fallback: usar displayFecha para convertir
+    fechaStr = displayFecha(rawFecha) || '—'
   }
   const oe = meta?.OE ?? meta?.Oe ?? meta?.oe ?? '—'
   const ne = meta?.Ne ?? meta?.NE ?? meta?.ne ?? '—'
@@ -1158,6 +1174,7 @@ const modalMeta = computed(() => {
   // Laborant: extraer de meta (viene en campo LABORANT)
   let laborantRaw = meta?.LABORANT ?? meta?.Laborant ?? meta?.laborant ?? null
   const laborant = (laborantRaw == null || String(laborantRaw).trim() === '') ? null : String(laborantRaw).trim()
+
   return { fechaStr, oe, ne, u, t, obs, laborant }
 })
 
@@ -1673,29 +1690,22 @@ async function loadRows() {
         tensorTblRows = tensorTblByTestnr.get(String(tensorPar.TESTNR)) || []
       }
 
-      // Forzar formato europeo en la fecha
-      let fechaRaw = row.TIME_STAMP ? row.TIME_STAMP : (row.fecha ?? row.FECHA ?? '')
-      let fecha = formatFechaEuropea(fechaRaw)
+      // Preservar TIME_STAMP como Date para evitar conversiones erróneas
+      // No transformar aquí, dejar que getPreferredFecha y displayFecha lo manejen
+      const timeStamp = row.TIME_STAMP || row.TIME || row.TIMESTAMP || null
 
       // TensoRapid test number (if present)
       const tensorRapidTestnr = tensorPar && (tensorPar.TESTNR ?? tensorPar.testnr ?? tensorPar.Testnr)
         ? String(tensorPar.TESTNR ?? tensorPar.testnr ?? tensorPar.Testnr)
         : ''
 
-      // Debug: log para ver OBS
       const obsValue = row.OBS ?? row.OBSERVACION ?? row.OBSERVACAO ?? row.obs ?? ''
       const laborantValue = row.LABORANT ?? row.Laborant ?? row.laborant ?? ''
-      if (testnr === '05496' || testnr === '05497') {
-        console.log('DEBUG loadRows para', testnr, ':', {
-          rawOBS: row.OBS,
-          obsValue,
-          laborantValue,
-          allRowData: row  // Ver TODO el objeto
-        })
-      }
+
       return {
         Ensayo: testnr,
-        Fecha: fecha,
+        TIME_STAMP: timeStamp,  // Guardar el timestamp original
+        Fecha: row.Fecha || row.fecha || row.FECHA || '',  // Mantener Fecha si existe, pero priorizar TIME_STAMP
         OE: formatOE(row.MASCHNR ?? row.OE ?? row.OE_NRO ?? row.OE_NRO_1 ?? row.oe ?? row.OE_NRO_PAR ?? ''),
         Ne: formatNe(row.NOMCOUNT ?? row.Ne ?? row.NE ?? row.titulo ?? row.TITULO ?? '', row.MATCLASS),
         Titulo: calcAvg(tblRows, 'TITULO'),
@@ -1725,28 +1735,12 @@ async function loadRows() {
     data = data.map(row => {
       let isFlame = String(row.MATCLASS).toLowerCase() === 'hilo de fantasia'
       return { ...row, _isFlame: isFlame }
-    }) // Ordenar por Fecha (descendente) y luego por Ensayo (descendente)
-    data.sort((a, b) => {
-      // Helper: parsear fecha dd/mm/yy a Date para comparar
-      const parseDate = (dateStr) => {
-        if (!dateStr) return new Date(0)
-        const s = String(dateStr).trim()
-        // Intentar dd/mm/yy o dd/mm/yyyy
-        const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/)
-        if (m) {
-          const day = parseInt(m[1], 10)
-          const month = parseInt(m[2], 10) - 1 // 0-based
-          let year = parseInt(m[3], 10)
-          if (year < 100) year += year >= 70 ? 1900 : 2000
-          return new Date(year, month, day)
-        }
-        // Fallback: intentar parsear ISO o cualquier formato válido
-        const d = new Date(s)
-        return isNaN(d.getTime()) ? new Date(0) : d
-      }
+    })
 
-      const dateA = parseDate(a.Fecha)
-      const dateB = parseDate(b.Fecha)
+    // Ordenar por TIME_STAMP (descendente) y luego por Ensayo (descendente)
+    data.sort((a, b) => {
+      const dateA = a.TIME_STAMP instanceof Date ? a.TIME_STAMP : new Date(0)
+      const dateB = b.TIME_STAMP instanceof Date ? b.TIME_STAMP : new Date(0)
 
       // Primero por fecha (descendente: más reciente primero)
       if (dateA > dateB) return -1
@@ -1758,49 +1752,6 @@ async function loadRows() {
       return ensayoB.localeCompare(ensayoA, undefined, { numeric: true })
     })
 
-    // Formatear fecha a dd/mm/yy para visualización
-    data = data.map(row => {
-      let fecha = row.Fecha
-      // Si es Date, formatear directo
-      if (fecha instanceof Date) {
-        const dd = String(fecha.getDate()).padStart(2, '0')
-        const mm = String(fecha.getMonth() + 1).padStart(2, '0')
-        const yy = String(fecha.getFullYear()).slice(-2)
-        fecha = `${dd}/${mm}/${yy}`
-      } else if (typeof fecha === 'string' && fecha.length > 0) {
-        // Normalizar separadores
-        let s = String(fecha).trim().replace(/[-.]/g, '/').replace(/\s.*/, '')
-        // Si tiene formato ISO (YYYY-MM-DD...)
-        const iso = s.match(/^(\d{4})[/-](\d{1,2})[/-](\d{1,2})/)
-        if (iso) {
-          // yyyy-mm-dd => dd/mm/yy
-          const dd = String(iso[3]).padStart(2, '0')
-          const mm = String(iso[2]).padStart(2, '0')
-          const yy = String(iso[1]).slice(-2)
-          fecha = `${dd}/${mm}/${yy}`
-        } else {
-          // dd/mm/yyyy o mm/dd/yyyy o dd/mm/yy o mm/dd/yy
-          const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/)
-          if (m) {
-            // Siempre forzar dd/mm/yy: primer grupo es día, segundo es mes
-            const day = String(parseInt(m[1], 10)).padStart(2, '0')
-            const month = String(parseInt(m[2], 10)).padStart(2, '0')
-            const yy = m[3].length === 4 ? m[3].slice(-2) : m[3].padStart(2, '0')
-            fecha = `${day}/${month}/${yy}`
-          } else {
-            // Fallback: intentar parsear como Date
-            const d = new Date(s)
-            if (!isNaN(d.getTime())) {
-              const dd = String(d.getDate()).padStart(2, '0')
-              const mm = String(d.getMonth() + 1).padStart(2, '0')
-              const yy = String(d.getFullYear()).slice(-2)
-              fecha = `${dd}/${mm}/${yy}`
-            }
-          }
-        }
-      }
-      return { ...row, Fecha: fecha }
-    })
     rows.value = data
   } catch (err) {
     console.error('Failed to load rows', err)

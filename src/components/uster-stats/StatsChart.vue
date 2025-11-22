@@ -135,10 +135,25 @@ function buildOption(data, xLabelRotate = 45) {
         tooltip: {
             trigger: 'axis',
             formatter: (params) => {
-                let result = `<b>${params[0].axisValue}</b><br/>`
+                if (!params || params.length === 0) return ''
+
+                // Obtener el índice del punto para acceder a los datos originales
+                const dataIndex = params[0].dataIndex
+                const pointData = data[dataIndex]
+
+                // Fecha formateada (primera línea en negrita)
+                const dateLabel = pointData?.timestampFmt || params[0].axisValue
+                let result = `<div style="font-weight: bold; margin-bottom: 4px;">${dateLabel}</div>`
+
+                // Mostrar cada serie con su color, nombre y valor
                 params.forEach(item => {
-                    result += `${item.marker} ${item.seriesName}: ${item.value.toFixed(2)}<br/>`
+                    const value = typeof item.value === 'number' ? item.value.toFixed(2) : item.value
+                    result += `<div style="display: flex; align-items: center; margin: 2px 0;">
+                        ${item.marker} 
+                        <span style="margin-left: 4px;">${item.seriesName}: ${value}</span>
+                    </div>`
                 })
+
                 return result
             }
         },
