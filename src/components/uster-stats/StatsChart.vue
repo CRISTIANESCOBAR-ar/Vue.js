@@ -13,7 +13,8 @@ const props = defineProps({
     globalMean: { type: Number, required: true },
     globalUcl: { type: Number, required: true },
     globalLcl: { type: Number, required: true },
-    variableLabel: { type: String, default: '' }
+    variableLabel: { type: String, default: '' },
+    standardValue: { type: Number, default: null }
 })
 
 const emit = defineEmits(['open-ensayo-detail'])
@@ -128,6 +129,9 @@ function buildOption(data, xLabelRotate = 45) {
 
     // Calculate Y-axis range considering means and control limits
     const allValues = [...y, props.globalUcl, props.globalLcl, props.globalMean]
+    if (props.standardValue != null) {
+        allValues.push(props.standardValue)
+    }
     let yMin = Math.min(...allValues)
     let yMax = Math.max(...allValues)
     yMin = yMin - 0.1
@@ -163,7 +167,15 @@ function buildOption(data, xLabelRotate = 45) {
             }
         },
         // Leyenda centrada y reordenada
-        legend: { data: ['Promedio Día', 'Media Global', 'LCL (-3σ)', 'UCL (+3σ)'], bottom: 0, left: 'center' },
+        legend: {
+            data: ['Promedio Día', 'Media Global', 'LCL (-3σ)', 'UCL (+3σ)', 'Ne Estándar'],
+            bottom: 0,
+            left: 'center',
+            // Control visibility of Ne Estándar in legend
+            selected: {
+                'Ne Estándar': props.standardValue != null
+            }
+        },
         // Grid ajustado para usar todo el alto disponible del contenedor
         grid: { left: '3%', right: '3%', top: '6%', bottom: 90, containLabel: false },
         xAxis: {
@@ -210,6 +222,16 @@ function buildOption(data, xLabelRotate = 45) {
                 data: ucl,
                 lineStyle: { type: 'dashed', color: '#ef4444', width: 2 },
                 showSymbol: false
+            },
+            {
+                name: 'Ne Estándar',
+                type: 'line',
+                data: props.standardValue != null ? Array(x.length).fill(props.standardValue) : [],
+                lineStyle: { type: 'solid', color: '#f59e0b', width: 2.5 },
+                showSymbol: false,
+                z: 10,
+                // Hide from legend when no data
+                silent: props.standardValue == null
             }
         ]
     }
@@ -227,7 +249,7 @@ function render() {
     chart.setOption(opt)
 }
 
-watch(() => [props.stats, props.globalMean, props.globalUcl, props.globalLcl], () => { render() }, { deep: true })
+watch(() => [props.stats, props.globalMean, props.globalUcl, props.globalLcl, props.standardValue], () => { render() }, { deep: true })
 
 let _resizeHandler = null
 let _keydownHandler = null
@@ -235,7 +257,7 @@ let _isUpdatingFromFinished = false // Flag para evitar loop de setOption
 onMounted(() => {
     chart = echarts.init(chartRef.value)
     render()
-    
+
     // Rastrear punto hovereado para tooltip
     chart.on('updateAxisPointer', (event) => {
         const dataIndex = event.axesInfo?.[0]?.value
@@ -243,12 +265,12 @@ onMounted(() => {
             hoveredPoint.value = props.stats[dataIndex]
         }
     })
-    
+
     // Limpiar punto hovereado cuando el tooltip se oculta
     chart.on('globalout', () => {
         hoveredPoint.value = null
     })
-    
+
     // Listener de teclado para Ctrl
     _keydownHandler = (e) => {
         if ((e.ctrlKey || e.metaKey) && hoveredPoint.value?.testnr) {
@@ -257,7 +279,7 @@ onMounted(() => {
         }
     }
     window.addEventListener('keydown', _keydownHandler)
-    
+
     // on resize, resize chart and re-render to recompute rotation
     _resizeHandler = () => {
         chart && chart.resize()

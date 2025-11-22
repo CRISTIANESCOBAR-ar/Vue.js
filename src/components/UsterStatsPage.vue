@@ -69,8 +69,8 @@
                     <div v-else class="flex-1 flex flex-col min-h-0 overflow-hidden">
                         <div class="flex-1 min-h-0 overflow-hidden">
                             <StatsChart :stats="stats" :globalMean="globalMean" :globalUcl="globalUcl"
-                                :globalLcl="globalLcl" :variableLabel="currentVariableLabel" 
-                                @open-ensayo-detail="handleOpenEnsayoDetail" />
+                                :globalLcl="globalLcl" :variableLabel="currentVariableLabel"
+                                :standardValue="standardNeValue" @open-ensayo-detail="handleOpenEnsayoDetail" />
                         </div>
                     </div>
                 </div>
@@ -167,11 +167,11 @@
                 <!-- Gráfico maximizado -->
                 <div v-else class="flex-1 flex flex-col min-h-0 overflow-hidden">
                     <StatsChart :stats="stats" :globalMean="globalMean" :globalUcl="globalUcl" :globalLcl="globalLcl"
-                        :variableLabel="currentVariableLabel" 
+                        :variableLabel="currentVariableLabel" :standardValue="standardNeValue"
                         @open-ensayo-detail="handleOpenEnsayoDetail" />
                 </div>
             </div>
-            
+
             <!-- Modal detalle de ensayo (mismo diseño que ResumenEnsayos) -->
             <div v-if="modalVisible" class="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog"
                 aria-modal="true">
@@ -185,12 +185,15 @@
                     <header class="flex items-start sm:items-center justify-between mb-2 pb-1 gap-3">
                         <div class="flex flex-col sm:flex-row sm:items-center gap-2 mx-8">
                             <div class="text-slate-600 text-sm">Fecha: <span
-                                    class="text-slate-900 text-lg font-semibold ml-1">{{ modalMeta.fechaStr }}</span>
+                                    class="text-slate-900 text-lg font-semibold ml-1">{{
+                                        modalMeta.fechaStr }}</span>
                             </div>
                             <div class="text-slate-600 text-sm">Ne: <span
-                                    class="text-slate-900 text-lg font-semibold ml-1">{{ modalMeta.ne }}</span></div>
+                                    class="text-slate-900 text-lg font-semibold ml-1">{{
+                                        modalMeta.ne }}</span></div>
                             <div class="text-slate-600 text-sm">OE Nro.: <span
-                                    class="text-slate-900 text-lg font-semibold ml-1">{{ modalMeta.oe }}</span></div>
+                                    class="text-slate-900 text-lg font-semibold ml-1">{{
+                                        modalMeta.oe }}</span></div>
                             <div class="text-slate-600 text-sm">Ensayo Uster <span
                                     class="text-slate-900 text-lg font-semibold ml-1">{{ modalMeta.u }}</span> y
                                 TensoRapid <span class="text-slate-900 text-lg font-semibold ml-1">{{ modalMeta.t
@@ -198,6 +201,19 @@
                         </div>
 
                         <div class="flex items-center gap-2">
+                            <!-- Copy as image button -->
+                            <button @click="copyModalAsImage" type="button"
+                                v-tippy="{ content: 'Copiar como imagen para WhatsApp', placement: 'bottom', theme: 'custom' }"
+                                class="w-9 h-9 rounded-lg bg-white border border-slate-200 hover:border-blue-400 hover:bg-blue-50 flex items-center justify-center text-slate-600 hover:text-blue-600 transition-all duration-200 group shadow-sm hover:shadow-md"
+                                aria-label="Copiar como imagen">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                </svg>
+                            </button>
+
                             <!-- Close button -->
                             <button @click="closeModal" type="button"
                                 class="w-9 h-9 rounded-lg bg-white border border-slate-200 hover:border-red-400 hover:bg-red-50 flex items-center justify-center text-slate-600 hover:text-red-600 transition-all duration-200 shadow-sm hover:shadow-md"
@@ -228,7 +244,7 @@
                     <section class="flex-1 relative">
                         <div v-if="mergedRows.length === 0" class="text-sm text-slate-600 py-8 text-center">No hay
                             datos para este ensayo.</div>
-                        <div v-else class="rounded-xl border border-slate-200 overflow-auto max-h-[calc(95vh-8rem)]">
+                        <div v-else class="rounded-xl border border-slate-200 overflow-auto max-h-[calc(98vh-8rem)]">
                             <table class="min-w-full text-xs">
                                 <thead class="bg-gradient-to-r from-slate-50 to-slate-100 sticky top-0 z-30">
                                     <tr>
@@ -310,7 +326,8 @@
                                     </tr>
 
                                     <!-- Filas de estadísticas (Promedio, CV, s, Q95, Máx, Mín) -->
-                                    <tr class="bg-gradient-to-r from-blue-50 to-indigo-50 font-semibold border-t-2 border-blue-200">
+                                    <tr
+                                        class="bg-gradient-to-r from-blue-50 to-indigo-50 font-semibold border-t-2 border-blue-200">
                                         <td class="px-3 py-1 text-slate-700">Promedio</td>
                                         <td class="px-3 py-1 text-center text-slate-700">{{
                                             fmtStat(combinedStats.TITULO?.avg) }}</td>
@@ -507,6 +524,8 @@
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import StatsChart from './uster-stats/StatsChart.vue'
 import { fetchAllStatsData, setDataSource } from '../services/dataService'
+import Swal from 'sweetalert2'
+import { toPng } from 'html-to-image'
 
 // Data fetched from backend
 const usterTbl = ref([])
@@ -619,14 +638,14 @@ function formatOe(oe) {
     if (!oe) return oe
     const str = String(oe).trim()
     if (!str) return str
-    
+
     // Separar números y letras (con o sin espacio intermedio)
     const match = str.match(/^(\d+)\s*([A-Za-z]+)?/)
     if (!match) return str
-    
+
     const numPart = parseInt(match[1], 10) // Quita ceros a la izquierda
     const letterPart = match[2] ? match[2].substring(0, 2).toUpperCase() : ''
-    
+
     return letterPart ? `${numPart} ${letterPart}` : String(numPart)
 }
 
@@ -919,6 +938,26 @@ const globalMean = computed(() => globalStats.value.mean)
 const globalUcl = computed(() => globalStats.value.ucl)
 const globalLcl = computed(() => globalStats.value.lcl)
 
+// Get standard Ne value (NOMCOUNT) when a Ne is selected
+const standardNeValue = computed(() => {
+    // Only show standard line for 'TITULO' (Titulo Ne) variable
+    if (!selectedNomcount.value) return null
+    if (selectedVariable.value !== 'TITULO') return null
+
+    // Find a PAR row that matches the selected Ne
+    for (const row of usterPar.value) {
+        const formattedNe = formatNe(row.NOMCOUNT, row.MATCLASS)
+        if (formattedNe === selectedNomcount.value) {
+            const nomcount = parseFloat(row.NOMCOUNT)
+            if (!isNaN(nomcount)) {
+                console.log('[standardNeValue] Showing standard line for Ne:', selectedNomcount.value, 'Value:', nomcount)
+                return nomcount
+            }
+        }
+    }
+    return null
+})
+
 // Handler para abrir detalle de ensayo al presionar Ctrl en tooltip
 const modalVisible = ref(false)
 const modalLoading = ref(false)
@@ -944,17 +983,17 @@ function fmtStat(val) {
 
 async function handleOpenEnsayoDetail(testnr) {
     if (!testnr) return
-    
+
     modalTestnr.value = testnr
     modalVisible.value = true
     modalLoading.value = true
-    
+
     try {
         // Buscar datos en usterPar para metadata
         const parRow = usterPar.value.find(p => p.TESTNR === testnr)
         const rawOe = parRow?.MASCHNR || parRow?.OE || parRow?.OE_NRO || ''
         const formattedOe = formatOe(rawOe)
-        
+
         // Formato de fecha
         let fechaStr = ''
         if (parRow?.TIME_STAMP) {
@@ -966,7 +1005,7 @@ async function handleOpenEnsayoDetail(testnr) {
                 fechaStr = `${dd}/${mm}/${yy}`
             }
         }
-        
+
         modalMeta.value = {
             fechaStr,
             ne: formatNe(parRow?.NOMCOUNT, parRow?.MATCLASS) || '',
@@ -976,12 +1015,12 @@ async function handleOpenEnsayoDetail(testnr) {
             obs: parRow?.OBS || '',
             laborant: parRow?.LABORANT || ''
         }
-        
+
         // Filtrar filas USTER_TBL
         let usterRows = (usterTbl.value || []).filter(r =>
             String(r.TESTNR || '') === String(testnr)
         )
-        
+
         // Deduplicar
         const dedupe = (arr, getKey) => {
             const seen = new Set()
@@ -996,43 +1035,43 @@ async function handleOpenEnsayoDetail(testnr) {
             }
             return out
         }
-        
+
         usterRows = dedupe(usterRows, (r) => {
             const tn = String(r.TESTNR || '')
             const no = String(r.NO ?? r.HUSO ?? '')
             return tn && no ? `${tn}#${no}` : undefined
         })
-        
+
         // Buscar TensoRapid relacionado
         const tensorParMatches = (tensorapidPar.value || []).filter(r => {
             const usterTestnr = String(r.USTER_TESTNR || '')
             return usterTestnr === String(testnr)
         })
-        
+
         const tensorTestnrsList = tensorParMatches.map(r => String(r.TESTNR || '')).filter(Boolean)
         if (tensorTestnrsList.length > 0) {
             modalMeta.value.t = tensorTestnrsList.join(', ')
         }
-        
+
         let tensorRows = (tensorapidTbl.value || []).filter(r => {
             const tblTestnr = String(r.TESTNR || '')
             return tensorTestnrsList.includes(tblTestnr)
         })
-        
+
         tensorRows = dedupe(tensorRows, (r) => {
             const tn = String(r.TESTNR || '')
             const no = String(r.HUSO_NUMBER ?? r.NO ?? '')
             return tn && no ? `${tn}#${no}` : undefined
         })
-        
+
         // Merge filas
         const merged = []
         const maxLen = Math.max(usterRows.length, tensorRows.length)
-        
+
         for (let i = 0; i < maxLen; i++) {
             const uRow = usterRows[i] || {}
             const tRow = tensorRows[i] || {}
-            
+
             merged.push({
                 NO: uRow.NO ?? tRow.HUSO_NUMBER ?? (i + 1),
                 TITULO: uRow.TITULO ?? '',
@@ -1050,41 +1089,41 @@ async function handleOpenEnsayoDetail(testnr) {
                 TRABAJO: tRow.TRABAJO ?? ''
             })
         }
-        
+
         mergedRows.value = merged
-        
+
         // Calcular estadísticas
         const stats = {}
         const fields = ['TITULO', 'CVM_PERCENT', 'DELG_MINUS30_KM', 'DELG_MINUS40_KM', 'DELG_MINUS50_KM',
             'GRUE_35_KM', 'GRUE_50_KM', 'NEPS_140_KM', 'NEPS_280_KM',
             'FUERZA_B', 'ELONGACION', 'TENACIDAD', 'TRABAJO']
-        
+
         fields.forEach(field => {
             const values = merged
                 .map(row => row[field])
                 .filter(v => v !== null && v !== undefined && v !== '')
                 .map(v => Number(v))
                 .filter(n => !isNaN(n))
-            
+
             if (values.length > 0) {
                 const sum = values.reduce((a, b) => a + b, 0)
                 const avg = sum / values.length
                 const variance = values.reduce((acc, val) => acc + Math.pow(val - avg, 2), 0) / values.length
                 const sd = Math.sqrt(variance)
                 const cv = avg !== 0 ? (sd / avg) * 100 : null
-                
+
                 values.sort((a, b) => a - b)
                 const q95Index = Math.floor(values.length * 0.95)
                 const q95 = values[q95Index]
                 const max = values[values.length - 1]
                 const min = values[0]
-                
+
                 stats[field] = { avg, cv, sd, q95, max, min }
             } else {
                 stats[field] = { avg: null, cv: null, sd: null, q95: null, max: null, min: null }
             }
         })
-        
+
         combinedStats.value = stats
     } catch (error) {
         console.error('Error loading modal data:', error)
@@ -1099,6 +1138,128 @@ function closeModal() {
     modalMeta.value = {}
     mergedRows.value = []
     combinedStats.value = {}
+}
+
+async function copyModalAsImage() {
+    try {
+        const modalEl = document.querySelector('[role="document"]')
+        if (!modalEl) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'No se pudo encontrar el modal.'
+            })
+            return
+        }
+
+        // Hide buttons temporarily to clean the capture (use visibility to avoid layout shift)
+        const copyBtn = document.querySelector('[aria-label="Copiar como imagen"]')
+        const closeBtn = document.querySelector('[aria-label="Cerrar detalle"]')
+
+        // Store original visibility values
+        const originalCopyVis = copyBtn ? copyBtn.style.visibility : ''
+        const originalCloseVis = closeBtn ? closeBtn.style.visibility : ''
+
+        if (copyBtn) copyBtn.style.visibility = 'hidden'
+        if (closeBtn) closeBtn.style.visibility = 'hidden'
+
+        // Small delay to ensure DOM updates before capture
+        await new Promise(resolve => setTimeout(resolve, 50))
+
+        // Show loading state with minimal timer
+        Swal.fire({
+            title: 'Capturando...',
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            timer: 50,
+            didOpen: () => {
+                Swal.showLoading()
+            }
+        })
+
+        // Temporarily suppress console.error for CSS and CORS warnings from html-to-image
+        const originalConsoleError = console.error
+        console.error = (...args) => {
+            const message = args[0]?.toString() || ''
+            if (message.includes('CSS rules') || message.includes('cssRules') || message.includes('SecurityError')) {
+                return
+            }
+            originalConsoleError.apply(console, args)
+        }
+
+        try {
+            const dataUrl = await toPng(modalEl, {
+                quality: 0.95,
+                pixelRatio: 2,
+                backgroundColor: '#ffffff',
+                skipFonts: true,
+                cacheBust: true
+            })
+
+            // Restore console.error
+            console.error = originalConsoleError
+
+            // Restore buttons
+            if (copyBtn) copyBtn.style.visibility = originalCopyVis
+            if (closeBtn) closeBtn.style.visibility = originalCloseVis
+
+            // Convert data URL to blob
+            const response = await fetch(dataUrl)
+            const blob = await response.blob()
+
+            // Try to copy to clipboard
+            try {
+                await navigator.clipboard.write([
+                    new ClipboardItem({
+                        'image/png': blob
+                    })
+                ])
+
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Copiado!',
+                    text: 'Pega en WhatsApp: Ctrl+V',
+                    timer: 1500,
+                    showConfirmButton: false
+                })
+            } catch (clipboardErr) {
+                // Fallback: download the image
+                console.warn('[copyModalAsImage] Clipboard failed, downloading instead:', clipboardErr)
+                const link = document.createElement('a')
+                link.download = `ensayo-${modalTestnr.value || 'detalle'}.png`
+                link.href = dataUrl
+                link.click()
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Descargado',
+                    text: 'Imagen lista para WhatsApp',
+                    timer: 1500,
+                    showConfirmButton: false
+                })
+            }
+        } catch (captureErr) {
+            console.error('[copyModalAsImage] Capture error:', captureErr)
+            // Restore console.error
+            console.error = originalConsoleError
+            // Restore buttons
+            if (copyBtn) copyBtn.style.visibility = originalCopyVis
+            if (closeBtn) closeBtn.style.visibility = originalCloseVis
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Error al capturar',
+                text: 'No se pudo generar la imagen.'
+            })
+        }
+    } catch (err) {
+        console.error('[copyModalAsImage] Unexpected error:', err)
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Ocurrió un error al copiar la imagen.'
+        })
+    }
 }
 
 onMounted(() => {

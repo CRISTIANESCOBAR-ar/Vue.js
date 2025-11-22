@@ -1635,14 +1635,14 @@ function formatOE(val) {
   if (!val) return ''
   const str = String(val).trim()
   if (!str) return str
-  
+
   // Separar números y letras (con o sin espacio intermedio)
   const match = str.match(/^(\d+)\s*([A-Za-z]+)?/)
   if (!match) return str
-  
+
   const numPart = parseInt(match[1], 10) // Quita ceros a la izquierda
   const letterPart = match[2] ? match[2].substring(0, 2).toUpperCase() : ''
-  
+
   return letterPart ? `${numPart} ${letterPart}` : String(numPart)
 }
 
