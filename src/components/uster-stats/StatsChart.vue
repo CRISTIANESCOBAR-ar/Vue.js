@@ -15,8 +15,12 @@ const props = defineProps({
     globalLcl: { type: Number, required: true },
     variableLabel: { type: String, default: '' }
 })
+
+const emit = defineEmits(['open-ensayo-detail'])
+
 const chartRef = ref(null)
 let chart = null
+const hoveredPoint = ref(null) // Rastrear punto actualmente hovereado
 
 function computeOptimalXLabelRotate(labels) {
     try {
@@ -226,10 +230,34 @@ function render() {
 watch(() => [props.stats, props.globalMean, props.globalUcl, props.globalLcl], () => { render() }, { deep: true })
 
 let _resizeHandler = null
+let _keydownHandler = null
 let _isUpdatingFromFinished = false // Flag para evitar loop de setOption
 onMounted(() => {
     chart = echarts.init(chartRef.value)
     render()
+    
+    // Rastrear punto hovereado para tooltip
+    chart.on('updateAxisPointer', (event) => {
+        const dataIndex = event.axesInfo?.[0]?.value
+        if (dataIndex != null && props.stats[dataIndex]) {
+            hoveredPoint.value = props.stats[dataIndex]
+        }
+    })
+    
+    // Limpiar punto hovereado cuando el tooltip se oculta
+    chart.on('globalout', () => {
+        hoveredPoint.value = null
+    })
+    
+    // Listener de teclado para Ctrl
+    _keydownHandler = (e) => {
+        if ((e.ctrlKey || e.metaKey) && hoveredPoint.value?.testnr) {
+            e.preventDefault()
+            emit('open-ensayo-detail', hoveredPoint.value.testnr)
+        }
+    }
+    window.addEventListener('keydown', _keydownHandler)
+    
     // on resize, resize chart and re-render to recompute rotation
     _resizeHandler = () => {
         chart && chart.resize()
@@ -295,8 +323,13 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-    if (chart) chart.dispose()
+    if (chart) {
+        chart.off('updateAxisPointer')
+        chart.off('globalout')
+        chart.dispose()
+    }
     if (_resizeHandler) window.removeEventListener('resize', _resizeHandler)
+    if (_keydownHandler) window.removeEventListener('keydown', _keydownHandler)
     try {
         chart && chart.off && chart.off('finished')
     } catch {

@@ -23,47 +23,46 @@
           <h3 class="text-xl font-semibold text-slate-800 whitespace-nowrap">Resumen de Ensayos</h3>
 
           <!-- search moved next to title -->
-          <div class="ml-4 flex items-center">
+          <div class="ml-4 flex items-center gap-2">
             <label for="searchInput" class="sr-only">Buscar ensayos</label>
             <input id="searchInput" v-model="q" @input="onInput" type="search"
               placeholder="Buscar por Ensayo, Fecha, OE, Ne..." aria-label="Buscar ensayos"
               class="px-3 py-1.5 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" />
-            <button v-if="q" @click="clearSearch" title="Limpiar"
-              class="ml-2 px-2 py-1 bg-slate-100 hover:bg-slate-200 rounded-md text-sm whitespace-nowrap transition-colors duration-200">Limpiar</button>
+            <button v-if="q || neQuery || oeQuery" @click="clearSearch" title="Limpiar filtros"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+              <span>Limpiar</span>
+            </button>
           </div>
 
           <!-- center area: filters -->
           <div class="flex-1 flex items-center justify-center gap-2">
             <div class="flex items-center gap-2 flex-wrap">
-              <!-- Quick filters for OE and Ne (client-side) -->
+              <!-- Quick filters for Ne and OE (client-side) - Orden invertido: Ne primero, OE después -->
               <div class="flex items-center gap-2">
-                <label for="oeFilter" class="text-sm text-slate-600">OE</label>
-                <div class="relative">
-                  <input id="oeFilter" v-model.trim="oeQuery" type="search" placeholder="OE" aria-label="Filtrar por OE"
-                    class="px-2 py-1 border border-slate-200 rounded-md text-sm w-24 pr-8" />
-                  <button type="button" @click="oeQuery = ''" aria-label="Limpiar OE" v-show="oeQuery"
-                    class="custom-clear absolute right-1 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
-                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <line x1="18" y1="6" x2="6" y2="18"></line>
-                      <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                  </button>
-                </div>
+                <label for="neFilter" class="text-sm text-slate-600">Ne:</label>
+                <select id="neFilter" v-model="neQuery" aria-label="Filtrar por Ne"
+                  class="px-2 py-1 border border-slate-200 rounded-md text-sm"
+                  style="width:9.5ch;min-width:9.5ch;max-width:9.5ch;">
+                  <option value="">Todos</option>
+                  <option v-for="ne in availableNes" :key="ne" :value="ne">
+                    {{ ne }}
+                  </option>
+                </select>
 
-                <label for="neFilter" class="text-sm text-slate-600">Ne</label>
-                <div class="relative">
-                  <input id="neFilter" v-model.trim="neQuery" type="search" placeholder="Ne" aria-label="Filtrar por Ne"
-                    class="px-2 py-1 border border-slate-200 rounded-md text-sm w-20 pr-8" />
-                  <button type="button" @click="neQuery = ''" aria-label="Limpiar Ne" v-show="neQuery"
-                    class="custom-clear absolute right-1 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
-                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <line x1="18" y1="6" x2="6" y2="18"></line>
-                      <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                  </button>
-                </div>
+                <label for="oeFilter" class="text-sm text-slate-600">OE:</label>
+                <select id="oeFilter" v-model="oeQuery" :disabled="!neQuery" aria-label="Filtrar por OE"
+                  class="px-2 py-1 border border-slate-200 rounded-md text-sm"
+                  style="width:7ch;min-width:7ch;max-width:7ch;">
+                  <option value="">Todos</option>
+                  <option v-for="oe in availableOes" :key="oe" :value="oe">
+                    {{ oe }}
+                  </option>
+                </select>
               </div>
             </div>
           </div>
@@ -867,6 +866,49 @@ function fmtStat(val) {
 const oeQuery = ref('')
 const neQuery = ref('')
 
+// Get unique Ne values from rows
+const availableNes = computed(() => {
+  const nes = new Set()
+  for (const row of rows.value || []) {
+    const ne = row.Ne
+    if (ne != null && ne !== '') {
+      nes.add(String(ne))
+    }
+  }
+  return Array.from(nes).sort((a, b) => {
+    const numA = parseFloat(a)
+    const numB = parseFloat(b)
+    if (!isNaN(numA) && !isNaN(numB)) return numA - numB
+    return a.localeCompare(b)
+  })
+})
+
+// Get unique OEs for selected Ne
+const availableOes = computed(() => {
+  if (!neQuery.value) return []
+  const oes = new Set()
+  for (const row of rows.value || []) {
+    if (String(row.Ne) === neQuery.value) {
+      const oe = row.OE
+      if (oe != null && oe !== '') {
+        oes.add(String(oe))
+      }
+    }
+  }
+  return Array.from(oes).sort((a, b) => {
+    // Extraer parte numérica para ordenar correctamente
+    const numA = parseInt(a) || 0
+    const numB = parseInt(b) || 0
+    if (numA !== numB) return numA - numB
+    return a.localeCompare(b)
+  })
+})
+
+// Reset oeQuery when neQuery changes
+watch(neQuery, () => {
+  oeQuery.value = ''
+})
+
 // Search fields to check for the general search (always search across these columns)
 const allSearchFields = ['Ensayo', 'Fecha', 'OE', 'Ne', 'CVm %', 'Delg -30%', 'Delg -40%', 'Delg -50%', 'Grue +35%', 'Grue +50%', 'Neps +140%', 'Neps +280%', 'Fuerza B', 'Elong. %', 'Tenac.', 'Trabajo B', 'Titulo']
 const fieldsToCheck = computed(() => allSearchFields)
@@ -1587,25 +1629,21 @@ async function exportModalToExcel() {
   }
 }
 
-// Formatea OE: quita ceros a la izquierda y separa letras con espacio
+// Formatea OE: quita ceros a la izquierda y toma solo las primeras 2 letras
+// Example: "0012ABCD" -> "12 AB", "5XY" -> "5 XY", "003 LP" -> "3 LP"
 function formatOE(val) {
   if (!val) return ''
-  let s = String(val).trim()
-  // Si ya hay espacio, solo quitar ceros a la izquierda del número
-  if (/^0+\d+\s+\S+/.test(s)) {
-    s = s.replace(/^0+(\d+)\s+/, '$1 ')
-    return s
-  }
-  // Si es tipo 002LIM o 003LP, separar número y letras
-  const m = s.match(/^0*(\d+)([A-Za-z]+)/)
-  if (m) {
-    return `${parseInt(m[1], 10)} ${m[2].toUpperCase()}`
-  }
-  // Si es solo número con ceros
-  if (/^0+\d+$/.test(s)) {
-    return String(parseInt(s, 10))
-  }
-  return s
+  const str = String(val).trim()
+  if (!str) return str
+  
+  // Separar números y letras (con o sin espacio intermedio)
+  const match = str.match(/^(\d+)\s*([A-Za-z]+)?/)
+  if (!match) return str
+  
+  const numPart = parseInt(match[1], 10) // Quita ceros a la izquierda
+  const letterPart = match[2] ? match[2].substring(0, 2).toUpperCase() : ''
+  
+  return letterPart ? `${numPart} ${letterPart}` : String(numPart)
 }
 
 async function loadRows() {

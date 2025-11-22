@@ -69,7 +69,8 @@
                     <div v-else class="flex-1 flex flex-col min-h-0 overflow-hidden">
                         <div class="flex-1 min-h-0 overflow-hidden">
                             <StatsChart :stats="stats" :globalMean="globalMean" :globalUcl="globalUcl"
-                                :globalLcl="globalLcl" :variableLabel="currentVariableLabel" />
+                                :globalLcl="globalLcl" :variableLabel="currentVariableLabel" 
+                                @open-ensayo-detail="handleOpenEnsayoDetail" />
                         </div>
                     </div>
                 </div>
@@ -166,7 +167,336 @@
                 <!-- Gráfico maximizado -->
                 <div v-else class="flex-1 flex flex-col min-h-0 overflow-hidden">
                     <StatsChart :stats="stats" :globalMean="globalMean" :globalUcl="globalUcl" :globalLcl="globalLcl"
-                        :variableLabel="currentVariableLabel" />
+                        :variableLabel="currentVariableLabel" 
+                        @open-ensayo-detail="handleOpenEnsayoDetail" />
+                </div>
+            </div>
+            
+            <!-- Modal detalle de ensayo (mismo diseño que ResumenEnsayos) -->
+            <div v-if="modalVisible" class="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog"
+                aria-modal="true">
+                <!-- Backdrop -->
+                <div class="fixed inset-0 bg-gradient-to-br from-slate-900/50 to-slate-800/50 backdrop-blur-sm z-40"
+                    @click="closeModal" aria-hidden="true"></div>
+
+                <!-- Modal content -->
+                <div class="bg-white rounded-2xl shadow-2xl max-w-6xl w-full max-h-[95vh] flex flex-col p-3 z-50 relative"
+                    role="document">
+                    <header class="flex items-start sm:items-center justify-between mb-2 pb-1 gap-3">
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-2 mx-8">
+                            <div class="text-slate-600 text-sm">Fecha: <span
+                                    class="text-slate-900 text-lg font-semibold ml-1">{{ modalMeta.fechaStr }}</span>
+                            </div>
+                            <div class="text-slate-600 text-sm">Ne: <span
+                                    class="text-slate-900 text-lg font-semibold ml-1">{{ modalMeta.ne }}</span></div>
+                            <div class="text-slate-600 text-sm">OE Nro.: <span
+                                    class="text-slate-900 text-lg font-semibold ml-1">{{ modalMeta.oe }}</span></div>
+                            <div class="text-slate-600 text-sm">Ensayo Uster <span
+                                    class="text-slate-900 text-lg font-semibold ml-1">{{ modalMeta.u }}</span> y
+                                TensoRapid <span class="text-slate-900 text-lg font-semibold ml-1">{{ modalMeta.t
+                                    }}</span></div>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <!-- Close button -->
+                            <button @click="closeModal" type="button"
+                                class="w-9 h-9 rounded-lg bg-white border border-slate-200 hover:border-red-400 hover:bg-red-50 flex items-center justify-center text-slate-600 hover:text-red-600 transition-all duration-200 shadow-sm hover:shadow-md"
+                                aria-label="Cerrar detalle">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                    </header>
+
+                    <!-- Observaciones y Lab. Uster -->
+                    <div v-if="modalMeta.obs || modalMeta.laborant"
+                        class="mx-8 flex items-center gap-4 text-slate-600 text-sm mb-2">
+                        <div v-if="modalMeta.obs">
+                            <span>Obs.:</span>
+                            <span class="text-slate-900 text-sm font-normal ml-1">{{ modalMeta.obs }}</span>
+                        </div>
+                        <div v-if="modalMeta.laborant">
+                            <span>Lab. Uster:</span>
+                            <span class="text-slate-900 text-sm font-normal ml-1">{{ modalMeta.laborant }}</span>
+                        </div>
+                    </div>
+
+                    <section class="flex-1 relative">
+                        <div v-if="mergedRows.length === 0" class="text-sm text-slate-600 py-8 text-center">No hay
+                            datos para este ensayo.</div>
+                        <div v-else class="rounded-xl border border-slate-200 overflow-auto max-h-[calc(95vh-8rem)]">
+                            <table class="min-w-full text-xs">
+                                <thead class="bg-gradient-to-r from-slate-50 to-slate-100 sticky top-0 z-30">
+                                    <tr>
+                                        <th
+                                            class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">
+                                            Huso</th>
+                                        <th
+                                            class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">
+                                            Titulo</th>
+                                        <th
+                                            class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">
+                                            CVm %</th>
+                                        <th
+                                            class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">
+                                            Delg -30%</th>
+                                        <th
+                                            class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">
+                                            Delg -40%</th>
+                                        <th
+                                            class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">
+                                            Delg -50%</th>
+                                        <th
+                                            class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">
+                                            Grue +35%</th>
+                                        <th
+                                            class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">
+                                            Grue +50%</th>
+                                        <th
+                                            class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">
+                                            Neps +140%</th>
+                                        <th
+                                            class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">
+                                            Neps +280%</th>
+                                        <th
+                                            class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">
+                                            Fuerza B</th>
+                                        <th
+                                            class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">
+                                            Elongación %</th>
+                                        <th
+                                            class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">
+                                            Tenacidad</th>
+                                        <th
+                                            class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">
+                                            Trabajo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(row, idx) in mergedRows" :key="idx"
+                                        :class="['transition-colors duration-150', modalLoading ? 'bg-slate-50/50' : 'hover:bg-slate-50']">
+                                        <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{
+                                            row.NO }}</td>
+                                        <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{
+                                            fmtCell(row.TITULO) }}</td>
+                                        <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{
+                                            fmtCell(row.CVM_PERCENT) }}</td>
+                                        <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{
+                                            fmtCell(row.DELG_MINUS30_KM) }}</td>
+                                        <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{
+                                            fmtCell(row.DELG_MINUS40_KM) }}</td>
+                                        <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{
+                                            fmtCell(row.DELG_MINUS50_KM) }}</td>
+                                        <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{
+                                            fmtCell(row.GRUE_35_KM) }}</td>
+                                        <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{
+                                            fmtCell(row.GRUE_50_KM) }}</td>
+                                        <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{
+                                            fmtCell(row.NEPS_140_KM) }}</td>
+                                        <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{
+                                            fmtCell(row.NEPS_280_KM) }}</td>
+                                        <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{
+                                            fmtCell(row.FUERZA_B) }}</td>
+                                        <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{
+                                            fmtCell(row.ELONGACION) }}</td>
+                                        <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{
+                                            fmtCell(row.TENACIDAD) }}</td>
+                                        <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{
+                                            fmtCell(row.TRABAJO) }}</td>
+                                    </tr>
+
+                                    <!-- Filas de estadísticas (Promedio, CV, s, Q95, Máx, Mín) -->
+                                    <tr class="bg-gradient-to-r from-blue-50 to-indigo-50 font-semibold border-t-2 border-blue-200">
+                                        <td class="px-3 py-1 text-slate-700">Promedio</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.TITULO?.avg) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.CVM_PERCENT?.avg) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.DELG_MINUS30_KM?.avg) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.DELG_MINUS40_KM?.avg) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.DELG_MINUS50_KM?.avg) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.GRUE_35_KM?.avg) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.GRUE_50_KM?.avg) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.NEPS_140_KM?.avg) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.NEPS_280_KM?.avg) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.FUERZA_B?.avg) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.ELONGACION?.avg) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.TENACIDAD?.avg) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.TRABAJO?.avg) }}</td>
+                                    </tr>
+                                    <tr class="bg-blue-50/50 font-medium">
+                                        <td class="px-3 py-1 text-slate-700">CV</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.TITULO?.cv) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.CVM_PERCENT?.cv) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.DELG_MINUS30_KM?.cv) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.DELG_MINUS40_KM?.cv) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.DELG_MINUS50_KM?.cv) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.GRUE_35_KM?.cv) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.GRUE_50_KM?.cv) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.NEPS_140_KM?.cv) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.NEPS_280_KM?.cv) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.FUERZA_B?.cv) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.ELONGACION?.cv) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.TENACIDAD?.cv) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.TRABAJO?.cv) }}</td>
+                                    </tr>
+                                    <tr class="bg-indigo-50/50 font-medium">
+                                        <td class="px-3 py-1 text-slate-700">s</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.TITULO?.sd) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.CVM_PERCENT?.sd) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.DELG_MINUS30_KM?.sd) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.DELG_MINUS40_KM?.sd) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.DELG_MINUS50_KM?.sd) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.GRUE_35_KM?.sd) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.GRUE_50_KM?.sd) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.NEPS_140_KM?.sd) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.NEPS_280_KM?.sd) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.FUERZA_B?.sd) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.ELONGACION?.sd) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.TENACIDAD?.sd) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.TRABAJO?.sd) }}</td>
+                                    </tr>
+                                    <tr class="bg-blue-50/50 font-medium">
+                                        <td class="px-3 py-1 text-slate-700">Q95</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.TITULO?.q95) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.CVM_PERCENT?.q95) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.DELG_MINUS30_KM?.q95) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.DELG_MINUS40_KM?.q95) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.DELG_MINUS50_KM?.q95) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.GRUE_35_KM?.q95) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.GRUE_50_KM?.q95) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.NEPS_140_KM?.q95) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.NEPS_280_KM?.q95) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.FUERZA_B?.q95) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.ELONGACION?.q95) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.TENACIDAD?.q95) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.TRABAJO?.q95) }}</td>
+                                    </tr>
+                                    <tr class="bg-indigo-50/50 font-medium">
+                                        <td class="px-3 py-1 text-slate-700">Máx</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.TITULO?.max) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.CVM_PERCENT?.max) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.DELG_MINUS30_KM?.max) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.DELG_MINUS40_KM?.max) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.DELG_MINUS50_KM?.max) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.GRUE_35_KM?.max) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.GRUE_50_KM?.max) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.NEPS_140_KM?.max) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.NEPS_280_KM?.max) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.FUERZA_B?.max) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.ELONGACION?.max) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.TENACIDAD?.max) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.TRABAJO?.max) }}</td>
+                                    </tr>
+                                    <tr class="bg-blue-50/50 font-medium">
+                                        <td class="px-3 py-1 text-slate-700">Mín</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.TITULO?.min) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.CVM_PERCENT?.min) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.DELG_MINUS30_KM?.min) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.DELG_MINUS40_KM?.min) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.DELG_MINUS50_KM?.min) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.GRUE_35_KM?.min) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.GRUE_50_KM?.min) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.NEPS_140_KM?.min) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.NEPS_280_KM?.min) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.FUERZA_B?.min) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.ELONGACION?.min) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.TENACIDAD?.min) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700">{{
+                                            fmtStat(combinedStats.TRABAJO?.min) }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Loading overlay -->
+                        <div v-if="modalLoading"
+                            class="absolute inset-0 bg-white/95 z-50 flex flex-col items-center justify-center">
+                            <div
+                                class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-slate-300 border-t-blue-600">
+                            </div>
+                            <p class="mt-3 text-base text-slate-700 font-medium">Cargando ensayo...</p>
+                        </div>
+                    </section>
                 </div>
             </div>
         </main>
@@ -588,6 +918,188 @@ const globalStats = computed(() => {
 const globalMean = computed(() => globalStats.value.mean)
 const globalUcl = computed(() => globalStats.value.ucl)
 const globalLcl = computed(() => globalStats.value.lcl)
+
+// Handler para abrir detalle de ensayo al presionar Ctrl en tooltip
+const modalVisible = ref(false)
+const modalLoading = ref(false)
+const modalTestnr = ref(null)
+const modalMeta = ref({})
+const mergedRows = ref([])
+const combinedStats = ref({})
+
+// Helper functions for modal
+function fmtCell(val) {
+    if (val == null || val === '') return '—'
+    const n = Number(val)
+    if (isNaN(n)) return '—'
+    return Number(n.toFixed(2)).toString()
+}
+
+function fmtStat(val) {
+    if (val == null || val === '') return '—'
+    const n = Number(val)
+    if (isNaN(n)) return '—'
+    return Number(n.toFixed(2)).toString()
+}
+
+async function handleOpenEnsayoDetail(testnr) {
+    if (!testnr) return
+    
+    modalTestnr.value = testnr
+    modalVisible.value = true
+    modalLoading.value = true
+    
+    try {
+        // Buscar datos en usterPar para metadata
+        const parRow = usterPar.value.find(p => p.TESTNR === testnr)
+        const rawOe = parRow?.MASCHNR || parRow?.OE || parRow?.OE_NRO || ''
+        const formattedOe = formatOe(rawOe)
+        
+        // Formato de fecha
+        let fechaStr = ''
+        if (parRow?.TIME_STAMP) {
+            const d = parRow.TIME_STAMP instanceof Date ? parRow.TIME_STAMP : new Date(parRow.TIME_STAMP)
+            if (!isNaN(d.getTime())) {
+                const dd = String(d.getDate()).padStart(2, '0')
+                const mm = String(d.getMonth() + 1).padStart(2, '0')
+                const yy = String(d.getFullYear()).slice(-2)
+                fechaStr = `${dd}/${mm}/${yy}`
+            }
+        }
+        
+        modalMeta.value = {
+            fechaStr,
+            ne: formatNe(parRow?.NOMCOUNT, parRow?.MATCLASS) || '',
+            oe: formattedOe,
+            u: testnr,
+            t: '', // TensoRapid TESTNR (se completa si hay match)
+            obs: parRow?.OBS || '',
+            laborant: parRow?.LABORANT || ''
+        }
+        
+        // Filtrar filas USTER_TBL
+        let usterRows = (usterTbl.value || []).filter(r =>
+            String(r.TESTNR || '') === String(testnr)
+        )
+        
+        // Deduplicar
+        const dedupe = (arr, getKey) => {
+            const seen = new Set()
+            const out = []
+            for (const item of arr) {
+                let k
+                try { k = getKey(item) } catch { k = undefined }
+                if (!k) { out.push(item); continue }
+                if (seen.has(k)) continue
+                seen.add(k)
+                out.push(item)
+            }
+            return out
+        }
+        
+        usterRows = dedupe(usterRows, (r) => {
+            const tn = String(r.TESTNR || '')
+            const no = String(r.NO ?? r.HUSO ?? '')
+            return tn && no ? `${tn}#${no}` : undefined
+        })
+        
+        // Buscar TensoRapid relacionado
+        const tensorParMatches = (tensorapidPar.value || []).filter(r => {
+            const usterTestnr = String(r.USTER_TESTNR || '')
+            return usterTestnr === String(testnr)
+        })
+        
+        const tensorTestnrsList = tensorParMatches.map(r => String(r.TESTNR || '')).filter(Boolean)
+        if (tensorTestnrsList.length > 0) {
+            modalMeta.value.t = tensorTestnrsList.join(', ')
+        }
+        
+        let tensorRows = (tensorapidTbl.value || []).filter(r => {
+            const tblTestnr = String(r.TESTNR || '')
+            return tensorTestnrsList.includes(tblTestnr)
+        })
+        
+        tensorRows = dedupe(tensorRows, (r) => {
+            const tn = String(r.TESTNR || '')
+            const no = String(r.HUSO_NUMBER ?? r.NO ?? '')
+            return tn && no ? `${tn}#${no}` : undefined
+        })
+        
+        // Merge filas
+        const merged = []
+        const maxLen = Math.max(usterRows.length, tensorRows.length)
+        
+        for (let i = 0; i < maxLen; i++) {
+            const uRow = usterRows[i] || {}
+            const tRow = tensorRows[i] || {}
+            
+            merged.push({
+                NO: uRow.NO ?? tRow.HUSO_NUMBER ?? (i + 1),
+                TITULO: uRow.TITULO ?? '',
+                CVM_PERCENT: uRow['CVM_%'] ?? uRow.CVM_PERCENT ?? '',
+                DELG_MINUS30_KM: uRow['DELG_-30%'] ?? uRow.DELG_MINUS30_KM ?? '',
+                DELG_MINUS40_KM: uRow['DELG_-40%'] ?? uRow.DELG_MINUS40_KM ?? '',
+                DELG_MINUS50_KM: uRow['DELG_-50%'] ?? uRow.DELG_MINUS50_KM ?? '',
+                GRUE_35_KM: uRow['GRUE_+35%'] ?? uRow.GRUE_35_KM ?? '',
+                GRUE_50_KM: uRow['GRUE_+50%'] ?? uRow.GRUE_50_KM ?? '',
+                NEPS_140_KM: uRow['NEPS_+140%'] ?? uRow.NEPS_140_KM ?? '',
+                NEPS_280_KM: uRow['NEPS_+280%'] ?? uRow.NEPS_280_KM ?? '',
+                FUERZA_B: tRow.FUERZA_B ?? '',
+                ELONGACION: tRow.ELONGACION ?? '',
+                TENACIDAD: tRow.TENACIDAD ?? '',
+                TRABAJO: tRow.TRABAJO ?? ''
+            })
+        }
+        
+        mergedRows.value = merged
+        
+        // Calcular estadísticas
+        const stats = {}
+        const fields = ['TITULO', 'CVM_PERCENT', 'DELG_MINUS30_KM', 'DELG_MINUS40_KM', 'DELG_MINUS50_KM',
+            'GRUE_35_KM', 'GRUE_50_KM', 'NEPS_140_KM', 'NEPS_280_KM',
+            'FUERZA_B', 'ELONGACION', 'TENACIDAD', 'TRABAJO']
+        
+        fields.forEach(field => {
+            const values = merged
+                .map(row => row[field])
+                .filter(v => v !== null && v !== undefined && v !== '')
+                .map(v => Number(v))
+                .filter(n => !isNaN(n))
+            
+            if (values.length > 0) {
+                const sum = values.reduce((a, b) => a + b, 0)
+                const avg = sum / values.length
+                const variance = values.reduce((acc, val) => acc + Math.pow(val - avg, 2), 0) / values.length
+                const sd = Math.sqrt(variance)
+                const cv = avg !== 0 ? (sd / avg) * 100 : null
+                
+                values.sort((a, b) => a - b)
+                const q95Index = Math.floor(values.length * 0.95)
+                const q95 = values[q95Index]
+                const max = values[values.length - 1]
+                const min = values[0]
+                
+                stats[field] = { avg, cv, sd, q95, max, min }
+            } else {
+                stats[field] = { avg: null, cv: null, sd: null, q95: null, max: null, min: null }
+            }
+        })
+        
+        combinedStats.value = stats
+    } catch (error) {
+        console.error('Error loading modal data:', error)
+    } finally {
+        modalLoading.value = false
+    }
+}
+
+function closeModal() {
+    modalVisible.value = false
+    modalTestnr.value = null
+    modalMeta.value = {}
+    mergedRows.value = []
+    combinedStats.value = {}
+}
 
 onMounted(() => {
     fetchData()
