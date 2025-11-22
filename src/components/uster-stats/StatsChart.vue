@@ -141,9 +141,10 @@ function buildOption(data, xLabelRotate = 45) {
                 const dataIndex = params[0].dataIndex
                 const pointData = data[dataIndex]
 
-                // Fecha formateada (primera línea en negrita)
+                // Fecha formateada y OE (primera línea en negrita)
                 const dateLabel = pointData?.timestampFmt || params[0].axisValue
-                let result = `<div style="font-weight: bold; margin-bottom: 4px;">${dateLabel}</div>`
+                const oe = pointData?.oe ? ` | OE: ${pointData.oe}` : ''
+                let result = `<div style="font-weight: bold; margin-bottom: 4px;">${dateLabel}${oe}</div>`
 
                 // Mostrar cada serie con su color, nombre y valor
                 params.forEach(item => {
@@ -225,6 +226,7 @@ function render() {
 watch(() => [props.stats, props.globalMean, props.globalUcl, props.globalLcl], () => { render() }, { deep: true })
 
 let _resizeHandler = null
+let _isUpdatingFromFinished = false // Flag para evitar loop de setOption
 onMounted(() => {
     chart = echarts.init(chartRef.value)
     render()
@@ -236,6 +238,9 @@ onMounted(() => {
     window.addEventListener('resize', _resizeHandler)
     // register finished handler to measure the legend DOM after echarts has finished layout
     const finishedHandler = () => {
+        // Prevenir recursión infinita
+        if (_isUpdatingFromFinished) return
+
         try {
             const root = chartRef.value
             if (!root || !props.stats) return
@@ -275,11 +280,15 @@ onMounted(() => {
             const currentBottom = chart.getOption().grid && chart.getOption().grid[0] && chart.getOption().grid[0].bottom ? chart.getOption().grid[0].bottom : null
             // note: chart.getOption().grid may return px or percent; we compare numerically when possible
             if (!currentBottom || Math.abs(refinedBottom - (Number(currentBottom) || 0)) > 6) {
+                _isUpdatingFromFinished = true
                 const opt2 = buildOption(props.stats, rotate, refinedBottom)
                 chart.setOption(opt2)
+                // Resetear flag después de un tick para permitir futuros ajustes
+                setTimeout(() => { _isUpdatingFromFinished = false }, 0)
             }
         } catch {
             // ignore
+            _isUpdatingFromFinished = false
         }
     }
     chart.on('finished', finishedHandler)

@@ -32,6 +32,15 @@
                                 {{ nomcount }}
                             </option>
                         </select>
+                        <span class="text-sm text-slate-600 shrink-0">OE:</span>
+                        <select v-model="selectedOe" :disabled="!selectedNomcount"
+                            class="px-1 py-1 border rounded-md text-sm shrink-0"
+                            style="width:7ch;min-width:7ch;max-width:7ch;">
+                            <option :value="null">Todos</option>
+                            <option v-for="oe in availableOes" :key="oe" :value="oe">
+                                {{ oe }}
+                            </option>
+                        </select>
                         <span class="text-sm text-slate-600 shrink-0">Ver:</span>
                         <select v-model="selectedVariable"
                             class="px-1 py-1 border rounded-md text-sm flex-1 min-w-0 max-w-full overflow-hidden text-ellipsis">
@@ -101,13 +110,21 @@
                             </button>
                         </div>
 
-                        <!-- Orden requerido: Ne, Ver, LCL, Promedio, UCL, Total de ensayos -->
+                        <!-- Orden requerido: Ne, OE, Ver, LCL, Promedio, UCL, Total de ensayos -->
                         <div class="flex items-center gap-2">
                             <span class="text-slate-700 text-sm">Ne</span>
                             <select v-model="selectedNomcount"
                                 class="px-2 py-1 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 font-semibold min-w-[7.5rem] w-[8.5rem]">
                                 <option v-for="nomcount in availableNomcounts" :key="nomcount" :value="nomcount">
                                     {{ nomcount }}
+                                </option>
+                            </select>
+                            <span class="text-slate-700 text-sm">OE</span>
+                            <select v-model="selectedOe" :disabled="!selectedNomcount"
+                                class="px-2 py-1 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 min-w-[5rem]">
+                                <option :value="null">Todos</option>
+                                <option v-for="oe in availableOes" :key="oe" :value="oe">
+                                    {{ oe }}
                                 </option>
                             </select>
                             <span class="text-slate-700 text-sm">Ver</span>
@@ -157,7 +174,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import StatsChart from './uster-stats/StatsChart.vue'
 import { fetchAllStatsData, setDataSource } from '../services/dataService'
 
@@ -193,6 +210,7 @@ function handleResize() {
 // Selected NOMCOUNT and variable
 const selectedNomcount = ref(null)
 const selectedVariable = ref('TITULO')
+const selectedOe = ref(null)
 
 // Available variables for selection
 const availableVariables = [
@@ -265,6 +283,23 @@ function formatNe(nomcount, matclass) {
     return ne
 }
 
+// Format OE: remove leading zeros and extract first 2 letters
+// Example: "0012ABCD" -> "12 AB", "5XY" -> "5 XY", "003 LP" -> "3 LP"
+function formatOe(oe) {
+    if (!oe) return oe
+    const str = String(oe).trim()
+    if (!str) return str
+    
+    // Separar números y letras (con o sin espacio intermedio)
+    const match = str.match(/^(\d+)\s*([A-Za-z]+)?/)
+    if (!match) return str
+    
+    const numPart = parseInt(match[1], 10) // Quita ceros a la izquierda
+    const letterPart = match[2] ? match[2].substring(0, 2).toUpperCase() : ''
+    
+    return letterPart ? `${numPart} ${letterPart}` : String(numPart)
+}
+
 // Get unique NOMCOUNT values
 const availableNomcounts = computed(() => {
     const nomcounts = new Set()
@@ -282,11 +317,48 @@ const availableNomcounts = computed(() => {
     })
 })
 
-// Get TESTNRs for selected NOMCOUNT
+// Get unique OEs for selected NOMCOUNT
+const availableOes = computed(() => {
+    if (!selectedNomcount.value) return []
+    const oes = new Set()
+    for (const row of usterPar.value) {
+        const formattedNe = formatNe(row.NOMCOUNT, row.MATCLASS)
+        if (formattedNe === selectedNomcount.value) {
+            const oe = row.MASCHNR || row.OE || row.OE_NRO || null
+            if (oe != null && oe !== '') {
+                oes.add(formatOe(oe))
+            }
+        }
+    }
+    return Array.from(oes).sort((a, b) => {
+        // Extraer parte numérica para ordenar correctamente
+        const numA = parseInt(a) || 0
+        const numB = parseInt(b) || 0
+        if (numA !== numB) return numA - numB
+        return a.localeCompare(b)
+    })
+})
+
+// Reset selectedOe when selectedNomcount changes
+watch(selectedNomcount, () => {
+    selectedOe.value = null
+})
+
+// Get TESTNRs for selected NOMCOUNT and OE
 const filteredTestnrs = computed(() => {
     if (!selectedNomcount.value) return []
     return usterPar.value
-        .filter(row => formatNe(row.NOMCOUNT, row.MATCLASS) === selectedNomcount.value)
+        .filter(row => {
+            const formattedNe = formatNe(row.NOMCOUNT, row.MATCLASS)
+            if (formattedNe !== selectedNomcount.value) return false
+
+            // Si hay OE seleccionado, filtrar por OE
+            if (selectedOe.value) {
+                const rawOe = row.MASCHNR || row.OE || row.OE_NRO || null
+                return formatOe(rawOe) === selectedOe.value
+            }
+            return true
+        })
         .map(row => row.TESTNR)
         .filter(Boolean)
 })
@@ -331,14 +403,20 @@ const stats = computed(() => {
 
                 // Group by USTER_TESTNR (not TENSORAPID TESTNR) for consistent display
                 if (!grouped[usterTestnr]) {
-                    grouped[usterTestnr] = { values: [], timestamps: [] }
+                    grouped[usterTestnr] = { values: [], timestamps: [], oe: null }
                 }
                 grouped[usterTestnr].values.push(variableValue)
 
-                // Get timestamp from USTER_PAR (for consistency across all variables)
+                // Get timestamp and OE from USTER_PAR (for consistency across all variables)
                 const parRow = usterPar.value.find(p => p.TESTNR === usterTestnr)
-                if (parRow && parRow.TIME_STAMP) {
-                    grouped[usterTestnr].timestamps.push(parRow.TIME_STAMP)
+                if (parRow) {
+                    if (parRow.TIME_STAMP) {
+                        grouped[usterTestnr].timestamps.push(parRow.TIME_STAMP)
+                    }
+                    if (!grouped[usterTestnr].oe) {
+                        const rawOe = parRow.MASCHNR || parRow.OE || parRow.OE_NRO || null
+                        grouped[usterTestnr].oe = formatOe(rawOe)
+                    }
                 }
             }
         }
@@ -353,7 +431,7 @@ const stats = computed(() => {
             if (isNaN(variableValue)) continue
 
             if (!grouped[testnr]) {
-                grouped[testnr] = { values: [], timestamps: [] }
+                grouped[testnr] = { values: [], timestamps: [], oe: null }
             }
             grouped[testnr].values.push(variableValue)
             // collect TIME_STAMP (if available) for later selection
@@ -364,6 +442,14 @@ const stats = computed(() => {
                 if (parRow && parRow.TIME_STAMP) ts = parRow.TIME_STAMP
             }
             if (ts) grouped[testnr].timestamps.push(ts)
+            // Get OE from USTER_PAR if not already set
+            if (!grouped[testnr].oe) {
+                const parRow = usterPar.value.find(p => p.TESTNR === testnr)
+                if (parRow) {
+                    const rawOe = parRow.MASCHNR || parRow.OE || parRow.OE_NRO || null
+                    grouped[testnr].oe = formatOe(rawOe)
+                }
+            }
         }
     }
 
@@ -466,7 +552,8 @@ const stats = computed(() => {
             mean,
             values,
             timestampISO,
-            timestampFmt
+            timestampFmt,
+            oe: payload.oe || null
         })
     }
 
