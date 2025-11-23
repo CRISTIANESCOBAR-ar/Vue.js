@@ -17,7 +17,7 @@ const props = defineProps({
     standardValue: { type: Number, default: null }
 })
 
-const emit = defineEmits(['open-ensayo-detail'])
+const emit = defineEmits(['open-ensayo-detail', 'open-huso-detail'])
 
 const chartRef = ref(null)
 let chart = null
@@ -168,13 +168,11 @@ function buildOption(data, xLabelRotate = 45) {
         },
         // Leyenda centrada y reordenada
         legend: {
-            data: ['Promedio Día', 'Media Global', 'LCL (-3σ)', 'UCL (+3σ)', 'Ne Estándar'],
+            data: ['Promedio Día', 'Media Global', 'LCL (-3σ)', 'UCL (+3σ)', 
+                   ...(props.standardValue != null ? ['Ne Estándar', 'Ne Min (-1.5%)', 'Ne Max (+1.5%)'] : [])],
             bottom: 0,
             left: 'center',
-            // Control visibility of Ne Estándar in legend
-            selected: {
-                'Ne Estándar': props.standardValue != null
-            }
+            selectedMode: true // Allow clicking legend to show/hide series
         },
         // Grid ajustado para usar todo el alto disponible del contenedor
         grid: { left: '3%', right: '3%', top: '6%', bottom: 90, containLabel: false },
@@ -232,13 +230,31 @@ function buildOption(data, xLabelRotate = 45) {
                 z: 10,
                 // Hide from legend when no data
                 silent: props.standardValue == null
+            },
+            {
+                name: 'Ne Min (-1.5%)',
+                type: 'line',
+                data: props.standardValue != null ? Array(x.length).fill(props.standardValue * 0.985) : [],
+                lineStyle: { type: 'dashed', color: '#fb923c', width: 2 },
+                showSymbol: false,
+                z: 9,
+                silent: props.standardValue == null
+            },
+            {
+                name: 'Ne Max (+1.5%)',
+                type: 'line',
+                data: props.standardValue != null ? Array(x.length).fill(props.standardValue * 1.015) : [],
+                lineStyle: { type: 'dashed', color: '#fb923c', width: 2 },
+                showSymbol: false,
+                z: 9,
+                silent: props.standardValue == null
             }
         ]
     }
 }
 
 function render() {
-    if (!chart || !props.stats) return
+    if (!chart || !props.stats || chart.isDisposed()) return
 
     // compute labels and optimal rotation
     const labels = props.stats.map(d => (d.timestampFmt ? d.timestampFmt : d.testnr))
@@ -271,25 +287,36 @@ onMounted(() => {
         hoveredPoint.value = null
     })
 
-    // Listener de teclado para Ctrl
+    // Listener de teclado para Ctrl y Shift
     _keydownHandler = (e) => {
-        if ((e.ctrlKey || e.metaKey) && hoveredPoint.value?.testnr) {
+        if (!hoveredPoint.value) return
+
+        // Ctrl/Cmd: abrir detalle completo del ensayo
+        if ((e.ctrlKey || e.metaKey) && hoveredPoint.value.testnr) {
             e.preventDefault()
             emit('open-ensayo-detail', hoveredPoint.value.testnr)
+        }
+        
+        // Shift: abrir detalle de husos
+        if (e.shiftKey && hoveredPoint.value.testnr) {
+            e.preventDefault()
+            emit('open-huso-detail', hoveredPoint.value)
         }
     }
     window.addEventListener('keydown', _keydownHandler)
 
     // on resize, resize chart and re-render to recompute rotation
     _resizeHandler = () => {
-        chart && chart.resize()
-        render()
+        if (chart && !chart.isDisposed()) {
+            chart.resize()
+            render()
+        }
     }
     window.addEventListener('resize', _resizeHandler)
     // register finished handler to measure the legend DOM after echarts has finished layout
     const finishedHandler = () => {
-        // Prevenir recursión infinita
-        if (_isUpdatingFromFinished) return
+        // Prevenir recursión infinita o uso de instancia destruida
+        if (_isUpdatingFromFinished || !chart || chart.isDisposed()) return
 
         try {
             const root = chartRef.value
@@ -332,9 +359,13 @@ onMounted(() => {
             if (!currentBottom || Math.abs(refinedBottom - (Number(currentBottom) || 0)) > 6) {
                 _isUpdatingFromFinished = true
                 const opt2 = buildOption(props.stats, rotate, refinedBottom)
-                chart.setOption(opt2)
-                // Resetear flag después de un tick para permitir futuros ajustes
-                setTimeout(() => { _isUpdatingFromFinished = false }, 0)
+                // Use setTimeout to avoid "setOption should not be called during main process" warning
+                setTimeout(() => {
+                    if (chart && !chart.isDisposed()) {
+                        chart.setOption(opt2)
+                    }
+                    _isUpdatingFromFinished = false
+                }, 0)
             }
         } catch {
             // ignore
@@ -345,18 +376,15 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-    if (chart) {
+    if (chart && !chart.isDisposed()) {
         chart.off('updateAxisPointer')
         chart.off('globalout')
+        chart.off('finished')
         chart.dispose()
     }
+    chart = null
     if (_resizeHandler) window.removeEventListener('resize', _resizeHandler)
     if (_keydownHandler) window.removeEventListener('keydown', _keydownHandler)
-    try {
-        chart && chart.off && chart.off('finished')
-    } catch {
-        // ignore cleanup errors
-    }
 })
 </script>
 

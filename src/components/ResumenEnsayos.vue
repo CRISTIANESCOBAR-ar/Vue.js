@@ -705,7 +705,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue'
 import Swal from 'sweetalert2'
 import { toPng } from 'html-to-image'
 import ExcelJS from 'exceljs'
@@ -2013,6 +2013,26 @@ async function exportToExcel() {
 
 onMounted(() => {
   loadRows()
+  
+  // Add ESC key listener to close modal
+  const handleEscKey = (event) => {
+    if (event.key === 'Escape' && modalVisible.value) {
+      closeModal()
+    }
+  }
+  window.addEventListener('keydown', handleEscKey)
+  
+  // Store handler reference for cleanup
+  window._resumenEnsayosEscHandler = handleEscKey
+})
+
+onBeforeUnmount(() => {
+  try {
+    if (window._resumenEnsayosEscHandler) {
+      window.removeEventListener('keydown', window._resumenEnsayosEscHandler)
+      delete window._resumenEnsayosEscHandler
+    }
+  } catch { /* ignore */ }
 })
 </script>
 

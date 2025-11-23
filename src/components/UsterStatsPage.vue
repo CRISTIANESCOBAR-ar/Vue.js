@@ -27,7 +27,7 @@
                         <span class="text-sm text-slate-600 shrink-0">Ne:</span>
                         <select v-model="selectedNomcount" class="px-1 py-1 border rounded-md text-sm shrink-0"
                             style="width:9.5ch;min-width:9.5ch;max-width:9.5ch;">
-                            <option :value="null">-</option>
+                            <option :value="null">Elija Ne</option>
                             <option v-for="nomcount in availableNomcounts" :key="nomcount" :value="nomcount">
                                 {{ nomcount }}
                             </option>
@@ -70,7 +70,8 @@
                         <div class="flex-1 min-h-0 overflow-hidden">
                             <StatsChart :stats="stats" :globalMean="globalMean" :globalUcl="globalUcl"
                                 :globalLcl="globalLcl" :variableLabel="currentVariableLabel"
-                                :standardValue="standardNeValue" @open-ensayo-detail="handleOpenEnsayoDetail" />
+                                :standardValue="standardNeValue" @open-ensayo-detail="handleOpenEnsayoDetail"
+                                @open-huso-detail="handleOpenHusoDetail" />
                         </div>
                     </div>
                 </div>
@@ -116,6 +117,7 @@
                             <span class="text-slate-700 text-sm">Ne</span>
                             <select v-model="selectedNomcount"
                                 class="px-2 py-1 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 font-semibold min-w-[7.5rem] w-[8.5rem]">
+                                <option :value="null">Elija Ne</option>
                                 <option v-for="nomcount in availableNomcounts" :key="nomcount" :value="nomcount">
                                     {{ nomcount }}
                                 </option>
@@ -168,7 +170,7 @@
                 <div v-else class="flex-1 flex flex-col min-h-0 overflow-hidden">
                     <StatsChart :stats="stats" :globalMean="globalMean" :globalUcl="globalUcl" :globalLcl="globalLcl"
                         :variableLabel="currentVariableLabel" :standardValue="standardNeValue"
-                        @open-ensayo-detail="handleOpenEnsayoDetail" />
+                        @open-ensayo-detail="handleOpenEnsayoDetail" @open-huso-detail="handleOpenHusoDetail" />
                 </div>
             </div>
 
@@ -516,6 +518,12 @@
                     </section>
                 </div>
             </div>
+
+            <!-- Huso detail modal (10 individual values) -->
+            <HusoDetailModal :visible="husoModalVisible" :values="husoModalData.values"
+                :husoNumbers="husoModalData.husoNumbers" :testnr="husoModalData.testnr"
+                :timestamp="husoModalData.timestamp" :oe="husoModalData.oe" :standardNe="husoModalData.standardNe"
+                :variableLabel="currentVariableLabel" @close="closeHusoModal" />
         </main>
     </div>
 </template>
@@ -523,6 +531,7 @@
 <script setup>
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import StatsChart from './uster-stats/StatsChart.vue'
+import HusoDetailModal from './uster-stats/HusoDetailModal.vue'
 import { fetchAllStatsData, setDataSource } from '../services/dataService'
 import Swal from 'sweetalert2'
 import { toPng } from 'html-to-image'
@@ -966,6 +975,17 @@ const modalMeta = ref({})
 const mergedRows = ref([])
 const combinedStats = ref({})
 
+// Huso detail modal state
+const husoModalVisible = ref(false)
+const husoModalData = ref({
+    values: [],
+    husoNumbers: [],
+    testnr: null,
+    timestamp: null,
+    oe: null,
+    standardNe: null
+})
+
 // Helper functions for modal
 function fmtCell(val) {
     if (val == null || val === '') return '—'
@@ -994,11 +1014,43 @@ async function handleOpenEnsayoDetail(testnr) {
         const rawOe = parRow?.MASCHNR || parRow?.OE || parRow?.OE_NRO || ''
         const formattedOe = formatOe(rawOe)
 
-        // Formato de fecha
+        // Formato de fecha usando la misma lógica que el gráfico
         let fechaStr = ''
         if (parRow?.TIME_STAMP) {
-            const d = parRow.TIME_STAMP instanceof Date ? parRow.TIME_STAMP : new Date(parRow.TIME_STAMP)
-            if (!isNaN(d.getTime())) {
+            // Parse the date using the same robust parsing as stats computation
+            const ts = parRow.TIME_STAMP
+            let d = null
+            
+            if (ts instanceof Date) {
+                d = ts
+            } else if (typeof ts === 'string') {
+                // Try dd/mm/yyyy HH:mm or dd/mm/yy format first (European)
+                const m = String(ts).match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})(?:\s+\d{1,2}:\d{2})?$/)
+                if (m) {
+                    const day = Number(m[1])
+                    const mon = Number(m[2]) - 1
+                    let year = Number(m[3])
+                    if (year < 100) year += 2000
+                    d = new Date(year, mon, day)
+                } else {
+                    // Try DD-MON-YY format (Oracle)
+                    const m2 = String(ts).match(/^(\d{1,2})-([A-Za-z]{3})-(\d{2,4})$/i)
+                    if (m2) {
+                        const monNames = { JAN: 0, FEB: 1, MAR: 2, APR: 3, MAY: 4, JUN: 5, JUL: 6, AUG: 7, SEP: 8, OCT: 9, NOV: 10, DEC: 11 }
+                        const monStr = m2[2].toUpperCase()
+                        const monIdx = monNames[monStr]
+                        if (monIdx !== undefined) {
+                            let year = Number(m2[3])
+                            if (year < 100) year += 2000
+                            d = new Date(year, monIdx, Number(m2[1]))
+                        }
+                    }
+                }
+            } else if (typeof ts === 'number') {
+                d = ts > 1000000000000 ? new Date(ts) : new Date(ts * 1000)
+            }
+            
+            if (d && !isNaN(d.getTime())) {
                 const dd = String(d.getDate()).padStart(2, '0')
                 const mm = String(d.getMonth() + 1).padStart(2, '0')
                 const yy = String(d.getFullYear()).slice(-2)
@@ -1138,6 +1190,122 @@ function closeModal() {
     modalMeta.value = {}
     mergedRows.value = []
     combinedStats.value = {}
+}
+
+// Handler para abrir detalle de huso (10 valores individuales) al presionar Shift
+async function handleOpenHusoDetail(pointData) {
+    if (!pointData || !pointData.testnr) return
+
+    const testnr = pointData.testnr
+    const variableKey = selectedVariable.value
+
+    console.log('[handleOpenHusoDetail] Opening huso detail for:', { testnr, variableKey })
+
+    // Determine if variable is from USTER or TENSORAPID
+    const currentVar = availableVariables.find(v => v.key === variableKey)
+    const isTensorapid = currentVar?.source === 'tensorapid'
+
+    let values = []
+    let husoNumbers = []
+
+    if (isTensorapid) {
+        // For TENSORAPID: find matching TENSORAPID_TESTNR(s) via USTER_TESTNR
+        const tensorTestnrs = tensorapidPar.value
+            .filter(p => p.USTER_TESTNR === testnr)
+            .map(p => p.TESTNR)
+
+        // Get all rows for these TENSORAPID TESTNRs with huso numbers
+        const rows = tensorapidTbl.value
+            .filter(row => tensorTestnrs.includes(row.TESTNR))
+            .sort((a, b) => (a.NO_ || a.NO || 0) - (b.NO_ || b.NO || 0))
+        
+        values = rows.map(row => parseFloat(row[variableKey])).filter(v => !isNaN(v))
+        husoNumbers = rows.map(row => row.NO_ || row.NO || row.HUSO).filter(Boolean)
+    } else {
+        // For USTER: get rows matching TESTNR with huso numbers
+        const rows = usterTbl.value
+            .filter(row => row.TESTNR === testnr)
+            .sort((a, b) => (a.NO_ || a.NO || 0) - (b.NO_ || b.NO || 0))
+        
+        values = rows.map(row => parseFloat(row[variableKey])).filter(v => !isNaN(v))
+        husoNumbers = rows.map(row => row.NO_ || row.NO || row.HUSO).filter(Boolean)
+    }
+
+    // Get metadata from USTER_PAR
+    const parRow = usterPar.value.find(p => p.TESTNR === testnr)
+    let timestamp = null
+    if (parRow?.TIME_STAMP) {
+        // Parse the date using the same robust parsing as stats computation
+        const ts = parRow.TIME_STAMP
+        let d = null
+        
+        if (ts instanceof Date) {
+            d = ts
+        } else if (typeof ts === 'string') {
+            // Try dd/mm/yyyy HH:mm or dd/mm/yy format first (European)
+            const m = String(ts).match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})(?:\s+\d{1,2}:\d{2})?$/)
+            if (m) {
+                const day = Number(m[1])
+                const mon = Number(m[2]) - 1
+                let year = Number(m[3])
+                if (year < 100) year += 2000
+                d = new Date(year, mon, day)
+            } else {
+                // Try DD-MON-YY format (Oracle)
+                const m2 = String(ts).match(/^(\d{1,2})-([A-Za-z]{3})-(\d{2,4})$/i)
+                if (m2) {
+                    const monNames = { JAN: 0, FEB: 1, MAR: 2, APR: 3, MAY: 4, JUN: 5, JUL: 6, AUG: 7, SEP: 8, OCT: 9, NOV: 10, DEC: 11 }
+                    const monStr = m2[2].toUpperCase()
+                    const monIdx = monNames[monStr]
+                    if (monIdx !== undefined) {
+                        let year = Number(m2[3])
+                        if (year < 100) year += 2000
+                        d = new Date(year, monIdx, Number(m2[1]))
+                    }
+                }
+            }
+        } else if (typeof ts === 'number') {
+            d = ts > 1000000000000 ? new Date(ts) : new Date(ts * 1000)
+        }
+        
+        if (d && !isNaN(d.getTime())) {
+            const dd = String(d.getDate()).padStart(2, '0')
+            const mm = String(d.getMonth() + 1).padStart(2, '0')
+            const yy = String(d.getFullYear()).slice(-2)
+            timestamp = `${dd}/${mm}/${yy}`
+        }
+    }
+
+    const rawOe = parRow?.MASCHNR || parRow?.OE || parRow?.OE_NRO || null
+    const oe = formatOe(rawOe)
+    const standardNe = parRow?.NOMCOUNT || selectedNomcount.value
+
+    console.log('[handleOpenHusoDetail] Found values:', values.length, values)
+    console.log('[handleOpenHusoDetail] Huso numbers:', husoNumbers)
+
+    // Populate modal data
+    husoModalData.value = {
+        values,
+        husoNumbers,
+        testnr,
+        timestamp,
+        oe,
+        standardNe
+    }
+
+    husoModalVisible.value = true
+}
+
+function closeHusoModal() {
+    husoModalVisible.value = false
+    husoModalData.value = {
+        values: [],
+        husoNumbers: [],
+        testnr: null,
+        timestamp: null,
+        oe: null,
+        standardNe: null
+    }
 }
 
 async function copyModalAsImage() {

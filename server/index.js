@@ -238,7 +238,22 @@ app.get('/api/uster/par', async (req, res) => {
         fetchInfo: { OBS: { type: oracledb.STRING } }
       }
     )
-    const rows = result.rows || []
+    
+    // Helper function to format date as yyyy-mm-ddT00:00:00 to ensure local timezone parsing
+    const formatDateForTransport = (dt) => {
+      if (!dt || !(dt instanceof Date)) return dt
+      if (isNaN(dt.getTime())) return dt
+      // Format as yyyy-mm-ddT00:00:00 which JavaScript will parse as local midnight
+      const yyyy = dt.getFullYear()
+      const mm = String(dt.getMonth() + 1).padStart(2, '0')
+      const dd = String(dt.getDate()).padStart(2, '0')
+      return `${yyyy}-${mm}-${dd}T00:00:00`
+    }
+    
+    const rows = (result.rows || []).map(row => ({
+      ...row,
+      TIME_STAMP: formatDateForTransport(row.TIME_STAMP)
+    }))
     res.json({ rows })
   } catch (err) {
     globalThis.console.error('Error fetching USTER_PAR', err)
@@ -1398,10 +1413,10 @@ app.get('/api/report/informe-completo', async (req, res) => {
         // If it's already a Date object from Oracle, use it directly
         if (d instanceof Date) {
           if (Number.isNaN(d.getTime())) return null
-          // Use UTC methods to avoid timezone issues
-          const dd = String(d.getUTCDate()).padStart(2, '0')
-          const mm = String(d.getUTCMonth() + 1).padStart(2, '0')
-          const yy = String(d.getUTCFullYear()).slice(-2)
+          // Use local time methods to match frontend
+          const dd = String(d.getDate()).padStart(2, '0')
+          const mm = String(d.getMonth() + 1).padStart(2, '0')
+          const yy = String(d.getFullYear()).slice(-2)
           return `${dd}/${mm}/${yy}`
         }
 
@@ -1422,9 +1437,9 @@ app.get('/api/report/informe-completo', async (req, res) => {
           // Try parsing as ISO date
           const parsed = new Date(str)
           if (!Number.isNaN(parsed.getTime())) {
-            const dd = String(parsed.getUTCDate()).padStart(2, '0')
-            const mm = String(parsed.getUTCMonth() + 1).padStart(2, '0')
-            const yy = String(parsed.getUTCFullYear()).slice(-2)
+            const dd = String(parsed.getDate()).padStart(2, '0')
+            const mm = String(parsed.getMonth() + 1).padStart(2, '0')
+            const yy = String(parsed.getFullYear()).slice(-2)
             return `${dd}/${mm}/${yy}`
           }
         }
