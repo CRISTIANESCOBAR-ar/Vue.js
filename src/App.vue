@@ -48,6 +48,8 @@
           @click="setActive('resumen')" />
         <SidebarItem icon="📊" label="Gráficos" :active="active === 'graficos'" :collapsed="collapsed"
           @click="setActive('graficos')" />
+        <SidebarItem icon="📅" label="Resumen Diario" :active="active === 'resumen-diario'" :collapsed="collapsed"
+          @click="setActive('resumen-diario')" />
         <SidebarItem icon="🧩" label="Uster" :active="active === 'uster'" :collapsed="collapsed"
           @click="setActive('uster')" />
         <SidebarItem icon="🧪" label="TensoRapid" :active="active === 'tenso'" :collapsed="collapsed"
@@ -98,6 +100,9 @@
             </div>
             <div v-else-if="active === 'graficos'">
               <UsterStatsPage />
+            </div>
+            <div v-else-if="active === 'resumen-diario'">
+              <ResumenDiario />
             </div>
             <div v-else-if="active === 'uster'">
               <Uster />
@@ -195,6 +200,7 @@ import TensoRapid from './components/TensoRapid.vue'
 import SidebarItem from './components/SidebarItem.vue'
 import ResumenEnsayos from './components/ResumenEnsayos.vue'
 import UsterStatsPage from './components/UsterStatsPage.vue'
+import ResumenDiario from './components/ResumenDiario.vue'
 import FontSelector from './components/FontSelector.vue'
 import Swal from 'sweetalert2'
 import { useRegistroStore } from './stores/registro'
@@ -229,6 +235,7 @@ const headerTitle = computed(() => {
   if (active.value === 'list') return 'Registros'
   if (active.value === 'resumen') return 'Resumen de Ensayos'
   if (active.value === 'graficos') return 'Gráficos de Ensayos'
+  if (active.value === 'resumen-diario') return 'Resumen Diario'
   if (active.value === 'tenso') return 'TensoRapid'
   if (active.value === 'config') return 'Configuración'
   return 'Carga de Datos'

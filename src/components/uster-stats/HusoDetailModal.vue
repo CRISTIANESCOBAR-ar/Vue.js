@@ -142,7 +142,16 @@ function formatValue(val) {
 }
 
 function renderChart() {
-    if (!chart || !props.values || props.values.length === 0) return
+    if (!chart || chart.isDisposed() || !props.values || props.values.length === 0) {
+        console.log('[HusoDetailModal] renderChart skipped:', { 
+            hasChart: !!chart, 
+            isDisposed: chart ? chart.isDisposed() : 'N/A',
+            valuesLength: props.values?.length || 0 
+        })
+        return
+    }
+
+    console.log('[HusoDetailModal] Rendering chart with', props.values.length, 'values')
 
     const xData = props.husoNumbers.length > 0 
         ? props.husoNumbers.map(n => `Huso ${n}`)
@@ -324,42 +333,66 @@ watch(() => props.visible, async (newVal) => {
         await nextTick()
         
         // Wait for DOM to be fully rendered with dimensions
-        const tryInitChart = async (retries = 5) => {
+        const tryInitChart = async (retries = 10) => {
             for (let i = 0; i < retries; i++) {
                 await nextTick()
                 if (chartRef.value && chartRef.value.clientWidth > 0 && chartRef.value.clientHeight > 0) {
-                    if (!chart) {
-                        chart = echarts.init(chartRef.value)
+                    console.log('[HusoDetailModal] Initializing chart, dimensions:', chartRef.value.clientWidth, 'x', chartRef.value.clientHeight)
+                    
+                    // Dispose existing chart if any
+                    if (chart) {
+                        chart.dispose()
                     }
+                    
+                    // Initialize new chart
+                    chart = echarts.init(chartRef.value)
                     renderChart()
+                    
+                    // Force resize after a small delay to ensure proper rendering
+                    setTimeout(() => {
+                        if (chart && !chart.isDisposed()) {
+                            chart.resize()
+                        }
+                    }, 100)
+                    
                     return
                 }
-                await new Promise(resolve => setTimeout(resolve, 50))
+                await new Promise(resolve => setTimeout(resolve, 100))
             }
             console.warn('[HusoDetailModal] Could not initialize chart after retries')
         }
         
         tryInitChart()
+    } else {
+        // Clean up when modal closes
+        if (chart) {
+            chart.dispose()
+            chart = null
+        }
     }
 })
 
 watch(() => props.values, () => {
-    if (props.visible) {
+    if (props.visible && chart && !chart.isDisposed()) {
         calculateStats()
         renderChart()
+        // Force resize to ensure proper rendering
+        setTimeout(() => {
+            if (chart && !chart.isDisposed()) {
+                chart.resize()
+            }
+        }, 100)
     }
 }, { deep: true })
 
 onMounted(() => {
-    if (props.visible && chartRef.value) {
-        chart = echarts.init(chartRef.value)
-        calculateStats()
-        renderChart()
-    }
+    console.log('[HusoDetailModal] Component mounted')
+    // Don't initialize chart here, wait for visible watcher
 })
 
 onBeforeUnmount(() => {
-    if (chart) {
+    console.log('[HusoDetailModal] Component unmounting')
+    if (chart && !chart.isDisposed()) {
         chart.dispose()
         chart = null
     }
