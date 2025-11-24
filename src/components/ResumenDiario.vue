@@ -10,8 +10,30 @@
             </div>
             
             <div class="flex items-center gap-3">
-                <!-- Date selector -->
+                <!-- Date selector with navigation buttons -->
                 <div class="flex items-center gap-2">
+                    <!-- Previous day button -->
+                    <button
+                        @click="previousDay"
+                        v-tippy="{ content: 'Día anterior', placement: 'bottom', theme: 'custom' }"
+                        class="inline-flex items-center justify-center w-8 h-8 border border-slate-200 bg-white text-slate-700 rounded-md hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md"
+                    >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    
+                    <!-- Next day button -->
+                    <button
+                        @click="nextDay"
+                        v-tippy="{ content: 'Día siguiente', placement: 'bottom', theme: 'custom' }"
+                        class="inline-flex items-center justify-center w-8 h-8 border border-slate-200 bg-white text-slate-700 rounded-md hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md"
+                    >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                    
                     <label class="text-sm font-medium text-slate-700">Fecha:</label>
                     <input 
                         type="date" 
@@ -42,7 +64,7 @@
         </div>
 
         <!-- Empty state -->
-        <div v-else-if="groupedData.length === 0" class="flex-1 flex items-center justify-center">
+        <div v-else-if="totalEnsayos === 0" class="flex-1 flex items-center justify-center">
             <div class="text-center bg-slate-50 border-2 border-dashed border-slate-300 rounded-lg p-8">
                 <svg class="w-16 h-16 text-slate-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -56,114 +78,521 @@
         <div v-else class="flex-1 min-h-0 overflow-hidden flex flex-col">
             <!-- Summary stats -->
             <div class="grid grid-cols-4 gap-3 mb-4">
-                <div class="bg-white rounded-lg border border-slate-200 p-3 shadow-sm">
-                    <div class="text-xs text-slate-600 mb-1">Total Ensayos</div>
-                    <div class="text-2xl font-bold text-slate-900">{{ totalEnsayos }}</div>
-                </div>
-                <div class="bg-white rounded-lg border border-slate-200 p-3 shadow-sm">
-                    <div class="text-xs text-slate-600 mb-1">Dentro de Rango</div>
-                    <div class="text-2xl font-bold text-green-600">{{ withinRange }}</div>
-                </div>
-                <div class="bg-white rounded-lg border border-slate-200 p-3 shadow-sm">
-                    <div class="text-xs text-slate-600 mb-1">Fuera de Rango</div>
-                    <div class="text-2xl font-bold text-red-600">{{ outOfRange }}</div>
-                </div>
-                <div class="bg-white rounded-lg border border-slate-200 p-3 shadow-sm">
-                    <div class="text-xs text-slate-600 mb-1">% Conformidad</div>
-                    <div class="text-2xl font-bold" :class="conformityPercentage >= 95 ? 'text-green-600' : 'text-orange-600'">
-                        {{ conformityPercentage.toFixed(1) }}%
+                <!-- Total Ensayos - clickeable -->
+                <button
+                    @click="filterAll"
+                    v-tippy="{ content: statusFilter === 'all' ? 'Mostrando todos los ensayos' : 'Clic para ver todos los ensayos', placement: 'bottom', theme: 'custom' }"
+                    class="bg-white rounded-lg border-2 p-3 shadow-sm text-left transition-all hover:shadow-md hover:scale-105 active:scale-95"
+                    :class="statusFilter === 'all' ? 'border-blue-500 bg-blue-50' : 'border-slate-200'"
+                >
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-slate-600">Total Ensayos</span>
+                            <svg v-if="statusFilter === 'all'" class="w-3.5 h-3.5 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                            </svg>
+                        </div>
+                        <div class="text-2xl font-bold text-slate-900">{{ totalEnsayos }}</div>
+                    </div>
+                </button>
+                
+                <!-- Dentro de Rango - clickeable -->
+                <button
+                    @click="filterOk"
+                    v-tippy="{ content: statusFilter === 'ok' ? 'Clic para quitar filtro' : 'Clic para filtrar solo ensayos dentro de rango', placement: 'bottom', theme: 'custom' }"
+                    class="bg-white rounded-lg border-2 p-3 shadow-sm text-left transition-all hover:shadow-md hover:scale-105 active:scale-95"
+                    :class="statusFilter === 'ok' ? 'border-green-500 bg-green-50' : 'border-slate-200'"
+                >
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-slate-600">Dentro de Rango</span>
+                            <svg v-if="statusFilter === 'ok'" class="w-3.5 h-3.5 text-green-600" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                            </svg>
+                        </div>
+                        <div class="text-2xl font-bold text-green-700">{{ withinRange }}</div>
+                    </div>
+                </button>
+                
+                <!-- Fuera de Rango - clickeable -->
+                <button
+                    @click="filterOutOfRange"
+                    v-tippy="{ content: statusFilter === 'out-of-range' ? 'Clic para quitar filtro' : 'Clic para filtrar solo ensayos fuera de rango', placement: 'bottom', theme: 'custom' }"
+                    class="bg-white rounded-lg border-2 p-3 shadow-sm text-left transition-all hover:shadow-md hover:scale-105 active:scale-95"
+                    :class="statusFilter === 'out-of-range' ? 'border-red-500 bg-red-50' : 'border-slate-200'"
+                >
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-slate-600">Fuera de Rango</span>
+                            <svg v-if="statusFilter === 'out-of-range'" class="w-3.5 h-3.5 text-red-600" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                            </svg>
+                        </div>
+                        <div class="text-2xl font-bold text-red-600">{{ outOfRange }}</div>
+                    </div>
+                </button>
+                
+                <!-- % Conformidad - no clickeable -->
+                <div 
+                    class="bg-white rounded-lg border border-slate-200 p-3 shadow-sm"
+                    v-tippy="{ content: 'Porcentaje de ensayos dentro del rango ±1.5%', placement: 'bottom', theme: 'custom' }"
+                >
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs text-slate-600">% Conformidad</span>
+                        <div class="text-2xl font-bold" :class="conformityPercentage >= 95 ? 'text-green-600' : 'text-orange-600'">
+                            {{ conformityPercentage.toFixed(1) }}%
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Table container -->
-            <div class="flex-1 min-h-0 overflow-auto bg-white rounded-lg border border-slate-200 shadow-sm">
-                <table class="w-full text-sm">
-                    <thead class="bg-slate-100 sticky top-0 z-10 border-b border-slate-200">
-                        <tr>
-                            <th class="px-4 py-3 text-left font-semibold text-slate-700 w-24">OE</th>
-                            <th class="px-4 py-3 text-left font-semibold text-slate-700 w-28">Ne Estándar</th>
-                            <th class="px-4 py-3 text-center font-semibold text-slate-700 w-28">Ne Min (-1.5%)</th>
-                            <th class="px-4 py-3 text-center font-semibold text-slate-700 w-28">Ne Max (+1.5%)</th>
-                            <th class="px-4 py-3 text-center font-semibold text-slate-700 w-32">Valor Medido</th>
-                            <th class="px-4 py-3 text-center font-semibold text-slate-700 w-28">Desviación %</th>
-                            <th class="px-4 py-3 text-center font-semibold text-slate-700 w-24">Estado</th>
-                            <th class="px-4 py-3 text-left font-semibold text-slate-700">Ensayo</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <template v-for="(group, idx) in groupedData" :key="idx">
-                            <!-- Group header row (OE + Ne) -->
-                            <tr class="bg-slate-50 border-t-2 border-slate-300">
-                                <td colspan="8" class="px-4 py-2">
-                                    <div class="flex items-center gap-3">
-                                        <span class="font-bold text-slate-800">OE {{ group.oe }}</span>
-                                        <span class="text-slate-600">•</span>
-                                        <span class="font-semibold text-slate-700">Ne {{ group.ne }}</span>
-                                        <span class="ml-auto text-xs text-slate-600">{{ group.ensayos.length }} ensayo(s)</span>
-                                    </div>
-                                </td>
-                            </tr>
-                            <!-- Data rows -->
-                            <tr 
-                                v-for="ensayo in group.ensayos" 
-                                :key="ensayo.testnr"
-                                class="border-b border-slate-100 hover:bg-blue-50 transition-colors cursor-pointer"
-                                @click="openEnsayoDetail(ensayo.testnr)"
+            <div class="flex-1 min-h-0 flex flex-col overflow-hidden">
+                <!-- Table -->
+                <div class="flex-1 min-h-0 overflow-auto bg-white rounded-lg border border-slate-200 shadow-sm">
+                    <!-- Empty filter results message -->
+                    <div v-if="groupedData.length === 0" class="flex items-center justify-center h-full p-8">
+                        <div class="text-center">
+                            <svg class="w-12 h-12 text-slate-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                            </svg>
+                            <p class="text-slate-600 font-semibold mb-1">No hay ensayos que cumplan este filtro</p>
+                            <p class="text-slate-500 text-sm">En esta fecha todos los ensayos están 
+                                <span v-if="statusFilter === 'ok'" class="font-medium">fuera de rango</span>
+                                <span v-else-if="statusFilter === 'out-of-range'" class="font-medium">dentro del rango</span>
+                            </p>
+                            <button 
+                                @click="filterAll"
+                                class="mt-3 px-3 py-1.5 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
                             >
-                                <td class="px-4 py-3 text-slate-600">{{ group.oe }}</td>
-                                <td class="px-4 py-3 font-semibold text-slate-800">{{ group.ne }}</td>
-                                <td class="px-4 py-3 text-center text-orange-600 font-medium">
-                                    {{ formatValue(ensayo.neMin) }}
-                                </td>
-                                <td class="px-4 py-3 text-center text-orange-600 font-medium">
-                                    {{ formatValue(ensayo.neMax) }}
-                                </td>
-                                <td class="px-4 py-3 text-center">
-                                    <span 
-                                        class="inline-block px-3 py-1 rounded-lg font-bold text-base"
-                                        :class="getStatusClasses(ensayo.status)"
-                                    >
-                                        {{ formatValue(ensayo.avgTitulo) }}
-                                    </span>
-                                </td>
-                                <td class="px-4 py-3 text-center">
-                                    <span 
-                                        class="inline-block font-semibold"
-                                        :class="ensayo.deviation > 0 ? 'text-red-600' : ensayo.deviation < 0 ? 'text-blue-600' : 'text-slate-600'"
-                                    >
-                                        {{ ensayo.deviation > 0 ? '+' : '' }}{{ ensayo.deviation.toFixed(2) }}%
-                                    </span>
-                                </td>
-                                <td class="px-4 py-3 text-center">
-                                    <span 
-                                        class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold"
-                                        :class="getStatusBadgeClasses(ensayo.status)"
-                                    >
-                                        {{ getStatusText(ensayo.status) }}
-                                    </span>
-                                </td>
-                                <td class="px-4 py-3 text-slate-700 font-mono text-xs">
-                                    {{ ensayo.testnr }}
-                                </td>
+                                Ver todos los ensayos
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Table with data -->
+                    <table v-else class="w-full text-sm">
+                        <thead class="bg-slate-100 sticky top-0 z-10 border-b border-slate-200">
+                            <tr>
+                                <th class="px-4 py-3 text-left font-semibold text-slate-700 w-24">OE</th>
+                                <th class="px-4 py-3 text-left font-semibold text-slate-700 w-28">Ne Estándar</th>
+                                <th class="px-4 py-3 text-center font-semibold text-slate-700 w-28">Ne Min (-1.5%)</th>
+                                <th class="px-4 py-3 text-center font-semibold text-slate-700 w-28">Ne Max (+1.5%)</th>
+                                <th class="px-4 py-3 text-center font-semibold text-slate-700 w-32">Valor Medido</th>
+                                <th class="px-4 py-3 text-center font-semibold text-slate-700 w-28">Desviación %</th>
+                                <th class="px-4 py-3 text-center font-semibold text-slate-700 w-24">Estado</th>
+                                <th class="px-4 py-3 text-left font-semibold text-slate-700">Ensayo</th>
+                                <th class="px-4 py-3 text-center font-semibold text-slate-700 w-28">Ver Datos</th>
+                                <th class="px-4 py-3 text-center font-semibold text-slate-700 w-28">Ver Gráficos</th>
                             </tr>
-                        </template>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            <template v-for="(group, idx) in groupedData" :key="idx">
+                                <!-- Data rows -->
+                                <tr 
+                                    v-for="ensayo in group.ensayos" 
+                                    :key="ensayo.testnr"
+                                    class="border-b border-slate-100 hover:bg-blue-50 transition-colors cursor-pointer"
+                                    @click="openEnsayoDetail(ensayo.testnr)"
+                                >
+                                    <td class="px-4 py-3 text-slate-600">{{ group.oe }}</td>
+                                    <td class="px-4 py-3 font-semibold text-slate-800">{{ group.ne }}</td>
+                                    <td class="px-4 py-3 text-center text-orange-600 font-medium">
+                                        {{ formatValue(ensayo.neMin) }}
+                                    </td>
+                                    <td class="px-4 py-3 text-center text-orange-600 font-medium">
+                                        {{ formatValue(ensayo.neMax) }}
+                                    </td>
+                                    <td class="px-4 py-3 text-center">
+                                        <span 
+                                            class="inline-block px-3 py-1 rounded-lg font-bold text-base"
+                                            :class="getStatusClasses(ensayo.status)"
+                                        >
+                                            {{ formatValue(ensayo.avgTitulo) }}
+                                        </span>
+                                    </td>
+                                    <td class="px-4 py-3 text-center">
+                                        <span 
+                                            class="inline-block font-semibold"
+                                            :class="ensayo.deviation > 0 ? 'text-red-600' : ensayo.deviation < 0 ? 'text-blue-600' : 'text-slate-600'"
+                                        >
+                                            {{ ensayo.deviation > 0 ? '+' : '' }}{{ ensayo.deviation.toFixed(2) }}%
+                                        </span>
+                                    </td>
+                                    <td class="px-4 py-3 text-center">
+                                        <span 
+                                            class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold"
+                                            :class="getStatusBadgeClasses(ensayo.status)"
+                                        >
+                                            {{ getStatusText(ensayo.status) }}
+                                        </span>
+                                    </td>
+                                    <td class="px-4 py-3 text-slate-700 font-mono text-xs">
+                                        {{ ensayo.testnr }}
+                                    </td>
+                                    <td class="px-4 py-3 text-center">
+                                        <button
+                                            @click.stop="openDataModal(ensayo.testnr)"
+                                            class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-lg transition-colors duration-150 shadow-sm hover:shadow-md"
+                                            v-tippy="{ content: 'Ver datos del ensayo', placement: 'top', theme: 'custom' }"
+                                        >
+                                            📊 Datos
+                                        </button>
+                                    </td>
+                                    <td class="px-4 py-3 text-center">
+                                        <button
+                                            @click.stop="openHusoModal(ensayo.testnr)"
+                                            class="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-medium rounded-lg transition-colors duration-150 shadow-sm hover:shadow-md"
+                                            v-tippy="{ content: 'Ver gráfico por huso', placement: 'top', theme: 'custom' }"
+                                        >
+                                            📈 Gráficos
+                                        </button>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
+
+        <!-- Modals -->
+        <!-- Data Modal -->
+        <div v-if="showDataModal" class="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog"
+            aria-modal="true" aria-labelledby="dataModalTitle">
+            <!-- overlay -->
+            <div class="fixed inset-0 bg-gradient-to-br from-slate-900/50 to-slate-800/50 backdrop-blur-sm z-40"
+                @click="closeDataModal" aria-hidden="true"></div>
+
+            <!-- modal content -->
+            <div class="bg-white rounded-2xl shadow-2xl max-w-6xl w-full max-h-[95vh] flex flex-col p-3 z-50 relative"
+                role="document">
+                <header class="flex items-start sm:items-center justify-between mb-2 pb-1 gap-3">
+                    <div id="dataModalTitle" class="flex flex-col sm:flex-row sm:items-center gap-2 mx-8">
+                        <div class="text-slate-600 text-sm">Fecha: <span class="text-slate-900 text-lg font-semibold ml-1">{{
+                            modalMeta.fechaStr }}</span></div>
+                        <div class="text-slate-600 text-sm">Ne: <span class="text-slate-900 text-lg font-semibold ml-1">{{
+                            modalMeta.ne }}</span></div>
+                        <div class="text-slate-600 text-sm">OE: <span class="text-slate-900 text-lg font-semibold ml-1">{{
+                            modalMeta.oe }}</span></div>
+                        <div class="text-slate-600 text-sm">Ensayo <span class="text-slate-900 text-lg font-semibold ml-1">{{
+                            modalMeta.u }}</span></div>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <!-- Copy as image button -->
+                        <button @click="copyModalAsImage" type="button"
+                            v-tippy="{ content: 'Copiar como imagen para WhatsApp', placement: 'bottom', theme: 'custom' }"
+                            class="w-9 h-9 rounded-lg bg-white border border-slate-200 hover:border-blue-400 hover:bg-blue-50 flex items-center justify-center text-slate-600 hover:text-blue-600 transition-all duration-200 group shadow-sm hover:shadow-md"
+                            aria-label="Copiar como imagen">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            </svg>
+                        </button>
+
+                        <!-- Close button -->
+                        <button @click="closeDataModal" type="button"
+                            v-tippy="{ content: 'Cerrar (Esc)', placement: 'bottom', theme: 'custom' }"
+                            class="w-9 h-9 rounded-lg bg-white border border-slate-200 hover:border-red-400 hover:bg-red-50 flex items-center justify-center text-slate-600 hover:text-red-600 transition-all duration-200 shadow-sm hover:shadow-md"
+                            aria-label="Cerrar detalle">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+                    </div>
+                </header>
+
+                <!-- Observaciones (OBS) y Lab. Uster (LABORANT) -->
+                <div v-if="modalMeta.obs || modalMeta.laborant"
+                    class="mx-8 flex items-center gap-4 text-slate-600 text-sm mb-2">
+                    <div v-if="modalMeta.obs">
+                        <span>Obs.:</span>
+                        <span class="text-slate-900 text-sm font-normal ml-1">{{ modalMeta.obs }}</span>
+                    </div>
+                    <div v-if="modalMeta.laborant">
+                        <span>Lab. Uster:</span>
+                        <span class="text-slate-900 text-sm font-normal ml-1">{{ modalMeta.laborant }}</span>
+                    </div>
+                </div>
+
+                <section class="flex-1 relative">
+                    <div v-if="mergedRows.length === 0" class="text-sm text-slate-600 py-8 text-center">
+                        {{ modalLoading ? 'Cargando datos...' : 'No hay datos para este ensayo.' }}
+                    </div>
+                    <div v-else class="rounded-xl border border-slate-200 overflow-auto max-h-[calc(95vh-7rem)]">
+                        <table class="min-w-full text-xs">
+                            <thead class="bg-gradient-to-r from-slate-50 to-slate-100 sticky top-0 z-30">
+                                <tr>
+                                    <th class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">Huso</th>
+                                    <th class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">Titulo</th>
+                                    <th class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">CVm %</th>
+                                    <th class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">Delg -30%</th>
+                                    <th class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">Delg -40%</th>
+                                    <th class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">Delg -50%</th>
+                                    <th class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">Grue +35%</th>
+                                    <th class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">Grue +50%</th>
+                                    <th class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">Neps +140%</th>
+                                    <th class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">Neps +280%</th>
+                                    <th class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">Fuerza B</th>
+                                    <th class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">Elongación %</th>
+                                    <th class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">Tenacidad</th>
+                                    <th class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">Trabajo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(row, idx) in mergedRows" :key="idx"
+                                    :class="['transition-colors duration-150', modalLoading ? 'bg-slate-50/50' : 'hover:bg-slate-50']">
+                                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{ row.NO }}</td>
+                                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{ fmtCell(row.TITULO) }}</td>
+                                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{ fmtCell(row.CVM_PERCENT) }}</td>
+                                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{ fmtCell(row.DELG_MINUS30_KM) }}</td>
+                                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{ fmtCell(row.DELG_MINUS40_KM) }}</td>
+                                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{ fmtCell(row.DELG_MINUS50_KM) }}</td>
+                                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{ fmtCell(row.GRUE_35_KM) }}</td>
+                                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{ fmtCell(row.GRUE_50_KM) }}</td>
+                                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{ fmtCell(row.NEPS_140_KM) }}</td>
+                                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{ fmtCell(row.NEPS_280_KM) }}</td>
+                                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{ fmtCell(row.FUERZA_B) }}</td>
+                                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{ fmtCell(row.ELONGACION) }}</td>
+                                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{ fmtCell(row.TENACIDAD) }}</td>
+                                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{ fmtCell(row.TRABAJO) }}</td>
+                                </tr>
+
+                                <!-- Statistics rows -->
+                                <tr class="bg-gradient-to-r from-blue-50 to-indigo-50 font-semibold border-t-2 border-blue-200">
+                                    <td class="px-3 py-1 text-slate-700">
+                                        <div class="flex items-center justify-center gap-1">
+                                            <span>Promedio</span>
+                                            <button
+                                                v-tippy="{ content: 'La suma de todos los valores dividida por la cantidad de datos.', placement: 'top', theme: 'custom' }"
+                                                aria-label="Info Promedio"
+                                                class="inline-flex items-center text-slate-400 hover:text-slate-600">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="1.5">
+                                                    <circle cx="12" cy="12" r="10" />
+                                                    <path d="M12 16v-4" stroke-linecap="round" stroke-linejoin="round" />
+                                                    <path d="M12 8h.01" stroke-linecap="round" stroke-linejoin="round" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TITULO?.avg) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.CVM_PERCENT?.avg) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS30_KM?.avg) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS40_KM?.avg) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS50_KM?.avg) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.GRUE_35_KM?.avg) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.GRUE_50_KM?.avg) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.NEPS_140_KM?.avg) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.NEPS_280_KM?.avg) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.FUERZA_B?.avg) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.ELONGACION?.avg) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TENACIDAD?.avg) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TRABAJO?.avg) }}</td>
+                                </tr>
+
+                                <tr class="bg-blue-50/50 font-medium">
+                                    <td class="px-3 py-1 text-slate-700">
+                                        <div class="flex items-center justify-center gap-1">
+                                            <span>CV</span>
+                                            <button
+                                                v-tippy="{ content: 'Coeficiente de variación. Un CV del 5% indica baja variabilidad.', placement: 'top', theme: 'custom' }"
+                                                aria-label="Info CV"
+                                                class="inline-flex items-center text-slate-400 hover:text-slate-600">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="1.5">
+                                                    <circle cx="12" cy="12" r="10" />
+                                                    <path d="M12 16v-4" stroke-linecap="round" stroke-linejoin="round" />
+                                                    <path d="M12 8h.01" stroke-linecap="round" stroke-linejoin="round" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TITULO?.cv) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.CVM_PERCENT?.cv) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS30_KM?.cv) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS40_KM?.cv) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS50_KM?.cv) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.GRUE_35_KM?.cv) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.GRUE_50_KM?.cv) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.NEPS_140_KM?.cv) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.NEPS_280_KM?.cv) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.FUERZA_B?.cv) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.ELONGACION?.cv) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TENACIDAD?.cv) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TRABAJO?.cv) }}</td>
+                                </tr>
+
+                                <tr class="bg-indigo-50/50 font-medium">
+                                    <td class="px-3 py-1 text-slate-700">
+                                        <div class="flex items-center justify-center gap-1">
+                                            <span>s</span>
+                                            <button
+                                                v-tippy="{ content: 'Desviación estándar. Mide cuánto se alejan los datos del promedio.', placement: 'top', theme: 'custom' }"
+                                                aria-label="Info desviación estándar"
+                                                class="inline-flex items-center text-slate-400 hover:text-slate-600">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="1.5">
+                                                    <circle cx="12" cy="12" r="10" />
+                                                    <path d="M12 16v-4" stroke-linecap="round" stroke-linejoin="round" />
+                                                    <path d="M12 8h.01" stroke-linecap="round" stroke-linejoin="round" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TITULO?.sd) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.CVM_PERCENT?.sd) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS30_KM?.sd) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS40_KM?.sd) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS50_KM?.sd) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.GRUE_35_KM?.sd) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.GRUE_50_KM?.sd) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.NEPS_140_KM?.sd) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.NEPS_280_KM?.sd) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.FUERZA_B?.sd) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.ELONGACION?.sd) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TENACIDAD?.sd) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TRABAJO?.sd) }}</td>
+                                </tr>
+
+                                <tr class="bg-blue-50/50 font-medium">
+                                    <td class="px-3 py-1 text-slate-700">
+                                        <div class="flex items-center justify-center gap-1">
+                                            <span>Q95</span>
+                                            <button
+                                                v-tippy="{ content: 'Cuantil 95. El valor por debajo del cual se encuentra el 95% de los datos.', placement: 'top', theme: 'custom' }"
+                                                aria-label="Info Q95"
+                                                class="inline-flex items-center text-slate-400 hover:text-slate-600">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="1.5">
+                                                    <circle cx="12" cy="12" r="10" />
+                                                    <path d="M12 16v-4" stroke-linecap="round" stroke-linejoin="round" />
+                                                    <path d="M12 8h.01" stroke-linecap="round" stroke-linejoin="round" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TITULO?.q95) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.CVM_PERCENT?.q95) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS30_KM?.q95) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS40_KM?.q95) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS50_KM?.q95) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.GRUE_35_KM?.q95) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.GRUE_50_KM?.q95) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.NEPS_140_KM?.q95) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.NEPS_280_KM?.q95) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.FUERZA_B?.q95) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.ELONGACION?.q95) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TENACIDAD?.q95) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TRABAJO?.q95) }}</td>
+                                </tr>
+
+                                <tr class="bg-indigo-50/50 font-medium">
+                                    <td class="px-3 py-1 text-slate-700">
+                                        <div class="flex items-center justify-center gap-1">
+                                            <span>Máx</span>
+                                            <button
+                                                v-tippy="{ content: 'Máximo. El valor más alto del conjunto de datos.', placement: 'top', theme: 'custom' }"
+                                                aria-label="Info Max"
+                                                class="inline-flex items-center text-slate-400 hover:text-slate-600">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="1.5">
+                                                    <circle cx="12" cy="12" r="10" />
+                                                    <path d="M12 16v-4" stroke-linecap="round" stroke-linejoin="round" />
+                                                    <path d="M12 8h.01" stroke-linecap="round" stroke-linejoin="round" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TITULO?.max) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.CVM_PERCENT?.max) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS30_KM?.max) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS40_KM?.max) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS50_KM?.max) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.GRUE_35_KM?.max) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.GRUE_50_KM?.max) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.NEPS_140_KM?.max) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.NEPS_280_KM?.max) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.FUERZA_B?.max) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.ELONGACION?.max) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TENACIDAD?.max) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TRABAJO?.max) }}</td>
+                                </tr>
+
+                                <tr class="bg-blue-50/50 font-medium">
+                                    <td class="px-3 py-1 text-slate-700">
+                                        <div class="flex items-center justify-center gap-1">
+                                            <span>Mín</span>
+                                            <button
+                                                v-tippy="{ content: 'Mínimo. El valor más bajo del conjunto de datos.', placement: 'top', theme: 'custom' }"
+                                                aria-label="Info Min"
+                                                class="inline-flex items-center text-slate-400 hover:text-slate-600">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="1.5">
+                                                    <circle cx="12" cy="12" r="10" />
+                                                    <path d="M12 16v-4" stroke-linecap="round" stroke-linejoin="round" />
+                                                    <path d="M12 8h.01" stroke-linecap="round" stroke-linejoin="round" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TITULO?.min) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.CVM_PERCENT?.min) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS30_KM?.min) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS40_KM?.min) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS50_KM?.min) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.GRUE_35_KM?.min) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.GRUE_50_KM?.min) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.NEPS_140_KM?.min) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.NEPS_280_KM?.min) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.FUERZA_B?.min) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.ELONGACION?.min) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TENACIDAD?.min) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TRABAJO?.min) }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- Huso Detail Modal -->
+        <HusoDetailModal
+            v-if="showHusoModal"
+            :testnr="selectedTestnr"
+            @close="showHusoModal = false"
+        />
     </div>
 </template>
 
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
 import { fetchAllStatsData } from '../services/dataService'
+import HusoDetailModal from './uster-stats/HusoDetailModal.vue'
+import { toPng } from 'html-to-image'
+import Swal from 'sweetalert2'
+
+const emit = defineEmits(['navigate'])
 
 const isLoading = ref(false)
 const error = ref(null)
 const selectedDate = ref(getTodayDate())
 const usterTbl = ref([])
 const usterPar = ref([])
+const statusFilter = ref('all') // 'all', 'ok', 'out-of-range'
+
+// Modal control
+const showDataModal = ref(false)
+const showHusoModal = ref(false)
+const selectedTestnr = ref(null)
+const modalLoading = ref(false)
+const usterTblRows = ref([])
+const tensorTblRows = ref([])
 
 // Get today's date in YYYY-MM-DD format
 function getTodayDate() {
@@ -254,8 +683,8 @@ async function fetchData() {
     }
 }
 
-// Filter and group data by OE and Ne
-const groupedData = computed(() => {
+// Get all ensayos with status (unfiltered, for statistics)
+const allEnsayosWithStatus = computed(() => {
     if (!selectedDate.value || !usterPar.value.length) return []
     
     // Filter ensayos by selected date
@@ -310,10 +739,27 @@ const groupedData = computed(() => {
         }
     }).filter(e => e.avgTitulo !== null && e.neStandard !== null)
     
+    return ensayosWithAvg
+})
+
+// Filter and group data by OE and Ne
+const groupedData = computed(() => {
+    const allEnsayos = allEnsayosWithStatus.value
+    
+    if (allEnsayos.length === 0) return []
+    
+    // Apply status filter
+    let filteredEnsayos = allEnsayos
+    if (statusFilter.value === 'ok') {
+        filteredEnsayos = allEnsayos.filter(e => e.status === 'ok')
+    } else if (statusFilter.value === 'out-of-range') {
+        filteredEnsayos = allEnsayos.filter(e => e.status === 'below' || e.status === 'above')
+    }
+    
     // Group by OE and Ne
     const groups = {}
     
-    for (const ensayo of ensayosWithAvg) {
+    for (const ensayo of filteredEnsayos) {
         const key = `${ensayo.oe}|${ensayo.ne}`
         if (!groups[key]) {
             groups[key] = {
@@ -343,29 +789,17 @@ const groupedData = computed(() => {
     return result
 })
 
-// Summary statistics
+// Summary statistics (always based on ALL ensayos, not filtered)
 const totalEnsayos = computed(() => {
-    return groupedData.value.reduce((sum, group) => sum + group.ensayos.length, 0)
+    return allEnsayosWithStatus.value.length
 })
 
 const withinRange = computed(() => {
-    let count = 0
-    for (const group of groupedData.value) {
-        for (const ensayo of group.ensayos) {
-            if (ensayo.status === 'ok') count++
-        }
-    }
-    return count
+    return allEnsayosWithStatus.value.filter(e => e.status === 'ok').length
 })
 
 const outOfRange = computed(() => {
-    let count = 0
-    for (const group of groupedData.value) {
-        for (const ensayo of group.ensayos) {
-            if (ensayo.status === 'below' || ensayo.status === 'above') count++
-        }
-    }
-    return count
+    return allEnsayosWithStatus.value.filter(e => e.status === 'below' || e.status === 'above').length
 })
 
 const conformityPercentage = computed(() => {
@@ -418,18 +852,335 @@ function getStatusText(status) {
     }
 }
 
+// Modal functions
+async function openDataModal(testnr) {
+    selectedTestnr.value = testnr
+    showDataModal.value = true
+    modalLoading.value = true
+    
+    try {
+        // Buscar datos en usterTbl
+        let usterRows = usterTbl.value.filter(r =>
+            String(r.TESTNR || r.testnr || '') === String(testnr)
+        )
+        
+        // Deduplicar por TESTNR+NO
+        const dedupe = (arr) => {
+            const seen = new Set()
+            return arr.filter(item => {
+                const tn = String(item.TESTNR || item.testnr || '')
+                const no = String(item.NO ?? item.NO_ ?? item.HUSO ?? '')
+                const key = `${tn}#${no}`
+                if (seen.has(key)) return false
+                seen.add(key)
+                return true
+            })
+        }
+        
+        usterTblRows.value = dedupe(usterRows)
+        
+        // Buscar datos de TensoRapid si existen
+        // Por ahora dejamos vacío, se puede implementar después
+        tensorTblRows.value = []
+        
+    } catch (err) {
+        console.error('Error loading modal data:', err)
+    } finally {
+        modalLoading.value = false
+    }
+}
+
+function openHusoModal(testnr) {
+    selectedTestnr.value = testnr
+    showHusoModal.value = true
+}
+
 function openEnsayoDetail(testnr) {
-    console.log('TODO: Open detail for', testnr)
-    // TODO: Implementar navegación o modal de detalle
+    // Open data modal by default when clicking row
+    openDataModal(testnr)
+}
+
+function closeDataModal() {
+    showDataModal.value = false
+    selectedTestnr.value = null
+}
+
+// Merged rows for modal (combine Uster + TensoRapid data)
+const mergedRows = computed(() => {
+    const uster = usterTblRows.value || []
+    const tensor = tensorTblRows.value || []
+    
+    // Crear mapa de datos TensoRapid por NO
+    const tensorMap = {}
+    tensor.forEach(t => {
+        const no = String(t.NO || t.NO_ || '')
+        if (no) tensorMap[no] = t
+    })
+    
+    // Merge Uster rows con TensoRapid
+    return uster.map(u => {
+        const no = String(u.NO || u.NO_ || '')
+        const t = tensorMap[no] || {}
+        return {
+            NO: u.NO || u.NO_,
+            TITULO: u.TITULO || u.titulo,
+            CVM_PERCENT: u.CVM_PERCENT || u['CVM_%'],
+            DELG_MINUS30_KM: u.DELG_MINUS30_KM || u['DELG_-30%'],
+            DELG_MINUS40_KM: u.DELG_MINUS40_KM || u['DELG_-40%'],
+            DELG_MINUS50_KM: u.DELG_MINUS50_KM || u['DELG_-50%'],
+            GRUE_35_KM: u.GRUE_35_KM || u['GRUE_+35%'],
+            GRUE_50_KM: u.GRUE_50_KM || u['GRUE_+50%'],
+            NEPS_140_KM: u.NEPS_140_KM || u['NEPS_+140%'],
+            NEPS_280_KM: u.NEPS_280_KM || u['NEPS_+280%'],
+            FUERZA_B: t.FUERZA_B || t.fuerza_b,
+            ELONGACION: t.ELONGACION || t.elongacion,
+            TENACIDAD: t.TENACIDAD || t.tenacidad,
+            TRABAJO: t.TRABAJO || t.trabajo
+        }
+    })
+})
+
+// Combined statistics for modal
+const combinedStats = computed(() => {
+    const merged = mergedRows.value
+    if (merged.length === 0) return {}
+    
+    const stats = {}
+    const fields = ['TITULO', 'CVM_PERCENT', 'DELG_MINUS30_KM', 'DELG_MINUS40_KM', 'DELG_MINUS50_KM',
+        'GRUE_35_KM', 'GRUE_50_KM', 'NEPS_140_KM', 'NEPS_280_KM',
+        'FUERZA_B', 'ELONGACION', 'TENACIDAD', 'TRABAJO']
+
+    fields.forEach(field => {
+        const values = merged
+            .map(row => row[field])
+            .filter(v => v !== null && v !== undefined && v !== '')
+            .map(v => Number(v))
+            .filter(n => !isNaN(n))
+
+        if (values.length > 0) {
+            // Promedio
+            const sum = values.reduce((a, b) => a + b, 0)
+            const avg = sum / values.length
+
+            // Desviación estándar (s)
+            const variance = values.reduce((acc, val) => acc + Math.pow(val - avg, 2), 0) / values.length
+            const sd = Math.sqrt(variance)
+
+            // Coeficiente de variación (CV%)
+            const cv = avg !== 0 ? (sd / avg) * 100 : null
+
+            // Máximo y Mínimo
+            const max = Math.max(...values)
+            const min = Math.min(...values)
+
+            // Q95 (percentil 95)
+            const sorted = [...values].sort((a, b) => a - b)
+            const index95 = Math.ceil(sorted.length * 0.95) - 1
+            const q95 = sorted[Math.max(0, index95)]
+
+            stats[field] = { avg, sd, cv, q95, max, min, count: values.length }
+        } else {
+            stats[field] = { avg: null, sd: null, cv: null, q95: null, max: null, min: null, count: 0 }
+        }
+    })
+
+    return stats
+})
+
+// Modal metadata
+const modalMeta = computed(() => {
+    if (!selectedTestnr.value) return {}
+    
+    // Buscar en usterPar
+    const parMatch = usterPar.value.find(p => 
+        String(p.TESTNR || p.testnr) === String(selectedTestnr.value)
+    )
+    
+    if (!parMatch) return {}
+    
+    const fecha = parseDate(parMatch.DATUM || parMatch.datum)
+    const fechaStr = fecha ? `${String(fecha.getDate()).padStart(2, '0')}/${String(fecha.getMonth() + 1).padStart(2, '0')}/${fecha.getFullYear()}` : '—'
+    
+    return {
+        fechaStr,
+        ne: parMatch.NOMCOUNT || parMatch.nomcount || '—',
+        oe: formatOe(parMatch.OE || parMatch.oe),
+        u: parMatch.TESTNR || parMatch.testnr,
+        t: '—', // TensoRapid testnr
+        obs: parMatch.OBS || parMatch.obs || '',
+        laborant: parMatch.LABORANT || parMatch.laborant || ''
+    }
+})
+
+// Format cell helper
+function fmtCell(val) {
+    if (val == null || val === '') return '—'
+    const s = String(val).trim()
+    if (s === '') return '—'
+    const n = Number(s)
+    if (!isNaN(n)) {
+        // Formatear con hasta 2 decimales, quitando ceros innecesarios
+        return Number(n.toFixed(2)).toString()
+    }
+    return s
+}
+
+// Format statistics helper
+function fmtStat(val) {
+    if (val == null) return '—'
+    const n = Number(val)
+    if (isNaN(n)) return '—'
+    // Formatear con hasta 2 decimales, quitando ceros innecesarios
+    return Number(n.toFixed(2)).toString()
+}
+
+// Copy modal as image for WhatsApp
+async function copyModalAsImage() {
+    try {
+        // Find the modal content element
+        const modalEl = document.querySelector('[role="document"]')
+        if (!modalEl) {
+            Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo encontrar el modal.' })
+            return
+        }
+
+        // Find and hide close button temporarily
+        const closeBtn = document.querySelector('[aria-label="Cerrar detalle"]')
+        const closeBtnDisplay = closeBtn?.style.display
+        if (closeBtn) closeBtn.style.display = 'none'
+
+        // Show loading indicator (short)
+        Swal.fire({
+            title: 'Capturando...',
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            timer: 100,
+            didOpen: () => {
+                Swal.showLoading()
+            }
+        })
+
+        // Temporarily suppress console errors for font loading issues
+        const originalConsoleError = console.error
+        console.error = (...args) => {
+            const message = args[0]?.toString() || ''
+            // Suppress CORS and CSS rules errors (they don't affect the final image)
+            if (message.includes('CSS rules') ||
+                message.includes('cssRules') ||
+                message.includes('SecurityError')) {
+                return
+            }
+            originalConsoleError.apply(console, args)
+        }
+
+        await new Promise(resolve => setTimeout(resolve, 120))
+
+        // Capture the modal as PNG
+        const dataUrl = await toPng(modalEl, {
+            quality: 0.95,
+            pixelRatio: 2,
+            backgroundColor: '#ffffff',
+            skipFonts: true,
+            cacheBust: true
+        })
+
+        // Restore console.error
+        console.error = originalConsoleError
+
+        // Restore button
+        if (closeBtn) closeBtn.style.display = closeBtnDisplay
+
+        // Convert dataURL to blob
+        const blob = await (await fetch(dataUrl)).blob()
+
+        // Copy to clipboard
+        await navigator.clipboard.write([
+            new ClipboardItem({
+                'image/png': blob
+            })
+        ])
+
+        Swal.fire({
+            icon: 'success',
+            title: '✓ Copiado',
+            text: 'La imagen se copió al portapapeles. Ahora puedes pegarla en WhatsApp.',
+            timer: 2500,
+            showConfirmButton: false
+        })
+    } catch (err) {
+        console.error('Error copying modal as image:', err)
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudo copiar la imagen. ' + (err.message || '')
+        })
+    }
+}
+
+// Modal functions
+
+// Filter functions - toggle behavior
+function filterAll() {
+    statusFilter.value = 'all'
+}
+
+function filterOk() {
+    // Toggle: if already filtering by 'ok', clear the filter
+    statusFilter.value = statusFilter.value === 'ok' ? 'all' : 'ok'
+}
+
+function filterOutOfRange() {
+    // Toggle: if already filtering by 'out-of-range', clear the filter
+    statusFilter.value = statusFilter.value === 'out-of-range' ? 'all' : 'out-of-range'
+}
+
+// Date navigation functions
+function previousDay() {
+    if (!selectedDate.value) return
+    const current = new Date(selectedDate.value + 'T00:00:00')
+    current.setDate(current.getDate() - 1)
+    const year = current.getFullYear()
+    const month = String(current.getMonth() + 1).padStart(2, '0')
+    const day = String(current.getDate()).padStart(2, '0')
+    selectedDate.value = `${year}-${month}-${day}`
+}
+
+function nextDay() {
+    if (!selectedDate.value) return
+    const current = new Date(selectedDate.value + 'T00:00:00')
+    current.setDate(current.getDate() + 1)
+    const year = current.getFullYear()
+    const month = String(current.getMonth() + 1).padStart(2, '0')
+    const day = String(current.getDate()).padStart(2, '0')
+    selectedDate.value = `${year}-${month}-${day}`
 }
 
 // Watch date changes
 watch(selectedDate, () => {
-    // Data is already loaded, just recompute groupedData
+    // Don't reset filter when date changes - keep the active filter
+    // This allows users to navigate through dates while maintaining their filter selection
 })
 
 onMounted(() => {
     fetchData()
+    
+    // Handle Escape key to close modals
+    const handleEscape = (e) => {
+        if (e.key === 'Escape') {
+            if (showDataModal.value) {
+                closeDataModal()
+            } else if (showHusoModal.value) {
+                showHusoModal.value = false
+            }
+        }
+    }
+    
+    window.addEventListener('keydown', handleEscape)
+    
+    // Cleanup
+    return () => {
+        window.removeEventListener('keydown', handleEscape)
+    }
 })
 </script>
 
