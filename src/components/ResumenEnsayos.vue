@@ -121,6 +121,7 @@
                 <col style="width:6%" /> <!-- Fecha -->
                 <col style="width:12%" /> <!-- OE (doble) -->
                 <col style="width:5%" /> <!-- Ne -->
+                <col style="width:6%" /> <!-- Desvío % -->
                 <col style="width:11%" /> <!-- Titulo -->
                 <col style="width:5%" /> <!-- CVm % -->
                 <!-- The following columns reduced by 40% (approx): base assumed 5% -> now 3% -->
@@ -146,6 +147,8 @@
                   <th class="px-2 py-[0.3rem] text-center font-semibold text-slate-700 border-b border-slate-200">OE
                   </th>
                   <th class="px-2 py-[0.3rem] text-center font-semibold text-slate-700 border-b border-slate-200">Ne
+                  </th>
+                  <th class="px-2 py-[0.3rem] text-center font-semibold text-slate-700 border-b border-slate-200">Desvío %
                   </th>
                   <th class="px-2 py-[0.3rem] text-center font-semibold text-slate-700 border-b border-slate-200">Titulo
                   </th>
@@ -181,6 +184,17 @@
                     displayFecha(getPreferredFecha(row)) }}</td>
                   <td class="px-2 py-[0.3rem] text-center text-slate-700">{{ row.OE }}</td>
                   <td class="px-2 py-[0.3rem] text-center text-slate-700">{{ row.Ne }}</td>
+                  <td class="px-2 py-[0.3rem] text-center font-semibold" :class="{
+                    'text-red-600': row['Desvío %'] && parseFloat(row['Desvío %']) > 1.5,
+                    'text-blue-600': row['Desvío %'] && parseFloat(row['Desvío %']) < -1.5,
+                    'text-green-600': row['Desvío %'] && parseFloat(row['Desvío %']) >= -1.5 && parseFloat(row['Desvío %']) <= 1.5,
+                    'text-slate-700': !row['Desvío %'] || row['Desvío %'] === '—'
+                  }">
+                    <template v-if="row['Desvío %'] && row['Desvío %'] !== '—'">
+                      {{ row['Desvío %'] }}%
+                    </template>
+                    <template v-else>{{ row['Desvío %'] }}</template>
+                  </td>
                   <td class="px-2 py-[0.3rem] text-center text-slate-700">{{ row.Titulo }}</td>
                   <td class="px-2 py-[0.3rem] text-center text-slate-700">{{ row['CVm %'] }}</td>
                   <td class="px-2 py-[0.3rem] text-center text-slate-700">{{ row['Delg -30%'] }}</td>
@@ -1728,9 +1742,35 @@ async function loadRows() {
         tensorTblRows = tensorTblByTestnr.get(String(tensorPar.TESTNR)) || []
       }
 
-      // Preservar TIME_STAMP como Date para evitar conversiones erróneas
-      // No transformar aquí, dejar que getPreferredFecha y displayFecha lo manejen
-      const timeStamp = row.TIME_STAMP || row.TIME || row.TIMESTAMP || null
+      // Convertir TIME_STAMP a Date object para ordenamiento correcto
+      // Manejar formato europeo DD/MM/YYYY HH:mm:ss si viene como string
+      const timeStampRaw = row.TIME_STAMP || row.TIME || row.TIMESTAMP || null
+      let timeStamp = null
+      
+      if (timeStampRaw) {
+        if (timeStampRaw instanceof Date) {
+          timeStamp = timeStampRaw
+        } else if (typeof timeStampRaw === 'string') {
+          // Intentar parsear formato europeo DD/MM/YYYY HH:mm:ss
+          const match = timeStampRaw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})(?:\s+(\d{1,2}):(\d{2})(?::(\d{2}))?)?/)
+          if (match) {
+            const day = parseInt(match[1], 10)
+            const month = parseInt(match[2], 10) - 1 // Mes en Date es 0-indexed
+            let year = parseInt(match[3], 10)
+            // Si el año es de 2 dígitos, asumir 20xx
+            if (year < 100) year += 2000
+            const hour = match[4] ? parseInt(match[4], 10) : 0
+            const minute = match[5] ? parseInt(match[5], 10) : 0
+            const second = match[6] ? parseInt(match[6], 10) : 0
+            timeStamp = new Date(year, month, day, hour, minute, second)
+          } else {
+            // Fallback: intentar parseo automático
+            timeStamp = new Date(timeStampRaw)
+          }
+        } else {
+          timeStamp = new Date(timeStampRaw)
+        }
+      }
 
       // TensoRapid test number (if present)
       const tensorRapidTestnr = tensorPar && (tensorPar.TESTNR ?? tensorPar.testnr ?? tensorPar.Testnr)
@@ -1739,6 +1779,21 @@ async function loadRows() {
 
       const obsValue = row.OBS ?? row.OBSERVACION ?? row.OBSERVACAO ?? row.obs ?? ''
       const laborantValue = row.LABORANT ?? row.Laborant ?? row.laborant ?? ''
+      const laborantTensor = tensorPar ? (tensorPar.LABORANT ?? tensorPar.Laborant ?? tensorPar.laborant ?? '') : ''
+      
+      // Calcular Desvío %: ((Ne - Titulo) / Ne) × 100
+      // Positivo = más grueso (Titulo < Ne), Negativo = más delgado (Titulo > Ne)
+      const neValue = parseFloat(row.NOMCOUNT ?? row.Ne ?? row.NE ?? 0)
+      const tituloValue = calcAvg(tblRows, 'TITULO')
+      const tituloNum = tituloValue ? parseFloat(tituloValue) : null
+      let desvioPercent = '—'
+      
+      if (neValue > 0 && tituloNum !== null && !isNaN(tituloNum)) {
+        const desvio = ((neValue - tituloNum) / neValue) * 100
+        // Usar parseFloat para eliminar ceros innecesarios: 1.00 → 1, 1.50 → 1.5
+        const formatted = parseFloat(desvio.toFixed(2))
+        desvioPercent = (desvio > 0 ? '+' : '') + formatted
+      }
 
       return {
         Ensayo: testnr,
@@ -1746,6 +1801,7 @@ async function loadRows() {
         Fecha: row.Fecha || row.fecha || row.FECHA || '',  // Mantener Fecha si existe, pero priorizar TIME_STAMP
         OE: formatOE(row.MASCHNR ?? row.OE ?? row.OE_NRO ?? row.OE_NRO_1 ?? row.oe ?? row.OE_NRO_PAR ?? ''),
         Ne: formatNe(row.NOMCOUNT ?? row.Ne ?? row.NE ?? row.titulo ?? row.TITULO ?? '', row.MATCLASS),
+        'Desvío %': desvioPercent,
         Titulo: calcAvg(tblRows, 'TITULO'),
         'CVm %': calcAvg(tblRows, 'CVM_PERCENT') || calcAvg(tblRows, 'CVM_%'),
         'Delg -30%': calcAvg(tblRows, 'DELG_MINUS30_KM') || calcAvg(tblRows, 'DELG_-30%'),
@@ -1761,6 +1817,8 @@ async function loadRows() {
         'Trabajo B': calcAvg(tensorTblRows, 'TRABAJO'),
         OBS: obsValue,
         LABORANT: laborantValue,
+        'Op. Uster': laborantValue,
+        'Op. TensoRapid': laborantTensor,
         TensoRapid: tensorRapidTestnr,
       }
     })
@@ -1775,14 +1833,20 @@ async function loadRows() {
       return { ...row, _isFlame: isFlame }
     })
 
-    // Ordenar por TIME_STAMP (descendente) y luego por Ensayo (descendente)
+    // Ordenar por TIME_STAMP (descendente: más nuevos primero) y luego por Ensayo (descendente)
     data.sort((a, b) => {
-      const dateA = a.TIME_STAMP instanceof Date ? a.TIME_STAMP : new Date(0)
-      const dateB = b.TIME_STAMP instanceof Date ? b.TIME_STAMP : new Date(0)
+      // Asegurar que tenemos Date objects válidos
+      const dateA = a.TIME_STAMP && a.TIME_STAMP instanceof Date && !isNaN(a.TIME_STAMP) 
+        ? a.TIME_STAMP 
+        : new Date(0)
+      const dateB = b.TIME_STAMP && b.TIME_STAMP instanceof Date && !isNaN(b.TIME_STAMP) 
+        ? b.TIME_STAMP 
+        : new Date(0)
 
       // Primero por fecha (descendente: más reciente primero)
-      if (dateA > dateB) return -1
-      if (dateA < dateB) return 1
+      // dateB - dateA para ordenar descendente (más nuevo primero)
+      const dateDiff = dateB.getTime() - dateA.getTime()
+      if (dateDiff !== 0) return dateDiff
 
       // Si fechas iguales, ordenar por Ensayo (descendente: mayor primero)
       const ensayoA = String(a.Ensayo || '').trim()
@@ -1811,6 +1875,7 @@ async function exportToExcel() {
       'Fecha',
       'OE',
       'Ne',
+      'Desvío %',
       'Titulo',
       'CVm %',
       'Delg -30%',
@@ -1825,6 +1890,8 @@ async function exportToExcel() {
       'Tenac.',
       'Trabajo B',
       'OBS',
+      'Op. Uster',
+      'Op. TensoRapid',
       'Uster',
       'TensoRapid'
     ]
@@ -1840,9 +1907,10 @@ async function exportToExcel() {
 
     // Build body rows in the new order (with OBS, Uster, TensoRapid at the end)
     const bodyRows = filteredRows.value.map(r => [
-      r['Fecha'] || '',
+      displayFecha(getPreferredFecha(r)),
       r['OE'] || '',
       r['Ne'] || '',
+      r['Desvío %'] || '', // Mantener el string con el signo + incluido
       coerce(r['Titulo']),
       coerce(r['CVm %']),
       coerce(r['Delg -30%']),
@@ -1857,6 +1925,8 @@ async function exportToExcel() {
       coerce(r['Tenac.']),
       coerce(r['Trabajo B']),
       r['OBS'] || '',
+      r['Op. Uster'] || '',
+      r['Op. TensoRapid'] || '',
       coerce(r['Ensayo']), // Uster test number (renamed)
       r['TensoRapid'] || '' // present only if exists
     ])
@@ -1881,6 +1951,7 @@ async function exportToExcel() {
       'Fecha': 10.5,
       'OE': 7.29,
       'Ne': 8.29,
+      'Desvío %': 9,
       'Titulo': 8.14,
       'CVm %': 7.5,
       'Delg -30%': 7.5,
@@ -1928,7 +1999,7 @@ async function exportToExcel() {
           col.numFmt = '0'
         }
       })
-      // Columns to force 2 decimals
+      // Columns to force 2 decimals (Desvío % excluido porque usa formato de texto con signo)
       const twoDecCols = ['Titulo', 'CVm %', 'Elong. %', 'Tenac.', 'Trabajo B']
       twoDecCols.forEach(name => {
         const idx = headers.indexOf(name)
@@ -1958,6 +2029,36 @@ async function exportToExcel() {
           cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF8FAFF' } }
         }
       })
+    }
+    
+    // Aplicar formato condicional a la columna "Desvío %"
+    const desvioIdx = headers.indexOf('Desvío %')
+    if (desvioIdx !== -1) {
+      for (let rn = 2; rn <= lastRowNumber; rn++) {
+        const row = sheet.getRow(rn)
+        const cell = row.getCell(desvioIdx + 1)
+        let val = cell.value
+        
+        // Convertir string a número si es necesario (ej: "+5.10" → 5.10)
+        if (typeof val === 'string') {
+          val = parseFloat(val)
+        }
+        
+        if (typeof val === 'number' && !isNaN(val)) {
+          // Rojo: más grueso (> +1.5%)
+          if (val > 1.5) {
+            cell.font = { bold: true, color: { argb: 'FFDC2626' } } // red-600
+          }
+          // Azul: más fino (< -1.5%)
+          else if (val < -1.5) {
+            cell.font = { bold: true, color: { argb: 'FF2563EB' } } // blue-600
+          }
+          // Verde: dentro del rango (-1.5% a +1.5%)
+          else {
+            cell.font = { bold: true, color: { argb: 'FF16A34A' } } // green-600
+          }
+        }
+      }
     }
 
     // Format Fecha column as dates

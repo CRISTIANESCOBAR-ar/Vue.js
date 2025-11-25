@@ -214,9 +214,13 @@
                                     <td class="px-4 py-3 text-center">
                                         <span 
                                             class="inline-block font-semibold"
-                                            :class="ensayo.deviation > 0 ? 'text-red-600' : ensayo.deviation < 0 ? 'text-blue-600' : 'text-slate-600'"
+                                            :class="{
+                                                'text-red-600': ensayo.deviation > 1.5,
+                                                'text-green-600': ensayo.deviation >= -1.5 && ensayo.deviation <= 1.5,
+                                                'text-blue-600': ensayo.deviation < -1.5
+                                            }"
                                         >
-                                            {{ ensayo.deviation > 0 ? '+' : '' }}{{ ensayo.deviation.toFixed(2) }}%
+                                            {{ ensayo.deviation > 0 ? '+' : '' }}{{ parseFloat(ensayo.deviation.toFixed(2)) }}%
                                         </span>
                                     </td>
                                     <td class="px-4 py-3 text-center">
@@ -307,15 +311,19 @@
                 </header>
 
                 <!-- Observaciones (OBS) y Lab. Uster (LABORANT) -->
-                <div v-if="modalMeta.obs || modalMeta.laborant"
+                <div v-if="modalMeta.obs || modalMeta.laborant || modalMeta.laborantTensor"
                     class="mx-8 flex items-center gap-4 text-slate-600 text-sm mb-2">
                     <div v-if="modalMeta.obs">
                         <span>Obs.:</span>
                         <span class="text-slate-900 text-sm font-normal ml-1">{{ modalMeta.obs }}</span>
                     </div>
                     <div v-if="modalMeta.laborant">
-                        <span>Lab. Uster:</span>
+                        <span>Op. Uster:</span>
                         <span class="text-slate-900 text-sm font-normal ml-1">{{ modalMeta.laborant }}</span>
+                    </div>
+                    <div v-if="modalMeta.laborantTensor">
+                        <span>Op. TensoRapid:</span>
+                        <span class="text-slate-900 text-sm font-normal ml-1">{{ modalMeta.laborantTensor }}</span>
                     </div>
                 </div>
 
@@ -584,6 +592,8 @@ const error = ref(null)
 const selectedDate = ref(getTodayDate())
 const usterTbl = ref([])
 const usterPar = ref([])
+const tensorapidTbl = ref([])
+const tensorapidPar = ref([])
 const statusFilter = ref('all') // 'all', 'ok', 'out-of-range'
 
 // Modal control
@@ -666,6 +676,15 @@ function formatOe(oe) {
     return letterPart ? `${numPart} ${letterPart}` : String(numPart)
 }
 
+function formatNe(nomcount, matclass) {
+    if (nomcount == null || nomcount === '') return ''
+    let ne = String(nomcount).trim()
+    if (matclass && String(matclass).toLowerCase() === 'hilo de fantasia') {
+        return ne + 'F'
+    }
+    return ne
+}
+
 // Fetch data from backend
 async function fetchData() {
     isLoading.value = true
@@ -675,6 +694,8 @@ async function fetchData() {
         const data = await fetchAllStatsData()
         usterTbl.value = data.usterTbl || []
         usterPar.value = data.usterPar || []
+        tensorapidTbl.value = data.tensorapidTbl || []
+        tensorapidPar.value = data.tensorapidPar || []
     } catch (err) {
         error.value = err.message
         console.error('Error fetching data:', err)
@@ -715,7 +736,9 @@ const allEnsayosWithStatus = computed(() => {
         let deviation = 0
         
         if (avgTitulo !== null && neStandard !== null) {
-            deviation = ((avgTitulo - neStandard) / neStandard) * 100
+            // Fórmula invertida: ((Ne - Medido) / Ne) × 100
+            // Positivo = más grueso (medido < Ne), Negativo = más delgado (medido > Ne)
+            deviation = ((neStandard - avgTitulo) / neStandard) * 100
             
             if (avgTitulo < neMin) {
                 status = 'below'
@@ -729,7 +752,7 @@ const allEnsayosWithStatus = computed(() => {
         return {
             testnr,
             oe: formatOe(par.MASCHNR || par.OE),
-            ne: par.NOMCOUNT || '',
+            ne: formatNe(par.NOMCOUNT, par.MATCLASS),
             avgTitulo,
             neStandard,
             neMin,
@@ -865,23 +888,52 @@ async function openDataModal(testnr) {
         )
         
         // Deduplicar por TESTNR+NO
-        const dedupe = (arr) => {
+        const dedupe = (arr, getKey) => {
             const seen = new Set()
-            return arr.filter(item => {
-                const tn = String(item.TESTNR || item.testnr || '')
-                const no = String(item.NO ?? item.NO_ ?? item.HUSO ?? '')
-                const key = `${tn}#${no}`
-                if (seen.has(key)) return false
-                seen.add(key)
-                return true
-            })
+            const out = []
+            for (const item of arr) {
+                let k
+                try { k = getKey(item) } catch { k = undefined }
+                if (!k) { out.push(item); continue }
+                if (seen.has(k)) continue
+                seen.add(k)
+                out.push(item)
+            }
+            return out
         }
         
-        usterTblRows.value = dedupe(usterRows)
+        usterRows = dedupe(usterRows, (r) => {
+            const tn = String(r.TESTNR || r.testnr || '')
+            const no = String(r.NO ?? r.NO_ ?? r.HUSO ?? r.huso ?? '')
+            return tn && no ? `${tn}#${no}` : undefined
+        })
         
-        // Buscar datos de TensoRapid si existen
-        // Por ahora dejamos vacío, se puede implementar después
-        tensorTblRows.value = []
+        usterTblRows.value = usterRows
+        
+        // Buscar datos de TENSORAPID si existen
+        // Paso 1: Buscar TENSORAPID_PAR que tengan USTER_TESTNR = testnr seleccionado
+        const tensorParMatches = (tensorapidPar.value || []).filter(r => {
+            const usterTestnr = String(r.USTER_TESTNR || r.uster_testnr || r.usterTestnr || r.USTERTESTNR || '')
+            return usterTestnr === String(testnr)
+        })
+        
+        // Paso 2: Obtener los TESTNR de esos TENSORAPID_PAR
+        const tensorTestnrsList = tensorParMatches.map(r => String(r.TESTNR || r.testnr || '')).filter(Boolean)
+        
+        // Paso 3: Buscar filas en TENSORAPID_TBL que coincidan con esos TESTNR
+        let tensorRows = (tensorapidTbl.value || []).filter(r => {
+            const tblTestnr = String(r.TESTNR || r.testnr || '')
+            return tensorTestnrsList.includes(tblTestnr)
+        })
+        
+        // Deduplicar por TESTNR+HUSO_NUMBER en TENSORAPID_TBL
+        tensorRows = dedupe(tensorRows, (r) => {
+            const tn = String(r.TESTNR || r.testnr || '')
+            const no = String(r.HUSO_NUMBER ?? r.NO ?? r.no ?? '')
+            return tn && no ? `${tn}#${no}` : undefined
+        })
+        
+        tensorTblRows.value = tensorRows
         
     } catch (err) {
         console.error('Error loading modal data:', err)
@@ -910,34 +962,44 @@ const mergedRows = computed(() => {
     const uster = usterTblRows.value || []
     const tensor = tensorTblRows.value || []
     
-    // Crear mapa de datos TensoRapid por NO
+    // Crear mapa de datos TensoRapid por HUSO_NUMBER
     const tensorMap = {}
     tensor.forEach(t => {
-        const no = String(t.NO || t.NO_ || '')
+        const no = String(t.HUSO_NUMBER || t.NO || t.no || '')
         if (no) tensorMap[no] = t
     })
     
-    // Merge Uster rows con TensoRapid
-    return uster.map(u => {
-        const no = String(u.NO || u.NO_ || '')
-        const t = tensorMap[no] || {}
-        return {
-            NO: u.NO || u.NO_,
-            TITULO: u.TITULO || u.titulo,
-            CVM_PERCENT: u.CVM_PERCENT || u['CVM_%'],
-            DELG_MINUS30_KM: u.DELG_MINUS30_KM || u['DELG_-30%'],
-            DELG_MINUS40_KM: u.DELG_MINUS40_KM || u['DELG_-40%'],
-            DELG_MINUS50_KM: u.DELG_MINUS50_KM || u['DELG_-50%'],
-            GRUE_35_KM: u.GRUE_35_KM || u['GRUE_+35%'],
-            GRUE_50_KM: u.GRUE_50_KM || u['GRUE_+50%'],
-            NEPS_140_KM: u.NEPS_140_KM || u['NEPS_+140%'],
-            NEPS_280_KM: u.NEPS_280_KM || u['NEPS_+280%'],
-            FUERZA_B: t.FUERZA_B || t.fuerza_b,
-            ELONGACION: t.ELONGACION || t.elongacion,
-            TENACIDAD: t.TENACIDAD || t.tenacidad,
-            TRABAJO: t.TRABAJO || t.trabajo
-        }
-    })
+    // Combinar filas por HUSO (NO en Uster, HUSO_NUMBER en Tensor)
+    const merged = []
+    const maxLen = Math.max(uster.length, tensor.length)
+    
+    for (let i = 0; i < maxLen; i++) {
+        const uRow = uster[i] || {}
+        const tRow = tensor[i] || {}
+        
+        const usterNo = String(uRow.NO ?? uRow.NO_ ?? '')
+        const tensorByNo = usterNo ? tensorMap[usterNo] : null
+        const tData = tensorByNo || tRow
+        
+        merged.push({
+            NO: uRow.NO ?? uRow.NO_ ?? tData.HUSO_NUMBER ?? (i + 1),
+            TITULO: uRow.TITULO ?? uRow.titulo ?? '',
+            CVM_PERCENT: uRow.CVM_PERCENT ?? uRow['CVM_%'] ?? '',
+            DELG_MINUS30_KM: uRow.DELG_MINUS30_KM ?? uRow['DELG_-30%'] ?? '',
+            DELG_MINUS40_KM: uRow.DELG_MINUS40_KM ?? uRow['DELG_-40%'] ?? '',
+            DELG_MINUS50_KM: uRow.DELG_MINUS50_KM ?? uRow['DELG_-50%'] ?? '',
+            GRUE_35_KM: uRow.GRUE_35_KM ?? uRow['GRUE_+35%'] ?? '',
+            GRUE_50_KM: uRow.GRUE_50_KM ?? uRow['GRUE_+50%'] ?? '',
+            NEPS_140_KM: uRow.NEPS_140_KM ?? uRow['NEPS_+140%'] ?? '',
+            NEPS_280_KM: uRow.NEPS_280_KM ?? uRow['NEPS_+280%'] ?? '',
+            FUERZA_B: tData.FUERZA_B ?? tData.fuerza_b ?? '',
+            ELONGACION: tData.ELONGACION ?? tData.elongacion ?? '',
+            TENACIDAD: tData.TENACIDAD ?? tData.tenacidad ?? '',
+            TRABAJO: tData.TRABAJO ?? tData.trabajo ?? ''
+        })
+    }
+    
+    return merged
 })
 
 // Combined statistics for modal
@@ -998,17 +1060,28 @@ const modalMeta = computed(() => {
     
     if (!parMatch) return {}
     
-    const fecha = parseDate(parMatch.DATUM || parMatch.datum)
+    // Usar TIME_STAMP en lugar de DATUM
+    const fecha = parseDate(parMatch.TIME_STAMP || parMatch.time_stamp || parMatch.DATUM || parMatch.datum)
     const fechaStr = fecha ? `${String(fecha.getDate()).padStart(2, '0')}/${String(fecha.getMonth() + 1).padStart(2, '0')}/${fecha.getFullYear()}` : '—'
+    
+    // Buscar laborante de TENSORAPID_PAR
+    const tensorParMatch = (tensorapidPar.value || []).find(tp => {
+        const usterTestnr = String(tp.USTER_TESTNR || tp.uster_testnr || tp.usterTestnr || tp.USTERTESTNR || '')
+        return usterTestnr === String(selectedTestnr.value)
+    })
+    
+    const laborantTensor = tensorParMatch ? (tensorParMatch.LABORANT || tensorParMatch.laborant || '') : ''
     
     return {
         fechaStr,
-        ne: parMatch.NOMCOUNT || parMatch.nomcount || '—',
-        oe: formatOe(parMatch.OE || parMatch.oe),
+        ne: formatNe(parMatch.NOMCOUNT || parMatch.nomcount, parMatch.MATCLASS || parMatch.matclass),
+        // Usar MASCHNR primero, luego OE como fallback
+        oe: formatOe(parMatch.MASCHNR || parMatch.maschnr || parMatch.OE || parMatch.oe),
         u: parMatch.TESTNR || parMatch.testnr,
         t: '—', // TensoRapid testnr
         obs: parMatch.OBS || parMatch.obs || '',
-        laborant: parMatch.LABORANT || parMatch.laborant || ''
+        laborant: parMatch.LABORANT || parMatch.laborant || '',
+        laborantTensor: laborantTensor
     }
 })
 

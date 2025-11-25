@@ -26,7 +26,7 @@
                     <div class="mb-2 flex items-center gap-3 w-full flex-shrink-0">
                         <span class="text-sm text-slate-600 shrink-0">Ne:</span>
                         <select v-model="selectedNomcount" class="px-1 py-1 border rounded-md text-sm shrink-0"
-                            style="width:9.5ch;min-width:9.5ch;max-width:9.5ch;">
+                            style="width:10ch;min-width:10ch;max-width:10ch;">
                             <option :value="null">Elija Ne</option>
                             <option v-for="nomcount in availableNomcounts" :key="nomcount" :value="nomcount">
                                 {{ nomcount }}
@@ -116,7 +116,8 @@
                         <div class="flex items-center gap-2">
                             <span class="text-slate-700 text-sm">Ne</span>
                             <select v-model="selectedNomcount"
-                                class="px-2 py-1 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 font-semibold min-w-[7.5rem] w-[8.5rem]">
+                                class="px-2 py-1 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 font-semibold"
+                                style="width:10ch;min-width:10ch;max-width:10ch;">
                                 <option :value="null">Elija Ne</option>
                                 <option v-for="nomcount in availableNomcounts" :key="nomcount" :value="nomcount">
                                     {{ nomcount }}

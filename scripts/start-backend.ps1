@@ -31,8 +31,9 @@ if ($testResult -like "*OK*") {
     Write-Host "✅ Oracle está listo`n" -ForegroundColor Green
     Write-Host "🚀 Iniciando backend..." -ForegroundColor Cyan
     npm start
-} else {
+}
+else {
     Write-Host "❌ No se pudo conectar a Oracle" -ForegroundColor Red
     Write-Host "Verifica que los servicios estén corriendo:" -ForegroundColor Yellow
-    Get-Service | Where-Object {$_.DisplayName -like "*Oracle*"} | Select-Object DisplayName, Status
+    Get-Service | Where-Object { $_.DisplayName -like "*Oracle*" } | Select-Object DisplayName, Status
 }

@@ -37,9 +37,9 @@ app.use(express.json({ limit: '5mb' }))
 
 const PORT =
   typeof globalThis !== 'undefined' &&
-  globalThis.process &&
-  globalThis.process.env &&
-  globalThis.process.env.PORT
+    globalThis.process &&
+    globalThis.process.env &&
+    globalThis.process.env.PORT
     ? globalThis.process.env.PORT
     : 3001
 
@@ -229,7 +229,7 @@ app.get('/api/uster/par', async (req, res) => {
     await initPool()
     conn = await getConnection()
 
-    const sql = `SELECT TESTNR, NOMCOUNT, MASCHNR, LOTE, LABORANT, TIME_STAMP, MATCLASS, OBS FROM ${SCHEMA_PREFIX}USTER_PAR ORDER BY TESTNR`
+    const sql = `SELECT TESTNR, NOMCOUNT, MASCHNR, LOTE, LABORANT, TIME_STAMP, MATCLASS, ESTIRAJE, OBS FROM ${SCHEMA_PREFIX}USTER_PAR ORDER BY TESTNR`
     const result = await conn.execute(
       sql,
       {},
@@ -238,7 +238,7 @@ app.get('/api/uster/par', async (req, res) => {
         fetchInfo: { OBS: { type: oracledb.STRING } }
       }
     )
-    
+
     // Helper function to format date as yyyy-mm-ddT00:00:00 to ensure local timezone parsing
     const formatDateForTransport = (dt) => {
       if (!dt || !(dt instanceof Date)) return dt
@@ -249,7 +249,7 @@ app.get('/api/uster/par', async (req, res) => {
       const dd = String(dt.getDate()).padStart(2, '0')
       return `${yyyy}-${mm}-${dd}T00:00:00`
     }
-    
+
     const rows = (result.rows || []).map(row => ({
       ...row,
       TIME_STAMP: formatDateForTransport(row.TIME_STAMP)
@@ -312,7 +312,7 @@ app.get('/api/report/ensayo', async (req, res) => {
     conn = await getConnection()
 
     // 1) Fetch USTER_PAR row
-    const parSql = `SELECT TESTNR, TIME_STAMP, MASCHNR, NOMCOUNT, MATCLASS FROM ${SCHEMA_PREFIX}USTER_PAR WHERE TESTNR = :TESTNR`
+    const parSql = `SELECT TESTNR, TIME_STAMP, MASCHNR, NOMCOUNT, MATCLASS, ESTIRAJE FROM ${SCHEMA_PREFIX}USTER_PAR WHERE TESTNR = :TESTNR`
     const parRes = await conn.execute(
       parSql,
       { TESTNR: testnr },
@@ -597,7 +597,6 @@ app.post('/api/uster/upload', async (req, res) => {
     }
     await initPool()
     conn = await getConnection()
-    conn = await getConnection()
     // Diagnostic queries: log DB session user and current schema to debug ORA-00942
     try {
       const userRes = await conn.execute(`SELECT user FROM dual`)
@@ -648,6 +647,7 @@ app.post('/api/uster/upload', async (req, res) => {
         FB_PORC = :FB_PORC,
         LABORANT = :LABORANT,
         OBS = :OBS,
+        ESTIRAJE = :ESTIRAJE,
         TUNAME = :TUNAME,
         GROUPS = :GROUPS,
         WITHIN = :WITHIN,
@@ -657,8 +657,8 @@ app.post('/api/uster/upload', async (req, res) => {
         SLOT = :SLOT,
         ABSORBERPRESSURE = :ABSORBERPRESSURE
     WHEN NOT MATCHED THEN
-  INSERT (TESTNR, CATALOG, TIME_STAMP, LOTE, SORTIMENT, ARTICLE, MASCHNR, MATCLASS, NOMCOUNT, NOMTWIST, USCODE, FB_MIC, FB_TIPO, FB_LONG, FB_PORC, LABORANT, OBS, TUNAME, GROUPS, WITHIN, TOTAL, SPEED, TESTTIME, SLOT, ABSORBERPRESSURE)
-  VALUES (:TESTNR, :CATALOG, :TIME_STAMP, :LOTE, :SORTIMENT, :ARTICLE, :MASCHNR, :MATCLASS, :NOMCOUNT, :NOMTWIST, :USCODE, :FB_MIC, :FB_TIPO, :FB_LONG, :FB_PORC, :LABORANT, :OBS, :TUNAME, :GROUPS, :WITHIN, :TOTAL, :SPEED, :TESTTIME, :SLOT, :ABSORBERPRESSURE)`
+  INSERT (TESTNR, CATALOG, TIME_STAMP, LOTE, SORTIMENT, ARTICLE, MASCHNR, MATCLASS, NOMCOUNT, NOMTWIST, USCODE, FB_MIC, FB_TIPO, FB_LONG, FB_PORC, LABORANT, OBS, ESTIRAJE, TUNAME, GROUPS, WITHIN, TOTAL, SPEED, TESTTIME, SLOT, ABSORBERPRESSURE)
+  VALUES (:TESTNR, :CATALOG, :TIME_STAMP, :LOTE, :SORTIMENT, :ARTICLE, :MASCHNR, :MATCLASS, :NOMCOUNT, :NOMTWIST, :USCODE, :FB_MIC, :FB_TIPO, :FB_LONG, :FB_PORC, :LABORANT, :OBS, :ESTIRAJE, :TUNAME, :GROUPS, :WITHIN, :TOTAL, :SPEED, :TESTTIME, :SLOT, :ABSORBERPRESSURE)`
 
     parBinds = {
       TESTNR: par.TESTNR,
@@ -678,6 +678,7 @@ app.post('/api/uster/upload', async (req, res) => {
       FB_PORC: par.FB_PORC != null ? Number(par.FB_PORC) : null,
       LABORANT: par.LABORANT || null,
       OBS: par.OBS || null,
+      ESTIRAJE: par.ESTIRAJE || null,
       TUNAME: par.TUNAME || null,
       GROUPS: par.GROUPS || null,
       WITHIN: par.WITHIN || null,

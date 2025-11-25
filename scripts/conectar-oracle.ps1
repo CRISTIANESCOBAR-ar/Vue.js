@@ -25,6 +25,7 @@ $sqlScript | sqlplus -S $user/$password@$connection
 
 if ($LASTEXITCODE -eq 0) {
     Write-Host "`n✅ Consulta ejecutada correctamente" -ForegroundColor Green
-} else {
+}
+else {
     Write-Host "`n❌ Error al ejecutar la consulta" -ForegroundColor Red
 }

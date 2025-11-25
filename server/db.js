@@ -22,8 +22,9 @@ const poolConfig = {
   password: _env.ORACLE_PASSWORD || 'your_pass',
   connectString: _env.ORACLE_CONNECTIONSTRING || 'localhost/XEPDB1',
   poolMin: 0,
-  poolMax: 4,
-  poolIncrement: 1
+  poolMax: 10,
+  poolIncrement: 1,
+  queueTimeout: 120000  // 2 minutes timeout for waiting for a connection
 }
 
 let pool

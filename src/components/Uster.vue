@@ -149,10 +149,54 @@
           <div class="text-sm text-slate-600 font-medium">
             {{ scanStatusDisplay }}
           </div>
+
+          <!-- Filtros de visualización -->
+          <div class="mt-2 bg-slate-50 rounded-lg p-3 border border-slate-200">
+            <div class="flex items-center gap-4 text-xs">
+              <label
+                class="flex items-center gap-2 cursor-pointer hover:bg-slate-100 px-2 py-1.5 rounded-lg transition-colors duration-150">
+                <input type="checkbox" v-model="filterShowAll"
+                  @change="() => { if (filterShowAll) { filterShowNotSaved = false; filterShowSaved = false; clearSelection(); } }"
+                  class="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-400" />
+                <span class="text-slate-700 font-medium">Mostrar todos</span>
+              </label>
+              <label
+                class="flex items-center gap-2 cursor-pointer hover:bg-slate-100 px-2 py-1.5 rounded-lg transition-colors duration-150">
+                <input type="checkbox" v-model="filterShowNotSaved"
+                  @change="() => { if (filterShowNotSaved) { filterShowAll = false; filterShowSaved = false; clearSelection(); } }"
+                  class="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-400" />
+                <span class="text-slate-700 font-medium">No guardados</span>
+              </label>
+              <label
+                class="flex items-center gap-2 cursor-pointer hover:bg-slate-100 px-2 py-1.5 rounded-lg transition-colors duration-150">
+                <input type="checkbox" v-model="filterShowSaved"
+                  @change="() => { if (filterShowSaved) { filterShowAll = false; filterShowNotSaved = false; clearSelection(); } }"
+                  class="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-400" />
+                <span class="text-slate-700 font-medium">Guardados</span>
+              </label>
+            </div>
+          </div>
         </div>
 
         <!-- Columna 2: Nro / Titulo (ahora en el medio) -->
         <div style="width:160px;">
+          <!-- Input para ESTIRAJE -->
+          <div class="mb-2 rounded-xl border border-slate-200 bg-white p-3">
+            <div class="flex items-center justify-between gap-2">
+              <label class="text-xs font-semibold text-slate-700">Estiraje</label>
+              <input 
+                ref="estirajeInput"
+                v-model="estiraje" 
+                type="text" 
+                placeholder="150.9"
+                maxlength="5"
+                @keydown.enter.prevent="focusFirstTitulo"
+                @keydown.down.prevent="focusFirstTitulo"
+                class="w-16 px-2 py-1.5 text-sm text-right border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+          </div>
+
           <!-- fixed-height container that shows 10 rows and scrolls when there are more -->
           <div class="titulo-container rounded-xl border border-slate-200 overflow-hidden bg-white">
             <table class="min-w-full w-full table-auto divide-y divide-slate-200 text-xs titulo-table">
@@ -213,8 +257,19 @@
               <tbody>
                 <tr v-for="c in compactFields" :key="c.code" class="hover:bg-blue-50/30 transition-colors duration-150">
                   <td class="px-3 py-2 border-b border-slate-200 font-medium text-xs col-dato">{{ c.label }}</td>
-                  <td class="px-3 py-2 border-b border-slate-200 font-mono text-xs col-valor">{{
-                    getFieldValueByCode(c.code) }}</td>
+                  <td class="px-3 py-2 border-b border-slate-200 font-mono text-xs col-valor">
+                    <!-- Select para Tipo Material -->
+                    <select 
+                      v-if="c.code === 'MATCLASS'" 
+                      v-model="matclass"
+                      class="w-full px-2 py-1 border border-slate-300 rounded text-xs focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    >
+                      <option value="Hilo">Hilo</option>
+                      <option value="Hilo de fantasia">Hilo de fantasia</option>
+                    </select>
+                    <!-- Resto de campos como antes -->
+                    <span v-else>{{ getFieldValueByCode(c.code) }}</span>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -232,33 +287,6 @@
               <span v-if="!isDeleting">Eliminar</span>
               <span v-else>Eliminando...</span>
             </button>
-          </div>
-
-          <!-- Filtros de visualización -->
-          <div class="mt-3 bg-slate-50 rounded-lg p-3 border border-slate-200">
-            <div class="flex flex-col gap-2 text-xs">
-              <label
-                class="flex items-center gap-2 cursor-pointer hover:bg-slate-100 px-2 py-1.5 rounded-lg transition-colors duration-150">
-                <input type="checkbox" v-model="filterShowAll"
-                  @change="() => { if (filterShowAll) { filterShowNotSaved = false; filterShowSaved = false; clearSelection(); } }"
-                  class="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-400" />
-                <span class="text-slate-700 font-medium">Mostrar todos</span>
-              </label>
-              <label
-                class="flex items-center gap-2 cursor-pointer hover:bg-slate-100 px-2 py-1.5 rounded-lg transition-colors duration-150">
-                <input type="checkbox" v-model="filterShowNotSaved"
-                  @change="() => { if (filterShowNotSaved) { filterShowAll = false; filterShowSaved = false; clearSelection(); } }"
-                  class="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-400" />
-                <span class="text-slate-700 font-medium">No guardados</span>
-              </label>
-              <label
-                class="flex items-center gap-2 cursor-pointer hover:bg-slate-100 px-2 py-1.5 rounded-lg transition-colors duration-150">
-                <input type="checkbox" v-model="filterShowSaved"
-                  @change="() => { if (filterShowSaved) { filterShowAll = false; filterShowNotSaved = false; clearSelection(); } }"
-                  class="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-400" />
-                <span class="text-slate-700 font-medium">Guardados</span>
-              </label>
-            </div>
           </div>
         </div>
       </div>
@@ -295,12 +323,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, nextTick } from 'vue'
+import { ref, onMounted, computed, nextTick, watch } from 'vue'
 import Swal from 'sweetalert2'
 
 // refs and state
 const folderInput = ref(null)
 const saveButton = ref(null)
+const estirajeInput = ref(null)
 const selectedFolderName = ref('')
 const scanList = ref([])
 const selectedTestnr = ref('')
@@ -311,6 +340,22 @@ const folderPath = ref('')
 const hasPersistedHandle = ref(false)
 const folderPathFull = ref('')
 const isAbsolutePath = ref(false)
+
+// Campo editable para ESTIRAJE (ingreso manual del usuario)
+const estiraje = ref('')
+
+// Campo editable para MATCLASS (tipo de material)
+const matclass = ref('')
+
+// Watch para guardar cambios de matclass en scanList automáticamente
+watch(matclass, (newValue) => {
+  if (selectedTestnr.value && newValue) {
+    const item = scanList.value.find(x => x.testnr === selectedTestnr.value)
+    if (item) {
+      item.matclass = newValue
+    }
+  }
+})
 
 // Filtros para la lista de ensayos
 const filterShowAll = ref(false)
@@ -528,6 +573,7 @@ async function scanDirectory(dirHandle) {
           const txt = await f.text();
           map[t].nomcount = extractTsvCell(txt, 15, 5) || '';
           map[t].maschnr = extractTsvCell(txt, 13, 5) || '';
+          map[t].matclass = extractTsvCell(txt, 14, 8) || '';
         } catch (err) {
           console.warn('Error leyendo .PAR durante el escaneo', name, err);
         }
@@ -643,6 +689,7 @@ async function onFolderInputChange(e) {
           const txt = await f.text()
           map[t].nomcount = extractTsvCell(txt, 15, 5) || ''
           map[t].maschnr = extractTsvCell(txt, 13, 5) || ''
+          map[t].matclass = extractTsvCell(txt, 14, 8) || ''
         } catch (err) { console.warn('reading .PAR fallback', name, err) }
       }
       if (ln.endsWith('.tbl')) {
@@ -716,19 +763,49 @@ function clearSelection() {
   tblData.value = []
   tblTestnr.value = ''
   isFocusedIndex.value = null
+  estiraje.value = ''
 }
 
 async function selectRow(testnr) {
   // Select the TESTNR and load associated files (PAR/TBL) so preview and Save are available.
   selectedTestnr.value = testnr
+  
+  // Cargar ESTIRAJE y MATCLASS desde scanList si existen
+  const item = scanList.value.find(x => x.testnr === testnr)
+  if (item && item.estiraje) {
+    estiraje.value = item.estiraje
+  } else {
+    estiraje.value = ''
+  }
+  
   try {
     await loadSelectedFiles()
+    
+    // Solo restaurar matclass desde scanList si fue cambiado manualmente a "Hilo de fantasia"
+    // No restaurar si es "Hilo" porque detectFlameInObs() puede haberlo detectado automáticamente
+    const savedMatclass = item && item.matclass
+    if (savedMatclass && savedMatclass === 'Hilo de fantasia') {
+      matclass.value = savedMatclass
+    }
+    // Si matclass en scanList es "Hilo", dejamos que detectFlameInObs() determine el valor correcto
   } catch (err) { console.warn('selectRow loadSelectedFiles failed', err) }
 
-  // After files are loaded and DOM updated, focus the first enabled TITULO input for editing.
+  // After files are loaded and DOM updated, focus the ESTIRAJE input first for editing.
   try {
     await nextTick()
-    // Look for inputs with id prefix 'titulo-input-' (guard against SSR/environment without document)
+    
+    // Primero intentar enfocar el campo ESTIRAJE
+    if (estirajeInput.value) {
+      try {
+        estirajeInput.value.focus()
+        if (typeof estirajeInput.value.select === 'function') estirajeInput.value.select()
+        return
+      } catch (err) {
+        console.warn('Could not focus estiraje input', err)
+      }
+    }
+    
+    // Fallback: Look for inputs with id prefix 'titulo-input-' (guard against SSR/environment without document)
     let inputs = []
     if (typeof globalThis !== 'undefined' && globalThis.document && globalThis.document.querySelectorAll) {
       inputs = Array.from(globalThis.document.querySelectorAll('input[id^="titulo-input-"]'))
@@ -752,7 +829,7 @@ async function selectRow(testnr) {
       return
     }
 
-    // Fallback: focus the save button if present
+    // Fallback final: focus the save button if present
     if (saveButton && saveButton.value) {
       try { saveButton.value.focus() } catch { /* noop */ }
     }
@@ -900,7 +977,35 @@ async function setFile(h, name) {
     selectedName.value = name || (h && h.name) || ''
     const txt = await readFileFromHandle(h)
     fileText.value = txt || ''
+    
+    // Auto-detectar "Flame" en OBS y ajustar MATCLASS
+    await detectFlameInObs()
   } catch (err) { console.warn('setFile error', err) }
+}
+
+// Detectar "Flame" en OBS y ajustar MATCLASS automáticamente
+async function detectFlameInObs() {
+  try {
+    // Esperar a que Vue actualice el DOM y los valores computados
+    await nextTick()
+    
+    // Cargar el valor actual de MATCLASS del archivo PAR
+    const matclassFromFile = getFieldValueByCode('MATCLASS')
+    matclass.value = matclassFromFile || 'Hilo'
+    
+    // Obtener el valor de OBS
+    const obs = getFieldValueByCode('OBS')
+    
+    // Si OBS contiene "flame" (case-insensitive), cambiar a "Hilo de fantasia"
+    if (obs && String(obs).toLowerCase().includes('flame')) {
+      matclass.value = 'Hilo de fantasia'
+      console.log('🔥 Flame detectado en OBS, cambiando a "Hilo de fantasia"')
+    } else {
+      console.log('📝 OBS:', obs, '- MATCLASS:', matclass.value)
+    }
+  } catch (err) {
+    console.warn('detectFlameInObs error', err)
+  }
 }
 
 async function setTblFile(h, name) {
@@ -1159,6 +1264,10 @@ function buildParObject() {
   }
   // ensure TESTNR present
   if (!par.TESTNR) par.TESTNR = selectedTestnr.value || ''
+  // include ESTIRAJE from manual input
+  if (estiraje.value) par.ESTIRAJE = estiraje.value
+  // include MATCLASS from manual selection (override PAR file value)
+  if (matclass.value) par.MATCLASS = matclass.value
   return par
 }
 
@@ -1245,6 +1354,13 @@ async function saveCurrentTest() {
     const savedItem = scanList.value.find(item => item.testnr === par.TESTNR)
     if (savedItem) {
       savedItem.imp = true
+      // Guardar valores de ESTIRAJE y MATCLASS en scanList para persistencia local
+      if (estiraje.value) {
+        savedItem.estiraje = estiraje.value
+      }
+      if (matclass.value) {
+        savedItem.matclass = matclass.value
+      }
       // Forzar a Vue a esperar la actualización del DOM
       await nextTick();
     }
@@ -1583,9 +1699,23 @@ function focusPrevTitulo(srcIndex) {
   const list = tituloList.value || []
   const pos = list.findIndex(x => x.srcIndex === srcIndex)
   if (pos === -1 || list.length === 0) return
-  const prev = pos > 0 ? list[pos - 1] : list[list.length - 1]
+  
   const ok = validateAndNormalizeTitulo(srcIndex)
   if (!ok) return
+  
+  // Si estamos en el primer titulo, ir a estiraje
+  if (pos === 0) {
+    nextTick(() => {
+      if (estirajeInput.value) {
+        estirajeInput.value.focus()
+        try { estirajeInput.value.select && estirajeInput.value.select() } catch (err) { console.warn('select error', err) }
+      }
+    })
+    return
+  }
+  
+  // Si no, ir al titulo anterior
+  const prev = list[pos - 1]
   if (prev) {
     nextTick(() => {
       if (typeof window !== 'undefined' && window.document) {
@@ -1600,6 +1730,7 @@ function focusPrevTitulo(srcIndex) {
 }
 
 function focusLastTitulo() {
+  // Cuando se presiona Up desde el botón Guardar, ir al último titulo
   const list = tituloList.value || []
   // Buscar el último input válido (con srcIndex !== null)
   let lastValidIndex = -1
@@ -1615,6 +1746,23 @@ function focusLastTitulo() {
     nextTick(() => {
       if (typeof window !== 'undefined' && window.document) {
         const el = window.document.getElementById('titulo-input-' + last.srcIndex)
+        if (el) {
+          el.focus()
+          try { el.select && el.select() } catch (err) { console.warn('select error', err) }
+        }
+      }
+    })
+  }
+}
+
+function focusFirstTitulo() {
+  // Enfocar el primer input de titulo válido
+  const list = tituloList.value || []
+  const first = list.find(x => x.srcIndex !== null)
+  if (first) {
+    nextTick(() => {
+      if (typeof window !== 'undefined' && window.document) {
+        const el = window.document.getElementById('titulo-input-' + first.srcIndex)
         if (el) {
           el.focus()
           try { el.select && el.select() } catch (err) { console.warn('select error', err) }
@@ -1674,11 +1822,13 @@ const oracleFields = [
 const compactFields = [
   { label: 'Nro Test', code: 'TESTNR' },
   { label: 'Hilo', code: 'NOMCOUNT' },
+  { label: 'Tipo Material', code: 'MATCLASS' },
   { label: 'Maquina', code: 'MASCHNR' },
   { label: 'Lote', code: 'LOTE' },
   { label: 'Total Test', code: 'TOTAL' },
   { label: 'Fecha y Hora', code: 'TIME' },
-  { label: 'Laboratorista', code: 'LABORANT' }
+  { label: 'Laboratorista', code: 'LABORANT' },
+  { label: 'Observaciones', code: 'OBS' }
 ]
 
 function getFieldValueByCode(code) {
@@ -1697,6 +1847,7 @@ function getFieldValueByCode(code) {
     if (code === 'NOMCOUNT') return item.nomcount || ''
     if (code === 'MASCHNR') return item.maschnr || ''
     if (code === 'TESTNR') return item.testnr || ''
+    if (code === 'MATCLASS') return item.matclass || ''
   }
   // last resort: empty string
   return ''
