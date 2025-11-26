@@ -25,7 +25,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "2",
-    "CREATED_AT": "2025-11-11T13:57:44.792Z"
+    "CREATED_AT": "2025-11-11T13:57:44.792Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "00259",
@@ -53,7 +54,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "2",
-    "CREATED_AT": "2025-11-11T14:47:30.433Z"
+    "CREATED_AT": "2025-11-11T14:47:30.433Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "00260",
@@ -81,7 +83,124 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "2",
-    "CREATED_AT": "2025-11-11T14:48:13.305Z"
+    "CREATED_AT": "2025-11-11T14:48:13.305Z",
+    "ESTIRAJE": null
+  },
+  {
+    "TESTNR": "00261",
+    "CATALOG": "CATALOG STC09",
+    "TIME_STAMP": "21/11/2025 16:35",
+    "LOTE": "HD-101-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "007",
+    "MATCLASS": "Hilo de fantasia",
+    "NOMCOUNT": 10,
+    "NOMTWIST": "666",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "Aquino Kevin",
+    "OBS": "10/1FLAME Rotor:72.000-Cardina:9.500-Tension:0.997 ALFA 5.35 HD-101-25",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-25T17:44:59.854Z",
+    "ESTIRAJE": "109.8"
+  },
+  {
+    "TESTNR": "00262",
+    "CATALOG": "CATALOG STC09",
+    "TIME_STAMP": "22/11/2025 09:24",
+    "LOTE": "HD-101-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "007",
+    "MATCLASS": "Hilo de fantasia",
+    "NOMCOUNT": 10,
+    "NOMTWIST": "666",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "GARCIA ALBERTO",
+    "OBS": "10/1FLAME Rotor:72.500-Cardina:9.500-Tension:0.997 ALFA 5.35 HD-101-25",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-25T17:45:57.045Z",
+    "ESTIRAJE": "109.8"
+  },
+  {
+    "TESTNR": "00263",
+    "CATALOG": "CATALOG STC09",
+    "TIME_STAMP": "24/11/2025 16:46",
+    "LOTE": "HD-101-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "007",
+    "MATCLASS": "Hilo de fantasia",
+    "NOMCOUNT": 10,
+    "NOMTWIST": "666",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "Aquino Kevin",
+    "OBS": "10/1FLAME Rotor:72.500-Cardina:9.500-Tension:0.997 ALFA 5.35 HD-101-25",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-25T17:47:27.976Z",
+    "ESTIRAJE": "109.8"
+  },
+  {
+    "TESTNR": "00264",
+    "CATALOG": "CATALOG STC09",
+    "TIME_STAMP": "25/11/2025 08:33",
+    "LOTE": "HD-101-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "007",
+    "MATCLASS": "Hilo de fantasia",
+    "NOMCOUNT": 10,
+    "NOMTWIST": "666",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "GARCIA ALBERTO",
+    "OBS": "10/1FLAME Rotor:72.500-Cardina:9.500-Tension:0.997 ALFA 5.35 HD-101-25",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-25T17:53:28.534Z",
+    "ESTIRAJE": "109.8"
   },
   {
     "TESTNR": "05410",
@@ -109,7 +228,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-03T14:19:38.525Z"
+    "CREATED_AT": "2025-11-03T14:19:38.525Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05411",
@@ -137,7 +257,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-03T14:24:01.045Z"
+    "CREATED_AT": "2025-11-03T14:24:01.045Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05412",
@@ -165,7 +286,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-03T14:31:00.212Z"
+    "CREATED_AT": "2025-11-03T14:31:00.212Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05413",
@@ -193,7 +315,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-03T14:41:30.224Z"
+    "CREATED_AT": "2025-11-03T14:41:30.224Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05414",
@@ -221,7 +344,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-03T14:42:14.326Z"
+    "CREATED_AT": "2025-11-03T14:42:14.326Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05415",
@@ -249,7 +373,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-03T14:45:51.704Z"
+    "CREATED_AT": "2025-11-03T14:45:51.704Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05416",
@@ -277,7 +402,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-03T14:46:33.051Z"
+    "CREATED_AT": "2025-11-03T14:46:33.051Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05417",
@@ -305,7 +431,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-03T14:48:05.843Z"
+    "CREATED_AT": "2025-11-03T14:48:05.843Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05418",
@@ -333,7 +460,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-03T14:48:42.824Z"
+    "CREATED_AT": "2025-11-03T14:48:42.824Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05419",
@@ -361,7 +489,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-03T14:49:34.006Z"
+    "CREATED_AT": "2025-11-03T14:49:34.006Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05420",
@@ -389,7 +518,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-03T14:50:16.650Z"
+    "CREATED_AT": "2025-11-03T14:50:16.650Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05421",
@@ -417,7 +547,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-03T14:50:59.499Z"
+    "CREATED_AT": "2025-11-03T14:50:59.499Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05422",
@@ -445,7 +576,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-03T14:51:36.206Z"
+    "CREATED_AT": "2025-11-03T14:51:36.206Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05423",
@@ -473,7 +605,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-03T14:52:02.691Z"
+    "CREATED_AT": "2025-11-03T14:52:02.691Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05424",
@@ -501,7 +634,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-03T14:52:37.146Z"
+    "CREATED_AT": "2025-11-03T14:52:37.146Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05425",
@@ -529,7 +663,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-03T14:53:32.364Z"
+    "CREATED_AT": "2025-11-03T14:53:32.364Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05426",
@@ -557,7 +692,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-03T14:54:07.264Z"
+    "CREATED_AT": "2025-11-03T14:54:07.264Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05427",
@@ -585,7 +721,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-03T14:54:44.773Z"
+    "CREATED_AT": "2025-11-03T14:54:44.773Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05428",
@@ -613,7 +750,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-03T18:50:47.696Z"
+    "CREATED_AT": "2025-11-03T18:50:47.696Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05429",
@@ -641,7 +779,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-03T18:51:29.560Z"
+    "CREATED_AT": "2025-11-03T18:51:29.560Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05430",
@@ -669,7 +808,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-03T18:52:49.063Z"
+    "CREATED_AT": "2025-11-03T18:52:49.063Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05431",
@@ -697,7 +837,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-03T18:53:26.668Z"
+    "CREATED_AT": "2025-11-03T18:53:26.668Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05432",
@@ -725,7 +866,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-03T18:54:12.550Z"
+    "CREATED_AT": "2025-11-03T18:54:12.550Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05433",
@@ -753,7 +895,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-03T18:54:47.820Z"
+    "CREATED_AT": "2025-11-03T18:54:47.820Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05434",
@@ -781,7 +924,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-03T18:55:14.054Z"
+    "CREATED_AT": "2025-11-03T18:55:14.054Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05435",
@@ -809,7 +953,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-03T18:56:44.470Z"
+    "CREATED_AT": "2025-11-03T18:56:44.470Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05436",
@@ -837,7 +982,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-04T18:46:15.531Z"
+    "CREATED_AT": "2025-11-04T18:46:15.531Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05437",
@@ -865,7 +1011,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-04T18:46:43.275Z"
+    "CREATED_AT": "2025-11-04T18:46:43.275Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05438",
@@ -893,7 +1040,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-04T18:47:12.242Z"
+    "CREATED_AT": "2025-11-04T18:47:12.242Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05439",
@@ -921,7 +1069,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-04T18:47:58.189Z"
+    "CREATED_AT": "2025-11-04T18:47:58.189Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05440",
@@ -949,7 +1098,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-04T18:48:21.995Z"
+    "CREATED_AT": "2025-11-04T18:48:21.995Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05441",
@@ -977,7 +1127,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-04T18:49:14.797Z"
+    "CREATED_AT": "2025-11-04T18:49:14.797Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05442",
@@ -1005,7 +1156,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-04T18:49:44.954Z"
+    "CREATED_AT": "2025-11-04T18:49:44.954Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05443",
@@ -1033,7 +1185,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-05T18:01:07.020Z"
+    "CREATED_AT": "2025-11-05T18:01:07.020Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05444",
@@ -1061,7 +1214,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-05T18:01:48.564Z"
+    "CREATED_AT": "2025-11-05T18:01:48.564Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05445",
@@ -1089,7 +1243,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-05T18:02:38.234Z"
+    "CREATED_AT": "2025-11-05T18:02:38.234Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05446",
@@ -1117,7 +1272,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-05T19:25:28.593Z"
+    "CREATED_AT": "2025-11-05T19:25:28.593Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05447",
@@ -1145,7 +1301,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-05T19:26:28.732Z"
+    "CREATED_AT": "2025-11-05T19:26:28.732Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05448",
@@ -1173,7 +1330,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-06T14:30:26.777Z"
+    "CREATED_AT": "2025-11-06T14:30:26.777Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05449",
@@ -1201,7 +1359,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-06T14:32:03.052Z"
+    "CREATED_AT": "2025-11-06T14:32:03.052Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05450",
@@ -1229,7 +1388,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-06T14:32:30.507Z"
+    "CREATED_AT": "2025-11-06T14:32:30.507Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05451",
@@ -1257,7 +1417,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-06T14:35:09.832Z"
+    "CREATED_AT": "2025-11-06T14:35:09.832Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05452",
@@ -1285,7 +1446,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-06T14:35:32.251Z"
+    "CREATED_AT": "2025-11-06T14:35:32.251Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05453",
@@ -1313,7 +1475,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-06T14:36:02.807Z"
+    "CREATED_AT": "2025-11-06T14:36:02.807Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05454",
@@ -1341,7 +1504,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-06T14:38:08.240Z"
+    "CREATED_AT": "2025-11-06T14:38:08.240Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05455",
@@ -1369,7 +1533,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-06T14:38:48.879Z"
+    "CREATED_AT": "2025-11-06T14:38:48.879Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05456",
@@ -1397,7 +1562,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-09T23:54:35.017Z"
+    "CREATED_AT": "2025-11-09T23:54:35.017Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05457",
@@ -1425,7 +1591,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-10T00:02:19.181Z"
+    "CREATED_AT": "2025-11-10T00:02:19.181Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05458",
@@ -1453,7 +1620,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-10T00:02:57.302Z"
+    "CREATED_AT": "2025-11-10T00:02:57.302Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05459",
@@ -1481,7 +1649,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-10T00:04:28.284Z"
+    "CREATED_AT": "2025-11-10T00:04:28.284Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05460",
@@ -1509,7 +1678,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-10T00:05:01.780Z"
+    "CREATED_AT": "2025-11-10T00:05:01.780Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05461",
@@ -1537,7 +1707,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-10T14:34:22.376Z"
+    "CREATED_AT": "2025-11-10T14:34:22.376Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05462",
@@ -1565,7 +1736,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-10T14:34:58.286Z"
+    "CREATED_AT": "2025-11-10T14:34:58.286Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05463",
@@ -1593,7 +1765,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-10T14:35:33.272Z"
+    "CREATED_AT": "2025-11-10T14:35:33.272Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05464",
@@ -1621,7 +1794,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-10T14:36:51.349Z"
+    "CREATED_AT": "2025-11-10T14:36:51.349Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05465",
@@ -1649,7 +1823,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-10T14:41:51.291Z"
+    "CREATED_AT": "2025-11-10T14:41:51.291Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05466",
@@ -1677,7 +1852,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-11T14:50:14.523Z"
+    "CREATED_AT": "2025-11-11T14:50:14.523Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05467",
@@ -1705,7 +1881,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-11T14:50:46.589Z"
+    "CREATED_AT": "2025-11-11T14:50:46.589Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05468",
@@ -1733,7 +1910,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-11T14:51:12.266Z"
+    "CREATED_AT": "2025-11-11T14:51:12.266Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05469",
@@ -1761,7 +1939,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-11T14:52:29.976Z"
+    "CREATED_AT": "2025-11-11T14:52:29.976Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05470",
@@ -1789,7 +1968,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-11T14:53:09.001Z"
+    "CREATED_AT": "2025-11-11T14:53:09.001Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05471",
@@ -1817,7 +1997,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-11T14:53:35.835Z"
+    "CREATED_AT": "2025-11-11T14:53:35.835Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05472",
@@ -1845,7 +2026,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-11T14:55:17.558Z"
+    "CREATED_AT": "2025-11-11T14:55:17.558Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05473",
@@ -1873,7 +2055,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-11T14:55:46.323Z"
+    "CREATED_AT": "2025-11-11T14:55:46.323Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05474",
@@ -1901,7 +2084,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-11T14:56:06.788Z"
+    "CREATED_AT": "2025-11-11T14:56:06.788Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05475",
@@ -1929,7 +2113,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-12T15:15:20.111Z"
+    "CREATED_AT": "2025-11-12T15:15:20.111Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05476",
@@ -1957,7 +2142,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-12T15:15:50.962Z"
+    "CREATED_AT": "2025-11-12T15:15:50.962Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05477",
@@ -1985,7 +2171,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-12T15:16:13.604Z"
+    "CREATED_AT": "2025-11-12T15:16:13.604Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05478",
@@ -2013,7 +2200,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-12T15:17:23.921Z"
+    "CREATED_AT": "2025-11-12T15:17:23.921Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05479",
@@ -2041,7 +2229,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-12T15:17:48.195Z"
+    "CREATED_AT": "2025-11-12T15:17:48.195Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05480",
@@ -2069,7 +2258,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-13T13:39:10.796Z"
+    "CREATED_AT": "2025-11-13T13:39:10.796Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05481",
@@ -2097,7 +2287,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-13T13:39:43.484Z"
+    "CREATED_AT": "2025-11-13T13:39:43.484Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05482",
@@ -2125,7 +2316,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-13T13:40:17.350Z"
+    "CREATED_AT": "2025-11-13T13:40:17.350Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05483",
@@ -2153,7 +2345,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-13T13:41:22.586Z"
+    "CREATED_AT": "2025-11-13T13:41:22.586Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05484",
@@ -2181,7 +2374,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-13T13:41:54.574Z"
+    "CREATED_AT": "2025-11-13T13:41:54.574Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05485",
@@ -2209,7 +2403,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-14T15:00:49.084Z"
+    "CREATED_AT": "2025-11-14T15:00:49.084Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05486",
@@ -2237,7 +2432,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-14T15:01:29.930Z"
+    "CREATED_AT": "2025-11-14T15:01:29.930Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05487",
@@ -2265,7 +2461,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-14T15:02:04.705Z"
+    "CREATED_AT": "2025-11-14T15:02:04.705Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05488",
@@ -2293,7 +2490,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-14T15:04:12.561Z"
+    "CREATED_AT": "2025-11-14T15:04:12.561Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05489",
@@ -2321,7 +2519,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-14T15:04:43.628Z"
+    "CREATED_AT": "2025-11-14T15:04:43.628Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05490",
@@ -2349,7 +2548,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-14T15:05:18.863Z"
+    "CREATED_AT": "2025-11-14T15:05:18.863Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05491",
@@ -2377,7 +2577,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-14T15:06:16.781Z"
+    "CREATED_AT": "2025-11-14T15:06:16.781Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05492",
@@ -2405,7 +2606,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-14T15:07:17.656Z"
+    "CREATED_AT": "2025-11-14T15:07:17.656Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05493",
@@ -2433,7 +2635,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-17T13:25:19.104Z"
+    "CREATED_AT": "2025-11-17T13:25:19.104Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05494",
@@ -2461,7 +2664,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-17T13:25:44.075Z"
+    "CREATED_AT": "2025-11-17T13:25:44.075Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05495",
@@ -2489,7 +2693,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-17T13:26:24.258Z"
+    "CREATED_AT": "2025-11-17T13:26:24.258Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05496",
@@ -2517,7 +2722,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-17T13:35:18.423Z"
+    "CREATED_AT": "2025-11-17T13:35:18.423Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05497",
@@ -2545,7 +2751,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-17T13:29:52.391Z"
+    "CREATED_AT": "2025-11-17T13:29:52.391Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05498",
@@ -2573,7 +2780,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-17T13:30:27.672Z"
+    "CREATED_AT": "2025-11-17T13:30:27.672Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05499",
@@ -2601,7 +2809,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-17T13:30:56.959Z"
+    "CREATED_AT": "2025-11-17T13:30:56.959Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05500",
@@ -2629,7 +2838,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-17T13:32:10.309Z"
+    "CREATED_AT": "2025-11-17T13:32:10.309Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05501",
@@ -2657,7 +2867,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-17T13:32:46.029Z"
+    "CREATED_AT": "2025-11-17T13:32:46.029Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05502",
@@ -2685,7 +2896,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-17T13:33:11.397Z"
+    "CREATED_AT": "2025-11-17T13:33:11.397Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05503",
@@ -2713,7 +2925,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-19T14:25:57.811Z"
+    "CREATED_AT": "2025-11-19T14:25:57.811Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05504",
@@ -2741,7 +2954,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-19T14:22:49.645Z"
+    "CREATED_AT": "2025-11-19T14:22:49.645Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05505",
@@ -2769,7 +2983,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-19T14:23:25.546Z"
+    "CREATED_AT": "2025-11-19T14:23:25.546Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05506",
@@ -2797,7 +3012,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-19T14:24:06.221Z"
+    "CREATED_AT": "2025-11-19T14:24:06.221Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05507",
@@ -2825,7 +3041,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-19T14:26:45.973Z"
+    "CREATED_AT": "2025-11-19T14:26:45.973Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05508",
@@ -2853,7 +3070,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-19T14:27:23.516Z"
+    "CREATED_AT": "2025-11-19T14:27:23.516Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05509",
@@ -2881,7 +3099,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-19T14:29:05.022Z"
+    "CREATED_AT": "2025-11-19T14:29:05.022Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05510",
@@ -2909,7 +3128,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-19T14:29:30.949Z"
+    "CREATED_AT": "2025-11-19T14:29:30.949Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05511",
@@ -2937,7 +3157,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-19T14:29:58.035Z"
+    "CREATED_AT": "2025-11-19T14:29:58.035Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05512",
@@ -2965,7 +3186,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-19T14:31:56.557Z"
+    "CREATED_AT": "2025-11-19T14:31:56.557Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05513",
@@ -2993,7 +3215,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-19T14:32:19.028Z"
+    "CREATED_AT": "2025-11-19T14:32:19.028Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05514",
@@ -3021,7 +3244,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-19T14:32:55.852Z"
+    "CREATED_AT": "2025-11-19T14:32:55.852Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05515",
@@ -3049,7 +3273,8 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-19T14:34:16.922Z"
+    "CREATED_AT": "2025-11-19T14:34:16.922Z",
+    "ESTIRAJE": null
   },
   {
     "TESTNR": "05516",
@@ -3077,6 +3302,703 @@
     "TESTTIME": "2.50",
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
-    "CREATED_AT": "2025-11-19T14:34:54.739Z"
+    "CREATED_AT": "2025-11-19T14:34:54.739Z",
+    "ESTIRAJE": null
+  },
+  {
+    "TESTNR": "05518",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "19/11/2025 16:03",
+    "LOTE": "HD-101-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "009",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 7,
+    "NOMTWIST": "552",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "Aquino Kevin",
+    "OBS": "7/1Nec Rotor:80.000 Cardina:9.500 Tension:0.981 ALFA:5.30(rotor 40 XTC-BD)",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-21T16:25:07.461Z",
+    "ESTIRAJE": null
+  },
+  {
+    "TESTNR": "05519",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "19/11/2025 16:46",
+    "LOTE": "HD-101-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "010",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 10,
+    "NOMTWIST": "660",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "Aquino Kevin",
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:1.002  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-21T16:25:36.299Z",
+    "ESTIRAJE": null
+  },
+  {
+    "TESTNR": "05520",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "20/11/2025 00:00",
+    "LOTE": "HD-101-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "003 LIM",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 12.5,
+    "NOMTWIST": "738",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "Muniz Alicia",
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-21T16:26:09.139Z",
+    "ESTIRAJE": null
+  },
+  {
+    "TESTNR": "05521",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "20/11/2025 00:32",
+    "LOTE": "HD-101-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "003 LP",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 12.5,
+    "NOMTWIST": "738",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "Muniz Alicia",
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-21T16:27:44.165Z",
+    "ESTIRAJE": null
+  },
+  {
+    "TESTNR": "05522",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "20/11/2025 08:09",
+    "LOTE": "HD-101-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "002LIM",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 10,
+    "NOMTWIST": "660",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "GARCIA ALBERTO",
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:1.007  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-21T16:28:35.945Z",
+    "ESTIRAJE": null
+  },
+  {
+    "TESTNR": "05523",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "20/11/2025 09:20",
+    "LOTE": "HD-101-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "007",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 10,
+    "NOMTWIST": "660",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "GARCIA ALBERTO",
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:0.998  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-21T16:29:01.298Z",
+    "ESTIRAJE": null
+  },
+  {
+    "TESTNR": "05524",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "20/11/2025 16:18",
+    "LOTE": "HD-101-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "009",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 7,
+    "NOMTWIST": "552",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "Aquino Kevin",
+    "OBS": "7/1Nec Rotor:80.000 Cardina:9.500 Tension:0.981 ALFA:5.30(rotor 40 XTC-BD)",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-21T16:29:57.844Z",
+    "ESTIRAJE": null
+  },
+  {
+    "TESTNR": "05525",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "20/11/2025 16:57",
+    "LOTE": "HD-101-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "010",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 10,
+    "NOMTWIST": "660",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "Aquino Kevin",
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:1.002  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-21T16:30:17.280Z",
+    "ESTIRAJE": null
+  },
+  {
+    "TESTNR": "05526",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "21/11/2025 00:00",
+    "LOTE": "HD-101-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "003 LP",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 12.5,
+    "NOMTWIST": "738",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "Muniz Alicia",
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-21T16:30:48.764Z",
+    "ESTIRAJE": null
+  },
+  {
+    "TESTNR": "05527",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "21/11/2025 00:38",
+    "LOTE": "HD-101-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "003 LIM",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 12.5,
+    "NOMTWIST": "738",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "Muniz Alicia",
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-21T16:31:36.240Z",
+    "ESTIRAJE": null
+  },
+  {
+    "TESTNR": "05528",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "21/11/2025 08:26",
+    "LOTE": "HD-101-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "008",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 9,
+    "NOMTWIST": "626",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "GARCIA ALBERTO",
+    "OBS": "9/1Nec Rotor:80.000 Cardina:9.500 Tension:0.994  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-21T16:32:04.564Z",
+    "ESTIRAJE": null
+  },
+  {
+    "TESTNR": "05529",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "21/11/2025 09:02",
+    "LOTE": "HD-101-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "002LIM",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 10,
+    "NOMTWIST": "660",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "GARCIA ALBERTO",
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:1.007  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-21T16:32:22.836Z",
+    "ESTIRAJE": null
+  },
+  {
+    "TESTNR": "05530",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "21/11/2025 15:49",
+    "LOTE": "HD-101-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "010",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 10,
+    "NOMTWIST": "660",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "Aquino Kevin",
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:1.002  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-25T16:50:44.770Z",
+    "ESTIRAJE": "102.5"
+  },
+  {
+    "TESTNR": "05531",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "22/11/2025 00:00",
+    "LOTE": "HD-101-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "003 LP",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 12.5,
+    "NOMTWIST": "738",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "Muniz Alicia",
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-25T16:53:30.226Z",
+    "ESTIRAJE": "130.2"
+  },
+  {
+    "TESTNR": "05532",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "22/11/2025 00:40",
+    "LOTE": "HD-101-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "003 LIM",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 12.5,
+    "NOMTWIST": "738",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "Muniz Alicia",
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-25T16:54:02.826Z",
+    "ESTIRAJE": "130.3"
+  },
+  {
+    "TESTNR": "05533",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "22/11/2025 08:03",
+    "LOTE": "HD-101-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "002LIM",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 10,
+    "NOMTWIST": "660",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "GARCIA ALBERTO",
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:1.007  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-25T16:57:49.702Z",
+    "ESTIRAJE": "102.6"
+  },
+  {
+    "TESTNR": "05534",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "22/11/2025 15:51",
+    "LOTE": "HD-101-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "010",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 10,
+    "NOMTWIST": "660",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "Aquino Kevin",
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:1.002  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-25T16:59:39.395Z",
+    "ESTIRAJE": "102.5"
+  },
+  {
+    "TESTNR": "05535",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "22/11/2025 16:24",
+    "LOTE": "HD-101-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "008",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 9,
+    "NOMTWIST": "626",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "Aquino Kevin",
+    "OBS": "9/1Nec Rotor:80.000 Cardina:9.500 Tension:0.994  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-25T17:00:38.267Z",
+    "ESTIRAJE": "90.0"
+  },
+  {
+    "TESTNR": "05536",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "24/11/2025 08:47",
+    "LOTE": "HD-101-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "002LIM",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 10,
+    "NOMTWIST": "660",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "GARCIA ALBERTO",
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:1.007  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-25T17:02:15.123Z",
+    "ESTIRAJE": "102.6"
+  },
+  {
+    "TESTNR": "05537",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "24/11/2025 09:33",
+    "LOTE": "HD-101-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "003 LP",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 12.5,
+    "NOMTWIST": "738",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "GARCIA ALBERTO",
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-25T17:02:34.545Z",
+    "ESTIRAJE": "130.2"
+  },
+  {
+    "TESTNR": "05538",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "24/11/2025 10:07",
+    "LOTE": "HD-101-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "003 LIM",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 12.5,
+    "NOMTWIST": "738",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "GARCIA ALBERTO",
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.005  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-25T17:02:57.021Z",
+    "ESTIRAJE": "130.3"
+  },
+  {
+    "TESTNR": "05539",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "24/11/2025 10:41",
+    "LOTE": "HD-101-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "009",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 7,
+    "NOMTWIST": "552",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "GARCIA ALBERTO",
+    "OBS": "7/1Nec Rotor:80.000 Cardina:9.500 Tension:0.981 ALFA:5.30(rotor 40 XTC-BD)",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-25T17:03:52.260Z",
+    "ESTIRAJE": "72.0"
+  },
+  {
+    "TESTNR": "05540",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "24/11/2025 16:07",
+    "LOTE": "HD-101-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "010",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 10,
+    "NOMTWIST": "660",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "Aquino Kevin",
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:1.002  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-25T17:04:31.728Z",
+    "ESTIRAJE": "102.5"
+  },
+  {
+    "TESTNR": "05543",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "25/11/2025 10:11",
+    "LOTE": "HD-101-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "010",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 10,
+    "NOMTWIST": "660",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "GARCIA ALBERTO",
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:1.002  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-25T17:06:17.302Z",
+    "ESTIRAJE": "102.5"
   }
 ]

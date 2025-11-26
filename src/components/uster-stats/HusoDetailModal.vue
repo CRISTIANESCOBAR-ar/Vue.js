@@ -96,6 +96,7 @@ const emit = defineEmits(['close'])
 const chartRef = ref(null)
 const modalRef = ref(null)
 let chart = null
+let isFirstRender = true // Flag para saber si es el primer render
 
 // Calculate statistics
 const stats = ref({
@@ -275,6 +276,20 @@ function renderChart() {
         )
     }
 
+    // Solo en el primer render, establecer LCL y UCL como desactivados
+    // En renders posteriores, ECharts preservará el estado que el usuario seleccionó
+    if (isFirstRender) {
+        // Primera vez: LCL y UCL desactivados por defecto
+        option.legend.selected = {
+            'LCL (-3σ)': false,
+            'UCL (+3σ)': false
+        }
+        isFirstRender = false
+    } else {
+        // Renders posteriores: no especificar selected, dejar que ECharts preserve el estado
+        delete option.legend.selected
+    }
+
     chart.setOption(option)
 }
 
@@ -329,6 +344,8 @@ async function copyAsImage() {
 
 watch(() => props.visible, async (newVal) => {
     if (newVal) {
+        // Reset flag cuando se abre el modal para que LCL/UCL inicien desactivados
+        isFirstRender = true
         calculateStats()
         await nextTick()
         

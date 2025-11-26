@@ -180,6 +180,7 @@
                                 <th class="px-4 py-3 text-center font-semibold text-slate-700 w-28">Ne Max (+1.5%)</th>
                                 <th class="px-4 py-3 text-center font-semibold text-slate-700 w-32">Valor Medido</th>
                                 <th class="px-4 py-3 text-center font-semibold text-slate-700 w-28">Desviación %</th>
+                                <th class="px-4 py-3 text-center font-semibold text-slate-700 w-24">Estiraje</th>
                                 <th class="px-4 py-3 text-center font-semibold text-slate-700 w-24">Estado</th>
                                 <th class="px-4 py-3 text-left font-semibold text-slate-700">Ensayo</th>
                                 <th class="px-4 py-3 text-center font-semibold text-slate-700 w-28">Ver Datos</th>
@@ -222,6 +223,9 @@
                                         >
                                             {{ ensayo.deviation > 0 ? '+' : '' }}{{ parseFloat(ensayo.deviation.toFixed(2)) }}%
                                         </span>
+                                    </td>
+                                    <td class="px-4 py-3 text-center text-slate-700 font-medium">
+                                        {{ ensayo.estiraje || '-' }}
                                     </td>
                                     <td class="px-4 py-3 text-center">
                                         <span 
@@ -741,9 +745,9 @@ const allEnsayosWithStatus = computed(() => {
             deviation = ((neStandard - avgTitulo) / neStandard) * 100
             
             if (avgTitulo < neMin) {
-                status = 'below'
+                status = 'above'  // Titulo bajo = hilo más grueso = Alto
             } else if (avgTitulo > neMax) {
-                status = 'above'
+                status = 'below'  // Titulo alto = hilo más delgado = Bajo
             } else {
                 status = 'ok'
             }
@@ -758,7 +762,8 @@ const allEnsayosWithStatus = computed(() => {
             neMin,
             neMax,
             status,
-            deviation
+            deviation,
+            estiraje: par.ESTIRAJE || null
         }
     }).filter(e => e.avgTitulo !== null && e.neStandard !== null)
     

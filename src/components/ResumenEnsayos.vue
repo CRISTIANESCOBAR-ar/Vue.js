@@ -123,6 +123,7 @@
                 <col style="width:5%" /> <!-- Ne -->
                 <col style="width:6%" /> <!-- Desvío % -->
                 <col style="width:11%" /> <!-- Titulo -->
+                <col style="width:5%" /> <!-- Estiraje -->
                 <col style="width:5%" /> <!-- CVm % -->
                 <!-- The following columns reduced by 40% (approx): base assumed 5% -> now 3% -->
                 <col style="width:3%" /> <!-- Delg -30% -->
@@ -151,6 +152,8 @@
                   <th class="px-2 py-[0.3rem] text-center font-semibold text-slate-700 border-b border-slate-200">Desvío %
                   </th>
                   <th class="px-2 py-[0.3rem] text-center font-semibold text-slate-700 border-b border-slate-200">Titulo
+                  </th>
+                  <th class="px-2 py-[0.3rem] text-center font-semibold text-slate-700 border-b border-slate-200">Estiraje
                   </th>
                   <th class="px-2 py-[0.3rem] text-center font-semibold text-slate-700 border-b border-slate-200">CVm %
                   </th>
@@ -196,6 +199,7 @@
                     <template v-else>{{ row['Desvío %'] }}</template>
                   </td>
                   <td class="px-2 py-[0.3rem] text-center text-slate-700">{{ row.Titulo }}</td>
+                  <td class="px-2 py-[0.3rem] text-center text-slate-700">{{ row.Estiraje || '-' }}</td>
                   <td class="px-2 py-[0.3rem] text-center text-slate-700">{{ row['CVm %'] }}</td>
                   <td class="px-2 py-[0.3rem] text-center text-slate-700">{{ row['Delg -30%'] }}</td>
                   <td class="px-2 py-[0.3rem] text-center text-slate-700">{{ row['Delg -40%'] }}</td>
@@ -1230,8 +1234,11 @@ const modalMeta = computed(() => {
   // Laborant: extraer de meta (viene en campo LABORANT)
   let laborantRaw = meta?.LABORANT ?? meta?.Laborant ?? meta?.laborant ?? null
   const laborant = (laborantRaw == null || String(laborantRaw).trim() === '') ? null : String(laborantRaw).trim()
+  // Estiraje: extraer de meta (viene en campo ESTIRAJE)
+  let estirajeRaw = meta?.ESTIRAJE ?? meta?.Estiraje ?? meta?.estiraje ?? null
+  const estiraje = (estirajeRaw == null || String(estirajeRaw).trim() === '') ? null : String(estirajeRaw).trim()
 
-  return { fechaStr, oe, ne, u, t, obs, laborant }
+  return { fechaStr, oe, ne, u, t, obs, laborant, estiraje }
 })
 
 // Index within the current filtered list for the selected ensayo
@@ -1411,7 +1418,7 @@ async function exportModalToExcel() {
     }
 
     // Headers: include Observaciones after Trabajo, then Uster/TensoRapid
-    const headers = ['Huso', 'Fecha', 'Ne', 'OE Nro.', 'Titulo', 'CVm %', 'Delg -30%', 'Delg -40%', 'Delg -50%', 'Grue +35%', 'Grue +50%', 'Neps +140%', 'Neps +280%', 'Fuerza B', 'Elongación %', 'Tenacidad', 'Trabajo', 'Observaciones', 'Uster', 'TensoRapid']
+    const headers = ['Huso', 'Fecha', 'Ne', 'OE Nro.', 'Titulo', 'Estiraje', 'CVm %', 'Delg -30%', 'Delg -40%', 'Delg -50%', 'Grue +35%', 'Grue +50%', 'Neps +140%', 'Neps +280%', 'Fuerza B', 'Elongación %', 'Tenacidad', 'Trabajo', 'Observaciones', 'Uster', 'TensoRapid']
 
     // helper to coerce each cell value
     const coerce = (raw) => {
@@ -1435,6 +1442,8 @@ async function exportModalToExcel() {
       rowVals.push(modalMeta.value.oe || '')
       // Titulo
       rowVals.push(coerce(r.TITULO))
+      // Estiraje
+      rowVals.push(modalMeta.value.estiraje || '')
       // CVm %
       rowVals.push(coerce(r.CVM_PERCENT))
       // Delg / Grue / Neps
@@ -1803,6 +1812,7 @@ async function loadRows() {
         Ne: formatNe(row.NOMCOUNT ?? row.Ne ?? row.NE ?? row.titulo ?? row.TITULO ?? '', row.MATCLASS),
         'Desvío %': desvioPercent,
         Titulo: calcAvg(tblRows, 'TITULO'),
+        Estiraje: row.ESTIRAJE || null,
         'CVm %': calcAvg(tblRows, 'CVM_PERCENT') || calcAvg(tblRows, 'CVM_%'),
         'Delg -30%': calcAvg(tblRows, 'DELG_MINUS30_KM') || calcAvg(tblRows, 'DELG_-30%'),
         'Delg -40%': calcAvg(tblRows, 'DELG_MINUS40_KM') || calcAvg(tblRows, 'DELG_-40%'),
@@ -1877,6 +1887,7 @@ async function exportToExcel() {
       'Ne',
       'Desvío %',
       'Titulo',
+      'Estiraje',
       'CVm %',
       'Delg -30%',
       'Delg -40%',
@@ -1912,6 +1923,7 @@ async function exportToExcel() {
       r['Ne'] || '',
       r['Desvío %'] || '', // Mantener el string con el signo + incluido
       coerce(r['Titulo']),
+      r['Estiraje'] || '-',
       coerce(r['CVm %']),
       coerce(r['Delg -30%']),
       coerce(r['Delg -40%']),

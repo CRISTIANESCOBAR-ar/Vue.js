@@ -159,6 +159,22 @@
                                 <span class="font-semibold">{{ stats.length }}</span>
                             </div>
                         </template>
+
+                        <!-- Atajos de teclado -->
+                        <!-- Atajos de teclado -->
+                        <div class="flex items-center gap-2 pl-3 border-l border-slate-200">
+                            <span class="text-xs text-slate-500 font-medium">Atajos:</span>
+                            <div class="flex items-center gap-1">
+                                <kbd v-tippy="{ content: 'Ver graficos de Titulos Ne por Huso', placement: 'bottom' }"
+                                    class="inline-block px-2 py-1 text-xs font-semibold text-slate-800 bg-white border border-slate-300 rounded-md shadow-sm cursor-help hover:bg-slate-50 transition-colors">
+                                    Shift
+                                </kbd>
+                                <kbd v-tippy="{ content: 'Ver datos analizados en Uster y TensoRapid', placement: 'bottom' }"
+                                    class="inline-block px-2 py-1 text-xs font-semibold text-slate-800 bg-white border border-slate-300 rounded-md shadow-sm cursor-help hover:bg-slate-50 transition-colors">
+                                    Ctrl
+                                </kbd>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

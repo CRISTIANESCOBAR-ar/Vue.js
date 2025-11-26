@@ -262,7 +262,7 @@
                     <select 
                       v-if="c.code === 'MATCLASS'" 
                       v-model="matclass"
-                      class="w-full px-2 py-1 border border-slate-300 rounded text-xs focus:outline-none focus:ring-2 focus:ring-blue-400"
+                      class="w-[calc(100%-5px)] px-2 py-1 border border-slate-300 rounded text-xs focus:outline-none focus:ring-2 focus:ring-blue-400"
                     >
                       <option value="Hilo">Hilo</option>
                       <option value="Hilo de fantasia">Hilo de fantasia</option>
@@ -361,6 +361,32 @@ watch(matclass, (newValue) => {
 const filterShowAll = ref(false)
 const filterShowNotSaved = ref(true) // Por defecto mostrar no guardados
 const filterShowSaved = ref(false)
+
+// Watch para limpiar la UI cuando no hay ensayos en la lista filtrada
+watch(() => {
+  // Contar ensayos reales (no placeholders) en la lista filtrada
+  let items = scanList.value || []
+  
+  if (filterShowNotSaved.value) {
+    items = items.filter(item => item.testnr && item.imp !== true)
+  } else if (filterShowSaved.value) {
+    items = items.filter(item => item.testnr && item.imp === true)
+  }
+  
+  return items.length
+}, (count) => {
+  // Si no hay ensayos reales en la lista filtrada, limpiar todo
+  if (count === 0 && selectedTestnr.value) {
+    clearSelection()
+    fileText.value = ''
+    selectedName.value = ''
+    selectedFile.value = null
+    selectedTblName.value = ''
+    tblFile.value = null
+    tblText.value = ''
+    matclass.value = 'Hilo'
+  }
+})
 
 function getTestnrFromName(name) {
   if (!name) return null
@@ -1417,8 +1443,11 @@ async function saveCurrentTest() {
       }
 
       if (nextTestnr) {
-        // Esperar un tick para que el DOM esté estable y luego seleccionar
+        // Limpiar la selección anterior antes de cargar el siguiente
+        clearSelection()
+        matclass.value = 'Hilo'  // Reset matclass to default
         await nextTick()
+        // Esperar un tick para que el DOM esté estable y luego seleccionar
         await selectRow(nextTestnr)
         // after selectRow, focus will be placed on first titulo input
       } else {
