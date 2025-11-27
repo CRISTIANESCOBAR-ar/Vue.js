@@ -80,106 +80,122 @@
             <!-- Layout escritorio (>=768px) -->
             <div v-else class="flex flex-col h-full">
                 <!-- Encabezado Minimalista -->
-                <div class="bg-white border-b border-slate-100 px-1 py-2 mb-2 flex-shrink-0">
-                    <div class="flex flex-wrap items-center gap-6">
-                        <!-- Data Source Toggle (Clean) -->
-                        <div class="hidden md:flex items-center gap-2 mr-2">
-                            <button @click="changeDataSource('oracle')" :disabled="!isLocalhost"
-                                v-tippy="{ content: isLocalhost ? 'Datos desde Oracle (Localhost)' : 'Oracle solo disponible en localhost', placement: 'bottom', theme: 'custom' }"
-                                :class="[
-                                    'w-2 h-2 rounded-full transition-all duration-300',
-                                    dataSource === 'oracle' ? 'bg-blue-500 scale-125 ring-2 ring-blue-100' : 'bg-slate-300 hover:bg-slate-400',
-                                    !isLocalhost ? 'opacity-50 cursor-not-allowed' : ''
-                                ]">
-                            </button>
-                            <button @click="changeDataSource('firebase')"
-                                v-tippy="{ content: 'Datos desde Firebase (Producción)', placement: 'bottom', theme: 'custom' }"
-                                :class="[
-                                    'w-2 h-2 rounded-full transition-all duration-300',
-                                    dataSource === 'firebase' ? 'bg-orange-500 scale-125 ring-2 ring-orange-100' : 'bg-slate-300 hover:bg-slate-400'
-                                ]">
-                            </button>
+                <div class="px-1 py-2 mb-2 flex-shrink-0 border-b border-slate-100">
+                    <div class="flex flex-wrap items-center justify-between gap-4">
+                        
+                        <!-- Izquierda: Data Source & Filtros -->
+                        <div class="flex items-center gap-6">
+                            <!-- Data Source Toggle (oculto en móvil) -->
+                            <div class="hidden md:flex items-center gap-1">
+                                <button @click="changeDataSource('oracle')" :disabled="!isLocalhost"
+                                    v-tippy="{ content: isLocalhost ? 'Datos desde Oracle (Localhost)' : 'Oracle solo disponible en localhost', placement: 'bottom', theme: 'custom' }"
+                                    :aria-label="'Cambiar a Oracle'" :class="[
+                                        'inline-flex items-center justify-center w-7 h-7 rounded-full transition-all duration-200',
+                                        dataSource === 'oracle' ? 'bg-blue-600 text-white shadow-sm' : 'bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-slate-600',
+                                        !isLocalhost ? 'opacity-50 cursor-not-allowed' : ''
+                                    ]">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2">
+                                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                                        <line x1="8" y1="21" x2="16" y2="21"></line>
+                                        <line x1="12" y1="17" x2="12" y2="21"></line>
+                                    </svg>
+                                </button>
+                                <button @click="changeDataSource('firebase')"
+                                    v-tippy="{ content: 'Datos desde Firebase (Producción)', placement: 'bottom', theme: 'custom' }"
+                                    aria-label="Cambiar a Firebase" :class="[
+                                        'inline-flex items-center justify-center w-7 h-7 rounded-full transition-all duration-200',
+                                        dataSource === 'firebase' ? 'bg-orange-500 text-white shadow-sm' : 'bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-slate-600'
+                                    ]">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24"
+                                        fill="currentColor">
+                                        <path
+                                            d="M3.89 15.672L6.255.461A.542.542 0 017.27.288l2.543 4.771zm16.794 3.692l-2.25-14a.54.54 0 00-.919-.295L3.316 19.365l7.856 4.427a1.621 1.621 0 001.588 0zM14.3 7.147l-1.82-3.482a.542.542 0 00-.96 0L3.53 17.984z" />
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <!-- Filtros -->
+                            <div class="flex items-center gap-4">
+                                <!-- Ne -->
+                                <div class="flex items-center gap-2">
+                                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Ne</span>
+                                    <select v-model="selectedNomcount"
+                                        class="px-2 py-1 text-sm border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-slate-50/50 hover:bg-white transition-colors font-medium text-slate-700"
+                                        style="width:10ch;min-width:10ch;max-width:10ch;">
+                                        <option :value="null">Elija Ne</option>
+                                        <option v-for="nomcount in availableNomcounts" :key="nomcount" :value="nomcount">
+                                            {{ nomcount }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <!-- OE -->
+                                <div class="flex items-center gap-2">
+                                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">OE</span>
+                                    <select v-model="selectedOe" :disabled="!selectedNomcount"
+                                        class="px-2 py-1 text-sm border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-slate-50/50 hover:bg-white transition-colors text-slate-700 min-w-[5rem] disabled:opacity-50">
+                                        <option :value="null">Todos</option>
+                                        <option v-for="oe in availableOes" :key="oe" :value="oe">
+                                            {{ oe }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <!-- Ver -->
+                                <div class="flex items-center gap-2">
+                                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Ver</span>
+                                    <select v-model="selectedVariable"
+                                        class="px-2 py-1 text-sm border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-slate-50/50 hover:bg-white transition-colors text-slate-700">
+                                        <option v-for="variable in availableVariables" :key="variable.key"
+                                            :value="variable.key">
+                                            {{ variable.label }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
 
-                        <!-- Filtros: Ne, OE, Ver -->
-                        <div class="flex items-center gap-4">
-                            <div class="flex flex-col">
-                                <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-0.5">Ne</span>
-                                <select v-model="selectedNomcount"
-                                    class="text-sm font-semibold text-slate-700 bg-transparent border-none p-0 focus:ring-0 cursor-pointer hover:text-blue-600 transition-colors"
-                                    style="width:10ch;min-width:10ch;max-width:10ch;">
-                                    <option :value="null">Elija Ne</option>
-                                    <option v-for="nomcount in availableNomcounts" :key="nomcount" :value="nomcount">
-                                        {{ nomcount }}
-                                    </option>
-                                </select>
+                        <!-- Derecha: Stats & Atajos -->
+                        <div class="flex items-center gap-6" v-if="selectedNomcount">
+                            <!-- Stats Row -->
+                            <div class="flex items-center gap-3 text-sm">
+                                <!-- LCL -->
+                                <div class="flex items-center gap-1.5">
+                                    <span class="text-slate-400 font-medium text-xs uppercase">LCL</span>
+                                    <span class="font-semibold text-orange-500">{{ globalLcl.toFixed(1) }}</span>
+                                </div>
+                                <div class="w-px h-3 bg-slate-200"></div>
+                                <!-- Promedio -->
+                                <div class="flex items-center gap-1.5">
+                                    <span class="text-slate-400 font-medium text-xs uppercase">Promedio</span>
+                                    <span class="font-semibold text-slate-700">{{ globalMean.toFixed(1) }}</span>
+                                </div>
+                                <div class="w-px h-3 bg-slate-200"></div>
+                                <!-- UCL -->
+                                <div class="flex items-center gap-1.5">
+                                    <span class="text-slate-400 font-medium text-xs uppercase">UCL</span>
+                                    <span class="font-semibold text-orange-500">{{ globalUcl.toFixed(1) }}</span>
+                                </div>
+                                <div class="w-px h-3 bg-slate-200"></div>
+                                <!-- Total -->
+                                <div class="flex items-center gap-1.5">
+                                    <span class="text-slate-400 font-medium text-xs uppercase">Total</span>
+                                    <span class="font-semibold text-slate-700">{{ stats.length }}</span>
+                                </div>
                             </div>
-                            
-                            <div class="w-px h-6 bg-slate-100"></div>
 
-                            <div class="flex flex-col">
-                                <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-0.5">OE</span>
-                                <select v-model="selectedOe" :disabled="!selectedNomcount"
-                                    class="text-sm font-medium text-slate-700 bg-transparent border-none p-0 focus:ring-0 cursor-pointer hover:text-blue-600 transition-colors disabled:text-slate-300 disabled:cursor-not-allowed"
-                                    style="min-width: 4rem;">
-                                    <option :value="null">Todos</option>
-                                    <option v-for="oe in availableOes" :key="oe" :value="oe">
-                                        {{ oe }}
-                                    </option>
-                                </select>
-                            </div>
-
-                            <div class="w-px h-6 bg-slate-100"></div>
-
-                            <div class="flex flex-col">
-                                <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-0.5">Ver</span>
-                                <select v-model="selectedVariable"
-                                    class="text-sm font-medium text-slate-700 bg-transparent border-none p-0 focus:ring-0 cursor-pointer hover:text-blue-600 transition-colors">
-                                    <option v-for="variable in availableVariables" :key="variable.key"
-                                        :value="variable.key">
-                                        {{ variable.label }}
-                                    </option>
-                                </select>
+                            <!-- Atajos de teclado -->
+                            <div class="hidden lg:flex items-center gap-2 pl-4 border-l border-slate-100">
+                                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mr-1">Atajos:</span>
+                                <span class="px-1.5 py-0.5 rounded border border-slate-200 bg-slate-50 text-[10px] text-slate-500 font-mono cursor-help transition-colors hover:border-slate-300 hover:text-slate-700"
+                                      v-tippy="{ content: 'Presione Ctrl sobre un punto del grafico para ver los valores de los ensayos de Uster y Tensorapid', placement: 'bottom' }">
+                                    Ctrl Detalle
+                                </span>
+                                <span class="px-1.5 py-0.5 rounded border border-slate-200 bg-slate-50 text-[10px] text-slate-500 font-mono cursor-help transition-colors hover:border-slate-300 hover:text-slate-700"
+                                      v-tippy="{ content: 'Presione Shift sobre un punto del grafico para ver un grafico con los valores de ese dia por cada huso', placement: 'bottom' }">
+                                    Shift Grafico
+                                </span>
                             </div>
                         </div>
-
-                        <template v-if="selectedNomcount">
-                            <div class="w-px h-8 bg-slate-100 mx-2"></div>
-
-                            <!-- Stats Group -->
-                            <div class="flex items-center gap-6">
-                                <div class="flex flex-col">
-                                    <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-0.5">LCL</span>
-                                    <span class="text-sm font-semibold text-blue-600">{{ globalLcl.toFixed(1) }}</span>
-                                </div>
-                                <div class="flex flex-col">
-                                    <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-0.5">Promedio</span>
-                                    <span class="text-sm font-semibold text-slate-700">{{ globalMean.toFixed(1) }}</span>
-                                </div>
-                                <div class="flex flex-col">
-                                    <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-0.5">UCL</span>
-                                    <span class="text-sm font-semibold text-red-600">{{ globalUcl.toFixed(1) }}</span>
-                                </div>
-                                <div class="flex flex-col">
-                                    <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-0.5">Total</span>
-                                    <span class="text-sm font-medium text-slate-600">{{ stats.length }}</span>
-                                </div>
-                            </div>
-
-                            <!-- Keyboard shortcuts hints (Minimalist) -->
-                            <div class="ml-auto flex items-center gap-4">
-                                <div class="flex items-center gap-1.5 opacity-60 hover:opacity-100 transition-opacity cursor-help"
-                                    v-tippy="{ content: 'Presione Ctrl sobre un punto del grafico para ver los valores de los ensayos de Uster y Tensorapid', placement: 'bottom', theme: 'custom' }">
-                                    <kbd class="font-sans text-[10px] font-bold text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded border border-slate-200">Ctrl</kbd>
-                                    <span class="text-[10px] font-medium text-slate-400 tracking-wide uppercase">Detalle</span>
-                                </div>
-                                <div class="flex items-center gap-1.5 opacity-60 hover:opacity-100 transition-opacity cursor-help"
-                                    v-tippy="{ content: 'Presione Shift sobre un punto del grafico para ver un grafico con los valores de ese dia por cada huso', placement: 'bottom', theme: 'custom' }">
-                                    <kbd class="font-sans text-[10px] font-bold text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded border border-slate-200">Shift</kbd>
-                                    <span class="text-[10px] font-medium text-slate-400 tracking-wide uppercase">Grafico</span>
-                                </div>
-                            </div>
-                        </template>
                     </div>
                 </div>
 
