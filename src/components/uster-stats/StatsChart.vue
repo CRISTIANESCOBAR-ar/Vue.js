@@ -119,7 +119,7 @@ function computeRequiredBottomPx(labels, rotateDeg) {
     }
 }
 
-function buildOption(data, xLabelRotate = 0, bottomPx = 90, selectedLegend = null) {
+function buildOption(data, xLabelRotate = 90, bottomPx = 60, selectedLegend = null) {
     // Use formatted timestamp (dd/mm/yy) as x axis label when available; fallback to TESTNR
     const x = data.map(d => (d.timestampFmt ? d.timestampFmt : d.testnr))
     const y = data.map(d => d.mean)
@@ -130,27 +130,22 @@ function buildOption(data, xLabelRotate = 0, bottomPx = 90, selectedLegend = nul
     const globalMeanLine = Array(x.length).fill(props.globalMean)
 
     // Función para calcular el rango Y basado en las series visibles
-    const calculateYRange = (legendState) => {
+    const calculateYRange = (selectedLegend) => {
         const visibleValues = [...y, props.globalMean] // Siempre incluir promedios y media global
         
         // Incluir valores según leyendas activas
-        // Si legendState es null (estado inicial), asumimos que LCL y UCL están ocultos (false)
-        // Si legendState existe, verificamos explícitamente si es true (o no false)
-        
-        const isLclVisible = legendState ? legendState['LCL (-3σ)'] : false
-        const isUclVisible = legendState ? legendState['UCL (+3σ)'] : false
-        const isStandardVisible = legendState ? legendState['Ne Estándar'] : (props.standardValue != null)
-
-        if (isLclVisible) {
+        if (selectedLegend && selectedLegend['LCL (-3σ)'] !== false) {
             visibleValues.push(props.globalLcl)
         }
-        if (isUclVisible) {
+        if (selectedLegend && selectedLegend['UCL (+3σ)'] !== false) {
             visibleValues.push(props.globalUcl)
         }
-        if (props.standardValue != null && isStandardVisible !== false) {
-            visibleValues.push(props.standardValue)
-            visibleValues.push(props.standardValue * 0.985) // Ne Min
-            visibleValues.push(props.standardValue * 1.015) // Ne Max
+        if (props.standardValue != null) {
+            if (!selectedLegend || selectedLegend['Ne Estándar'] !== false) {
+                visibleValues.push(props.standardValue)
+                visibleValues.push(props.standardValue * 0.985) // Ne Min
+                visibleValues.push(props.standardValue * 1.015) // Ne Max
+            }
         }
         
         const yMin = Math.min(...visibleValues) - 0.1
@@ -158,7 +153,7 @@ function buildOption(data, xLabelRotate = 0, bottomPx = 90, selectedLegend = nul
         return { yMin, yMax }
     }
 
-    // Calcular rango inicial usando el estado de leyenda proporcionado
+    // Calcular rango inicial usando el selectedLegend pasado o valores por defecto
     const { yMin, yMax } = calculateYRange(selectedLegend)
 
     const isVertical = xLabelRotate === 90
@@ -166,14 +161,14 @@ function buildOption(data, xLabelRotate = 0, bottomPx = 90, selectedLegend = nul
     return {
         tooltip: {
             trigger: 'axis',
-            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+            backgroundColor: '#ffffff',
             borderColor: '#e2e8f0',
             borderWidth: 1,
             textStyle: {
                 color: '#1e293b',
                 fontSize: 12
             },
-            extraCssText: 'box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); border-radius: 8px; padding: 8px 12px;',
+            extraCssText: 'box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); border-radius: 6px;',
             formatter: (params) => {
                 if (!params || params.length === 0) return ''
 
@@ -184,15 +179,18 @@ function buildOption(data, xLabelRotate = 0, bottomPx = 90, selectedLegend = nul
                 // Fecha formateada y OE (primera línea en negrita)
                 const dateLabel = pointData?.timestampFmt || params[0].axisValue
                 const oe = pointData?.oe ? ` | OE: ${pointData.oe}` : ''
-                let result = `<div style="font-weight: 600; margin-bottom: 6px; color: #0f172a;">${dateLabel}${oe}</div>`
+                let result = `<div style="font-weight: 600; margin-bottom: 6px; color: #0f172a; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px;">${dateLabel}${oe}</div>`
 
                 // Mostrar cada serie con su color, nombre y valor
                 params.forEach(item => {
                     const value = typeof item.value === 'number' ? item.value.toFixed(2) : item.value
-                    result += `<div style="display: flex; align-items: center; margin: 3px 0; font-size: 12px;">
+                    // Ignorar series ocultas o sin valor
+                    if (value === undefined || value === null) return
+                    
+                    result += `<div style="display: flex; align-items: center; margin: 3px 0; font-size: 11px;">
                         ${item.marker} 
                         <span style="margin-left: 6px; color: #475569;">${item.seriesName}:</span>
-                        <span style="margin-left: auto; font-weight: 500; color: #1e293b; padding-left: 8px;">${value}</span>
+                        <span style="margin-left: auto; font-weight: 500; color: #0f172a; padding-left: 8px;">${value}</span>
                     </div>`
                 })
 
@@ -206,17 +204,10 @@ function buildOption(data, xLabelRotate = 0, bottomPx = 90, selectedLegend = nul
             bottom: 0,
             left: 'center',
             selectedMode: true, // Allow clicking legend to show/hide series
-            selected: selectedLegend || {
-                'LCL (-3σ)': false,
-                'UCL (+3σ)': false
-            },
-            textStyle: {
-                color: '#64748b'
-            },
-            itemGap: 16
+            selected: selectedLegend || undefined
         },
         // Grid ajustado para usar todo el alto disponible del contenedor
-        grid: { left: '3%', right: '3%', top: '6%', bottom: bottomPx, containLabel: false, borderColor: '#f1f5f9' },
+        grid: { left: '2%', right: '3%', top: '6%', bottom: bottomPx, containLabel: false },
         xAxis: {
             type: 'category',
             data: x,
@@ -224,18 +215,12 @@ function buildOption(data, xLabelRotate = 0, bottomPx = 90, selectedLegend = nul
                 rotate: xLabelRotate, 
                 interval: 0, 
                 align: isVertical ? 'right' : 'center', 
-                margin: 14,
+                margin: 10,
                 color: '#64748b',
                 fontSize: 11
             },
-            axisLine: {
-                lineStyle: {
-                    color: '#e2e8f0'
-                }
-            },
-            axisTick: {
-                show: false
-            }
+            axisLine: { show: false },
+            axisTick: { show: false }
         },
         yAxis: {
             type: 'value',
@@ -244,20 +229,13 @@ function buildOption(data, xLabelRotate = 0, bottomPx = 90, selectedLegend = nul
             axisLabel: {
                 formatter: (value) => value.toFixed(1),
                 color: '#64748b',
-                fontSize: 11,
-                margin: 12
+                fontSize: 11
             },
             splitLine: {
                 lineStyle: {
-                    color: '#f1f5f9',
-                    type: 'dashed'
+                    type: 'dashed',
+                    color: '#e2e8f0'
                 }
-            },
-            axisLine: {
-                show: false
-            },
-            axisTick: {
-                show: false
             }
         },
         series: [
@@ -275,28 +253,28 @@ function buildOption(data, xLabelRotate = 0, bottomPx = 90, selectedLegend = nul
                 name: 'Media Global',
                 type: 'line',
                 data: globalMeanLine,
-                lineStyle: { type: 'solid', color: '#1d4ed8', width: 1.5 }, // Intense Blue
+                lineStyle: { type: 'solid', color: '#1d4ed8', width: 2 },
                 showSymbol: false
             },
             {
                 name: 'LCL (-3σ)',
                 type: 'line',
                 data: lcl,
-                lineStyle: { type: 'dashed', color: '#f97316', width: 1.5 }, // Orange
+                lineStyle: { type: 'dashed', color: '#f97316', width: 2 },
                 showSymbol: false
             },
             {
                 name: 'UCL (+3σ)',
                 type: 'line',
                 data: ucl,
-                lineStyle: { type: 'dashed', color: '#f97316', width: 1.5 }, // Orange
+                lineStyle: { type: 'dashed', color: '#f97316', width: 2 },
                 showSymbol: false
             },
             {
                 name: 'Ne Estándar',
                 type: 'line',
                 data: props.standardValue != null ? Array(x.length).fill(props.standardValue) : [],
-                lineStyle: { type: 'solid', color: '#16a34a', width: 1.5 }, // Green
+                lineStyle: { type: 'solid', color: '#16a34a', width: 2 },
                 showSymbol: false,
                 z: 10,
                 // Hide from legend when no data
@@ -306,7 +284,7 @@ function buildOption(data, xLabelRotate = 0, bottomPx = 90, selectedLegend = nul
                 name: 'Ne Min (-1.5%)',
                 type: 'line',
                 data: props.standardValue != null ? Array(x.length).fill(props.standardValue * 0.985) : [],
-                lineStyle: { type: 'dashed', color: '#ef4444', width: 1.5 }, // Red
+                lineStyle: { type: 'dashed', color: '#ef4444', width: 1.5 },
                 showSymbol: false,
                 z: 9,
                 silent: props.standardValue == null
@@ -315,7 +293,7 @@ function buildOption(data, xLabelRotate = 0, bottomPx = 90, selectedLegend = nul
                 name: 'Ne Max (+1.5%)',
                 type: 'line',
                 data: props.standardValue != null ? Array(x.length).fill(props.standardValue * 1.015) : [],
-                lineStyle: { type: 'dashed', color: '#ef4444', width: 1.5 }, // Red
+                lineStyle: { type: 'dashed', color: '#ef4444', width: 1.5 },
                 showSymbol: false,
                 z: 9,
                 silent: props.standardValue == null
@@ -332,17 +310,19 @@ function render() {
     const rotate = computeOptimalXLabelRotate(labels)
     // initial estimate (may be refined by chart.finished handler)
     const bottomPx = computeRequiredBottomPx(labels, rotate)
-    
-    // Inicializar legendState en el primer render si es nulo
-    if (isFirstRender && !legendState.value) {
-        legendState.value = {
+    // Determine legend state to use
+    let currentLegend = legendState.value
+    if (isFirstRender) {
+        // Primera vez: LCL y UCL desactivados por defecto
+        currentLegend = {
             'LCL (-3σ)': false,
             'UCL (+3σ)': false
         }
+        legendState.value = currentLegend
         isFirstRender = false
     }
 
-    const opt = buildOption(props.stats, rotate, bottomPx, legendState.value)
+    const opt = buildOption(props.stats, rotate, bottomPx, currentLegend)
     chart.setOption(opt)
 }
 
@@ -476,7 +456,7 @@ onMounted(() => {
             // note: chart.getOption().grid may return px or percent; we compare numerically when possible
             if (!currentBottom || Math.abs(refinedBottom - (Number(currentBottom) || 0)) > 6) {
                 _isUpdatingFromFinished = true
-                // Pass current legend state to preserve Y-axis scaling
+                // Pass current legend state to buildOption to maintain Y-axis scaling
                 const opt2 = buildOption(props.stats, rotate, refinedBottom, legendState.value)
                 // Use setTimeout to avoid "setOption should not be called during main process" warning
                 setTimeout(() => {
