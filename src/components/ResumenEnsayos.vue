@@ -55,7 +55,7 @@
                 </select>
 
                 <label for="oeFilter" class="text-sm text-slate-600">OE:</label>
-                <select id="oeFilter" v-model="oeQuery" :disabled="!neQuery" aria-label="Filtrar por OE"
+                <select id="oeFilter" v-model="oeQuery" aria-label="Filtrar por OE"
                   class="px-2 py-1 border border-slate-200 rounded-md text-sm"
                   style="width:7ch;min-width:7ch;max-width:7ch;">
                   <option value="">Todos</option>
@@ -924,10 +924,14 @@ const oeQuery = ref('')
 const neQuery = ref('')
 const statusFilter = ref('all') // 'all', 'ok', 'out-of-range'
 
-// Get unique Ne values from rows
+// Get unique Ne values from rows (filtered by OE if selected)
 const availableNes = computed(() => {
   const nes = new Set()
   for (const row of rows.value || []) {
+    // Si hay OE seleccionado, solo mostrar Ne de esa OE
+    if (oeQuery.value && String(row.OE) !== oeQuery.value) {
+      continue
+    }
     const ne = row.Ne
     if (ne != null && ne !== '') {
       nes.add(String(ne))
@@ -941,16 +945,17 @@ const availableNes = computed(() => {
   })
 })
 
-// Get unique OEs for selected Ne
+// Get unique OEs (filtered by Ne if selected, or all if no Ne selected)
 const availableOes = computed(() => {
-  if (!neQuery.value) return []
   const oes = new Set()
   for (const row of rows.value || []) {
-    if (String(row.Ne) === neQuery.value) {
-      const oe = row.OE
-      if (oe != null && oe !== '') {
-        oes.add(String(oe))
-      }
+    // Si hay Ne seleccionado, solo mostrar OE que produjeron ese Ne
+    if (neQuery.value && String(row.Ne) !== neQuery.value) {
+      continue
+    }
+    const oe = row.OE
+    if (oe != null && oe !== '') {
+      oes.add(String(oe))
     }
   }
   return Array.from(oes).sort((a, b) => {
@@ -962,9 +967,27 @@ const availableOes = computed(() => {
   })
 })
 
-// Reset oeQuery when neQuery changes
+// Watch para mantener sincronizados los filtros Ne y OE
+// Cuando cambia Ne, limpiar OE si ya no está en la lista de disponibles
 watch(neQuery, () => {
-  oeQuery.value = ''
+  if (oeQuery.value && neQuery.value) {
+    // Verificar si el OE actual sigue siendo válido para el Ne seleccionado
+    const validOes = availableOes.value
+    if (!validOes.includes(oeQuery.value)) {
+      oeQuery.value = ''
+    }
+  }
+})
+
+// Cuando cambia OE, limpiar Ne si ya no está en la lista de disponibles
+watch(oeQuery, () => {
+  if (neQuery.value && oeQuery.value) {
+    // Verificar si el Ne actual sigue siendo válido para el OE seleccionado
+    const validNes = availableNes.value
+    if (!validNes.includes(neQuery.value)) {
+      neQuery.value = ''
+    }
+  }
 })
 
 // Search fields to check for the general search (always search across these columns)

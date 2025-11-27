@@ -181,7 +181,7 @@
         <!-- Columna 2: Nro / Titulo (ahora en el medio) -->
         <div style="width:160px;">
           <!-- Input para ESTIRAJE -->
-          <div class="mb-2 rounded-xl border border-slate-200 bg-white p-3">
+          <div class="mb-2 rounded-xl border border-slate-200 bg-white p-2">
             <div class="flex items-center justify-between gap-2">
               <label class="text-xs font-semibold text-slate-700">Estiraje</label>
               <input 
@@ -190,10 +190,53 @@
                 type="text" 
                 placeholder="150.9"
                 maxlength="5"
-                @keydown.enter.prevent="focusFirstTitulo"
-                @keydown.down.prevent="focusFirstTitulo"
-                class="w-16 px-2 py-1.5 text-sm text-right border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                :disabled="!selectedTestnr"
+                @keydown.enter.prevent="focusPasador"
+                @keydown.down.prevent="focusPasador"
+                :class="[
+                  'w-16 px-2 py-0.5 text-sm text-right border border-slate-300 rounded focus:outline-none transition-all',
+                  !selectedTestnr ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'bg-white hover:bg-slate-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+                ]"
               />
+            </div>
+          </div>
+
+          <!-- Radio buttons para PASADOR -->
+          <div class="mb-2 rounded-xl border border-slate-200 bg-white p-2">
+            <div class="flex items-center justify-between gap-2">
+              <label class="text-xs font-semibold text-slate-700">Pasador</label>
+              <div class="flex items-center gap-3">
+                <label class="flex items-center gap-1 cursor-pointer">
+                  <input 
+                    ref="pasadorSiInput"
+                    v-model="pasador" 
+                    type="radio" 
+                    value="Si"
+                    :disabled="!selectedTestnr"
+                    @keydown="handlePasadorKeydown"
+                    :class="[
+                      'w-3.5 h-3.5 text-blue-600 border-slate-300 focus:ring-2 focus:ring-blue-500',
+                      !selectedTestnr ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+                    ]"
+                  />
+                  <span :class="['text-xs', !selectedTestnr ? 'text-slate-400' : 'text-slate-700']">Si</span>
+                </label>
+                <label class="flex items-center gap-1 cursor-pointer">
+                  <input 
+                    ref="pasadorNoInput"
+                    v-model="pasador" 
+                    type="radio" 
+                    value="No"
+                    :disabled="!selectedTestnr"
+                    @keydown="handlePasadorKeydown"
+                    :class="[
+                      'w-3.5 h-3.5 text-blue-600 border-slate-300 focus:ring-2 focus:ring-blue-500',
+                      !selectedTestnr ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+                    ]"
+                  />
+                  <span :class="['text-xs', !selectedTestnr ? 'text-slate-400' : 'text-slate-700']">No</span>
+                </label>
+              </div>
             </div>
           </div>
 
@@ -330,6 +373,8 @@ import Swal from 'sweetalert2'
 const folderInput = ref(null)
 const saveButton = ref(null)
 const estirajeInput = ref(null)
+const pasadorSiInput = ref(null)
+const pasadorNoInput = ref(null)
 const selectedFolderName = ref('')
 const scanList = ref([])
 const selectedTestnr = ref('')
@@ -343,6 +388,9 @@ const isAbsolutePath = ref(false)
 
 // Campo editable para ESTIRAJE (ingreso manual del usuario)
 const estiraje = ref('')
+
+// Campo para PASADOR (Si/No)
+const pasador = ref('')
 
 // Campo editable para MATCLASS (tipo de material)
 const matclass = ref('')
@@ -786,10 +834,13 @@ onMounted(() => {
 function clearSelection() {
   selectedTestnr.value = ''
   fileText.value = ''
+  // NO limpiar campos TITULO aquí porque tblData.value = [] ya limpia todo
+  // y si limpiamos antes, perdemos los valores del archivo TBL cuando se carga
   tblData.value = []
   tblTestnr.value = ''
   isFocusedIndex.value = null
   estiraje.value = ''
+  pasador.value = ''
 }
 
 async function selectRow(testnr) {
@@ -803,9 +854,19 @@ async function selectRow(testnr) {
   } else {
     estiraje.value = ''
   }
+  if (item && item.pasador) {
+    pasador.value = item.pasador
+  } else {
+    pasador.value = ''
+  }
   
   try {
     await loadSelectedFiles()
+    
+    // NO limpiar los campos TITULO si vienen del archivo TBL
+    // El archivo TBL ya fue guardado con los valores de Titulo editados
+    // Solo debemos limpiarlos si el archivo NO tiene datos
+    // (esto se maneja automáticamente porque parseTblText preserva los valores)
     
     // Solo restaurar matclass desde scanList si fue cambiado manualmente a "Hilo de fantasia"
     // No restaurar si es "Hilo" porque detectFlameInObs() puede haberlo detectado automáticamente
@@ -1292,6 +1353,8 @@ function buildParObject() {
   if (!par.TESTNR) par.TESTNR = selectedTestnr.value || ''
   // include ESTIRAJE from manual input
   if (estiraje.value) par.ESTIRAJE = estiraje.value
+  // include PASADOR from radio button selection
+  if (pasador.value) par.PASADOR = pasador.value
   // include MATCLASS from manual selection (override PAR file value)
   if (matclass.value) par.MATCLASS = matclass.value
   return par
@@ -1384,6 +1447,9 @@ async function saveCurrentTest() {
       if (estiraje.value) {
         savedItem.estiraje = estiraje.value
       }
+      if (pasador.value) {
+        savedItem.pasador = pasador.value
+      }
       if (matclass.value) {
         savedItem.matclass = matclass.value
       }
@@ -1443,6 +1509,12 @@ async function saveCurrentTest() {
       }
 
       if (nextTestnr) {
+        // Limpiar todos los campos TITULO del ensayo actual antes de avanzar
+        if (Array.isArray(tblData.value)) {
+          for (const row of tblData.value) {
+            if (row) row['TITULO'] = ''
+          }
+        }
         // Limpiar la selección anterior antes de cargar el siguiente
         clearSelection()
         matclass.value = 'Hilo'  // Reset matclass to default
@@ -1452,6 +1524,12 @@ async function saveCurrentTest() {
         // after selectRow, focus will be placed on first titulo input
       } else {
         // No hay siguiente ensayo (ej. se guardó el último no-guardado y la lista filtrada quedó vacía)
+        // Limpiar todos los campos TITULO primero
+        if (Array.isArray(tblData.value)) {
+          for (const row of tblData.value) {
+            if (row) row['TITULO'] = ''
+          }
+        }
         // Resetear completamente la UI usando clearSelection() y limpieza adicional
         clearSelection()
         // Limpiar también el .PAR y otros datos cargados
@@ -1461,6 +1539,7 @@ async function saveCurrentTest() {
         selectedTblName.value = ''
         tblFile.value = null
         tblText.value = ''
+        matclass.value = 'Hilo'  // Reset matclass to default
         // Forzar múltiples ticks para asegurar que Vue actualiza el DOM completamente
         await nextTick()
         await nextTick()
@@ -1732,12 +1811,14 @@ function focusPrevTitulo(srcIndex) {
   const ok = validateAndNormalizeTitulo(srcIndex)
   if (!ok) return
   
-  // Si estamos en el primer titulo, ir a estiraje
+  // Si estamos en el primer titulo, ir a Pasador
   if (pos === 0) {
     nextTick(() => {
-      if (estirajeInput.value) {
-        estirajeInput.value.focus()
-        try { estirajeInput.value.select && estirajeInput.value.select() } catch (err) { console.warn('select error', err) }
+      // Ir al radio button que esté seleccionado, o Si por defecto
+      if (pasador.value === 'No' && pasadorNoInput.value) {
+        pasadorNoInput.value.focus()
+      } else if (pasadorSiInput.value) {
+        pasadorSiInput.value.focus()
       }
     })
     return
@@ -1798,6 +1879,65 @@ function focusFirstTitulo() {
         }
       }
     })
+  }
+}
+
+// Función para enfocar el campo Pasador (radio button Si por defecto)
+function focusPasador() {
+  if (!selectedTestnr.value) return
+  nextTick(() => {
+    if (pasadorSiInput.value) {
+      pasadorSiInput.value.focus()
+    }
+  })
+}
+
+// Función para manejar navegación con teclado en radio buttons de Pasador
+function handlePasadorKeydown(event) {
+  const key = event.key
+  
+  // Enter: confirmar selección y pasar a Titulos
+  if (key === 'Enter') {
+    event.preventDefault()
+    focusFirstTitulo()
+    return
+  }
+  
+  // Flecha abajo: pasar a Titulos
+  if (key === 'ArrowDown') {
+    event.preventDefault()
+    focusFirstTitulo()
+    return
+  }
+  
+  // Flecha arriba: volver a Estiraje
+  if (key === 'ArrowUp') {
+    event.preventDefault()
+    if (estirajeInput.value) {
+      estirajeInput.value.focus()
+      try { estirajeInput.value.select && estirajeInput.value.select() } catch (err) { /* ignore */ }
+    }
+    return
+  }
+  
+  // Flecha izquierda: seleccionar Si
+  if (key === 'ArrowLeft') {
+    event.preventDefault()
+    pasador.value = 'Si'
+    nextTick(() => {
+      if (pasadorSiInput.value) pasadorSiInput.value.focus()
+    })
+    return
+  }
+  
+  // Flecha derecha: seleccionar No
+  if (key === 'ArrowRight') {
+    event.preventDefault()
+    pasador.value = 'No'
+    nextTick(() => {
+      if (pasadorNoInput.value) pasadorNoInput.value.focus()
+    })
+    return
   }
 }
 

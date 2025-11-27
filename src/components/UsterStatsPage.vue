@@ -185,7 +185,7 @@
 
                             <!-- Atajos de teclado -->
                             <div class="hidden lg:flex items-center gap-2 pl-4 border-l border-slate-100">
-                                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mr-1">Atajos:</span>
+                                <span class="text-[10px] text-slate-500 font-medium mr-1">Atajos:</span>
                                 <span class="px-1.5 py-0.5 rounded border border-slate-200 bg-slate-50 text-[10px] text-slate-500 font-mono cursor-help transition-colors hover:border-slate-300 hover:text-slate-700"
                                       v-tippy="{ content: 'Presione Ctrl sobre un punto del grafico para ver los valores de los ensayos de Uster y Tensorapid', placement: 'bottom' }">
                                     Ctrl Detalle
@@ -1481,11 +1481,26 @@ onMounted(() => {
             })
         } catch { /* ignore */ }
     }
+    
+    // Add ESC key listener to close modals
+    const handleEscKey = (event) => {
+        if (event.key === 'Escape') {
+            if (modalVisible.value) {
+                closeModal()
+            } else if (husoModalVisible.value) {
+                closeHusoModal()
+            }
+        }
+    }
+    window.addEventListener('keydown', handleEscKey)
+    
+    // Clean up ESC listener on unmount
+    onBeforeUnmount(() => {
+        window.removeEventListener('keydown', handleEscKey)
+        try { window.removeEventListener('resize', handleResize) } catch { /* ignore */ }
+    })
 })
 
-onBeforeUnmount(() => {
-    try { window.removeEventListener('resize', handleResize) } catch { /* ignore */ }
-})
 
 </script>
 

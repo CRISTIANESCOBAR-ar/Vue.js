@@ -26,7 +26,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "2",
     "CREATED_AT": "2025-11-11T13:57:44.792Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "00259",
@@ -55,7 +56,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "2",
     "CREATED_AT": "2025-11-11T14:47:30.433Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "00260",
@@ -84,7 +86,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "2",
     "CREATED_AT": "2025-11-11T14:48:13.305Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "00261",
@@ -113,7 +116,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-25T17:44:59.854Z",
-    "ESTIRAJE": "109.8"
+    "ESTIRAJE": "109.8",
+    "PASADOR": null
   },
   {
     "TESTNR": "00262",
@@ -142,7 +146,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-25T17:45:57.045Z",
-    "ESTIRAJE": "109.8"
+    "ESTIRAJE": "109.8",
+    "PASADOR": null
   },
   {
     "TESTNR": "00263",
@@ -171,7 +176,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-25T17:47:27.976Z",
-    "ESTIRAJE": "109.8"
+    "ESTIRAJE": "109.8",
+    "PASADOR": null
   },
   {
     "TESTNR": "00264",
@@ -200,7 +206,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-25T17:53:28.534Z",
-    "ESTIRAJE": "109.8"
+    "ESTIRAJE": "109.8",
+    "PASADOR": null
   },
   {
     "TESTNR": "00265",
@@ -229,7 +236,38 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-26T15:07:09.965Z",
-    "ESTIRAJE": "109.8"
+    "ESTIRAJE": "109.8",
+    "PASADOR": null
+  },
+  {
+    "TESTNR": "00266",
+    "CATALOG": "CATALOG STC09",
+    "TIME_STAMP": "27/11/2025 09:06",
+    "LOTE": "HD-101-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "007",
+    "MATCLASS": "Hilo de fantasia",
+    "NOMCOUNT": 10,
+    "NOMTWIST": "666",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "GARCIA ALBERTO",
+    "OBS": "10/1FLAME Rotor:72.000-Cardina:9.500-Tension:0.997 ALFA 5.35 HD-101-25",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-27T13:51:37.970Z",
+    "ESTIRAJE": "110.2",
+    "PASADOR": null
   },
   {
     "TESTNR": "05410",
@@ -258,7 +296,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-03T14:19:38.525Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05411",
@@ -287,7 +326,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-03T14:24:01.045Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05412",
@@ -316,7 +356,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-03T14:31:00.212Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05413",
@@ -345,7 +386,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-03T14:41:30.224Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05414",
@@ -374,7 +416,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-03T14:42:14.326Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05415",
@@ -403,7 +446,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-03T14:45:51.704Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05416",
@@ -432,7 +476,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-03T14:46:33.051Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05417",
@@ -461,7 +506,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-03T14:48:05.843Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05418",
@@ -490,7 +536,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-03T14:48:42.824Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05419",
@@ -519,7 +566,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-03T14:49:34.006Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05420",
@@ -548,7 +596,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-03T14:50:16.650Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05421",
@@ -577,7 +626,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-03T14:50:59.499Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05422",
@@ -606,7 +656,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-03T14:51:36.206Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05423",
@@ -635,7 +686,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-03T14:52:02.691Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05424",
@@ -664,7 +716,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-03T14:52:37.146Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05425",
@@ -693,7 +746,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-03T14:53:32.364Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05426",
@@ -722,7 +776,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-03T14:54:07.264Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05427",
@@ -751,7 +806,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-03T14:54:44.773Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05428",
@@ -780,7 +836,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-03T18:50:47.696Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05429",
@@ -809,7 +866,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-03T18:51:29.560Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05430",
@@ -838,7 +896,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-03T18:52:49.063Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05431",
@@ -867,7 +926,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-03T18:53:26.668Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05432",
@@ -896,7 +956,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-03T18:54:12.550Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05433",
@@ -925,7 +986,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-03T18:54:47.820Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05434",
@@ -954,7 +1016,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-03T18:55:14.054Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05435",
@@ -983,7 +1046,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-03T18:56:44.470Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05436",
@@ -1012,7 +1076,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-04T18:46:15.531Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05437",
@@ -1041,7 +1106,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-04T18:46:43.275Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05438",
@@ -1070,7 +1136,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-04T18:47:12.242Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05439",
@@ -1099,7 +1166,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-04T18:47:58.189Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05440",
@@ -1128,7 +1196,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-04T18:48:21.995Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05441",
@@ -1157,7 +1226,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-04T18:49:14.797Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05442",
@@ -1186,7 +1256,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-04T18:49:44.954Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05443",
@@ -1215,7 +1286,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-05T18:01:07.020Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05444",
@@ -1244,7 +1316,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-05T18:01:48.564Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05445",
@@ -1273,7 +1346,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-05T18:02:38.234Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05446",
@@ -1302,7 +1376,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-05T19:25:28.593Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05447",
@@ -1331,7 +1406,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-05T19:26:28.732Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05448",
@@ -1360,7 +1436,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-06T14:30:26.777Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05449",
@@ -1389,7 +1466,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-06T14:32:03.052Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05450",
@@ -1418,7 +1496,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-06T14:32:30.507Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05451",
@@ -1447,7 +1526,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-06T14:35:09.832Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05452",
@@ -1476,7 +1556,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-06T14:35:32.251Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05453",
@@ -1505,7 +1586,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-06T14:36:02.807Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05454",
@@ -1534,7 +1616,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-06T14:38:08.240Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05455",
@@ -1563,7 +1646,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-06T14:38:48.879Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05456",
@@ -1592,7 +1676,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-09T23:54:35.017Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05457",
@@ -1621,7 +1706,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-10T00:02:19.181Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05458",
@@ -1650,7 +1736,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-10T00:02:57.302Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05459",
@@ -1679,7 +1766,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-10T00:04:28.284Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05460",
@@ -1708,7 +1796,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-10T00:05:01.780Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05461",
@@ -1737,7 +1826,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-10T14:34:22.376Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05462",
@@ -1766,7 +1856,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-10T14:34:58.286Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05463",
@@ -1795,7 +1886,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-10T14:35:33.272Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05464",
@@ -1824,7 +1916,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-10T14:36:51.349Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05465",
@@ -1853,7 +1946,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-10T14:41:51.291Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05466",
@@ -1882,7 +1976,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-11T14:50:14.523Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05467",
@@ -1911,7 +2006,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-11T14:50:46.589Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05468",
@@ -1940,7 +2036,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-11T14:51:12.266Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05469",
@@ -1969,7 +2066,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-11T14:52:29.976Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05470",
@@ -1998,7 +2096,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-11T14:53:09.001Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05471",
@@ -2027,7 +2126,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-11T14:53:35.835Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05472",
@@ -2056,7 +2156,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-11T14:55:17.558Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05473",
@@ -2085,7 +2186,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-11T14:55:46.323Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05474",
@@ -2114,7 +2216,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-11T14:56:06.788Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05475",
@@ -2143,7 +2246,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-12T15:15:20.111Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05476",
@@ -2172,7 +2276,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-12T15:15:50.962Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05477",
@@ -2201,7 +2306,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-12T15:16:13.604Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05478",
@@ -2230,7 +2336,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-12T15:17:23.921Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05479",
@@ -2259,7 +2366,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-12T15:17:48.195Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05480",
@@ -2288,7 +2396,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-13T13:39:10.796Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05481",
@@ -2317,7 +2426,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-13T13:39:43.484Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05482",
@@ -2346,7 +2456,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-13T13:40:17.350Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05483",
@@ -2375,7 +2486,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-13T13:41:22.586Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05484",
@@ -2404,7 +2516,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-13T13:41:54.574Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05485",
@@ -2433,7 +2546,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-14T15:00:49.084Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05486",
@@ -2462,7 +2576,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-14T15:01:29.930Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05487",
@@ -2491,7 +2606,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-14T15:02:04.705Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05488",
@@ -2520,7 +2636,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-14T15:04:12.561Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05489",
@@ -2549,7 +2666,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-14T15:04:43.628Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05490",
@@ -2578,7 +2696,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-14T15:05:18.863Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05491",
@@ -2607,7 +2726,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-14T15:06:16.781Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05492",
@@ -2636,7 +2756,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-14T15:07:17.656Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05493",
@@ -2665,7 +2786,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-17T13:25:19.104Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05494",
@@ -2694,7 +2816,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-17T13:25:44.075Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05495",
@@ -2723,7 +2846,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-17T13:26:24.258Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05496",
@@ -2752,7 +2876,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-17T13:35:18.423Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05497",
@@ -2781,7 +2906,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-17T13:29:52.391Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05498",
@@ -2810,7 +2936,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-17T13:30:27.672Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05499",
@@ -2839,7 +2966,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-17T13:30:56.959Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05500",
@@ -2868,7 +2996,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-17T13:32:10.309Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05501",
@@ -2897,7 +3026,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-17T13:32:46.029Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05502",
@@ -2926,7 +3056,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-17T13:33:11.397Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05503",
@@ -2955,7 +3086,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-19T14:25:57.811Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05504",
@@ -2984,7 +3116,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-19T14:22:49.645Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05505",
@@ -3013,7 +3146,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-19T14:23:25.546Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05506",
@@ -3042,7 +3176,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-19T14:24:06.221Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05507",
@@ -3071,7 +3206,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-19T14:26:45.973Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05508",
@@ -3100,7 +3236,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-19T14:27:23.516Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05509",
@@ -3129,7 +3266,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-19T14:29:05.022Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05510",
@@ -3158,7 +3296,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-19T14:29:30.949Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05511",
@@ -3187,7 +3326,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-19T14:29:58.035Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05512",
@@ -3216,7 +3356,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-19T14:31:56.557Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05513",
@@ -3245,7 +3386,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-19T14:32:19.028Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05514",
@@ -3274,7 +3416,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-19T14:32:55.852Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05515",
@@ -3303,7 +3446,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-19T14:34:16.922Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05516",
@@ -3332,7 +3476,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-19T14:34:54.739Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05518",
@@ -3361,7 +3506,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-21T16:25:07.461Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05519",
@@ -3390,7 +3536,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-21T16:25:36.299Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05520",
@@ -3419,7 +3566,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-21T16:26:09.139Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05521",
@@ -3448,7 +3596,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-21T16:27:44.165Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05522",
@@ -3477,7 +3626,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-21T16:28:35.945Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05523",
@@ -3506,7 +3656,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-21T16:29:01.298Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05524",
@@ -3535,7 +3686,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-21T16:29:57.844Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05525",
@@ -3564,7 +3716,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-21T16:30:17.280Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05526",
@@ -3593,7 +3746,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-21T16:30:48.764Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05527",
@@ -3622,7 +3776,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-21T16:31:36.240Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05528",
@@ -3651,7 +3806,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-21T16:32:04.564Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05529",
@@ -3680,7 +3836,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-21T16:32:22.836Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05530",
@@ -3709,7 +3866,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-25T16:50:44.770Z",
-    "ESTIRAJE": "102.5"
+    "ESTIRAJE": "102.5",
+    "PASADOR": null
   },
   {
     "TESTNR": "05531",
@@ -3738,7 +3896,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-25T16:53:30.226Z",
-    "ESTIRAJE": "130.2"
+    "ESTIRAJE": "130.2",
+    "PASADOR": null
   },
   {
     "TESTNR": "05532",
@@ -3767,7 +3926,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-25T16:54:02.826Z",
-    "ESTIRAJE": "130.3"
+    "ESTIRAJE": "130.3",
+    "PASADOR": null
   },
   {
     "TESTNR": "05533",
@@ -3796,7 +3956,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-25T16:57:49.702Z",
-    "ESTIRAJE": "102.6"
+    "ESTIRAJE": "102.6",
+    "PASADOR": null
   },
   {
     "TESTNR": "05534",
@@ -3825,7 +3986,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-25T16:59:39.395Z",
-    "ESTIRAJE": "102.5"
+    "ESTIRAJE": "102.5",
+    "PASADOR": null
   },
   {
     "TESTNR": "05535",
@@ -3854,7 +4016,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-25T17:00:38.267Z",
-    "ESTIRAJE": "90.0"
+    "ESTIRAJE": "90.0",
+    "PASADOR": null
   },
   {
     "TESTNR": "05536",
@@ -3883,7 +4046,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-25T17:02:15.123Z",
-    "ESTIRAJE": "102.6"
+    "ESTIRAJE": "102.6",
+    "PASADOR": null
   },
   {
     "TESTNR": "05537",
@@ -3912,7 +4076,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-25T17:02:34.545Z",
-    "ESTIRAJE": "130.2"
+    "ESTIRAJE": "130.2",
+    "PASADOR": null
   },
   {
     "TESTNR": "05538",
@@ -3941,7 +4106,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-25T17:02:57.021Z",
-    "ESTIRAJE": "130.3"
+    "ESTIRAJE": "130.3",
+    "PASADOR": null
   },
   {
     "TESTNR": "05539",
@@ -3970,7 +4136,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-25T17:03:52.260Z",
-    "ESTIRAJE": "72.0"
+    "ESTIRAJE": "72.0",
+    "PASADOR": null
   },
   {
     "TESTNR": "05540",
@@ -3999,7 +4166,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-25T17:04:31.728Z",
-    "ESTIRAJE": "102.5"
+    "ESTIRAJE": "102.5",
+    "PASADOR": null
   },
   {
     "TESTNR": "05541",
@@ -4028,7 +4196,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-26T14:40:52.272Z",
-    "ESTIRAJE": "101.7"
+    "ESTIRAJE": "101.7",
+    "PASADOR": null
   },
   {
     "TESTNR": "05542",
@@ -4057,7 +4226,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-26T14:41:37.479Z",
-    "ESTIRAJE": "72"
+    "ESTIRAJE": "72",
+    "PASADOR": null
   },
   {
     "TESTNR": "05543",
@@ -4086,7 +4256,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-25T17:06:17.302Z",
-    "ESTIRAJE": "102.5"
+    "ESTIRAJE": "102.5",
+    "PASADOR": null
   },
   {
     "TESTNR": "05544",
@@ -4115,7 +4286,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-26T14:42:46.001Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05545",
@@ -4144,7 +4316,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-26T14:43:20.128Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05546",
@@ -4173,7 +4346,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-26T14:44:38.515Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05547",
@@ -4202,7 +4376,8 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-26T14:47:38.911Z",
-    "ESTIRAJE": null
+    "ESTIRAJE": null,
+    "PASADOR": null
   },
   {
     "TESTNR": "05548",
@@ -4231,6 +4406,157 @@
     "SLOT": "3",
     "ABSORBERPRESSURE": "1",
     "CREATED_AT": "2025-11-26T14:48:20.545Z",
-    "ESTIRAJE": "101.7"
+    "ESTIRAJE": "101.7",
+    "PASADOR": null
+  },
+  {
+    "TESTNR": "05549",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "26/11/2025 15:55",
+    "LOTE": "HD-101-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "009",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 7,
+    "NOMTWIST": "552",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "Aquino Kevin",
+    "OBS": "7/1Nec Rotor:80.000 Cardina:9.500 Tension:0.981 ALFA:5.30(rotor 40 XTC-BD)",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-27T14:04:22.984Z",
+    "ESTIRAJE": "72.0",
+    "PASADOR": null
+  },
+  {
+    "TESTNR": "05550",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "26/11/2025 16:46",
+    "LOTE": "HD-101-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "010",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 10,
+    "NOMTWIST": "660",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "Aquino Kevin",
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:1.002  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-27T14:05:09.016Z",
+    "ESTIRAJE": "102.5",
+    "PASADOR": null
+  },
+  {
+    "TESTNR": "05551",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "27/11/2025 00:00",
+    "LOTE": "HD-101-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "003 LP",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 12.5,
+    "NOMTWIST": "738",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "Muniz Alicia",
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.006  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-27T14:05:48.402Z",
+    "ESTIRAJE": "130.3",
+    "PASADOR": null
+  },
+  {
+    "TESTNR": "05552",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "27/11/2025 02:29",
+    "LOTE": "HD-101-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "003 LIM",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 12.5,
+    "NOMTWIST": "738",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "Muniz Alicia",
+    "OBS": "12.5/1Nec Rotor:90.000 Cardina:9.500 Tension:1.006  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-27T14:06:15.624Z",
+    "ESTIRAJE": "130.2",
+    "PASADOR": null
+  },
+  {
+    "TESTNR": "05553",
+    "CATALOG": "CATALOG STC05",
+    "TIME_STAMP": "27/11/2025 08:00",
+    "LOTE": "HD-101-25",
+    "SORTIMENT": "OPEN END",
+    "ARTICLE": "DENIM",
+    "MASCHNR": "002LIM",
+    "MATCLASS": "Hilo",
+    "NOMCOUNT": 10,
+    "NOMTWIST": "660",
+    "USCODE": "100% CO, hilo hilado en rotor, cardado, bobina, tejido, 2018",
+    "FB_MIC": null,
+    "FB_TIPO": null,
+    "FB_LONG": null,
+    "FB_PORC": 0,
+    "LABORANT": "GARCIA ALBERTO",
+    "OBS": "10/1Nec Rotor:80.000 Cardina:9.500 Tension:1.007  alfa:5.3",
+    "TUNAME": "UT5-1",
+    "GROUPS": "10",
+    "WITHIN": "1",
+    "TOTAL": 10,
+    "SPEED": "400",
+    "TESTTIME": "2.50",
+    "SLOT": "3",
+    "ABSORBERPRESSURE": "1",
+    "CREATED_AT": "2025-11-27T14:06:51.810Z",
+    "ESTIRAJE": "102.6",
+    "PASADOR": null
   }
 ]

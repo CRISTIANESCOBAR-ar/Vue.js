@@ -405,15 +405,26 @@ watch(() => props.values, () => {
 onMounted(() => {
     console.log('[HusoDetailModal] Component mounted')
     // Don't initialize chart here, wait for visible watcher
+    
+    // Add ESC key listener to close modal
+    const handleEscKey = (event) => {
+        if (event.key === 'Escape' && props.visible) {
+            emit('close')
+        }
+    }
+    window.addEventListener('keydown', handleEscKey)
+    
+    // Clean up on unmount
+    onBeforeUnmount(() => {
+        window.removeEventListener('keydown', handleEscKey)
+        console.log('[HusoDetailModal] Component unmounting')
+        if (chart && !chart.isDisposed()) {
+            chart.dispose()
+            chart = null
+        }
+    })
 })
 
-onBeforeUnmount(() => {
-    console.log('[HusoDetailModal] Component unmounting')
-    if (chart && !chart.isDisposed()) {
-        chart.dispose()
-        chart = null
-    }
-})
 </script>
 
 <style scoped>
