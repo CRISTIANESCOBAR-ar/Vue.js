@@ -1667,6 +1667,87 @@ app.get('/api/report/informe-completo', async (req, res) => {
   }
 })
 
+// Sync Oracle to Firebase endpoint
+app.post('/api/sync-firebase', async (req, res) => {
+  try {
+    console.log('🔄 Starting Oracle to Firebase sync...')
+    
+    // Importar dinámicamente los módulos necesarios
+    const { spawn } = await import('child_process')
+    const { promisify } = await import('util')
+    const execPromise = promisify(spawn)
+    
+    // Paso 1: Exportar de Oracle a JSON
+    console.log('📤 Step 1: Exporting from Oracle...')
+    const exportProcess = spawn('node', ['firebase/export-oracle.js'], {
+      cwd: new URL('.', import.meta.url).pathname.replace(/^\/([A-Z]:)/, '$1'),
+      shell: true
+    })
+    
+    let exportOutput = ''
+    let exportError = ''
+    
+    exportProcess.stdout.on('data', (data) => {
+      exportOutput += data.toString()
+      console.log(data.toString())
+    })
+    
+    exportProcess.stderr.on('data', (data) => {
+      exportError += data.toString()
+      console.error(data.toString())
+    })
+    
+    await new Promise((resolve, reject) => {
+      exportProcess.on('close', (code) => {
+        if (code === 0) resolve()
+        else reject(new Error(`Export failed with code ${code}: ${exportError}`))
+      })
+    })
+    
+    // Paso 2: Importar a Firebase
+    console.log('📥 Step 2: Importing to Firebase...')
+    const importProcess = spawn('node', ['firebase/import-temp.js'], {
+      cwd: new URL('.', import.meta.url).pathname.replace(/^\/([A-Z]:)/, '$1'),
+      shell: true
+    })
+    
+    let importOutput = ''
+    let importError = ''
+    
+    importProcess.stdout.on('data', (data) => {
+      importOutput += data.toString()
+      console.log(data.toString())
+    })
+    
+    importProcess.stderr.on('data', (data) => {
+      importError += data.toString()
+      console.error(data.toString())
+    })
+    
+    await new Promise((resolve, reject) => {
+      importProcess.on('close', (code) => {
+        if (code === 0) resolve()
+        else reject(new Error(`Import failed with code ${code}: ${importError}`))
+      })
+    })
+    
+    console.log('✅ Sync completed successfully')
+    res.json({ 
+      success: true, 
+      message: 'Datos sincronizados exitosamente con Firebase',
+      exportOutput,
+      importOutput
+    })
+    
+  } catch (error) {
+    console.error('❌ Sync error:', error)
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    })
+  }
+})
+
 // Print registered routes (helps debugging 'Cannot GET /...')
 function printRegisteredRoutes() {
   try {

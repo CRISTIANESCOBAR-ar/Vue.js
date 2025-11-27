@@ -153,6 +153,34 @@
                   y, si hay una versión nueva, se te ofrecerá actualizar (actualización via Service Worker si está
                   disponible).</p>
 
+                <!-- Sincronización con Firebase -->
+                <div class="mt-6 p-4 border border-gray-200 rounded">
+                  <h4 class="text-md font-medium mb-3">Sincronización de Datos</h4>
+                  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                    <div class="text-sm text-gray-700">
+                      Exportar datos desde Oracle e importarlos a Firebase. Esta acción actualiza todos los registros en la base de datos en línea.
+                    </div>
+                    <button 
+                      @click="syncFirebase" 
+                      :disabled="isSyncingFirebase"
+                      class="px-4 py-2 bg-green-600 text-white rounded disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 hover:bg-green-700 transition-colors"
+                    >
+                      <svg v-if="isSyncingFirebase" class="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                      </svg>
+                      <svg v-else class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      </svg>
+                      <span v-if="!isSyncingFirebase">Sincronizar con Firebase</span>
+                      <span v-else>Sincronizando...</span>
+                    </button>
+                  </div>
+                  <p class="text-xs text-gray-500 mt-2">
+                    Este proceso puede tardar unos segundos. Se exportarán los datos de Oracle y se actualizarán en Firebase automáticamente.
+                  </p>
+                </div>
+
                 <!-- Vista previa de fuentes — componente de ayuda para elegir tipografías -->
                 <div class="mt-4">
                   <FontSelector />
@@ -271,6 +299,7 @@ const updateAvailable = ref(false)
 const isCheckingUpdates = ref(false)
 const isLatest = ref(false)
 const lastChecked = ref(null)
+const isSyncingFirebase = ref(false)
 let autoCheckInterval = null
 
 function onVisibility() {
@@ -519,6 +548,69 @@ async function forceReload() {
   } catch (err) {
     console.warn('forceReload error', err)
     try { if (typeof window !== 'undefined') window.location.reload() } catch { /* noop */ }
+  }
+}
+
+async function syncFirebase() {
+  if (isSyncingFirebase.value) return
+  
+  const { isConfirmed } = await Swal.fire({
+    title: 'Sincronizar con Firebase',
+    text: '¿Deseas exportar los datos de Oracle e importarlos a Firebase? Este proceso puede tardar unos segundos.',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, sincronizar',
+    cancelButtonText: 'Cancelar'
+  })
+  
+  if (!isConfirmed) return
+  
+  isSyncingFirebase.value = true
+  
+  try {
+    // Mostrar modal de progreso
+    Swal.fire({
+      title: 'Sincronizando datos...',
+      html: 'Exportando de Oracle e importando a Firebase...<br><div class="mt-3"><div class="animate-spin inline-block w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full"></div></div>',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      showConfirmButton: false,
+      didOpen: () => {
+        Swal.showLoading()
+      }
+    })
+    
+    // Llamar al endpoint del backend
+    const response = await fetch('http://localhost:3001/api/sync-firebase', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    
+    const result = await response.json()
+    
+    if (result.success) {
+      await Swal.fire({
+        icon: 'success',
+        title: '¡Sincronización exitosa!',
+        text: result.message,
+        confirmButtonText: 'OK'
+      })
+    } else {
+      throw new Error(result.error || 'Error desconocido')
+    }
+    
+  } catch (error) {
+    console.error('Sync error:', error)
+    await Swal.fire({
+      icon: 'error',
+      title: 'Error en la sincronización',
+      text: error.message || 'No se pudo completar la sincronización. Verifica que el servidor backend esté corriendo.',
+      confirmButtonText: 'OK'
+    })
+  } finally {
+    isSyncingFirebase.value = false
   }
 }
 
