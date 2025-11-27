@@ -9,9 +9,9 @@ import oracledb from 'oracledb'
 // Resolve environment variables safely in Node and non-Node runtimes (avoids "process is not defined")
 const _env =
   typeof globalThis !== 'undefined' &&
-  'process' in globalThis &&
-  globalThis.process &&
-  globalThis.process.env
+    'process' in globalThis &&
+    globalThis.process &&
+    globalThis.process.env
     ? globalThis.process.env
     : typeof globalThis !== 'undefined' && globalThis.__env__
       ? globalThis.__env__

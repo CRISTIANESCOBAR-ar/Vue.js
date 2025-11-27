@@ -20,9 +20,9 @@ async function deleteCollection(collectionName) {
   console.log(`🗑️  Deleting ${collectionName} collection...`)
   const collectionRef = db.collection(collectionName)
   const batchSize = 500
-  
+
   const query = collectionRef.limit(batchSize)
-  
+
   return new Promise((resolve, reject) => {
     deleteQueryBatch(query, resolve, reject)
   })
@@ -31,20 +31,20 @@ async function deleteCollection(collectionName) {
 async function deleteQueryBatch(query, resolve, reject) {
   try {
     const snapshot = await query.get()
-    
+
     if (snapshot.size === 0) {
       resolve()
       return
     }
-    
+
     const batch = db.batch()
     snapshot.docs.forEach((doc) => {
       batch.delete(doc.ref)
     })
-    
+
     await batch.commit()
     console.log(`   ✓ Deleted ${snapshot.size} documents`)
-    
+
     process.nextTick(() => {
       deleteQueryBatch(query, resolve, reject)
     })
@@ -59,7 +59,7 @@ async function main() {
     await deleteCollection('uster_tbl')
     await deleteCollection('tensorapid_par')
     await deleteCollection('tensorapid_tbl')
-    
+
     console.log('\n✅ All lowercase collections deleted!')
   } catch (error) {
     console.error('❌ Delete failed:', error)

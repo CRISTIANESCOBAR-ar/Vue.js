@@ -8,11 +8,11 @@ const config = {
 
 async function checkCounts() {
   let connection
-  
+
   try {
     console.log('🔌 Connecting to Oracle...\n')
     connection = await oracledb.getConnection(config)
-    
+
     const queries = [
       { name: 'USTER_PAR', sql: 'SELECT COUNT(*) as cnt FROM USTER_PAR' },
       { name: 'USTER_TBL', sql: 'SELECT COUNT(*) as cnt FROM USTER_TBL' },
@@ -21,12 +21,12 @@ async function checkCounts() {
       { name: 'Latest USTER', sql: "SELECT MAX(TIME_STAMP) as latest FROM USTER_PAR" },
       { name: 'Latest TENSOR', sql: "SELECT MAX(TIME_STAMP) as latest FROM TENSORAPID_PAR" }
     ]
-    
+
     for (const query of queries) {
       const result = await connection.execute(query.sql)
       console.log(`${query.name}:`, result.rows[0])
     }
-    
+
   } catch (err) {
     console.error('❌ Error:', err)
   } finally {

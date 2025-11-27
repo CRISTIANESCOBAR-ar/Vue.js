@@ -64,6 +64,45 @@
                   </option>
                 </select>
               </div>
+
+              <!-- Filtros de desviación -->
+              <div class="flex items-center gap-1 ml-2">
+                <!-- Todos -->
+                <button
+                  @click="filterAll"
+                  v-tippy="{ content: statusFilter === 'all' ? 'Mostrando todos' : 'Mostrar todos los ensayos', placement: 'bottom', theme: 'custom' }"
+                  class="px-2 py-1 border rounded text-xs transition-all hover:shadow-sm"
+                  :class="statusFilter === 'all' ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'"
+                >
+                  <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                  </svg>
+                </button>
+
+                <!-- Dentro de rango -->
+                <button
+                  @click="filterOk"
+                  v-tippy="{ content: statusFilter === 'ok' ? 'Clic para quitar filtro' : 'Solo ensayos dentro de ±1.5%', placement: 'bottom', theme: 'custom' }"
+                  class="px-2 py-1 border rounded text-xs transition-all hover:shadow-sm"
+                  :class="statusFilter === 'ok' ? 'border-green-500 bg-green-50 text-green-700' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'"
+                >
+                  <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </button>
+
+                <!-- Fuera de rango -->
+                <button
+                  @click="filterOutOfRange"
+                  v-tippy="{ content: statusFilter === 'out-of-range' ? 'Clic para quitar filtro' : 'Solo ensayos fuera de ±1.5%', placement: 'bottom', theme: 'custom' }"
+                  class="px-2 py-1 border rounded text-xs transition-all hover:shadow-sm"
+                  :class="statusFilter === 'out-of-range' ? 'border-red-500 bg-red-50 text-red-700' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'"
+                >
+                  <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
 
@@ -883,6 +922,7 @@ function fmtStat(val) {
 // Quick client-side filters for OE and Ne
 const oeQuery = ref('')
 const neQuery = ref('')
+const statusFilter = ref('all') // 'all', 'ok', 'out-of-range'
 
 // Get unique Ne values from rows
 const availableNes = computed(() => {
@@ -957,16 +997,31 @@ function clearSearch() {
   debouncedQ.value = ''
 }
 
+// Filter functions para desviación - toggle behavior
+function filterAll() {
+  statusFilter.value = 'all'
+}
+
+function filterOk() {
+  // Toggle: if already filtering by 'ok', clear the filter
+  statusFilter.value = statusFilter.value === 'ok' ? 'all' : 'ok'
+}
+
+function filterOutOfRange() {
+  // Toggle: if already filtering by 'out-of-range', clear the filter
+  statusFilter.value = statusFilter.value === 'out-of-range' ? 'all' : 'out-of-range'
+}
+
 const filteredRows = computed(() => {
   const term = (debouncedQ.value || '').toString().trim().toLowerCase()
   const oe = (oeQuery.value || '').toString().trim().toLowerCase()
   const ne = (neQuery.value || '').toString().trim().toLowerCase()
   const list = rows.value || []
-  if (!term && !oe && !ne) return list
   const parts = term ? term.split(/\s+/).filter(Boolean) : []
+  
   return list.filter(r => {
     // General text search
-    const textMatch = parts.every((p) => {
+    const textMatch = !term || parts.every((p) => {
       return fieldsToCheck.value.some(field => {
         const val = r[field]
         if (val == null) return false
@@ -983,7 +1038,28 @@ const filteredRows = computed(() => {
       const v = r.Ne == null ? '' : String(r.Ne).toLowerCase()
       return v.includes(ne)
     })()
-    return textMatch && oeMatch && neMatch
+    
+    // Status filter (desviación)
+    let statusMatch = true
+    if (statusFilter.value !== 'all') {
+      const desvio = r['Desvío %']
+      const desvioNum = desvio != null ? parseFloat(String(desvio).replace('%', '').replace(',', '.').replace('+', '')) : null
+      
+      if (desvioNum != null && !isNaN(desvioNum)) {
+        if (statusFilter.value === 'ok') {
+          // Dentro de rango: -1.5% <= desviación <= +1.5%
+          statusMatch = desvioNum >= -1.5 && desvioNum <= 1.5
+        } else if (statusFilter.value === 'out-of-range') {
+          // Fuera de rango: desviación < -1.5% o desviación > +1.5%
+          statusMatch = desvioNum < -1.5 || desvioNum > 1.5
+        }
+      } else {
+        // Si no hay desviación válida, no matchea los filtros ok/out-of-range
+        statusMatch = false
+      }
+    }
+    
+    return textMatch && oeMatch && neMatch && statusMatch
   })
 })
 

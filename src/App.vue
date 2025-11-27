@@ -458,10 +458,9 @@ async function checkForUpdates(opts = { notifyOnFailure: false }) {
     // If the check was initiated by the user, show a modal error. For automatic background checks, avoid modal noise.
     if (opts && opts.notifyOnFailure) {
       try { await Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo comprobar la versión publicada.' }) } catch { /* noop */ }
-    } else {
-      // non-blocking toast to inform silently
-      try { await Swal.fire({ toast: true, position: 'top-end', icon: 'warning', title: 'No se pudo comprobar la versión publicada.', showConfirmButton: false, timer: 2000 }) } catch { /* noop */ }
     }
+    // En desarrollo (localhost), no mostrar toast para evitar ruido
+    // En producción, el chequeo automático fallará silenciosamente (solo log en consola)
   } finally {
     // mark last checked time (ISO string), persist
     try {

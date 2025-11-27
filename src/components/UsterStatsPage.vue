@@ -158,23 +158,22 @@
                                 <span class="text-slate-600">Total de ensayos:</span>
                                 <span class="font-semibold">{{ stats.length }}</span>
                             </div>
-                        </template>
 
-                        <!-- Atajos de teclado -->
-                        <!-- Atajos de teclado -->
-                        <div class="flex items-center gap-2 pl-3 border-l border-slate-200">
-                            <span class="text-xs text-slate-500 font-medium">Atajos:</span>
-                            <div class="flex items-center gap-1">
-                                <kbd v-tippy="{ content: 'Ver graficos de Titulos Ne por Huso', placement: 'bottom' }"
-                                    class="inline-block px-2 py-1 text-xs font-semibold text-slate-800 bg-white border border-slate-300 rounded-md shadow-sm cursor-help hover:bg-slate-50 transition-colors">
-                                    Shift
-                                </kbd>
-                                <kbd v-tippy="{ content: 'Ver datos analizados en Uster y TensoRapid', placement: 'bottom' }"
-                                    class="inline-block px-2 py-1 text-xs font-semibold text-slate-800 bg-white border border-slate-300 rounded-md shadow-sm cursor-help hover:bg-slate-50 transition-colors">
-                                    Ctrl
-                                </kbd>
+                            <!-- Keyboard shortcuts hints -->
+                            <div class="ml-auto flex items-center gap-3 text-xs text-slate-500 hidden xl:flex border border-slate-200 rounded px-2 py-1 bg-slate-50/50">
+                                <span class="text-slate-400 font-medium">Atajos:</span>
+                                <div class="flex items-center gap-1">
+                                    <kbd
+                                        class="px-1.5 py-0.5 bg-white border border-slate-200 rounded text-[10px] font-sans font-medium text-slate-600 shadow-sm">Ctrl</kbd>
+                                    <span>Detalle</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <kbd
+                                        class="px-1.5 py-0.5 bg-white border border-slate-200 rounded text-[10px] font-sans font-medium text-slate-600 shadow-sm">Shift</kbd>
+                                    <span>Grafico</span>
+                                </div>
                             </div>
-                        </div>
+                        </template>
                     </div>
                 </div>
 
