@@ -194,6 +194,8 @@
                   </th>
                   <th class="px-2 py-[0.3rem] text-center font-semibold text-slate-700 border-b border-slate-200">Estiraje
                   </th>
+                  <th class="px-2 py-[0.3rem] text-center font-semibold text-slate-700 border-b border-slate-200">Pasador
+                  </th>
                   <th class="px-2 py-[0.3rem] text-center font-semibold text-slate-700 border-b border-slate-200">CVm %
                   </th>
                   <th class="px-3 py-3 text-center font-semibold text-slate-700 border-b border-slate-200">Delg -30%
@@ -239,6 +241,7 @@
                   </td>
                   <td class="px-2 py-[0.3rem] text-center text-slate-700">{{ row.Titulo }}</td>
                   <td class="px-2 py-[0.3rem] text-center text-slate-700">{{ row.Estiraje || '-' }}</td>
+                  <td class="px-2 py-[0.3rem] text-center text-slate-700">{{ row.Pasador || '-' }}</td>
                   <td class="px-2 py-[0.3rem] text-center text-slate-700">{{ row['CVm %'] }}</td>
                   <td class="px-2 py-[0.3rem] text-center text-slate-700">{{ row['Delg -30%'] }}</td>
                   <td class="px-2 py-[0.3rem] text-center text-slate-700">{{ row['Delg -40%'] }}</td>
@@ -1359,7 +1362,14 @@ function modalPrev() {
   const list = filteredRows.value || []
   const prev = list[modalIndex.value - 1]
   const testnr = prev?.Ensayo || prev?.TESTNR || prev?.testnr || prev?.Testnr
-  if (testnr != null) openDetail(testnr)
+  if (testnr != null) {
+    // Verificar que allData esté disponible antes de abrir el detalle
+    if (!allData.value || !allData.value.usterTbl) {
+      console.warn('Datos aún no cargados, esperando...')
+      return
+    }
+    openDetail(testnr)
+  }
 }
 
 function modalNext() {
@@ -1367,7 +1377,14 @@ function modalNext() {
   const list = filteredRows.value || []
   const nxt = list[modalIndex.value + 1]
   const testnr = nxt?.Ensayo || nxt?.TESTNR || nxt?.testnr || nxt?.Testnr
-  if (testnr != null) openDetail(testnr)
+  if (testnr != null) {
+    // Verificar que allData esté disponible antes de abrir el detalle
+    if (!allData.value || !allData.value.usterTbl) {
+      console.warn('Datos aún no cargados, esperando...')
+      return
+    }
+    openDetail(testnr)
+  }
 }
 
 function openDetail(testnr) {
@@ -1912,6 +1929,7 @@ async function loadRows() {
         'Desvío %': desvioPercent,
         Titulo: calcAvg(tblRows, 'TITULO'),
         Estiraje: row.ESTIRAJE || null,
+        Pasador: row.PASADOR || null,
         'CVm %': calcAvg(tblRows, 'CVM_PERCENT') || calcAvg(tblRows, 'CVM_%'),
         'Delg -30%': calcAvg(tblRows, 'DELG_MINUS30_KM') || calcAvg(tblRows, 'DELG_-30%'),
         'Delg -40%': calcAvg(tblRows, 'DELG_MINUS40_KM') || calcAvg(tblRows, 'DELG_-40%'),
@@ -1987,6 +2005,7 @@ async function exportToExcel() {
       'Desvío %',
       'Titulo',
       'Estiraje',
+      'Pasador',
       'CVm %',
       'Delg -30%',
       'Delg -40%',
@@ -2023,6 +2042,7 @@ async function exportToExcel() {
       r['Desvío %'] || '', // Mantener el string con el signo + incluido
       coerce(r['Titulo']),
       r['Estiraje'] || '-',
+      r['Pasador'] || '-',
       coerce(r['CVm %']),
       coerce(r['Delg -30%']),
       coerce(r['Delg -40%']),

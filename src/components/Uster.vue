@@ -847,6 +847,10 @@ async function selectRow(testnr) {
   // Select the TESTNR and load associated files (PAR/TBL) so preview and Save are available.
   selectedTestnr.value = testnr
   
+  // Limpiar datos del ensayo anterior inmediatamente
+  tblData.value = []
+  fileText.value = ''
+  
   // Cargar ESTIRAJE y MATCLASS desde scanList si existen
   const item = scanList.value.find(x => x.testnr === testnr)
   if (item && item.estiraje) {
@@ -1885,6 +1889,8 @@ function focusFirstTitulo() {
 // Función para enfocar el campo Pasador (radio button Si por defecto)
 function focusPasador() {
   if (!selectedTestnr.value) return
+  // Seleccionar automáticamente "Si" cuando se llega desde Estiraje
+  pasador.value = 'Si'
   nextTick(() => {
     if (pasadorSiInput.value) {
       pasadorSiInput.value.focus()
