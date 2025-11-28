@@ -1154,16 +1154,40 @@ async function handleOpenEnsayoDetail(testnr) {
             return tn && no ? `${tn}#${no}` : undefined
         })
 
-        // Merge filas
-        const merged = []
-        const maxLen = Math.max(usterRows.length, tensorRows.length)
+        // Merge filas por número de huso (no por índice)
+        const usterByHuso = new Map()
+        usterRows.forEach(row => {
+            const husoNum = String(row.NO ?? row.HUSO ?? '')
+            if (husoNum) {
+                usterByHuso.set(husoNum, row)
+            }
+        })
 
-        for (let i = 0; i < maxLen; i++) {
-            const uRow = usterRows[i] || {}
-            const tRow = tensorRows[i] || {}
+        const tensorByHuso = new Map()
+        tensorRows.forEach(row => {
+            const husoNum = String(row.HUSO_NUMBER ?? row.NO ?? '')
+            if (husoNum) {
+                tensorByHuso.set(husoNum, row)
+            }
+        })
+
+        // Solo mostrar husos que existen en Uster
+        const usterHusos = Array.from(usterByHuso.keys())
+        
+        // Ordenar numéricamente los husos
+        const sortedHusos = usterHusos.sort((a, b) => {
+            const numA = parseInt(a) || 0
+            const numB = parseInt(b) || 0
+            return numA - numB
+        })
+
+        const merged = []
+        sortedHusos.forEach(husoNum => {
+            const uRow = usterByHuso.get(husoNum) || {}
+            const tRow = tensorByHuso.get(husoNum) || {}
 
             merged.push({
-                NO: uRow.NO ?? tRow.HUSO_NUMBER ?? (i + 1),
+                NO: husoNum,
                 TITULO: uRow.TITULO ?? '',
                 CVM_PERCENT: uRow['CVM_%'] ?? uRow.CVM_PERCENT ?? '',
                 DELG_MINUS30_KM: uRow['DELG_-30%'] ?? uRow.DELG_MINUS30_KM ?? '',
@@ -1178,7 +1202,7 @@ async function handleOpenEnsayoDetail(testnr) {
                 TENACIDAD: tRow.TENACIDAD ?? '',
                 TRABAJO: tRow.TRABAJO ?? ''
             })
-        }
+        })
 
         mergedRows.value = merged
 
