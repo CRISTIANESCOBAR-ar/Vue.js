@@ -1198,8 +1198,10 @@ watch(selectedTestnr, async (testnr) => {
       return usterTestnr === String(testnr)
     })
 
-    // Paso 2: Obtener los TESTNR de esos TENSORAPID_PAR
-    const tensorTestnrsList = tensorParMatches.map(r => String(r.TESTNR || r.testnr || '')).filter(Boolean)
+    // Paso 2: Obtener los TESTNR de esos TENSORAPID_PAR (deduplicados)
+    const tensorTestnrsList = [...new Set(
+      tensorParMatches.map(r => String(r.TESTNR || r.testnr || '')).filter(Boolean)
+    )]
     tensorTestnrs.value = tensorTestnrsList
 
     // Paso 3: Buscar filas en TENSORAPID_TBL que coincidan con esos TESTNR
@@ -1216,15 +1218,41 @@ watch(selectedTestnr, async (testnr) => {
     })
 
     // Merge: combinar filas por HUSO (NO en Uster, HUSO_NUMBER en Tensor)
-    const merged = []
-    const maxLen = Math.max(usterRows.length, tensorRows.length)
+    // Crear mapas indexados por número de huso
+    const usterByHuso = new Map()
+    usterRows.forEach(row => {
+      const husoNum = String(row.NO ?? row['NO_'] ?? row.HUSO ?? row.huso ?? '')
+      if (husoNum) {
+        usterByHuso.set(husoNum, row)
+      }
+    })
 
-    for (let i = 0; i < maxLen; i++) {
-      const uRow = usterRows[i] || {}
-      const tRow = tensorRows[i] || {}
+    const tensorByHuso = new Map()
+    tensorRows.forEach(row => {
+      const husoNum = String(row.HUSO_NUMBER ?? row.NO ?? row.no ?? row.huso ?? '')
+      if (husoNum) {
+        tensorByHuso.set(husoNum, row)
+      }
+    })
+
+    // IMPORTANTE: Solo mostrar husos que existen en Uster (no unión de ambos)
+    // Los datos de TensoRapid se agregan solo si hay match de huso
+    const usterHusos = Array.from(usterByHuso.keys())
+    
+    // Ordenar numéricamente los husos
+    const sortedHusos = usterHusos.sort((a, b) => {
+      const numA = parseInt(a) || 0
+      const numB = parseInt(b) || 0
+      return numA - numB
+    })
+
+    const merged = []
+    sortedHusos.forEach(husoNum => {
+      const uRow = usterByHuso.get(husoNum) || {}
+      const tRow = tensorByHuso.get(husoNum) || {}
 
       merged.push({
-        NO: uRow.NO ?? uRow['NO_'] ?? tRow.HUSO_NUMBER ?? (i + 1),
+        NO: husoNum,
         TITULO: uRow.TITULO ?? uRow.titulo ?? '',
         CVM_PERCENT: uRow['CVM_%'] ?? uRow.CVM_PERCENT ?? '',
         DELG_MINUS30_KM: uRow['DELG_-30%'] ?? uRow.DELG_MINUS30_KM ?? '',
@@ -1239,7 +1267,7 @@ watch(selectedTestnr, async (testnr) => {
         TENACIDAD: tRow.TENACIDAD ?? tRow.tenacidad ?? '',
         TRABAJO: tRow.TRABAJO ?? tRow.trabajo ?? ''
       })
-    }
+    })
 
     mergedRows.value = merged
 
