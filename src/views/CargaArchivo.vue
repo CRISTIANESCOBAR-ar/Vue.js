@@ -3,7 +3,7 @@
     <div class="w-full flex-1 min-h-0 bg-white rounded-lg shadow-xl border border-slate-200 flex flex-col" style="padding: 12px !important;">
       <div class="flex flex-col gap-2 mb-3 flex-shrink-0">
         <div class="flex items-center gap-3 justify-between">
-          <div class="flex items-center gap-2 border border-slate-200 bg-white text-slate-700 rounded-md shadow-sm" style="padding: 0.375rem 1rem;">
+          <div class="flex items-center gap-2 border border-slate-200 bg-white text-slate-700 rounded shadow-sm" style="padding: 0.375rem 1rem;">
             <label class="text-sm font-medium shrink-0">Calidad:</label>
             <select v-model="selectedQLD" class="text-sm border-0 focus:outline-none focus:ring-0 bg-transparent cursor-pointer">
               <option value="1">1</option>
@@ -14,17 +14,17 @@
             
             <label class="inline-flex items-center gap-2 cursor-pointer">
               <input type="checkbox" v-model="showDirecNormal" class="h-4 w-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500" />
-              <span>Normal</span>
+              <span class="text-sm">Normal</span>
             </label>
             
             <label class="inline-flex items-center gap-2 cursor-pointer">
               <input type="checkbox" v-model="showDirec70" class="h-4 w-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500" />
-              <span>70</span>
+              <span class="text-sm">70</span>
             </label>
             
             <label class="inline-flex items-center gap-2 cursor-pointer">
               <input type="checkbox" v-model="showBloqueados" class="h-4 w-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500" />
-              <span>Bloq</span>
+              <span class="text-sm">Bloq</span>
             </label>
           </div>
 
@@ -33,9 +33,9 @@
           
             <div class="w-[100px] shrink-0">
               <div 
-                class="border border-slate-300 rounded-lg bg-white text-sm text-slate-800 truncate shadow-sm"
+                class="border border-slate-300 rounded bg-white text-sm text-slate-800 truncate shadow-sm"
                 :title="selectedFolderPath"
-                style="padding: 0.5rem 0.75rem;"
+                style="padding: 0.25rem 0.5rem;"
               >
                 {{ selectedFolderPath || 'Ninguna carpeta seleccionada' }}
               </div>
@@ -44,8 +44,8 @@
             <div class="flex items-center gap-2">
               <button 
                 @click="selectFolder" 
-                class="inline-flex items-center gap-2 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md"
-                style="padding: 0.25rem 0.75rem;"
+                class="inline-flex items-center gap-2 border border-slate-200 bg-white text-slate-700 rounded text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md"
+                style="padding: 0.25rem 0.5rem;"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7a2 2 0 012-2h3l2 3h6a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
@@ -67,8 +67,8 @@
                 v-if="hasPersistedHandle"
                 @click="refreshFolder"
                 :disabled="isProcessing"
-                class="inline-flex items-center gap-2 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150 shadow-sm hover:shadow-md"
-                style="padding: 0.25rem 0.75rem;"
+                class="inline-flex items-center gap-2 border border-slate-200 bg-white text-slate-700 rounded text-sm font-medium hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150 shadow-sm hover:shadow-md"
+                style="padding: 0.25rem 0.5rem;"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -96,11 +96,11 @@
 
       <div v-if="fileData" class="flex-1 min-h-0 flex flex-col">
         <div class="flex flex-col xl:flex-row gap-4 flex-1 min-h-0">
-          <div class="flex flex-col" style="width: 480px;">
-            <div class="overflow-auto _minimal-scroll flex-1 min-h-0 rounded-lg border border-slate-200 shadow-sm">
+          <div class="flex flex-col flex-1 min-h-0" style="max-width: 530px;">
+            <div class="overflow-auto _minimal-scroll rounded border border-slate-200 shadow-sm" style="border-radius: 0.25rem;">
               <table class="w-full table-fixed divide-y divide-slate-200 text-xs">
                 <colgroup>
-                  <col style="width: 75px" />
+                  <col style="width: 100px" />
                   <col style="width: 105px" />
                   <col style="width: 25px" />
                   <col style="width: 30px" />
@@ -115,10 +115,10 @@
                     <th class="text-xs font-semibold text-slate-600 text-left" style="padding: 0.25rem 0.75rem;">Nombre</th>
                     <th class="text-xs font-semibold text-slate-600 text-center" style="padding: 0.25rem 0.75rem;">Cal</th>
                     <th class="text-xs font-semibold text-slate-600 text-center" style="padding: 0.25rem 0.75rem;">Part.</th>
-                    <th class="text-xs font-semibold text-slate-600 text-right" style="padding: 0.25rem 0.75rem;">Metros</th>
-                    <th class="text-xs font-semibold text-slate-600 text-right" style="padding: 0.25rem 0.75rem;">Confe</th>
-                    <th class="text-xs font-semibold text-slate-600 text-right" style="padding: 0.25rem 0.75rem;">Mayo</th>
-                    <th class="text-xs font-semibold text-slate-600 text-right" style="padding: 0.25rem 0.75rem;">70</th>
+                    <th class="text-xs font-semibold text-slate-600 align-right" style="padding: 0.25rem 0.75rem;">Metros</th>
+                    <th class="text-xs font-semibold text-slate-600 align-right" style="padding: 0.25rem 0.75rem;">Confe</th>
+                    <th class="text-xs font-semibold text-slate-600 align-right" style="padding: 0.25rem 0.75rem;">Mayo</th>
+                    <th class="text-xs font-semibold text-slate-600 align-right" style="padding: 0.25rem 0.75rem;">70</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
@@ -135,10 +135,10 @@
                     <td class="text-left text-slate-700 truncate" style="padding: 0.25rem 0.75rem;" :title="row.NOME_MERCADO">{{ row.NOME_MERCADO }}</td>
                     <td class="text-center text-slate-700" style="padding: 0.25rem 0.75rem;">{{ row.QLD }}</td>
                     <td class="text-center text-slate-700" style="padding: 0.25rem 0.75rem;">{{ row.CANTIDAD_PARTIDAS }}</td>
-                    <td class="text-right text-slate-700" style="padding: 0.25rem 0.75rem;">{{ formatMetros(row.METROS) }}</td>
-                    <td class="text-right text-slate-700" style="padding: 0.25rem 0.75rem;">{{ formatMetros(row.CONFECCIONISTA) }}</td>
-                    <td class="text-right text-slate-700" style="padding: 0.25rem 0.75rem;">{{ formatMetros(row.MAYORISTA) }}</td>
-                    <td class="text-right text-slate-700" style="padding: 0.25rem 0.75rem;">{{ formatMetros(row.SETENTA) }}</td>
+                    <td class="text-slate-700 align-right" style="padding: 0.25rem 0.75rem;">{{ formatMetros(row.METROS) }}</td>
+                    <td class="text-slate-700 align-right" style="padding: 0.25rem 0.75rem;">{{ formatMetros(row.CONFECCIONISTA) }}</td>
+                    <td class="text-slate-700 align-right" style="padding: 0.25rem 0.75rem;">{{ formatMetros(row.MAYORISTA) }}</td>
+                    <td class="text-slate-700 align-right" style="padding: 0.25rem 0.75rem;">{{ formatMetros(row.SETENTA) }}</td>
                   </tr>
                   <tr v-if="filteredData.length === 0">
                     <td colspan="8" class="px-3 py-6 text-center text-slate-500">No se encontraron registros con QLD = {{ selectedQLD }}.</td>
@@ -150,10 +150,10 @@
                     <td class="text-left text-slate-700" style="padding: 0.25rem 0.75rem;">{{ filteredData.length }}</td>
                     <td class="text-center text-slate-700" style="padding: 0.25rem 0.75rem;"></td>
                     <td class="text-center text-slate-700" style="padding: 0.25rem 0.75rem;">{{ totalPartidas }}</td>
-                    <td class="text-right text-slate-700" style="padding: 0.25rem 0.75rem;">{{ formatMetros(totalMetros) }}</td>
-                    <td class="text-right text-slate-700" style="padding: 0.25rem 0.75rem;">{{ formatMetros(totalConfeccionista) }}</td>
-                    <td class="text-right text-slate-700" style="padding: 0.25rem 0.75rem;">{{ formatMetros(totalMayorista) }}</td>
-                    <td class="text-right text-slate-700" style="padding: 0.25rem 0.75rem;">{{ formatMetros(totalSetenta) }}</td>
+                    <td class="text-slate-700 align-right" style="padding: 0.25rem 0.75rem;">{{ formatMetros(totalMetros) }}</td>
+                    <td class="text-slate-700 align-right" style="padding: 0.25rem 0.75rem;">{{ formatMetros(totalConfeccionista) }}</td>
+                    <td class="text-slate-700 align-right" style="padding: 0.25rem 0.75rem;">{{ formatMetros(totalMayorista) }}</td>
+                    <td class="text-slate-700 align-right" style="padding: 0.25rem 0.75rem;">{{ formatMetros(totalSetenta) }}</td>
                   </tr>
                 </tfoot>
               </table>
@@ -865,5 +865,9 @@ const formatPartida = (partida) => {
 
 :global(._minimal-scroll::-webkit-scrollbar-thumb:active) {
   box-shadow: 0 0 16px rgba(99, 102, 241, 0.28);
+}
+
+.align-right {
+  text-align: right !important;
 }
 </style>
