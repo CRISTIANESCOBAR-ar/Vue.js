@@ -1,5 +1,5 @@
 <template>
-  <div class="page-container">
+  <div class="page-container p-4">
     <h1 class="page-title">Página 3</h1>
     
     <div class="content-card">

@@ -82,10 +82,10 @@
     <!-- Main content -->
     <main 
       @click="maybeHideSidebar"
-      class="flex-1 transition-all duration-500 ease-in-out overflow-x-hidden px-2 md:px-0 pt-10 md:pt-0"
+      class="flex-1 flex flex-col transition-all duration-500 ease-in-out overflow-x-hidden px-2 md:px-0 pt-10 md:pt-0"
       :style="{ marginLeft: mainMargin }"
     >
-      <div class="w-full p-4">
+      <div class="w-full flex-1 flex flex-col">
         <router-view />
       </div>
     </main>

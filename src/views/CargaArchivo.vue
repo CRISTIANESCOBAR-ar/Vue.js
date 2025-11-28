@@ -1,16 +1,56 @@
 <template>
-  <div class="w-full h-screen flex flex-col p-1">
-    <main class="w-full flex-1 min-h-0 bg-white rounded-2xl shadow-xl px-4 py-3 border border-slate-200 flex flex-col">
+  <main class="w-full h-screen flex flex-col bg-gray-50 overflow-hidden" style="padding: 4px !important;">
+    <div class="w-full flex-1 min-h-0 bg-white rounded-lg shadow-xl px-4 py-3 border border-slate-200 flex flex-col">
       <div class="flex flex-col gap-2 mb-3 flex-shrink-0">
-        <div class="flex items-center gap-2">
-          <div class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-600">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-            </svg>
+        <div class="flex items-center gap-3">
+          <label class="text-sm font-semibold text-slate-700 shrink-0">Carpeta de archivo de stock:</label>
+          
+          <div class="flex-1 min-w-0">
+            <div 
+              class="px-3 py-2 border border-slate-300 rounded-lg bg-white text-sm text-slate-800 truncate shadow-sm"
+              :title="selectedFolderName"
+            >
+              {{ selectedFolderName || 'Ninguna carpeta seleccionada' }}
+            </div>
           </div>
-          <h3 class="text-xl font-semibold text-slate-800 whitespace-nowrap">Carga de Stock</h3>
-          <div class="flex-1 flex items-center justify-center gap-2 flex-wrap">
-            <label class="inline-flex items-center gap-2 px-3 py-1.5 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium shadow-sm hover:shadow-md cursor-pointer">
+
+          <div class="flex items-center gap-2">
+            <button 
+              @click="triggerFolderSelect" 
+              class="inline-flex items-center gap-2 px-3 py-2 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7a2 2 0 012-2h3l2 3h6a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
+              </svg>
+              Seleccionar
+            </button>
+
+            <input
+              ref="fileInputRef"
+              type="file"
+              webkitdirectory
+              directory
+              multiple
+              @change="handleFolderSelect"
+              class="hidden"
+            />
+
+            <button
+              @click="refreshData"
+              :disabled="isProcessing || !selectedFile"
+              class="inline-flex items-center gap-2 px-3 py-2 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150 shadow-sm hover:shadow-md"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.93 4.93a10 10 0 0114.14 0l.48.48M4.93 19.07a10 10 0 010-14.14l.48-.48M4 4v5h5" />
+              </svg>
+              Refrescar
+            </button>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2 text-sm text-slate-600 justify-between">
+          <div class="flex items-center gap-2">
+             <label class="inline-flex items-center gap-2 px-3 py-1.5 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium shadow-sm hover:shadow-md cursor-pointer">
               <input type="checkbox" v-model="showDirecNormal" class="h-4 w-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500" />
               <span>Normal</span>
             </label>
@@ -23,78 +63,25 @@
               <span>Bloq</span>
             </label>
           </div>
+          
           <div class="flex items-center gap-2">
-            <label for="file-input" class="inline-flex items-center gap-2 px-3 py-2 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md cursor-pointer">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M4 4h5l2 3h9a1 1 0 011 1v10a2 2 0 01-2 2H5a2 2 0 01-2-2V5a1 1 0 011-1z" />
-              </svg>
-              <span>Seleccionar</span>
-            </label>
-            <input
-              id="file-input"
-              ref="fileInputRef"
-              type="file"
-              accept=".xlsx,.xls"
-              @change="handleFileSelect"
-              class="hidden"
-            />
-            <button
-              @click="processFile"
-              :disabled="!selectedFile || isProcessing"
-              class="inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md transition-colors duration-150"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-3-6.7" />
-                <polyline stroke-linecap="round" stroke-linejoin="round" points="21 3 21 9 15 9" />
-              </svg>
-              <span>{{ isProcessing ? 'Procesando…' : fileData ? 'Reprocesar' : 'Procesar' }}</span>
-            </button>
-            <button
-              @click="refreshData"
-              :disabled="isProcessing || (!selectedFile && !fileData)"
-              class="inline-flex items-center gap-2 px-3 py-2 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150 shadow-sm hover:shadow-md"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M4.93 4.93a10 10 0 0114.14 0l.48.48M4.93 19.07a10 10 0 010-14.14l.48-.48M4 4v5h5" />
-              </svg>
-              <span>Refrescar</span>
-            </button>
-            <button
-              v-if="fileData"
-              @click="clearAllData"
-              class="inline-flex items-center gap-2 px-3 py-2 border border-red-200 bg-red-50 text-red-600 rounded-md text-sm font-medium hover:bg-red-100 transition-colors duration-150 shadow-sm hover:shadow-md"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-              <span>Limpiar</span>
-            </button>
+            <span v-if="fileData" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-200 bg-white text-slate-700">
+              <span class="font-medium">Hoja:</span>
+              <span>{{ fileData.sheetName }}</span>
+            </span>
+            <span v-if="fileData" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-200 bg-white text-slate-700">
+              <span class="font-medium">Registros únicos:</span>
+              <span>{{ filteredData.length }}</span>
+            </span>
+            <span v-if="fileData" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-200 bg-white text-slate-700">
+              <span class="font-medium">Total metros:</span>
+              <span>{{ totalMetros.toFixed(2) }}</span>
+            </span>
+            <span v-if="lastUpdate" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-200 bg-white text-slate-700">
+              <span class="font-medium">Última actualización:</span>
+              <span>{{ formatDate(lastUpdate) }}</span>
+            </span>
           </div>
-        </div>
-        <div class="flex flex-wrap items-center gap-2 text-sm text-slate-600">
-          <span v-if="selectedFile" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-200 bg-slate-50 text-slate-700">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5s8.268 2.943 9.542 7c-1.274 4.057-5.065 7-9.542 7s-8.268-2.943-9.542-7z" />
-            </svg>
-            <span class="font-medium truncate max-w-[12rem] sm:max-w-xs" :title="selectedFile.name">{{ selectedFile.name }}</span>
-          </span>
-          <span v-if="fileData" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-200 bg-white text-slate-700">
-            <span class="font-medium">Hoja:</span>
-            <span>{{ fileData.sheetName }}</span>
-          </span>
-          <span v-if="fileData" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-200 bg-white text-slate-700">
-            <span class="font-medium">Registros únicos:</span>
-            <span>{{ filteredData.length }}</span>
-          </span>
-          <span v-if="fileData" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-200 bg-white text-slate-700">
-            <span class="font-medium">Total metros:</span>
-            <span>{{ totalMetros.toFixed(2) }}</span>
-          </span>
-          <span v-if="lastUpdate" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-200 bg-white text-slate-700">
-            <span class="font-medium">Última actualización:</span>
-            <span>{{ formatDate(lastUpdate) }}</span>
-          </span>
         </div>
       </div>
 
@@ -246,8 +233,8 @@
           <p class="text-sm text-slate-500">Los datos se guardan automáticamente en tu navegador.</p>
         </div>
       </div>
-    </main>
-  </div>
+    </div>
+  </main>
 </template>
 
 <script setup>
@@ -260,6 +247,7 @@ const { data, loadData, saveData, clearData } = useLocalStorage()
 
 const fileInputRef = ref(null)
 const selectedFile = ref(null)
+const persistedFileName = ref(null)
 const fileData = ref(null)
 const isProcessing = ref(false)
 const error = ref(null)
@@ -507,19 +495,61 @@ const totalMetrosRegistros = computed(() => {
   return registrosPartida.value.reduce((sum, row) => sum + (parseFloat(row.METROS) || 0), 0)
 })
 
+const selectedFolderName = ref(null)
+
 onMounted(() => {
   const savedData = loadData()
   if (savedData) {
     fileData.value = savedData
     lastUpdate.value = savedData.lastUpdate
+    if (savedData.fileName) {
+      persistedFileName.value = savedData.fileName
+    }
+    if (savedData.folderName) {
+      selectedFolderName.value = savedData.folderName
+    }
   }
 })
 
-const handleFileSelect = (event) => {
-  const file = event.target.files[0]
-  if (file) {
-    selectedFile.value = file
+const triggerFolderSelect = () => {
+  if (fileInputRef.value) {
+    fileInputRef.value.click()
+  }
+}
+
+const handleFolderSelect = (event) => {
+  const files = event.target.files
+  if (!files || files.length === 0) return
+
+  // Try to get folder name from the first file's path
+  const firstFile = files[0]
+  if (firstFile.webkitRelativePath) {
+    const parts = firstFile.webkitRelativePath.split('/')
+    if (parts.length > 1) {
+      selectedFolderName.value = parts[0]
+    } else {
+      selectedFolderName.value = 'Carpeta seleccionada'
+    }
+  } else {
+    selectedFolderName.value = 'Carpeta seleccionada'
+  }
+
+  // Find estoquePecas.xlsx
+  let targetFile = null
+  for (let i = 0; i < files.length; i++) {
+    if (files[i].name === 'estoquePecas.xlsx') {
+      targetFile = files[i]
+      break
+    }
+  }
+
+  if (targetFile) {
+    selectedFile.value = targetFile
     error.value = null
+    processFile()
+  } else {
+    error.value = 'No se encontró el archivo "estoquePecas.xlsx" en la carpeta seleccionada.'
+    selectedFile.value = null
   }
 }
 
@@ -532,9 +562,15 @@ const parseAndStore = async (file) => {
     const result = await readExcelFile(file)
     fileData.value = result
 
-    const saved = saveData(result)
+    const dataToSave = {
+      ...result,
+      fileName: file.name,
+      folderName: selectedFolderName.value
+    }
+    const saved = saveData(dataToSave)
     if (saved) {
       lastUpdate.value = data.value?.lastUpdate || new Date().toISOString()
+      persistedFileName.value = file.name
     }
   } catch (err) {
     error.value = `Error al procesar el archivo: ${err.message}`
@@ -567,6 +603,7 @@ const clearAllData = () => {
     clearData()
     fileData.value = null
     selectedFile.value = null
+    persistedFileName.value = null
     lastUpdate.value = null
     selectedRow.value = null
     selectedPartida.value = null
@@ -617,6 +654,10 @@ const formatPartida = (partida) => {
   }
   return withoutFirst
 }
+
+const displayFileName = computed(() => {
+  return selectedFile.value?.name || persistedFileName.value
+})
 </script>
 
 <style scoped>
