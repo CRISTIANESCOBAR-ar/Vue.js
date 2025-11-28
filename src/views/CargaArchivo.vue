@@ -1,9 +1,9 @@
 <template>
   <main class="w-full h-screen flex flex-col bg-gray-50 overflow-hidden" style="padding: 4px !important;">
-    <div class="w-full flex-1 min-h-0 bg-white rounded-lg shadow-xl px-4 py-3 border border-slate-200 flex flex-col">
+    <div class="w-full flex-1 min-h-0 bg-white rounded-lg shadow-xl border border-slate-200 flex flex-col" style="padding: 12px !important;">
       <div class="flex flex-col gap-2 mb-3 flex-shrink-0">
         <div class="flex items-center gap-3">
-          <label class="text-sm font-semibold text-slate-700 shrink-0">Carpeta de archivo de stock:</label>
+          <label class="text-sm font-semibold text-slate-700 shrink-0">Carpeta del archivo de stock:</label>
           
           <div class="flex-1 min-w-0">
             <div 
