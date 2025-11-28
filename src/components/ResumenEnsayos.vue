@@ -1348,7 +1348,9 @@ const modalIndex = computed(() => {
   const u = selectedTestnr.value
   if (u == null) return -1
   const list = filteredRows.value || []
-  return list.findIndex(r => String(r?.Ensayo) === String(u))
+  const idx = list.findIndex(r => String(r?.Ensayo) === String(u))
+  console.log('modalIndex computed - selectedTestnr:', u, 'found at index:', idx, 'list length:', list.length)
+  return idx
 })
 
 const modalPrevDisabled = computed(() => modalIndex.value <= 0)
@@ -1362,6 +1364,7 @@ function modalPrev() {
   const list = filteredRows.value || []
   const prev = list[modalIndex.value - 1]
   const testnr = prev?.Ensayo || prev?.TESTNR || prev?.testnr || prev?.Testnr
+  console.log('modalPrev - Current index:', modalIndex.value, 'Prev testnr:', testnr, 'Prev item:', prev)
   if (testnr != null) {
     // Verificar que allData esté disponible antes de abrir el detalle
     if (!allData.value || !allData.value.usterTbl) {
@@ -1369,6 +1372,8 @@ function modalPrev() {
       return
     }
     openDetail(testnr)
+  } else {
+    console.warn('No se pudo obtener testnr del item anterior:', prev)
   }
 }
 
@@ -1377,6 +1382,7 @@ function modalNext() {
   const list = filteredRows.value || []
   const nxt = list[modalIndex.value + 1]
   const testnr = nxt?.Ensayo || nxt?.TESTNR || nxt?.testnr || nxt?.Testnr
+  console.log('modalNext - Current index:', modalIndex.value, 'Next testnr:', testnr, 'Next item:', nxt)
   if (testnr != null) {
     // Verificar que allData esté disponible antes de abrir el detalle
     if (!allData.value || !allData.value.usterTbl) {
@@ -1384,12 +1390,17 @@ function modalNext() {
       return
     }
     openDetail(testnr)
+  } else {
+    console.warn('No se pudo obtener testnr del item siguiente:', nxt)
   }
 }
 
 function openDetail(testnr) {
+  console.log('openDetail called with testnr:', testnr)
+  console.log('modalIndex before:', modalIndex.value)
   selectedTestnr.value = testnr
   modalVisible.value = true
+  console.log('modalIndex after:', modalIndex.value)
 }
 
 function closeModal() {
