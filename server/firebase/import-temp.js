@@ -66,8 +66,10 @@ async function importCollection(collectionName, filePath) {
   let batchCount = 0
 
   for (const doc of data) {
-    const docRef = db.collection(collectionName).doc()
-    batch.set(docRef, doc)
+    // Use TESTNR as document ID to prevent duplicates
+    const docId = doc.TESTNR || db.collection(collectionName).doc().id
+    const docRef = db.collection(collectionName).doc(docId)
+    batch.set(docRef, doc, { merge: true })
     count++
     batchCount++
 
