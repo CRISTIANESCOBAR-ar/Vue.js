@@ -1992,6 +1992,18 @@ async function loadRows() {
       return ensayoB.localeCompare(ensayoA, undefined, { numeric: true })
     })
 
+    // Deduplicar por Ensayo (mantener el primer registro - el más reciente por la ordenación)
+    const seenEnsayos = new Set()
+    data = data.filter(row => {
+      const ensayo = String(row.Ensayo || '').trim()
+      if (seenEnsayos.has(ensayo)) {
+        console.warn('Ensayo duplicado encontrado y eliminado:', ensayo)
+        return false
+      }
+      seenEnsayos.add(ensayo)
+      return true
+    })
+
     rows.value = data
   } catch (err) {
     console.error('Failed to load rows', err)
