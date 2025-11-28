@@ -2,86 +2,88 @@
   <main class="w-full h-screen flex flex-col bg-gray-50 overflow-hidden" style="padding: 4px !important;">
     <div class="w-full flex-1 min-h-0 bg-white rounded-lg shadow-xl border border-slate-200 flex flex-col" style="padding: 12px !important;">
       <div class="flex flex-col gap-2 mb-3 flex-shrink-0">
-        <div class="flex items-center gap-3">
-          <label class="text-sm font-semibold text-slate-700 shrink-0">Carpeta del archivo de stock:</label>
-          
-          <div class="flex-1 min-w-0">
-            <div 
-              class="px-3 py-2 border border-slate-300 rounded-lg bg-white text-sm text-slate-800 truncate shadow-sm"
-              :title="selectedFolderName"
-            >
-              {{ selectedFolderName || 'Ninguna carpeta seleccionada' }}
-            </div>
-          </div>
-
-          <div class="flex items-center gap-2">
-            <button 
-              @click="triggerFolderSelect" 
-              class="inline-flex items-center gap-2 px-3 py-2 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7a2 2 0 012-2h3l2 3h6a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
-              </svg>
-              Seleccionar
-            </button>
-
-            <input
-              ref="fileInputRef"
-              type="file"
-              webkitdirectory
-              directory
-              multiple
-              @change="handleFolderSelect"
-              class="hidden"
-            />
-
-            <button
-              @click="refreshData"
-              :disabled="isProcessing || !selectedFile"
-              class="inline-flex items-center gap-2 px-3 py-2 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150 shadow-sm hover:shadow-md"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M4.93 4.93a10 10 0 0114.14 0l.48.48M4.93 19.07a10 10 0 010-14.14l.48-.48M4 4v5h5" />
-              </svg>
-              Refrescar
-            </button>
-          </div>
-        </div>
-
-        <div class="flex flex-wrap items-center gap-2 text-sm text-slate-600 justify-between">
-          <div class="flex items-center gap-2">
-             <label class="inline-flex items-center gap-2 px-3 py-1.5 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium shadow-sm hover:shadow-md cursor-pointer">
+        <div class="flex items-center gap-3 justify-between">
+          <div class="flex items-center gap-2 border border-slate-200 bg-white text-slate-700 rounded-md shadow-sm" style="padding: 0.375rem 1rem;">
+            <label class="text-sm font-medium shrink-0">Calidad:</label>
+            <select v-model="selectedQLD" class="text-sm border-0 focus:outline-none focus:ring-0 bg-transparent cursor-pointer">
+              <option value="1">1</option>
+              <option value="2">2</option>
+            </select>
+            
+            <div class="h-4 w-px bg-slate-300 mx-1"></div>
+            
+            <label class="inline-flex items-center gap-2 cursor-pointer">
               <input type="checkbox" v-model="showDirecNormal" class="h-4 w-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500" />
               <span>Normal</span>
             </label>
-            <label class="inline-flex items-center gap-2 px-3 py-1.5 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium shadow-sm hover:shadow-md cursor-pointer">
+            
+            <label class="inline-flex items-center gap-2 cursor-pointer">
               <input type="checkbox" v-model="showDirec70" class="h-4 w-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500" />
               <span>70</span>
             </label>
-            <label class="inline-flex items-center gap-2 px-3 py-1.5 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium shadow-sm hover:shadow-md cursor-pointer">
+            
+            <label class="inline-flex items-center gap-2 cursor-pointer">
               <input type="checkbox" v-model="showBloqueados" class="h-4 w-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500" />
               <span>Bloq</span>
             </label>
           </div>
+
+          <div class="flex items-center gap-3">
+            <label class="text-sm font-semibold text-slate-700 shrink-0">Carpeta del archivo de stock:</label>
           
-          <div class="flex items-center gap-2">
-            <span v-if="fileData" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-200 bg-white text-slate-700">
-              <span class="font-medium">Hoja:</span>
-              <span>{{ fileData.sheetName }}</span>
-            </span>
-            <span v-if="fileData" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-200 bg-white text-slate-700">
-              <span class="font-medium">Registros únicos:</span>
-              <span>{{ filteredData.length }}</span>
-            </span>
-            <span v-if="fileData" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-200 bg-white text-slate-700">
-              <span class="font-medium">Total metros:</span>
-              <span>{{ totalMetros.toFixed(2) }}</span>
-            </span>
-            <span v-if="lastUpdate" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-200 bg-white text-slate-700">
-              <span class="font-medium">Última actualización:</span>
-              <span>{{ formatDate(lastUpdate) }}</span>
-            </span>
+            <div class="w-[100px] shrink-0">
+              <div 
+                class="border border-slate-300 rounded-lg bg-white text-sm text-slate-800 truncate shadow-sm"
+                :title="selectedFolderPath"
+                style="padding: 0.5rem 0.75rem;"
+              >
+                {{ selectedFolderPath || 'Ninguna carpeta seleccionada' }}
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <button 
+                @click="selectFolder" 
+                class="inline-flex items-center gap-2 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md"
+                style="padding: 0.25rem 0.75rem;"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7a2 2 0 012-2h3l2 3h6a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
+                </svg>
+                Seleccionar
+              </button>
+
+              <input
+                ref="fileInputRef"
+                type="file"
+                webkitdirectory
+                directory
+                multiple
+                @change="handleFolderSelectFallback"
+                class="hidden"
+              />
+
+              <button
+                v-if="hasPersistedHandle"
+                @click="refreshFolder"
+                :disabled="isProcessing"
+                class="inline-flex items-center gap-2 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150 shadow-sm hover:shadow-md"
+                style="padding: 0.25rem 0.75rem;"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                Refrescar
+              </button>
+            </div>
           </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2 text-sm text-slate-600 justify-end">
+          <span v-if="lastUpdate" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-200 bg-white text-slate-700">
+            <span class="font-medium">Última actualización:</span>
+            <span>{{ formatDate(lastUpdate) }}</span>
+          </span>
         </div>
       </div>
 
@@ -93,35 +95,30 @@
       </div>
 
       <div v-if="fileData" class="flex-1 min-h-0 flex flex-col">
-        <div class="flex items-center justify-between gap-3 mb-3">
-          <h2 class="text-lg font-semibold text-slate-800">Datos filtrados (QLD = 1)</h2>
-          <span class="text-xs uppercase tracking-[0.3em] text-slate-400">Vista consolidada</span>
-        </div>
-
         <div class="flex flex-col xl:flex-row gap-4 flex-1 min-h-0">
-          <div class="flex-1 min-w-[18rem] flex flex-col">
-            <div class="overflow-auto _minimal-scroll flex-1 min-h-0 rounded-xl border border-slate-200 shadow-sm">
-              <table class="min-w-full table-fixed divide-y divide-slate-200 text-xs">
+          <div class="flex flex-col" style="width: 480px;">
+            <div class="overflow-auto _minimal-scroll flex-1 min-h-0 rounded-lg border border-slate-200 shadow-sm">
+              <table class="w-full table-fixed divide-y divide-slate-200 text-xs">
                 <colgroup>
-                  <col style="width: 9rem" />
-                  <col style="width: 14rem" />
-                  <col style="width: 4rem" />
-                  <col style="width: 4.5rem" />
-                  <col style="width: 6rem" />
-                  <col style="width: 6rem" />
-                  <col style="width: 6rem" />
-                  <col style="width: 6rem" />
+                  <col style="width: 75px" />
+                  <col style="width: 105px" />
+                  <col style="width: 25px" />
+                  <col style="width: 30px" />
+                  <col style="width: 45px" />
+                  <col style="width: 45px" />
+                  <col style="width: 45px" />
+                  <col style="width: 45px" />
                 </colgroup>
                 <thead class="bg-gradient-to-r from-slate-50 to-slate-100 sticky top-0 z-20">
                   <tr>
-                    <th class="px-3 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-slate-600 text-center">Artículo</th>
-                    <th class="px-3 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-slate-600 text-left">Nombre</th>
-                    <th class="px-3 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-slate-600 text-center">Cal</th>
-                    <th class="px-3 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-slate-600 text-center">Part.</th>
-                    <th class="px-3 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-slate-600 text-right">Metros</th>
-                    <th class="px-3 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-slate-600 text-right">Confec.</th>
-                    <th class="px-3 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-slate-600 text-right">Mayor.</th>
-                    <th class="px-3 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-slate-600 text-right">70</th>
+                    <th class="text-xs font-semibold text-slate-600 text-left" style="padding: 0.25rem 0.5rem 0.25rem 1rem;">Artículo</th>
+                    <th class="text-xs font-semibold text-slate-600 text-left" style="padding: 0.25rem 0.75rem;">Nombre</th>
+                    <th class="text-xs font-semibold text-slate-600 text-center" style="padding: 0.25rem 0.75rem;">Cal</th>
+                    <th class="text-xs font-semibold text-slate-600 text-center" style="padding: 0.25rem 0.75rem;">Part.</th>
+                    <th class="text-xs font-semibold text-slate-600 text-right" style="padding: 0.25rem 0.75rem;">Metros</th>
+                    <th class="text-xs font-semibold text-slate-600 text-right" style="padding: 0.25rem 0.75rem;">Confe</th>
+                    <th class="text-xs font-semibold text-slate-600 text-right" style="padding: 0.25rem 0.75rem;">Mayo</th>
+                    <th class="text-xs font-semibold text-slate-600 text-right" style="padding: 0.25rem 0.75rem;">70</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
@@ -134,25 +131,37 @@
                       selectedRow && selectedRow.ARTIGO === row.ARTIGO && selectedRow.NOME_MERCADO === row.NOME_MERCADO ? 'bg-blue-50/70 font-semibold text-slate-800' : 'bg-white'
                     ]"
                   >
-                    <td class="px-3 py-2 text-center text-slate-700 truncate">{{ row.ARTIGO }}</td>
-                    <td class="px-3 py-2 text-left text-slate-700 truncate" :title="row.NOME_MERCADO">{{ row.NOME_MERCADO }}</td>
-                    <td class="px-3 py-2 text-center text-slate-700">{{ row.QLD }}</td>
-                    <td class="px-3 py-2 text-center text-slate-700">{{ row.CANTIDAD_PARTIDAS }}</td>
-                    <td class="px-3 py-2 text-right text-slate-700">{{ formatMetros(row.METROS) }}</td>
-                    <td class="px-3 py-2 text-right text-slate-700">{{ formatMetros(row.CONFECCIONISTA) }}</td>
-                    <td class="px-3 py-2 text-right text-slate-700">{{ formatMetros(row.MAYORISTA) }}</td>
-                    <td class="px-3 py-2 text-right text-slate-700">{{ formatMetros(row.SETENTA) }}</td>
+                    <td class="text-left text-slate-700 truncate" style="padding: 0.25rem 0.5rem 0.25rem 1rem;">{{ formatArticulo(row.ARTIGO) }}</td>
+                    <td class="text-left text-slate-700 truncate" style="padding: 0.25rem 0.75rem;" :title="row.NOME_MERCADO">{{ row.NOME_MERCADO }}</td>
+                    <td class="text-center text-slate-700" style="padding: 0.25rem 0.75rem;">{{ row.QLD }}</td>
+                    <td class="text-center text-slate-700" style="padding: 0.25rem 0.75rem;">{{ row.CANTIDAD_PARTIDAS }}</td>
+                    <td class="text-right text-slate-700" style="padding: 0.25rem 0.75rem;">{{ formatMetros(row.METROS) }}</td>
+                    <td class="text-right text-slate-700" style="padding: 0.25rem 0.75rem;">{{ formatMetros(row.CONFECCIONISTA) }}</td>
+                    <td class="text-right text-slate-700" style="padding: 0.25rem 0.75rem;">{{ formatMetros(row.MAYORISTA) }}</td>
+                    <td class="text-right text-slate-700" style="padding: 0.25rem 0.75rem;">{{ formatMetros(row.SETENTA) }}</td>
                   </tr>
                   <tr v-if="filteredData.length === 0">
-                    <td colspan="8" class="px-3 py-6 text-center text-slate-500">No se encontraron registros con QLD = 1.</td>
+                    <td colspan="8" class="px-3 py-6 text-center text-slate-500">No se encontraron registros con QLD = {{ selectedQLD }}.</td>
                   </tr>
                 </tbody>
+                <tfoot v-if="filteredData.length > 0" class="bg-slate-50 border-t-2 border-slate-300">
+                  <tr class="font-semibold">
+                    <td class="text-left text-slate-700" style="padding: 0.25rem 0.5rem 0.25rem 1rem;"></td>
+                    <td class="text-left text-slate-700" style="padding: 0.25rem 0.75rem;">{{ filteredData.length }}</td>
+                    <td class="text-center text-slate-700" style="padding: 0.25rem 0.75rem;"></td>
+                    <td class="text-center text-slate-700" style="padding: 0.25rem 0.75rem;">{{ totalPartidas }}</td>
+                    <td class="text-right text-slate-700" style="padding: 0.25rem 0.75rem;">{{ formatMetros(totalMetros) }}</td>
+                    <td class="text-right text-slate-700" style="padding: 0.25rem 0.75rem;">{{ formatMetros(totalConfeccionista) }}</td>
+                    <td class="text-right text-slate-700" style="padding: 0.25rem 0.75rem;">{{ formatMetros(totalMayorista) }}</td>
+                    <td class="text-right text-slate-700" style="padding: 0.25rem 0.75rem;">{{ formatMetros(totalSetenta) }}</td>
+                  </tr>
+                </tfoot>
               </table>
             </div>
           </div>
 
           <div v-if="selectedRow" class="w-full max-w-xs flex flex-col">
-            <div class="overflow-auto _minimal-scroll flex-1 rounded-xl border border-slate-200 shadow-sm">
+            <div class="overflow-auto _minimal-scroll flex-1 rounded-lg border border-slate-200 shadow-sm">
               <table class="min-w-full table-fixed divide-y divide-slate-200 text-xs">
                 <colgroup>
                   <col style="width: 8.5rem" />
@@ -247,7 +256,9 @@ const { data, loadData, saveData, clearData } = useLocalStorage()
 
 const fileInputRef = ref(null)
 const selectedFile = ref(null)
-const persistedFileName = ref(null)
+const selectedFolderPath = ref(null)
+const selectedDirHandle = ref(null)
+const hasPersistedHandle = ref(false)
 const fileData = ref(null)
 const isProcessing = ref(false)
 const error = ref(null)
@@ -259,6 +270,7 @@ const selectedPartida = ref(null)
 const showBloqueados = ref(false)
 const showDirec70 = ref(true)
 const showDirecNormal = ref(true)
+const selectedQLD = ref('1')
 
 // Datos filtrados y agrupados
 const filteredData = computed(() => {
@@ -292,7 +304,7 @@ const filteredData = computed(() => {
     const direc = row[direcIdx]
     const bloq = bloqIdx !== -1 ? row[bloqIdx] : ''
     
-    // Filtro: QLD debe ser 1, aplicar filtro BLOQ según checkbox
+    // Filtro: QLD debe coincidir con selectedQLD, aplicar filtro BLOQ según checkbox
     const direcStr = String(direc || '').trim()
     const bloqStr = String(bloq || '').trim()
     
@@ -304,7 +316,7 @@ const filteredData = computed(() => {
     const isBloqueado = bloqStr !== ''
     const passBloqFilter = showBloqueados.value ? true : !isBloqueado
     
-    if (qld == 1 && 
+    if (qld == selectedQLD.value && 
         passBloqFilter &&
         ((isDirec70 && showDirec70.value) || (isDirecNormal && showDirecNormal.value))) {
       
@@ -364,6 +376,26 @@ const filteredData = computed(() => {
 // Total de metros
 const totalMetros = computed(() => {
   return filteredData.value.reduce((sum, row) => sum + row.METROS, 0)
+})
+
+// Total de partidas
+const totalPartidas = computed(() => {
+  return filteredData.value.reduce((sum, row) => sum + row.CANTIDAD_PARTIDAS, 0)
+})
+
+// Total confeccionista
+const totalConfeccionista = computed(() => {
+  return filteredData.value.reduce((sum, row) => sum + row.CONFECCIONISTA, 0)
+})
+
+// Total mayorista
+const totalMayorista = computed(() => {
+  return filteredData.value.reduce((sum, row) => sum + row.MAYORISTA, 0)
+})
+
+// Total setenta
+const totalSetenta = computed(() => {
+  return filteredData.value.reduce((sum, row) => sum + row.SETENTA, 0)
 })
 
 // Detalle por partida de la fila seleccionada
@@ -495,46 +527,165 @@ const totalMetrosRegistros = computed(() => {
   return registrosPartida.value.reduce((sum, row) => sum + (parseFloat(row.METROS) || 0), 0)
 })
 
-const selectedFolderName = ref(null)
+// --- File System Access API + IndexedDB helpers ---
+function openDb() {
+  return new Promise((resolve, reject) => {
+    let req
+    try {
+      req = window.indexedDB.open('analisis-stock-db')
+    } catch (err) {
+      return reject(err)
+    }
+    req.onupgradeneeded = () => {
+      const db = req.result
+      try {
+        if (!db.objectStoreNames.contains('handles')) db.createObjectStore('handles')
+      } catch (e) {
+        console.warn('openDb onupgradeneeded error', e)
+      }
+    }
+    req.onsuccess = () => resolve(req.result)
+    req.onerror = () => reject(req.error)
+  })
+}
 
-onMounted(() => {
-  const savedData = loadData()
-  if (savedData) {
-    fileData.value = savedData
-    lastUpdate.value = savedData.lastUpdate
-    if (savedData.fileName) {
-      persistedFileName.value = savedData.fileName
-    }
-    if (savedData.folderName) {
-      selectedFolderName.value = savedData.folderName
-    }
+async function saveDirHandleToIDB(dirHandle) {
+  const db = await openDb()
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('handles', 'readwrite')
+    const store = tx.objectStore('handles')
+    const r = store.put(dirHandle, 'stockDir')
+    r.onsuccess = () => resolve(true)
+    r.onerror = () => reject(r.error)
+  })
+}
+
+async function getDirHandleFromIDB() {
+  const db = await openDb()
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('handles', 'readonly')
+    const store = tx.objectStore('handles')
+    const r = store.get('stockDir')
+    r.onsuccess = () => resolve(r.result)
+    r.onerror = () => reject(r.error)
+  })
+}
+
+async function verifyPermission(handle, mode = 'read') {
+  if (!handle) return false
+  try {
+    const opts = { mode }
+    if (await handle.queryPermission(opts) === 'granted') return true
+    if (await handle.requestPermission(opts) === 'granted') return true
+  } catch (err) {
+    console.warn('verifyPermission error', err)
   }
-})
+  return false
+}
 
-const triggerFolderSelect = () => {
+async function selectFolder() {
+  try {
+    if (typeof window !== 'undefined' && 'showDirectoryPicker' in window) {
+      // Usar File System Access API
+      const dirHandle = await window.showDirectoryPicker()
+      
+      // Guardar el handle en IndexedDB
+      try {
+        await saveDirHandleToIDB(dirHandle)
+        hasPersistedHandle.value = true
+      } catch (err) {
+        console.warn('saveDirHandleToIDB failed', err)
+      }
+      
+      selectedFolderPath.value = dirHandle.name || 'Carpeta seleccionada'
+      selectedDirHandle.value = dirHandle
+      
+      // Procesar el archivo
+      await processFileFromHandle(dirHandle)
+      return
+    }
+  } catch (err) {
+    console.warn('selectFolder error', err)
+  }
+  
+  // Fallback: usar input webkitdirectory
   if (fileInputRef.value) {
     fileInputRef.value.click()
   }
 }
 
-const handleFolderSelect = (event) => {
+async function processFileFromHandle(dirHandle) {
+  try {
+    // Buscar el archivo estoquePecas.xlsx en la carpeta
+    let fileHandle = null
+    for await (const [name, handle] of dirHandle.entries()) {
+      if (handle.kind === 'file' && name === 'estoquePecas.xlsx') {
+        fileHandle = handle
+        break
+      }
+    }
+    
+    if (!fileHandle) {
+      error.value = 'No se encontró el archivo "estoquePecas.xlsx" en la carpeta seleccionada.'
+      return
+    }
+    
+    // Leer el archivo
+    const file = await fileHandle.getFile()
+    selectedFile.value = file
+    error.value = null
+    
+    await parseAndStore(file)
+  } catch (err) {
+    error.value = `Error al procesar la carpeta: ${err.message}`
+    console.error(err)
+  }
+}
+
+async function refreshFolder() {
+  if (!selectedDirHandle.value) {
+    // Intentar cargar desde IndexedDB
+    try {
+      const dirHandle = await getDirHandleFromIDB()
+      if (!dirHandle) {
+        error.value = 'No hay carpeta guardada. Por favor, selecciona una carpeta primero.'
+        return
+      }
+      
+      const ok = await verifyPermission(dirHandle, 'read')
+      if (!ok) {
+        error.value = 'No se concedieron permisos de lectura. Por favor, selecciona la carpeta nuevamente.'
+        hasPersistedHandle.value = false
+        return
+      }
+      
+      selectedDirHandle.value = dirHandle
+      selectedFolderPath.value = dirHandle.name || 'Carpeta seleccionada'
+      hasPersistedHandle.value = true
+    } catch (err) {
+      error.value = 'Error al cargar la carpeta guardada. Por favor, selecciona una carpeta nuevamente.'
+      console.error(err)
+      return
+    }
+  }
+  
+  await processFileFromHandle(selectedDirHandle.value)
+}
+
+async function handleFolderSelectFallback(event) {
   const files = event.target.files
   if (!files || files.length === 0) return
 
-  // Try to get folder name from the first file's path
+  // Obtener la ruta de la carpeta desde el primer archivo
   const firstFile = files[0]
   if (firstFile.webkitRelativePath) {
     const parts = firstFile.webkitRelativePath.split('/')
-    if (parts.length > 1) {
-      selectedFolderName.value = parts[0]
-    } else {
-      selectedFolderName.value = 'Carpeta seleccionada'
+    if (parts.length > 0) {
+      selectedFolderPath.value = parts[0]
     }
-  } else {
-    selectedFolderName.value = 'Carpeta seleccionada'
   }
 
-  // Find estoquePecas.xlsx
+  // Buscar el archivo estoquePecas.xlsx
   let targetFile = null
   for (let i = 0; i < files.length; i++) {
     if (files[i].name === 'estoquePecas.xlsx') {
@@ -546,12 +697,46 @@ const handleFolderSelect = (event) => {
   if (targetFile) {
     selectedFile.value = targetFile
     error.value = null
-    processFile()
+    hasPersistedHandle.value = false
+    await parseAndStore(targetFile)
   } else {
     error.value = 'No se encontró el archivo "estoquePecas.xlsx" en la carpeta seleccionada.'
     selectedFile.value = null
+    selectedFolderPath.value = null
   }
 }
+
+onMounted(async () => {
+  const savedData = loadData()
+  if (savedData) {
+    fileData.value = savedData
+    lastUpdate.value = savedData.lastUpdate
+    if (savedData.folderPath) {
+      selectedFolderPath.value = savedData.folderPath
+    }
+  }
+  
+  // Intentar cargar el handle persistido
+  try {
+    const dirHandle = await getDirHandleFromIDB()
+    if (dirHandle) {
+      const ok = await verifyPermission(dirHandle, 'read')
+      if (ok) {
+        selectedDirHandle.value = dirHandle
+        selectedFolderPath.value = dirHandle.name || selectedFolderPath.value
+        hasPersistedHandle.value = true
+        
+        // Cargar automáticamente el archivo
+        await processFileFromHandle(dirHandle)
+      } else {
+        hasPersistedHandle.value = false
+        console.log('La carpeta guardada no tiene permisos de lectura.')
+      }
+    }
+  } catch (err) {
+    console.warn('Error al cargar handle guardado:', err)
+  }
+})
 
 const parseAndStore = async (file) => {
   if (!file) return
@@ -565,12 +750,11 @@ const parseAndStore = async (file) => {
     const dataToSave = {
       ...result,
       fileName: file.name,
-      folderName: selectedFolderName.value
+      folderPath: selectedFolderPath.value
     }
     const saved = saveData(dataToSave)
     if (saved) {
       lastUpdate.value = data.value?.lastUpdate || new Date().toISOString()
-      persistedFileName.value = file.name
     }
   } catch (err) {
     error.value = `Error al procesar el archivo: ${err.message}`
@@ -580,30 +764,14 @@ const parseAndStore = async (file) => {
   }
 }
 
-const processFile = async () => {
-  if (!selectedFile.value || isProcessing.value) return
-  await parseAndStore(selectedFile.value)
-}
-
-const refreshData = async () => {
-  if (isProcessing.value) return
-  if (selectedFile.value) {
-    await parseAndStore(selectedFile.value)
-  } else {
-    const savedData = loadData()
-    if (savedData) {
-      fileData.value = savedData
-      lastUpdate.value = savedData.lastUpdate
-    }
-  }
-}
-
 const clearAllData = () => {
   if (confirm('¿Estás seguro de que deseas eliminar todos los datos guardados?')) {
     clearData()
     fileData.value = null
     selectedFile.value = null
-    persistedFileName.value = null
+    selectedFolderPath.value = null
+    selectedDirHandle.value = null
+    hasPersistedHandle.value = false
     lastUpdate.value = null
     selectedRow.value = null
     selectedPartida.value = null
@@ -616,6 +784,15 @@ const clearAllData = () => {
 const formatMetros = (value) => {
   const rounded = Math.round(value)
   return rounded.toLocaleString('es-ES', { useGrouping: true })
+}
+
+const formatArticulo = (artigo) => {
+  if (!artigo) return ''
+  const str = String(artigo)
+  if (str.length > 10) {
+    return str.slice(0, 10) + ' ' + str.slice(10)
+  }
+  return str
 }
 
 const formatDate = (dateString) => {
@@ -655,9 +832,7 @@ const formatPartida = (partida) => {
   return withoutFirst
 }
 
-const displayFileName = computed(() => {
-  return selectedFile.value?.name || persistedFileName.value
-})
+
 </script>
 
 <style scoped>
