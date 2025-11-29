@@ -216,11 +216,10 @@ function renderChart() {
                 name: 'Valor',
                 type: 'line',
                 data: yData,
-                smooth: false,
-                symbol: 'circle',
-                symbolSize: 10,
+                smooth: true,
+                showSymbol: false,
                 itemStyle: { color: '#3b82f6' },
-                lineStyle: { width: 2.5 }
+                lineStyle: { width: 2 }
             },
             {
                 name: 'Promedio',
@@ -253,7 +252,7 @@ function renderChart() {
                 name: 'Ne Estándar',
                 type: 'line',
                 data: Array(xData.length).fill(neStandard),
-                lineStyle: { type: 'solid', color: '#8b5cf6', width: 2.5 },
+                lineStyle: { type: 'solid', color: '#8b5cf6', width: 2 },
                 showSymbol: false,
                 z: 3
             },
