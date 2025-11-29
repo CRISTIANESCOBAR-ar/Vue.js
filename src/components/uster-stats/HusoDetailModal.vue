@@ -552,18 +552,19 @@ watch(() => props.visible, async (newVal) => {
     }
 })
 
-watch(() => props.values, () => {
-    if (props.visible && chart && !chart.isDisposed()) {
-        calculateStats()
-        renderChart()
-        // Force resize to ensure proper rendering
-        setTimeout(() => {
-            if (chart && !chart.isDisposed()) {
-                chart.resize()
-            }
-        }, 100)
-    }
-}, { deep: true })
+// ❌ WATCH REMOVIDO: Causaba duplicación de datos al renderizar dos veces
+// El watch de 'visible' ya maneja correctamente los cambios de valores
+// watch(() => props.values, () => {
+//     if (props.visible && chart && !chart.isDisposed()) {
+//         calculateStats()
+//         renderChart()
+//         setTimeout(() => {
+//             if (chart && !chart.isDisposed()) {
+//                 chart.resize()
+//             }
+//         }, 100)
+//     }
+// }, { deep: true })
 
 onMounted(() => {
     console.log('[HusoDetailModal] Component mounted')
