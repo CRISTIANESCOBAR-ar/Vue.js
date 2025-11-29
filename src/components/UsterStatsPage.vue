@@ -1364,69 +1364,21 @@ async function handleOpenHusoDetail(pointData) {
             .filter(p => p.USTER_TESTNR === testnr)
             .map(p => p.TESTNR)
 
-        console.log('[handleOpenHusoDetail] TensoRapid TESTNRs:', tensorTestnrs)
-
         // Get all rows for these TENSORAPID TESTNRs with huso numbers
         const rows = tensorapidTbl.value
             .filter(row => tensorTestnrs.includes(row.TESTNR))
             .sort((a, b) => (a.NO_ || a.NO || 0) - (b.NO_ || b.NO || 0))
         
-        console.log('[handleOpenHusoDetail] TensoRapid rows found:', rows.length, rows.map(r => ({ TESTNR: r.TESTNR, NO_: r.NO_, NO: r.NO, HUSO: r.HUSO })))
-        
         values = rows.map(row => parseFloat(row[variableKey])).filter(v => !isNaN(v))
         husoNumbers = rows.map(row => row.NO_ || row.NO || row.HUSO).filter(Boolean)
-        
-        // DEDUPLICACIÓN: Si hay duplicados por alguna razón, eliminarlos
-        const seen = new Set()
-        const deduplicatedValues = []
-        const deduplicatedHusoNumbers = []
-        
-        for (let i = 0; i < husoNumbers.length; i++) {
-            const husoKey = `${husoNumbers[i]}_${values[i]}`
-            if (!seen.has(husoKey)) {
-                seen.add(husoKey)
-                deduplicatedValues.push(values[i])
-                deduplicatedHusoNumbers.push(husoNumbers[i])
-            } else {
-                console.warn('[handleOpenHusoDetail] Duplicate huso detected and removed:', husoNumbers[i], values[i])
-            }
-        }
-        
-        values = deduplicatedValues
-        husoNumbers = deduplicatedHusoNumbers
-        
-        console.log('[handleOpenHusoDetail] After deduplication:', values.length, values, husoNumbers)
     } else {
         // For USTER: get rows matching TESTNR with huso numbers
         const rows = usterTbl.value
             .filter(row => row.TESTNR === testnr)
             .sort((a, b) => (a.NO_ || a.NO || 0) - (b.NO_ || b.NO || 0))
         
-        console.log('[handleOpenHusoDetail] USTER rows found:', rows.length, rows.map(r => ({ TESTNR: r.TESTNR, NO_: r.NO_, NO: r.NO, HUSO: r.HUSO })))
-        
         values = rows.map(row => parseFloat(row[variableKey])).filter(v => !isNaN(v))
         husoNumbers = rows.map(row => row.NO_ || row.NO || row.HUSO).filter(Boolean)
-        
-        // DEDUPLICACIÓN: Si hay duplicados por alguna razón, eliminarlos
-        const seen = new Set()
-        const deduplicatedValues = []
-        const deduplicatedHusoNumbers = []
-        
-        for (let i = 0; i < husoNumbers.length; i++) {
-            const husoKey = `${husoNumbers[i]}_${values[i]}`
-            if (!seen.has(husoKey)) {
-                seen.add(husoKey)
-                deduplicatedValues.push(values[i])
-                deduplicatedHusoNumbers.push(husoNumbers[i])
-            } else {
-                console.warn('[handleOpenHusoDetail] Duplicate huso detected and removed:', husoNumbers[i], values[i])
-            }
-        }
-        
-        values = deduplicatedValues
-        husoNumbers = deduplicatedHusoNumbers
-        
-        console.log('[handleOpenHusoDetail] After deduplication:', values.length, values, husoNumbers)
     }
 
     // Get metadata from USTER_PAR
@@ -1477,9 +1429,6 @@ async function handleOpenHusoDetail(pointData) {
     const rawOe = parRow?.MASCHNR || parRow?.OE || parRow?.OE_NRO || null
     const oe = formatOe(rawOe)
     const standardNe = parRow?.NOMCOUNT || selectedNomcount.value
-
-    console.log('[handleOpenHusoDetail] Found values:', values.length, values)
-    console.log('[handleOpenHusoDetail] Huso numbers:', husoNumbers)
 
     // Populate modal data
     husoModalData.value = {
