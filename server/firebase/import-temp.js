@@ -19,6 +19,16 @@ admin.initializeApp({
 
 const db = admin.firestore()
 
+/**
+ * Compute deterministic document ID for TBL collections
+ * Uses composite key: TESTNR + HUSO_NUMBER
+ */
+function computeTblDocId(record) {
+  const testnr = String(record.TESTNR || '')
+  const no = record.NO || record.NO_ || record.HUSO_NUMBER || record.HUSO || ''
+  return `${testnr}_${no}`
+}
+
 async function deleteCollection(collectionName) {
   console.log(`🗑️  Deleting old ${collectionName} collection...`)
   const collectionRef = db.collection(collectionName)
@@ -66,8 +76,16 @@ async function importCollection(collectionName, filePath) {
   let batchCount = 0
 
   for (const doc of data) {
-    // Use TESTNR as document ID to prevent duplicates
-    const docId = doc.TESTNR || db.collection(collectionName).doc().id
+    // Determine document ID based on collection type
+    let docId
+    if (collectionName === 'USTER_TBL' || collectionName === 'TENSORAPID_TBL') {
+      // For TBL tables: use composite key (TESTNR + HUSO_NUMBER)
+      docId = computeTblDocId(doc)
+    } else {
+      // For PAR tables: use TESTNR as document ID
+      docId = doc.TESTNR || db.collection(collectionName).doc().id
+    }
+    
     const docRef = db.collection(collectionName).doc(docId)
     batch.set(docRef, doc, { merge: true })
     count++
