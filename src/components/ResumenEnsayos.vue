@@ -389,16 +389,20 @@
           </div>
         </header>
 
-        <!-- Observaciones (OBS) y Lab. Uster (LABORANT) — en línea debajo del header -->
-        <div v-if="modalMeta.obs || modalMeta.laborant"
+        <!-- Observaciones (OBS), Lab. Uster (LABORANT) y Op. TensoRapid — en línea debajo del header -->
+        <div v-if="modalMeta.obs || modalMeta.laborant || modalMeta.tensorLaborant"
           class="mx-8 flex items-center gap-4 text-slate-600 text-sm mb-2">
           <div v-if="modalMeta.obs">
             <span>Obs.:</span>
             <span class="text-slate-900 text-sm font-normal ml-1">{{ modalMeta.obs }}</span>
           </div>
           <div v-if="modalMeta.laborant">
-            <span>Lab. Uster:</span>
+            <span>Op. Uster:</span>
             <span class="text-slate-900 text-sm font-normal ml-1">{{ modalMeta.laborant }}</span>
+          </div>
+          <div v-if="modalMeta.tensorLaborant">
+            <span>Op. TensoRapid:</span>
+            <span class="text-slate-900 text-sm font-normal ml-1">{{ modalMeta.tensorLaborant }}</span>
           </div>
         </div>
         <section class="flex-1 relative">
@@ -1361,14 +1365,28 @@ const modalMeta = computed(() => {
     }
   }
   const obs = (obsRaw == null || String(obsRaw).trim() === '') ? null : String(obsRaw).trim()
-  // Laborant: extraer de meta (viene en campo LABORANT)
+  // Laborant Uster: extraer de meta (viene en campo LABORANT)
   let laborantRaw = meta?.LABORANT ?? meta?.Laborant ?? meta?.laborant ?? null
   const laborant = (laborantRaw == null || String(laborantRaw).trim() === '') ? null : String(laborantRaw).trim()
+  
+  // Laborant TensoRapid: buscar en TENSORAPID_PAR por USTER_TESTNR
+  let tensorLaborant = null
+  if (u && allData.value?.tensorapidPar) {
+    const tensorParMatch = allData.value.tensorapidPar.find(tp => {
+      const usterTestnr = String(tp.USTER_TESTNR || tp.uster_testnr || tp.usterTestnr || tp.USTERTESTNR || '')
+      return usterTestnr === String(u)
+    })
+    if (tensorParMatch) {
+      const tensorLabRaw = tensorParMatch.LABORANT ?? tensorParMatch.Laborant ?? tensorParMatch.laborant ?? null
+      tensorLaborant = (tensorLabRaw == null || String(tensorLabRaw).trim() === '') ? null : String(tensorLabRaw).trim()
+    }
+  }
+  
   // Estiraje: extraer de meta (viene en campo ESTIRAJE)
   let estirajeRaw = meta?.ESTIRAJE ?? meta?.Estiraje ?? meta?.estiraje ?? null
   const estiraje = (estirajeRaw == null || String(estirajeRaw).trim() === '') ? null : String(estirajeRaw).trim()
 
-  return { fechaStr, oe, ne, u, t, obs, laborant, estiraje }
+  return { fechaStr, oe, ne, u, t, obs, laborant, tensorLaborant, estiraje }
 })
 
 // Index within the current filtered list for the selected ensayo
