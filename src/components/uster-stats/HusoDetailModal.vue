@@ -20,7 +20,18 @@
                     </div>
                 </div>
 
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-3">
+                    <!-- Checkbox para mostrar valores -->
+                    <label class="flex items-center gap-2 cursor-pointer select-none">
+                        <input 
+                            type="checkbox" 
+                            v-model="showValues"
+                            @change="renderChart"
+                            class="w-4 h-4 text-blue-600 bg-white border-slate-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer"
+                        >
+                        <span class="text-sm font-medium text-slate-700">Mostrar Valores</span>
+                    </label>
+                    
                     <!-- Copy as image button -->
                     <button @click="copyAsImage" type="button"
                         v-tippy="{ content: 'Copiar como imagen para WhatsApp', placement: 'bottom', theme: 'custom' }"
@@ -46,23 +57,43 @@
                 </div>
             </header>
 
-            <!-- Stats cards -->
-            <div class="grid grid-cols-4 gap-3 mb-4 flex-shrink-0">
-                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-3 border border-blue-200">
-                    <div class="text-xs text-slate-600 mb-1">Promedio</div>
-                    <div class="text-lg font-bold text-slate-900">{{ formatValue(stats.mean) }}</div>
+            <!-- Stats cards - Horizontal layout -->
+            <div class="grid grid-cols-6 gap-2 mb-3 flex-shrink-0">
+                <div class="bg-white rounded-lg px-3 py-2 border border-slate-200 hover:border-blue-300 transition-colors">
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="text-xs font-medium text-slate-500">Promedio</span>
+                        <span class="text-sm font-bold text-slate-900">{{ formatValue(stats.mean) }}</span>
+                    </div>
                 </div>
-                <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-3 border border-green-200">
-                    <div class="text-xs text-slate-600 mb-1">Desv. Est. (σ)</div>
-                    <div class="text-lg font-bold text-slate-900">{{ formatValue(stats.sd) }}</div>
+                <div class="bg-white rounded-lg px-3 py-2 border border-slate-200 hover:border-green-300 transition-colors">
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="text-xs font-medium text-slate-500">Desv. Est. (σ)</span>
+                        <span class="text-sm font-bold text-slate-900">{{ formatValue(stats.sd) }}</span>
+                    </div>
                 </div>
-                <div class="bg-gradient-to-br from-purple-50 to-violet-50 rounded-lg p-3 border border-purple-200">
-                    <div class="text-xs text-slate-600 mb-1">CV %</div>
-                    <div class="text-lg font-bold text-slate-900">{{ formatValue(stats.cv) }}</div>
+                <div class="bg-white rounded-lg px-3 py-2 border border-slate-200 hover:border-purple-300 transition-colors">
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="text-xs font-medium text-slate-500">CV %</span>
+                        <span class="text-sm font-bold text-slate-900">{{ formatValue(stats.cv) }}</span>
+                    </div>
                 </div>
-                <div class="bg-gradient-to-br from-orange-50 to-amber-50 rounded-lg p-3 border border-orange-200">
-                    <div class="text-xs text-slate-600 mb-1">Rango</div>
-                    <div class="text-lg font-bold text-slate-900">{{ formatValue(stats.range) }}</div>
+                <div class="bg-white rounded-lg px-3 py-2 border border-slate-200 hover:border-orange-300 transition-colors">
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="text-xs font-medium text-slate-500">Rango</span>
+                        <span class="text-sm font-bold text-slate-900">{{ formatValue(stats.range) }}</span>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg px-3 py-2 border border-slate-200 hover:border-cyan-300 transition-colors">
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="text-xs font-medium text-slate-500">Ne Min (-1.5%)</span>
+                        <span class="text-sm font-bold text-slate-900">{{ formatNeValue(stats.neMin) }}</span>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg px-3 py-2 border border-slate-200 hover:border-amber-300 transition-colors">
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="text-xs font-medium text-slate-500">Ne Max (+1.5%)</span>
+                        <span class="text-sm font-bold text-slate-900">{{ formatNeValue(stats.neMax) }}</span>
+                    </div>
                 </div>
             </div>
 
@@ -97,6 +128,7 @@ const chartRef = ref(null)
 const modalRef = ref(null)
 let chart = null
 let isFirstRender = true // Flag para saber si es el primer render
+const showValues = ref(true) // Mostrar valores en los puntos por defecto
 
 // Calculate statistics
 const stats = ref({
@@ -107,12 +139,14 @@ const stats = ref({
     ucl: 0,
     min: 0,
     max: 0,
-    range: 0
+    range: 0,
+    neMin: null,
+    neMax: null
 })
 
 function calculateStats() {
     if (!props.values || props.values.length === 0) {
-        stats.value = { mean: 0, sd: 0, cv: 0, lcl: 0, ucl: 0, min: 0, max: 0, range: 0 }
+        stats.value = { mean: 0, sd: 0, cv: 0, lcl: 0, ucl: 0, min: 0, max: 0, range: 0, neMin: null, neMax: null }
         return
     }
 
@@ -125,6 +159,11 @@ function calculateStats() {
     const max = Math.max(...props.values)
     const range = max - min
 
+    // Calcular Ne Min y Ne Max si hay Ne Estándar
+    const neStandard = props.standardNe ? parseFloat(props.standardNe) : null
+    const neMin = neStandard ? neStandard * 0.985 : null
+    const neMax = neStandard ? neStandard * 1.015 : null
+
     stats.value = {
         mean,
         sd,
@@ -133,7 +172,9 @@ function calculateStats() {
         ucl: mean + 3 * sd,
         min,
         max,
-        range
+        range,
+        neMin,
+        neMax
     }
 }
 
@@ -142,41 +183,24 @@ function formatValue(val) {
     return val.toFixed(2)
 }
 
-function renderChart() {
-    if (!chart || chart.isDisposed() || !props.values || props.values.length === 0) {
-        console.log('[HusoDetailModal] renderChart skipped:', { 
-            hasChart: !!chart, 
-            isDisposed: chart ? chart.isDisposed() : 'N/A',
-            valuesLength: props.values?.length || 0 
-        })
-        return
-    }
+function formatNeValue(val) {
+    if (val == null || isNaN(val)) return '—'
+    return val.toFixed(2)
+}
 
-    console.log('[HusoDetailModal] Rendering chart with', props.values.length, 'values')
+// Estado de la leyenda para calcular el eje Y dinámicamente
+const legendState = ref({})
 
+// Función auxiliar para construir las opciones del gráfico
+function buildOption(selectedLegend = null) {
     const xData = props.husoNumbers.length > 0 
-        ? props.husoNumbers.map(n => `Huso ${n}`)
-        : props.values.map((_, i) => `Huso ${i + 1}`)
+        ? props.husoNumbers.map(n => String(n))
+        : props.values.map((_, i) => String(i + 1))
     const yData = props.values
 
     // Check if this is Titulo Ne variable
     const isTituloNe = props.variableLabel && props.variableLabel.toLowerCase().includes('titulo')
     const neStandard = props.standardNe ? parseFloat(props.standardNe) : null
-
-    // Calculate y-axis range dynamically
-    let allValues = [...yData, stats.value.lcl, stats.value.ucl]
-    
-    // Add Ne standard values to range calculation if applicable
-    if (isTituloNe && neStandard) {
-        allValues.push(neStandard, neStandard * 0.985, neStandard * 1.015)
-    }
-    
-    const minValue = Math.min(...allValues)
-    const maxValue = Math.max(...allValues)
-    const range = maxValue - minValue
-    const padding = range * 0.15 // 15% padding
-    const yMin = minValue - padding
-    const yMax = maxValue + padding
 
     // Build legend data
     const legendData = ['Valor', 'Promedio', 'LCL (-3σ)', 'UCL (+3σ)']
@@ -184,12 +208,164 @@ function renderChart() {
         legendData.push('Ne Estándar', 'Ne Min (-1.5%)', 'Ne Max (+1.5%)')
     }
 
+    // Construir series
+    const series = [
+        {
+            name: 'Valor',
+            type: 'line',
+            data: yData.map((val, idx) => {
+                // Si hay Ne Estándar, verificar si el punto está fuera del rango ±1.5%
+                if (neStandard && isTituloNe) {
+                    const neMin = neStandard * 0.985
+                    const neMax = neStandard * 1.015
+                    const isOutOfRange = val < neMin || val > neMax
+                    
+                    return {
+                        value: val,
+                        itemStyle: isOutOfRange ? { 
+                            color: '#ef4444',
+                            borderColor: '#fff',
+                            borderWidth: 2,
+                            shadowBlur: 6,
+                            shadowColor: 'rgba(239, 68, 68, 0.4)'
+                        } : { color: '#3b82f6' },
+                        symbolSize: isOutOfRange ? 8 : 6
+                    }
+                }
+                return val
+            }),
+            smooth: false,
+            showSymbol: true, // Siempre mostrar símbolos para ver los puntos fuera de rango
+            symbolSize: 6,
+            itemStyle: { color: '#3b82f6' },
+            lineStyle: { width: 1.5 },
+            label: {
+                show: showValues.value,
+                position: 'top',
+                formatter: (params) => {
+                    const val = typeof params.value === 'object' ? params.value.value : params.value
+                    return val.toFixed(2)
+                },
+                fontSize: 10,
+                color: '#475569',
+                fontWeight: 500
+            }
+        },
+        {
+            name: 'Promedio',
+            type: 'line',
+            data: Array(xData.length).fill(stats.value.mean),
+            lineStyle: { type: 'solid', color: '#10b981', width: 1.5 },
+            showSymbol: false
+        },
+        {
+            name: 'LCL (-3σ)',
+            type: 'line',
+            data: Array(xData.length).fill(stats.value.lcl),
+            lineStyle: { type: 'dashed', color: '#ef4444', width: 1.5 },
+            showSymbol: false
+        },
+        {
+            name: 'UCL (+3σ)',
+            type: 'line',
+            data: Array(xData.length).fill(stats.value.ucl),
+            lineStyle: { type: 'dashed', color: '#ef4444', width: 1.5 },
+            showSymbol: false
+        }
+    ]
+
+    // Add Ne Estándar lines only for Titulo Ne
+    if (isTituloNe && neStandard) {
+        series.push(
+            {
+                name: 'Ne Estándar',
+                type: 'line',
+                data: Array(xData.length).fill(neStandard),
+                lineStyle: { type: 'solid', color: '#8b5cf6', width: 1.5 },
+                showSymbol: false,
+                z: 3
+            },
+            {
+                name: 'Ne Min (-1.5%)',
+                type: 'line',
+                data: Array(xData.length).fill(neStandard * 0.985),
+                lineStyle: { type: 'dashed', color: '#f59e0b', width: 1.5 },
+                showSymbol: false,
+                z: 2
+            },
+            {
+                name: 'Ne Max (+1.5%)',
+                type: 'line',
+                data: Array(xData.length).fill(neStandard * 1.015),
+                lineStyle: { type: 'dashed', color: '#f59e0b', width: 1.5 },
+                showSymbol: false,
+                z: 2
+            }
+        )
+    }
+
+    // Calcular rango Y basado en series visibles
+    let yMin = Infinity
+    let yMax = -Infinity
+
+    series.forEach(s => {
+        // Verificar si la serie está visible (usar selectedLegend si se proporciona)
+        const isVisible = selectedLegend ? (selectedLegend[s.name] !== false) : true
+        if (!isVisible) return
+
+        const seriesData = s.data
+        seriesData.forEach(val => {
+            // Extraer el valor numérico (puede ser number o {value: number})
+            const numericVal = typeof val === 'object' && val !== null && val.value !== undefined 
+                ? val.value 
+                : val
+            
+            if (typeof numericVal === 'number' && !isNaN(numericVal)) {
+                if (numericVal < yMin) yMin = numericVal
+                if (numericVal > yMax) yMax = numericVal
+            }
+        })
+    })
+
+    // Agregar margen de 5% arriba y abajo
+    const range = yMax - yMin
+    const margin = range * 0.05
+    yMin = yMin - margin
+    yMax = yMax + margin
+
     const option = {
         tooltip: {
             trigger: 'axis',
+            backgroundColor: '#fff',
+            borderColor: '#e2e8f0',
+            textStyle: {
+                color: '#1e293b',
+                fontSize: 12
+            },
+            extraCssText: 'box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); border-radius: 8px;',
             formatter: (params) => {
-                const param = params[0]
-                return `${param.name}<br/>${props.variableLabel}: <strong>${param.value.toFixed(2)}</strong>`
+                if (!params || params.length === 0) return ''
+
+                // Primera línea: Huso y variable
+                const husoLabel = params[0].axisValue
+                let result = `<div style="font-weight: 600; margin-bottom: 6px; color: #0f172a; border-bottom: 1px solid #f1f5f9; padding-bottom: 4px;">Huso ${husoLabel} | ${props.variableLabel}</div>`
+
+                // Mostrar cada serie con su color, nombre y valor
+                params.forEach(item => {
+                    // Ignorar series ocultas o sin valor
+                    if (item.value === undefined || item.value === null) return
+                    
+                    const value = typeof item.value === 'number' ? item.value.toFixed(2) : item.value
+                    result += `<div style="display: flex; align-items: center; justify-content: space-between; margin: 3px 0; gap: 12px;">
+                        <div style="display: flex; align-items: center;">
+                            ${item.marker} 
+                            <span style="margin-left: 4px; color: #475569;">${item.seriesName}</span>
+                        </div>
+                        <span style="font-weight: 500; color: #1e293b;">${value}</span>
+                    </div>`
+                })
+
+                return result
             }
         },
         legend: {
@@ -211,85 +387,42 @@ function renderChart() {
                 formatter: (value) => value.toFixed(2)
             }
         },
-        series: [
-            {
-                name: 'Valor',
-                type: 'line',
-                data: yData,
-                smooth: true,
-                showSymbol: false,
-                itemStyle: { color: '#3b82f6' },
-                lineStyle: { width: 2 }
-            },
-            {
-                name: 'Promedio',
-                type: 'line',
-                data: Array(xData.length).fill(stats.value.mean),
-                lineStyle: { type: 'solid', color: '#10b981', width: 2 },
-                showSymbol: false
-            },
-            {
-                name: 'LCL (-3σ)',
-                type: 'line',
-                data: Array(xData.length).fill(stats.value.lcl),
-                lineStyle: { type: 'dashed', color: '#ef4444', width: 2 },
-                showSymbol: false
-            },
-            {
-                name: 'UCL (+3σ)',
-                type: 'line',
-                data: Array(xData.length).fill(stats.value.ucl),
-                lineStyle: { type: 'dashed', color: '#ef4444', width: 2 },
-                showSymbol: false
-            }
-        ]
+        series
     }
 
-    // Add Ne Estándar lines only for Titulo Ne
-    if (isTituloNe && neStandard) {
-        option.series.push(
-            {
-                name: 'Ne Estándar',
-                type: 'line',
-                data: Array(xData.length).fill(neStandard),
-                lineStyle: { type: 'solid', color: '#8b5cf6', width: 2 },
-                showSymbol: false,
-                z: 3
-            },
-            {
-                name: 'Ne Min (-1.5%)',
-                type: 'line',
-                data: Array(xData.length).fill(neStandard * 0.985),
-                lineStyle: { type: 'dashed', color: '#f59e0b', width: 2 },
-                showSymbol: false,
-                z: 2
-            },
-            {
-                name: 'Ne Max (+1.5%)',
-                type: 'line',
-                data: Array(xData.length).fill(neStandard * 1.015),
-                lineStyle: { type: 'dashed', color: '#f59e0b', width: 2 },
-                showSymbol: false,
-                z: 2
-            }
-        )
+    return option
+}
+
+function renderChart() {
+    if (!chart || chart.isDisposed() || !props.values || props.values.length === 0) {
+        console.log('[HusoDetailModal] renderChart skipped:', { 
+            hasChart: !!chart, 
+            isDisposed: chart ? chart.isDisposed() : 'N/A',
+            valuesLength: props.values?.length || 0 
+        })
+        return
     }
+
+    console.log('[HusoDetailModal] Rendering chart with', props.values.length, 'values, showValues:', showValues.value)
 
     // Solo en el primer render, establecer LCL y UCL como desactivados
-    // En renders posteriores, ECharts preservará el estado que el usuario seleccionó
     if (isFirstRender) {
-        // Primera vez: LCL y UCL desactivados por defecto
-        option.legend.selected = {
+        const initialLegendState = {
             'LCL (-3σ)': false,
             'UCL (+3σ)': false
         }
+        legendState.value = initialLegendState
+        
+        // Construir opciones con el estado inicial correcto para calcular Y correctamente
+        const option = buildOption(initialLegendState)
+        option.legend.selected = initialLegendState
+        
         isFirstRender = false
+        chart.setOption(option, { notMerge: true })
     } else {
-        // Renders posteriores: no especificar selected, dejar que ECharts preserve el estado
-        delete option.legend.selected
+        const option = buildOption(legendState.value)
+        chart.setOption(option, { notMerge: false })
     }
-
-    chart.setOption(option)
 }
 
 async function copyAsImage() {
@@ -345,6 +478,7 @@ watch(() => props.visible, async (newVal) => {
     if (newVal) {
         // Reset flag cuando se abre el modal para que LCL/UCL inicien desactivados
         isFirstRender = true
+        legendState.value = {} // Reset legend state
         calculateStats()
         await nextTick()
         
@@ -362,6 +496,23 @@ watch(() => props.visible, async (newVal) => {
                     
                     // Initialize new chart
                     chart = echarts.init(chartRef.value)
+                    
+                    // Listener para cambios en la selección de leyendas (ajustar eje Y dinámicamente)
+                    chart.on('legendselectchanged', (params) => {
+                        console.log('[HusoDetailModal] Legend changed:', params.selected)
+                        // Actualizar el estado de las leyendas
+                        legendState.value = { ...params.selected }
+                        
+                        // Reconstruir opciones con el nuevo estado de leyenda para recalcular Y
+                        const newOpt = buildOption(legendState.value)
+                        newOpt.legend.selected = legendState.value
+                        
+                        // Actualizar el eje Y con el nuevo rango calculado
+                        chart.setOption({
+                            yAxis: newOpt.yAxis
+                        }, false)
+                    })
+                    
                     renderChart()
                     
                     // Force resize after a small delay to ensure proper rendering

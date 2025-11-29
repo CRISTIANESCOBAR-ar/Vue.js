@@ -183,6 +183,18 @@
                                 </div>
                             </div>
 
+                            <!-- Checkbox Mostrar Valores -->
+                            <div class="flex items-center gap-2 pl-4 border-l border-slate-100">
+                                <label class="flex items-center gap-2 cursor-pointer select-none">
+                                    <input 
+                                        type="checkbox" 
+                                        v-model="showChartValues"
+                                        class="w-4 h-4 text-blue-600 bg-white border-slate-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer"
+                                    >
+                                    <span class="text-xs font-medium text-slate-700">Mostrar Valores</span>
+                                </label>
+                            </div>
+
                             <!-- Atajos de teclado -->
                             <div class="hidden lg:flex items-center gap-2 pl-4 border-l border-slate-100">
                                 <span class="text-[10px] text-slate-500 font-medium mr-1">Atajos:</span>
@@ -208,6 +220,7 @@
                 <div v-else class="flex-1 flex flex-col min-h-0 overflow-hidden">
                     <StatsChart :stats="stats" :globalMean="globalMean" :globalUcl="globalUcl" :globalLcl="globalLcl"
                         :variableLabel="currentVariableLabel" :standardValue="standardNeValue"
+                        :showValues="showChartValues"
                         @open-ensayo-detail="handleOpenEnsayoDetail" @open-huso-detail="handleOpenHusoDetail" />
                 </div>
             </div>
@@ -1023,6 +1036,7 @@ const husoModalData = ref({
     oe: null,
     standardNe: null
 })
+const showChartValues = ref(true) // Mostrar valores en el gráfico por defecto
 
 // Helper functions for modal
 function fmtCell(val) {

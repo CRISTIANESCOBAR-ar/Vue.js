@@ -14,7 +14,8 @@ const props = defineProps({
     globalUcl: { type: Number, required: true },
     globalLcl: { type: Number, required: true },
     variableLabel: { type: String, default: '' },
-    standardValue: { type: Number, default: null }
+    standardValue: { type: Number, default: null },
+    showValues: { type: Boolean, default: true }
 })
 
 const emit = defineEmits(['open-ensayo-detail', 'open-huso-detail'])
@@ -131,7 +132,17 @@ function buildOption(data, xLabelRotate = 0, bottomPx = 60, selectedLegend = nul
 
     // Función para calcular el rango Y basado en las series visibles
     const calculateYRange = (legendState) => {
-        const visibleValues = [...y] // Siempre incluir promedios
+        const visibleValues = [] // Empezar vacío
+        
+        // Incluir promedios (extraer valores si son objetos)
+        y.forEach(val => {
+            const numericVal = typeof val === 'object' && val !== null && val.value !== undefined 
+                ? val.value 
+                : val
+            if (typeof numericVal === 'number' && !isNaN(numericVal)) {
+                visibleValues.push(numericVal)
+            }
+        })
         
         // Incluir Media Global si está activa (o si no hay estado de leyenda, asumir activa)
         if (!legendState || legendState['Media Global'] !== false) {
@@ -263,12 +274,44 @@ function buildOption(data, xLabelRotate = 0, bottomPx = 60, selectedLegend = nul
             {
                 name: 'Promedio Día',
                 type: 'line',
-                data: y,
+                data: y.map((val, idx) => {
+                    // Si hay valor estándar, verificar si está fuera del rango ±1.5%
+                    if (props.standardValue != null) {
+                        const neMin = props.standardValue * 0.985
+                        const neMax = props.standardValue * 1.015
+                        const isOutOfRange = val < neMin || val > neMax
+                        
+                        return {
+                            value: val,
+                            itemStyle: isOutOfRange ? { 
+                                color: '#ef4444',
+                                borderColor: '#fff',
+                                borderWidth: 2,
+                                shadowBlur: 6,
+                                shadowColor: 'rgba(239, 68, 68, 0.4)'
+                            } : { color: '#3b82f6' },
+                            symbolSize: isOutOfRange ? 8 : 6
+                        }
+                    }
+                    return val
+                }),
                 smooth: false,
                 symbol: 'circle',
+                showSymbol: true, // Siempre mostrar símbolos para destacar puntos fuera de rango
                 symbolSize: 6,
                 itemStyle: { color: '#3b82f6' }, // Blue 500
-                lineStyle: { width: 2 }
+                lineStyle: { width: 2 },
+                label: {
+                    show: props.showValues,
+                    position: 'top',
+                    formatter: (params) => {
+                        const val = typeof params.value === 'object' ? params.value.value : params.value
+                        return val.toFixed(2)
+                    },
+                    fontSize: 10,
+                    color: '#475569',
+                    fontWeight: 500
+                }
             },
             {
                 name: 'Media Global',
@@ -486,6 +529,13 @@ onMounted(() => {
         }
     }
     chart.on('finished', finishedHandler)
+})
+
+// Watch para actualizar cuando cambie showValues
+watch(() => props.showValues, () => {
+    if (chart && !chart.isDisposed()) {
+        render()
+    }
 })
 
 onBeforeUnmount(() => {
