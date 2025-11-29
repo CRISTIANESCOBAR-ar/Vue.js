@@ -1,6 +1,6 @@
 <template>
     <div class="w-full h-full">
-        <div ref="chartRef" class="w-full h-full" style="min-height:260px;"></div>
+        <div ref="chartRef" class="w-full h-full echarts-container" style="min-height:260px;"></div>
     </div>
 </template>
 
@@ -111,16 +111,15 @@ function computeRequiredBottomPx(labels, rotateDeg) {
             }
         }
 
-        // Calcular espacio para etiquetas X rotadas + espacio generoso para la leyenda (40px) + padding
-        const bottom = Math.ceil(rotatedHeight + 55)
-        // enforce reasonable min/max - mínimo 80px para asegurar espacio para leyenda
-        return Math.max(80, Math.min(bottom, 150))
+        // Calcular espacio para etiquetas X rotadas + espacio para la leyenda + padding
+        // 25px para horizontal, 35px para rotación 90°
+        return rotateDeg === 90 ? 35 : 25
     } catch {
-        return 60
+        return 10
     }
 }
 
-function buildOption(data, xLabelRotate = 0, bottomPx = 60, selectedLegend = null) {
+function buildOption(data, xLabelRotate = 0, bottomPx = 25, selectedLegend = null) {
     // Use formatted timestamp (dd/mm/yy) as x axis label when available; fallback to TESTNR
     const x = data.map(d => (d.timestampFmt ? d.timestampFmt : d.testnr))
     const y = data.map(d => d.mean)
@@ -203,10 +202,11 @@ function buildOption(data, xLabelRotate = 0, bottomPx = 60, selectedLegend = nul
                 const dataIndex = params[0].dataIndex
                 const pointData = data[dataIndex]
 
-                // Fecha formateada y OE (primera línea en negrita)
+                // Fecha formateada, OE y NE (primera línea en negrita)
                 const dateLabel = pointData?.timestampFmt || params[0].axisValue
                 const oe = pointData?.oe ? ` | OE: ${pointData.oe}` : ''
-                let result = `<div style="font-weight: 600; margin-bottom: 6px; color: #0f172a; border-bottom: 1px solid #f1f5f9; padding-bottom: 4px;">${dateLabel}${oe}</div>`
+                const ne = pointData?.ne ? ` | NE: ${pointData.ne}` : ''
+                let result = `<div style="font-weight: 600; margin-bottom: 6px; color: #0f172a; border-bottom: 1px solid #f1f5f9; padding-bottom: 4px;">${dateLabel}${oe}${ne}</div>`
 
                 // Mostrar cada serie con su color, nombre y valor
                 params.forEach(item => {
@@ -300,7 +300,7 @@ function buildOption(data, xLabelRotate = 0, bottomPx = 60, selectedLegend = nul
                 showSymbol: true, // Siempre mostrar símbolos para destacar puntos fuera de rango
                 symbolSize: 6,
                 itemStyle: { color: '#3b82f6' }, // Blue 500
-                lineStyle: { width: 2 },
+                lineStyle: { width: 1.25 },
                 label: {
                     show: props.showValues,
                     position: 'top',
@@ -317,28 +317,28 @@ function buildOption(data, xLabelRotate = 0, bottomPx = 60, selectedLegend = nul
                 name: 'Media Global',
                 type: 'line',
                 data: globalMeanLine,
-                lineStyle: { type: 'solid', color: '#1d4ed8', width: 2 }, // Intense Blue
+                lineStyle: { type: 'solid', color: '#1d4ed8', width: 1.25 }, // Intense Blue
                 showSymbol: false
             },
             {
                 name: 'LCL (-3σ)',
                 type: 'line',
                 data: lcl,
-                lineStyle: { type: 'dashed', color: '#f97316', width: 2 }, // Orange
+                lineStyle: { type: 'dashed', color: '#f97316', width: 1.25 }, // Orange
                 showSymbol: false
             },
             {
                 name: 'UCL (+3σ)',
                 type: 'line',
                 data: ucl,
-                lineStyle: { type: 'dashed', color: '#f97316', width: 2 }, // Orange
+                lineStyle: { type: 'dashed', color: '#f97316', width: 1.25 }, // Orange
                 showSymbol: false
             },
             {
                 name: 'Ne Estándar',
                 type: 'line',
                 data: props.standardValue != null ? Array(x.length).fill(props.standardValue) : [],
-                lineStyle: { type: 'solid', color: '#16a34a', width: 2 }, // Green
+                lineStyle: { type: 'solid', color: '#16a34a', width: 1.25 }, // Green
                 showSymbol: false,
                 z: 10,
                 silent: props.standardValue == null
@@ -347,7 +347,7 @@ function buildOption(data, xLabelRotate = 0, bottomPx = 60, selectedLegend = nul
                 name: 'Ne Min (-1.5%)',
                 type: 'line',
                 data: props.standardValue != null ? Array(x.length).fill(props.standardValue * 0.985) : [],
-                lineStyle: { type: 'dashed', color: '#ef4444', width: 1.5 }, // Red
+                lineStyle: { type: 'dashed', color: '#ef4444', width: 1.25 }, // Red
                 showSymbol: false,
                 z: 9,
                 silent: props.standardValue == null
@@ -356,7 +356,7 @@ function buildOption(data, xLabelRotate = 0, bottomPx = 60, selectedLegend = nul
                 name: 'Ne Max (+1.5%)',
                 type: 'line',
                 data: props.standardValue != null ? Array(x.length).fill(props.standardValue * 1.015) : [],
-                lineStyle: { type: 'dashed', color: '#ef4444', width: 1.5 }, // Red
+                lineStyle: { type: 'dashed', color: '#ef4444', width: 1.25 }, // Red
                 showSymbol: false,
                 z: 9,
                 silent: props.standardValue == null
@@ -373,6 +373,7 @@ function render() {
     const rotate = computeOptimalXLabelRotate(labels)
     // initial estimate (may be refined by chart.finished handler)
     const bottomPx = computeRequiredBottomPx(labels, rotate)
+    console.log('StatsChart bottomPx calculated:', bottomPx)
     
     // Pass current legend state to buildOption
     const opt = buildOption(props.stats, rotate, bottomPx, legendState.value)
@@ -503,8 +504,9 @@ onMounted(() => {
             const fontSizePx = fontSizeMatch ? parseInt(fontSizeMatch[1], 10) : 12
             const rad = (rotate || 0) * Math.PI / 180
             const rotatedHeight = Math.abs(Math.sin(rad)) * maxW + Math.abs(Math.cos(rad)) * fontSizePx
-            // Espacio para etiquetas X + espacio para leyenda
-            const refinedBottom = Math.max(80, Math.min(Math.ceil(rotatedHeight + 55), 150))
+            
+            // 25px para horizontal, 35px para rotación 90°
+            const refinedBottom = rotate === 90 ? 35 : 25
 
             // if difference is meaningful, reapply option with refined bottom
             const currentBottom = chart.getOption().grid && chart.getOption().grid[0] && chart.getOption().grid[0].bottom ? chart.getOption().grid[0].bottom : null

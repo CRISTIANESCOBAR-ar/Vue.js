@@ -191,21 +191,35 @@
                                         v-model="showChartValues"
                                         class="w-4 h-4 text-blue-600 bg-white border-slate-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer"
                                     >
-                                    <span class="text-xs font-medium text-slate-700">Mostrar Valores</span>
+                                    <span class="text-xs font-normal text-slate-700">Mostrar Valores</span>
                                 </label>
                             </div>
 
                             <!-- Atajos de teclado -->
-                            <div class="hidden lg:flex items-center gap-2 pl-4 border-l border-slate-100">
-                                <span class="text-[10px] text-slate-500 font-medium mr-1">Atajos:</span>
-                                <span class="px-1.5 py-0.5 rounded border border-slate-200 bg-slate-50 text-[10px] text-slate-500 font-mono cursor-help transition-colors hover:border-slate-300 hover:text-slate-700"
+                            <div class="hidden lg:flex items-center gap-1.5 pl-3 border-l border-slate-100">
+                                <span class="text-[10px] text-slate-500 font-medium mr-0.5">Atajos:</span>
+                                <span class="px-1 py-0.5 rounded border border-slate-200 bg-slate-50 text-[9px] text-slate-500 font-mono cursor-help transition-colors hover:border-slate-300 hover:text-slate-700"
                                       v-tippy="{ content: 'Presione Ctrl sobre un punto del grafico para ver los valores de los ensayos de Uster y Tensorapid', placement: 'bottom' }">
-                                    Ctrl Detalle
+                                    Ctrl
                                 </span>
-                                <span class="px-1.5 py-0.5 rounded border border-slate-200 bg-slate-50 text-[10px] text-slate-500 font-mono cursor-help transition-colors hover:border-slate-300 hover:text-slate-700"
+                                <span class="px-1 py-0.5 rounded border border-slate-200 bg-slate-50 text-[9px] text-slate-500 font-mono cursor-help transition-colors hover:border-slate-300 hover:text-slate-700"
                                       v-tippy="{ content: 'Presione Shift sobre un punto del grafico para ver un grafico con los valores de ese dia por cada huso', placement: 'bottom' }">
-                                    Shift Grafico
+                                    Shift
                                 </span>
+                            </div>
+
+                            <!-- Botón copiar gráfico -->
+                            <div class="hidden lg:flex items-center pl-3 border-l border-slate-100">
+                                <button @click="copyChartAsImage" type="button"
+                                    v-tippy="{ content: 'Copiar como imagen para WhatsApp', placement: 'bottom', theme: 'custom' }"
+                                    class="w-9 h-9 rounded-lg bg-white border border-slate-200 hover:border-blue-400 hover:bg-blue-50 flex items-center justify-center text-slate-600 hover:text-blue-600 transition-all duration-200 group shadow-sm hover:shadow-md"
+                                    aria-label="Copiar como imagen">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                    </svg>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -235,6 +249,17 @@
                 <!-- Modal content -->
                 <div class="bg-white rounded-2xl shadow-2xl max-w-6xl w-full max-h-[95vh] flex flex-col p-3 z-50 relative"
                     role="document">
+                    <!-- Botón anterior (pegado al lado izquierdo del modal) -->
+                    <button v-if="canNavigatePrevious" @click="navigatePrevious"
+                        v-tippy="{ content: 'Anterior — Atajo: ← (ArrowLeft)', placement: 'left', theme: 'custom' }"
+                        class="absolute left-0 top-1/2 -translate-y-1/2 -ml-6 w-10 h-10 rounded-full bg-white border border-slate-200 shadow-sm flex items-center justify-center text-2xl text-slate-700 hover:bg-slate-50 z-50"
+                        aria-label="Ensayo anterior">‹</button>
+
+                    <!-- Botón siguiente (pegado al lado derecho del modal) -->
+                    <button v-if="canNavigateNext" @click="navigateNext"
+                        v-tippy="{ content: 'Siguiente — Atajo: → (ArrowRight)', placement: 'right', theme: 'custom' }"
+                        class="absolute right-0 top-1/2 -translate-y-1/2 -mr-6 w-10 h-10 rounded-full bg-white border border-slate-200 shadow-sm flex items-center justify-center text-2xl text-slate-700 hover:bg-slate-50 z-50"
+                        aria-label="Ensayo siguiente">›</button>
                     <header class="flex items-start sm:items-center justify-between mb-2 pb-1 gap-3">
                         <div class="flex flex-col sm:flex-row sm:items-center gap-2 mx-8">
                             <div class="text-slate-600 text-sm">Fecha: <span
@@ -281,16 +306,20 @@
                         </div>
                     </header>
 
-                    <!-- Observaciones y Lab. Uster -->
-                    <div v-if="modalMeta.obs || modalMeta.laborant"
+                    <!-- Observaciones, Op. Uster y Op. TensoRapid -->
+                    <div v-if="modalMeta.obs || modalMeta.laborant || modalMeta.tensorLaborant"
                         class="mx-8 flex items-center gap-4 text-slate-600 text-sm mb-2">
                         <div v-if="modalMeta.obs">
                             <span>Obs.:</span>
                             <span class="text-slate-900 text-sm font-normal ml-1">{{ modalMeta.obs }}</span>
                         </div>
                         <div v-if="modalMeta.laborant">
-                            <span>Lab. Uster:</span>
+                            <span>Op. Uster:</span>
                             <span class="text-slate-900 text-sm font-normal ml-1">{{ modalMeta.laborant }}</span>
+                        </div>
+                        <div v-if="modalMeta.tensorLaborant">
+                            <span>Op. TensoRapid:</span>
+                            <span class="text-slate-900 text-sm font-normal ml-1">{{ modalMeta.tensorLaborant }}</span>
                         </div>
                     </div>
 
@@ -574,7 +603,12 @@
             <HusoDetailModal :visible="husoModalVisible" :values="husoModalData.values"
                 :husoNumbers="husoModalData.husoNumbers" :testnr="husoModalData.testnr"
                 :timestamp="husoModalData.timestamp" :oe="husoModalData.oe" :standardNe="husoModalData.standardNe"
-                :variableLabel="currentVariableLabel" @close="closeHusoModal" />
+                :variableLabel="currentVariableLabel" 
+                :canNavigatePrevious="canNavigateHusoPrevious"
+                :canNavigateNext="canNavigateHusoNext"
+                @close="closeHusoModal"
+                @navigate-previous="navigateHusoPrevious"
+                @navigate-next="navigateHusoNext" />
         </main>
     </div>
 </template>
@@ -812,11 +846,11 @@ const stats = computed(() => {
 
                 // Group by USTER_TESTNR (not TENSORAPID TESTNR) for consistent display
                 if (!grouped[usterTestnr]) {
-                    grouped[usterTestnr] = { values: [], timestamps: [], oe: null }
+                    grouped[usterTestnr] = { values: [], timestamps: [], oe: null, ne: null }
                 }
                 grouped[usterTestnr].values.push(variableValue)
 
-                // Get timestamp and OE from USTER_PAR (for consistency across all variables)
+                // Get timestamp, OE and NE from USTER_PAR (for consistency across all variables)
                 const parRow = usterPar.value.find(p => p.TESTNR === usterTestnr)
                 if (parRow) {
                     if (parRow.TIME_STAMP) {
@@ -825,6 +859,9 @@ const stats = computed(() => {
                     if (!grouped[usterTestnr].oe) {
                         const rawOe = parRow.MASCHNR || parRow.OE || parRow.OE_NRO || null
                         grouped[usterTestnr].oe = formatOe(rawOe)
+                    }
+                    if (!grouped[usterTestnr].ne) {
+                        grouped[usterTestnr].ne = formatNe(parRow.NOMCOUNT, parRow.MATCLASS)
                     }
                 }
             }
@@ -840,7 +877,7 @@ const stats = computed(() => {
             if (isNaN(variableValue)) continue
 
             if (!grouped[testnr]) {
-                grouped[testnr] = { values: [], timestamps: [], oe: null }
+                grouped[testnr] = { values: [], timestamps: [], oe: null, ne: null }
             }
             grouped[testnr].values.push(variableValue)
             // collect TIME_STAMP (if available) for later selection
@@ -852,11 +889,16 @@ const stats = computed(() => {
             }
             if (ts) grouped[testnr].timestamps.push(ts)
             // Get OE from USTER_PAR if not already set
-            if (!grouped[testnr].oe) {
+            if (!grouped[testnr].oe || !grouped[testnr].ne) {
                 const parRow = usterPar.value.find(p => p.TESTNR === testnr)
                 if (parRow) {
-                    const rawOe = parRow.MASCHNR || parRow.OE || parRow.OE_NRO || null
-                    grouped[testnr].oe = formatOe(rawOe)
+                    if (!grouped[testnr].oe) {
+                        const rawOe = parRow.MASCHNR || parRow.OE || parRow.OE_NRO || null
+                        grouped[testnr].oe = formatOe(rawOe)
+                    }
+                    if (!grouped[testnr].ne) {
+                        grouped[testnr].ne = formatNe(parRow.NOMCOUNT, parRow.MATCLASS)
+                    }
                 }
             }
         }
@@ -962,7 +1004,8 @@ const stats = computed(() => {
             values,
             timestampISO,
             timestampFmt,
-            oe: payload.oe || null
+            oe: payload.oe || null,
+            ne: payload.ne || null
         })
     }
 
@@ -1117,7 +1160,8 @@ async function handleOpenEnsayoDetail(testnr) {
             u: testnr,
             t: '', // TensoRapid TESTNR (se completa si hay match)
             obs: parRow?.OBS || '',
-            laborant: parRow?.LABORANT || ''
+            laborant: parRow?.LABORANT || '',
+            tensorLaborant: '' // Operador TensoRapid (se completa si hay match)
         }
 
         // Filtrar filas USTER_TBL
@@ -1155,6 +1199,10 @@ async function handleOpenEnsayoDetail(testnr) {
         const tensorTestnrsList = tensorParMatches.map(r => String(r.TESTNR || '')).filter(Boolean)
         if (tensorTestnrsList.length > 0) {
             modalMeta.value.t = tensorTestnrsList.join(', ')
+            // Obtener el operador del primer TensoRapid match
+            if (tensorParMatches[0]?.LABORANT) {
+                modalMeta.value.tensorLaborant = tensorParMatches[0].LABORANT
+            }
         }
 
         let tensorRows = (tensorapidTbl.value || []).filter(r => {
@@ -1266,6 +1314,32 @@ function closeModal() {
     modalMeta.value = {}
     mergedRows.value = []
     combinedStats.value = {}
+}
+
+// Computed properties para navegación del modal
+const currentModalIndex = computed(() => {
+    if (!modalTestnr.value || stats.value.length === 0) return -1
+    return stats.value.findIndex(s => s.testnr === modalTestnr.value)
+})
+
+const canNavigatePrevious = computed(() => currentModalIndex.value > 0)
+const canNavigateNext = computed(() => currentModalIndex.value >= 0 && currentModalIndex.value < stats.value.length - 1)
+
+// Funciones de navegación del modal
+function navigatePrevious() {
+    if (!canNavigatePrevious.value) return
+    const prevStat = stats.value[currentModalIndex.value - 1]
+    if (prevStat) {
+        handleOpenEnsayoDetail(prevStat.testnr)
+    }
+}
+
+function navigateNext() {
+    if (!canNavigateNext.value) return
+    const nextStat = stats.value[currentModalIndex.value + 1]
+    if (nextStat) {
+        handleOpenEnsayoDetail(nextStat.testnr)
+    }
 }
 
 // Handler para abrir detalle de huso (10 valores individuales) al presionar Shift
@@ -1381,6 +1455,76 @@ function closeHusoModal() {
         timestamp: null,
         oe: null,
         standardNe: null
+    }
+}
+
+// Computed properties para navegación del modal de huso
+const currentHusoModalIndex = computed(() => {
+    if (!husoModalData.value.testnr || stats.value.length === 0) return -1
+    return stats.value.findIndex(s => s.testnr === husoModalData.value.testnr)
+})
+
+const canNavigateHusoPrevious = computed(() => currentHusoModalIndex.value > 0)
+const canNavigateHusoNext = computed(() => currentHusoModalIndex.value >= 0 && currentHusoModalIndex.value < stats.value.length - 1)
+
+// Funciones de navegación del modal de huso
+function navigateHusoPrevious() {
+    if (!canNavigateHusoPrevious.value) return
+    const prevStat = stats.value[currentHusoModalIndex.value - 1]
+    if (prevStat) {
+        handleOpenHusoDetail({ testnr: prevStat.testnr })
+    }
+}
+
+function navigateHusoNext() {
+    if (!canNavigateHusoNext.value) return
+    const nextStat = stats.value[currentHusoModalIndex.value + 1]
+    if (nextStat) {
+        handleOpenHusoDetail({ testnr: nextStat.testnr })
+    }
+}
+
+async function copyChartAsImage() {
+    try {
+        // Buscar el contenedor principal de la página (main con bg-white rounded-2xl)
+        const pageContainer = document.querySelector('main.bg-white.rounded-2xl')
+        if (!pageContainer) {
+            await Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'No se pudo encontrar el gráfico.'
+            })
+            return
+        }
+
+        const { toPng } = await import('html-to-image')
+        const dataUrl = await toPng(pageContainer, {
+            quality: 1.0,
+            pixelRatio: 2,
+            backgroundColor: '#ffffff',
+            skipFonts: true, // Evitar error de CORS con Google Fonts
+            cacheBust: true
+        })
+
+        const blob = await (await fetch(dataUrl)).blob()
+        await navigator.clipboard.write([
+            new ClipboardItem({ 'image/png': blob })
+        ])
+
+        await Swal.fire({
+            icon: 'success',
+            title: '¡Copiado!',
+            text: 'Gráfico copiado al portapapeles',
+            timer: 1500,
+            showConfirmButton: false
+        })
+    } catch (err) {
+        console.error('Error al copiar gráfico:', err)
+        await Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudo copiar el gráfico.'
+        })
     }
 }
 

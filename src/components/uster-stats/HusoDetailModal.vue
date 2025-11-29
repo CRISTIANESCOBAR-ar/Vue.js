@@ -8,6 +8,17 @@
         <!-- Modal content -->
         <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full flex flex-col p-4 z-50 relative"
             style="height: 600px;" role="document" ref="modalRef">
+            <!-- Botón anterior (pegado al lado izquierdo del modal) -->
+            <button v-if="canNavigatePrevious" @click="$emit('navigate-previous')"
+                v-tippy="{ content: 'Anterior ensayo', placement: 'left', theme: 'custom' }"
+                class="absolute left-0 top-1/2 -translate-y-1/2 -ml-6 w-10 h-10 rounded-full bg-white border border-slate-200 shadow-sm flex items-center justify-center text-2xl text-slate-700 hover:bg-slate-50 z-50"
+                aria-label="Ensayo anterior">‹</button>
+
+            <!-- Botón siguiente (pegado al lado derecho del modal) -->
+            <button v-if="canNavigateNext" @click="$emit('navigate-next')"
+                v-tippy="{ content: 'Siguiente ensayo', placement: 'right', theme: 'custom' }"
+                class="absolute right-0 top-1/2 -translate-y-1/2 -mr-6 w-10 h-10 rounded-full bg-white border border-slate-200 shadow-sm flex items-center justify-center text-2xl text-slate-700 hover:bg-slate-50 z-50"
+                aria-label="Ensayo siguiente">›</button>
             <header class="flex items-center justify-between mb-3 pb-2 border-b border-slate-200 flex-shrink-0">
                 <div class="flex flex-col gap-1">
                     <h3 class="text-xl font-bold text-slate-800">Detalle por Huso - {{ variableLabel }}</h3>
@@ -29,7 +40,7 @@
                             @change="renderChart"
                             class="w-4 h-4 text-blue-600 bg-white border-slate-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer"
                         >
-                        <span class="text-sm font-medium text-slate-700">Mostrar Valores</span>
+                        <span class="text-sm font-normal text-slate-700">Mostrar Valores</span>
                     </label>
                     
                     <!-- Copy as image button -->
@@ -119,10 +130,12 @@ const props = defineProps({
     timestamp: { type: String, default: '' },
     oe: { type: String, default: '' },
     variableLabel: { type: String, default: '' },
-    standardNe: { type: [String, Number], default: '' }
+    standardNe: { type: [String, Number], default: '' },
+    canNavigatePrevious: { type: Boolean, default: false },
+    canNavigateNext: { type: Boolean, default: false }
 })
 
-const emit = defineEmits(['close'])
+const emit = defineEmits(['close', 'navigate-previous', 'navigate-next'])
 
 const chartRef = ref(null)
 const modalRef = ref(null)
