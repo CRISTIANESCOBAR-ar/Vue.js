@@ -1127,8 +1127,8 @@ async function handleOpenEnsayoDetail(testnr) {
         }
 
         usterRows = dedupe(usterRows, (r) => {
-            const tn = String(r.TESTNR || '')
-            const no = String(r.NO ?? r.HUSO ?? '')
+            const tn = String(r.TESTNR || r.testnr || '')
+            const no = String(r.NO ?? r['NO_'] ?? r.HUSO ?? r.huso ?? '')
             return tn && no ? `${tn}#${no}` : undefined
         })
 
@@ -1149,15 +1149,15 @@ async function handleOpenEnsayoDetail(testnr) {
         })
 
         tensorRows = dedupe(tensorRows, (r) => {
-            const tn = String(r.TESTNR || '')
-            const no = String(r.HUSO_NUMBER ?? r.NO ?? '')
+            const tn = String(r.TESTNR || r.testnr || '')
+            const no = String(r.HUSO_NUMBER ?? r.NO ?? r.no ?? '')
             return tn && no ? `${tn}#${no}` : undefined
         })
 
         // Merge filas por número de huso (no por índice)
         const usterByHuso = new Map()
         usterRows.forEach(row => {
-            const husoNum = String(row.NO ?? row.HUSO ?? '')
+            const husoNum = String(row.NO ?? row['NO_'] ?? row.HUSO ?? row.huso ?? '')
             if (husoNum) {
                 usterByHuso.set(husoNum, row)
             }
@@ -1165,7 +1165,7 @@ async function handleOpenEnsayoDetail(testnr) {
 
         const tensorByHuso = new Map()
         tensorRows.forEach(row => {
-            const husoNum = String(row.HUSO_NUMBER ?? row.NO ?? '')
+            const husoNum = String(row.HUSO_NUMBER ?? row.NO ?? row.no ?? row.huso ?? '')
             if (husoNum) {
                 tensorByHuso.set(husoNum, row)
             }
