@@ -338,6 +338,9 @@
                                             Titulo</th>
                                         <th
                                             class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">
+                                            Desvío %</th>
+                                        <th
+                                            class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">
                                             CVm %</th>
                                         <th
                                             class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">
@@ -381,6 +384,12 @@
                                             row.NO }}</td>
                                         <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{
                                             fmtCell(row.TITULO) }}</td>
+                                        <td class="px-3 py-1 text-center border-b border-slate-100 font-semibold" :class="{
+                                            'text-red-600': row.DESVIO_PERCENT && parseFloat(row.DESVIO_PERCENT) > 1.5,
+                                            'text-blue-600': row.DESVIO_PERCENT && parseFloat(row.DESVIO_PERCENT) < -1.5,
+                                            'text-green-600': row.DESVIO_PERCENT && parseFloat(row.DESVIO_PERCENT) >= -1.5 && parseFloat(row.DESVIO_PERCENT) <= 1.5,
+                                            'text-slate-700': !row.DESVIO_PERCENT
+                                        }">{{ row.DESVIO_PERCENT ? row.DESVIO_PERCENT + '%' : '' }}</td>
                                         <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{
                                             fmtCell(row.CVM_PERCENT) }}</td>
                                         <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{
@@ -413,6 +422,14 @@
                                         <td class="px-3 py-1 text-slate-700">Promedio</td>
                                         <td class="px-3 py-1 text-center text-slate-700">{{
                                             fmtStat(combinedStats.TITULO?.avg) }}</td>
+                                        <td class="px-3 py-1 text-center font-semibold" :class="{
+                                            'text-red-600': combinedStats.DESVIO_PERCENT?.avg > 1.5,
+                                            'text-blue-600': combinedStats.DESVIO_PERCENT?.avg < -1.5,
+                                            'text-green-600': combinedStats.DESVIO_PERCENT?.avg >= -1.5 && combinedStats.DESVIO_PERCENT?.avg <= 1.5,
+                                            'text-slate-700': combinedStats.DESVIO_PERCENT?.avg == null
+                                        }">
+                                            {{ combinedStats.DESVIO_PERCENT?.avg != null ? (combinedStats.DESVIO_PERCENT.avg > 0 ? '+' : '') + fmtStat(combinedStats.DESVIO_PERCENT.avg) + '%' : '' }}
+                                        </td>
                                         <td class="px-3 py-1 text-center text-slate-700">{{
                                             fmtStat(combinedStats.CVM_PERCENT?.avg) }}</td>
                                         <td class="px-3 py-1 text-center text-slate-700">{{
@@ -442,6 +459,7 @@
                                         <td class="px-3 py-1 text-slate-700">CV</td>
                                         <td class="px-3 py-1 text-center text-slate-700">{{
                                             fmtStat(combinedStats.TITULO?.cv) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700"></td>
                                         <td class="px-3 py-1 text-center text-slate-700">{{
                                             fmtStat(combinedStats.CVM_PERCENT?.cv) }}</td>
                                         <td class="px-3 py-1 text-center text-slate-700">{{
@@ -471,6 +489,7 @@
                                         <td class="px-3 py-1 text-slate-700">s</td>
                                         <td class="px-3 py-1 text-center text-slate-700">{{
                                             fmtStat(combinedStats.TITULO?.sd) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700"></td>
                                         <td class="px-3 py-1 text-center text-slate-700">{{
                                             fmtStat(combinedStats.CVM_PERCENT?.sd) }}</td>
                                         <td class="px-3 py-1 text-center text-slate-700">{{
@@ -500,6 +519,7 @@
                                         <td class="px-3 py-1 text-slate-700">Q95</td>
                                         <td class="px-3 py-1 text-center text-slate-700">{{
                                             fmtStat(combinedStats.TITULO?.q95) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700"></td>
                                         <td class="px-3 py-1 text-center text-slate-700">{{
                                             fmtStat(combinedStats.CVM_PERCENT?.q95) }}</td>
                                         <td class="px-3 py-1 text-center text-slate-700">{{
@@ -529,6 +549,7 @@
                                         <td class="px-3 py-1 text-slate-700">Máx</td>
                                         <td class="px-3 py-1 text-center text-slate-700">{{
                                             fmtStat(combinedStats.TITULO?.max) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700"></td>
                                         <td class="px-3 py-1 text-center text-slate-700">{{
                                             fmtStat(combinedStats.CVM_PERCENT?.max) }}</td>
                                         <td class="px-3 py-1 text-center text-slate-700">{{
@@ -558,6 +579,7 @@
                                         <td class="px-3 py-1 text-slate-700">Mín</td>
                                         <td class="px-3 py-1 text-center text-slate-700">{{
                                             fmtStat(combinedStats.TITULO?.min) }}</td>
+                                        <td class="px-3 py-1 text-center text-slate-700"></td>
                                         <td class="px-3 py-1 text-center text-slate-700">{{
                                             fmtStat(combinedStats.CVM_PERCENT?.min) }}</td>
                                         <td class="px-3 py-1 text-center text-slate-700">{{
@@ -1244,13 +1266,29 @@ async function handleOpenEnsayoDetail(testnr) {
         })
 
         const merged = []
+
+        // Obtener Ne estándar para calcular desvíos
+        // modalMeta.value.ne ya tiene el Ne formateado (ej: "30" o "30Flame")
+        const neStandard = parseFloat(String(modalMeta.value.ne || '').replace(',', '.'))
+
         sortedHusos.forEach(husoNum => {
             const uRow = usterByHuso.get(husoNum) || {}
             const tRow = tensorByHuso.get(husoNum) || {}
 
+            // Calcular Desvío %
+            const tituloVal = uRow.TITULO ?? ''
+            let desvioPercent = ''
+            if (neStandard > 0 && tituloVal !== '' && !isNaN(parseFloat(tituloVal))) {
+                const t = parseFloat(tituloVal)
+                const d = ((neStandard - t) / neStandard) * 100
+                const formatted = parseFloat(d.toFixed(2))
+                desvioPercent = (d > 0 ? '+' : '') + formatted
+            }
+
             merged.push({
                 NO: husoNum,
-                TITULO: uRow.TITULO ?? '',
+                TITULO: tituloVal,
+                DESVIO_PERCENT: desvioPercent,
                 CVM_PERCENT: uRow['CVM_%'] ?? uRow.CVM_PERCENT ?? '',
                 DELG_MINUS30_KM: uRow['DELG_-30%'] ?? uRow.DELG_MINUS30_KM ?? '',
                 DELG_MINUS40_KM: uRow['DELG_-40%'] ?? uRow.DELG_MINUS40_KM ?? '',
@@ -1299,6 +1337,17 @@ async function handleOpenEnsayoDetail(testnr) {
                 stats[field] = { avg: null, cv: null, sd: null, q95: null, max: null, min: null }
             }
         })
+
+
+
+        // Calcular Desvío % promedio (basado en el promedio del Título)
+        if (stats.TITULO && stats.TITULO.avg != null && neStandard > 0) {
+            const avgT = stats.TITULO.avg
+            const d = ((neStandard - avgT) / neStandard) * 100
+            stats.DESVIO_PERCENT = { avg: d }
+        } else {
+            stats.DESVIO_PERCENT = { avg: null }
+        }
 
         combinedStats.value = stats
     } catch (error) {

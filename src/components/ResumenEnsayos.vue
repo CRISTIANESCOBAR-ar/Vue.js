@@ -117,8 +117,7 @@
 
           <!-- actions: coincidencias + refresh -->
           <div class="flex items-center gap-1">
-            <span v-if="(debouncedQ || q) && rows.length >= 0" class="text-sm font-medium text-slate-600"
-              aria-live="polite">{{ filteredRows.length }} coincidencias</span>
+
 
             <!-- Minimal modern refresh button with icon -->
             <button @click="loadRows" v-tippy="{ content: 'Refrescar datos', placement: 'bottom', theme: 'custom' }"
@@ -427,6 +426,7 @@
                   <tr>
                     <th class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">Huso</th>
                     <th class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">Titulo</th>
+                    <th class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">Desvío %</th>
                     <th class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">CVm %</th>
                     <th class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">Delg -30%
                     </th>
@@ -467,6 +467,20 @@
                         <div class="mx-auto w-32 h-4 bg-slate-200/70 rounded animate-pulse"></div>
                       </template>
                       <template v-else>{{ fmtCell(row.TITULO) }}</template>
+                    </td>
+
+                    <td class="px-3 py-1 text-center border-b border-slate-100 font-semibold" :class="{
+                      'text-red-600': row.DESVIO_PERCENT && parseFloat(row.DESVIO_PERCENT) > 1.5,
+                      'text-blue-600': row.DESVIO_PERCENT && parseFloat(row.DESVIO_PERCENT) < -1.5,
+                      'text-green-600': row.DESVIO_PERCENT && parseFloat(row.DESVIO_PERCENT) >= -1.5 && parseFloat(row.DESVIO_PERCENT) <= 1.5,
+                      'text-slate-700': !row.DESVIO_PERCENT
+                    }">
+                      <template v-if="modalLoading">
+                        <div class="mx-auto w-16 h-4 bg-slate-200/70 rounded animate-pulse"></div>
+                      </template>
+                      <template v-else>
+                        {{ row.DESVIO_PERCENT ? row.DESVIO_PERCENT + '%' : '' }}
+                      </template>
                     </td>
 
                     <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">
@@ -573,6 +587,14 @@
                       </div>
                     </td>
                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TITULO.avg) }}</td>
+                    <td class="px-3 py-1 text-center font-semibold" :class="{
+                      'text-red-600': combinedStats.DESVIO_PERCENT?.avg > 1.5,
+                      'text-blue-600': combinedStats.DESVIO_PERCENT?.avg < -1.5,
+                      'text-green-600': combinedStats.DESVIO_PERCENT?.avg >= -1.5 && combinedStats.DESVIO_PERCENT?.avg <= 1.5,
+                      'text-slate-700': combinedStats.DESVIO_PERCENT?.avg == null
+                    }">
+                      {{ combinedStats.DESVIO_PERCENT?.avg != null ? (combinedStats.DESVIO_PERCENT.avg > 0 ? '+' : '') + fmtStat(combinedStats.DESVIO_PERCENT.avg) + '%' : '' }}
+                    </td>
                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.CVM_PERCENT.avg) }}</td>
                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS30_KM.avg) }}
                     </td>
@@ -607,6 +629,7 @@
                       </div>
                     </td>
                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TITULO.cv) }}</td>
+                    <td class="px-3 py-1 text-center text-slate-700"></td>
                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.CVM_PERCENT.cv) }}</td>
                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS30_KM.cv) }}
                     </td>
@@ -642,6 +665,7 @@
                       </div>
                     </td>
                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TITULO.sd) }}</td>
+                    <td class="px-3 py-1 text-center text-slate-700"></td>
                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.CVM_PERCENT.sd) }}</td>
                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS30_KM.sd) }}
                     </td>
@@ -676,6 +700,7 @@
                       </div>
                     </td>
                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TITULO.q95) }}</td>
+                    <td class="px-3 py-1 text-center text-slate-700"></td>
                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.CVM_PERCENT.q95) }}</td>
                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS30_KM.q95) }}
                     </td>
@@ -710,6 +735,7 @@
                       </div>
                     </td>
                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TITULO.max) }}</td>
+                    <td class="px-3 py-1 text-center text-slate-700"></td>
                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.CVM_PERCENT.max) }}</td>
                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS30_KM.max) }}
                     </td>
@@ -744,6 +770,7 @@
                       </div>
                     </td>
                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TITULO.min) }}</td>
+                    <td class="px-3 py-1 text-center text-slate-700"></td>
                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.CVM_PERCENT.min) }}</td>
                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS30_KM.min) }}
                     </td>
@@ -1260,13 +1287,30 @@ watch(selectedTestnr, async (testnr) => {
     })
 
     const merged = []
+
+    // Obtener Ne estándar del ensayo padre para calcular desvíos
+    const parentRow = (rows.value || []).find(r => String(r.Ensayo) === String(testnr))
+    // Ne puede venir como "10" o "10Flame", parseFloat extrae el número
+    const neStandard = parentRow ? parseFloat(String(parentRow.Ne || '').replace(',', '.')) : 0
+
     sortedHusos.forEach(husoNum => {
       const uRow = usterByHuso.get(husoNum) || {}
       const tRow = tensorByHuso.get(husoNum) || {}
 
+      // Calcular Desvío % para este huso: ((Ne - Titulo) / Ne) * 100
+      const tituloVal = uRow.TITULO ?? uRow.titulo ?? ''
+      let desvioPercent = ''
+      if (neStandard > 0 && tituloVal !== '' && !isNaN(parseFloat(tituloVal))) {
+        const t = parseFloat(tituloVal)
+        const d = ((neStandard - t) / neStandard) * 100
+        const formatted = parseFloat(d.toFixed(2))
+        desvioPercent = (d > 0 ? '+' : '') + formatted
+      }
+
       merged.push({
         NO: husoNum,
-        TITULO: uRow.TITULO ?? uRow.titulo ?? '',
+        TITULO: tituloVal,
+        DESVIO_PERCENT: desvioPercent,
         CVM_PERCENT: uRow['CVM_%'] ?? uRow.CVM_PERCENT ?? '',
         DELG_MINUS30_KM: uRow['DELG_-30%'] ?? uRow.DELG_MINUS30_KM ?? '',
         DELG_MINUS40_KM: uRow['DELG_-40%'] ?? uRow.DELG_MINUS40_KM ?? '',
@@ -1323,6 +1367,15 @@ watch(selectedTestnr, async (testnr) => {
         stats[field] = { avg: null, sd: null, cv: null, q95: null, max: null, min: null, count: 0 }
       }
     })
+
+    // Calcular Desvío % promedio (basado en el promedio del Título)
+    if (stats.TITULO && stats.TITULO.avg != null && neStandard > 0) {
+      const avgT = stats.TITULO.avg
+      const d = ((neStandard - avgT) / neStandard) * 100
+      stats.DESVIO_PERCENT = { avg: d }
+    } else {
+      stats.DESVIO_PERCENT = { avg: null }
+    }
 
     combinedStats.value = stats
   } catch (error) {
