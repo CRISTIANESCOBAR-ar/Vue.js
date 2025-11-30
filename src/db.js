@@ -2,9 +2,40 @@ import Dexie from 'dexie';
 
 export const db = new Dexie('AnalisisStockDB');
 
-db.version(1).stores({
-  snapshots: '++id, date, fileName, folderPath' // Primary key and indexed props
+db.version(2).stores({
+  snapshots: '++id, date, fileName, folderPath', // Primary key and indexed props
+  currentState: 'id' // Singleton store for current working data
 });
+
+export const saveCurrentState = async (data) => {
+  try {
+    await db.currentState.put({ id: 1, data });
+    return true;
+  } catch (error) {
+    console.error('Error saving current state to IndexedDB:', error);
+    return false;
+  }
+};
+
+export const loadCurrentState = async () => {
+  try {
+    const record = await db.currentState.get(1);
+    return record ? record.data : null;
+  } catch (error) {
+    console.error('Error loading current state from IndexedDB:', error);
+    return null;
+  }
+};
+
+export const clearCurrentState = async () => {
+  try {
+    await db.currentState.delete(1);
+    return true;
+  } catch (error) {
+    console.error('Error clearing current state:', error);
+    return false;
+  }
+};
 
 export const saveSnapshot = async (file, folderPath, processedData, clientOverrides, direcOverrides = {}) => {
   try {

@@ -1,44 +1,43 @@
 import { ref } from 'vue'
-
-const STORAGE_KEY = 'analisis-stock-data'
+import { saveCurrentState, loadCurrentState, clearCurrentState } from '../db'
 
 export function useLocalStorage() {
   const data = ref(null)
 
-  // Cargar datos desde localStorage
-  const loadData = () => {
+  // Cargar datos desde IndexedDB
+  const loadData = async () => {
     try {
-      const stored = localStorage.getItem(STORAGE_KEY)
+      const stored = await loadCurrentState()
       if (stored) {
-        data.value = JSON.parse(stored)
+        data.value = stored
         return data.value
       }
     } catch (error) {
-      console.error('Error al cargar datos desde localStorage:', error)
+      console.error('Error al cargar datos desde IndexedDB:', error)
     }
     return null
   }
 
-  // Guardar datos en localStorage
-  const saveData = (newData) => {
+  // Guardar datos en IndexedDB
+  const saveData = async (newData) => {
     try {
       const dataToSave = {
         ...newData,
         lastUpdate: new Date().toISOString()
       }
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave))
+      await saveCurrentState(dataToSave)
       data.value = dataToSave
       return true
     } catch (error) {
-      console.error('Error al guardar datos en localStorage:', error)
+      console.error('Error al guardar datos en IndexedDB:', error)
       return false
     }
   }
 
   // Limpiar datos
-  const clearData = () => {
+  const clearData = async () => {
     try {
-      localStorage.removeItem(STORAGE_KEY)
+      await clearCurrentState()
       data.value = null
       return true
     } catch (error) {
@@ -47,17 +46,10 @@ export function useLocalStorage() {
     }
   }
 
-  // Obtener fecha de última actualización
-  const getLastUpdate = () => {
-    const stored = loadData()
-    return stored?.lastUpdate || null
-  }
-
   return {
     data,
     loadData,
     saveData,
-    clearData,
-    getLastUpdate
+    clearData
   }
 }

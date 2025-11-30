@@ -496,7 +496,7 @@ const filteredData = shallowRef([])
 const partidaDetail = shallowRef([])
 const registrosPartida = shallowRef([])
 
-const updateCliente = (seq, value) => {
+const updateCliente = async (seq, value) => {
   if (!seq) return
   
   // Actualizar overrides
@@ -519,14 +519,14 @@ const updateCliente = (seq, value) => {
       folderPath: selectedFolderPath.value,
       clientOverrides: clientOverrides.value
     }
-    saveData(dataToSave)
+    await saveData(dataToSave)
   }
   
   // Trigger recalculation
   triggerRecalculation('overrides')
 }
 
-const updateDirec = (seq, value) => {
+const updateDirec = async (seq, value) => {
   if (!seq) return
   
   // Actualizar overrides
@@ -544,7 +544,7 @@ const updateDirec = (seq, value) => {
       clientOverrides: clientOverrides.value,
       direcOverrides: direcOverrides.value
     }
-    saveData(dataToSave)
+    await saveData(dataToSave)
   }
   
   // Trigger recalculation
@@ -1133,7 +1133,7 @@ async function handleFolderSelectFallback(event) {
 }
 
 onMounted(async () => {
-  const savedData = loadData()
+  const savedData = await loadData()
   if (savedData) {
     fileData.value = savedData
     lastUpdate.value = savedData.lastUpdate
@@ -1190,7 +1190,7 @@ const parseAndStore = async (file) => {
       clientOverrides: {},
       direcOverrides: {}
     }
-    const saved = saveData(dataToSave)
+    const saved = await saveData(dataToSave)
     if (saved) {
       lastUpdate.value = data.value?.lastUpdate || new Date().toISOString()
     }
@@ -1205,9 +1205,9 @@ const parseAndStore = async (file) => {
   }
 }
 
-const clearAllData = () => {
+const clearAllData = async () => {
   if (confirm('¿Estás seguro de que deseas eliminar todos los datos guardados?')) {
-    clearData()
+    await clearData()
     fileData.value = null
     clientOverrides.value = {}
     direcOverrides.value = {}
