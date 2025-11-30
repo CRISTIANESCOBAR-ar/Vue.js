@@ -87,6 +87,17 @@
                 </svg>
                 Refrescar
               </button>
+
+              <button 
+                @click="openBackupsModal" 
+                class="inline-flex items-center gap-2 border border-slate-200 bg-white text-slate-700 rounded text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md ml-2"
+                style="padding: 0.25rem 0.5rem;"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
+                </svg>
+                Backups
+              </button>
             </div>
           </div>
         </div>
@@ -231,7 +242,7 @@
             </div>
           </div>
 
-          <div v-if="selectedPartida" class="flex flex-col h-auto max-h-full flex-none" style="width: 325px;">
+          <div v-if="selectedPartida" class="flex flex-col h-auto max-h-full flex-none" style="width: 370px;">
             <div class="overflow-auto _minimal-scroll rounded border border-slate-200 shadow-sm">
               <table class="w-full table-fixed divide-y divide-slate-200 text-xs">
                 <colgroup>
@@ -239,7 +250,7 @@
                   <col style="width: 45px" />
                   <col style="width: 30px" />
                   <col style="width: 30px" />
-                  <col style="width: 25px" />
+                  <col style="width: 50px" />
                   <col style="width: 40px" />
                   <col style="width: 25px" />
                   <col style="width: 70px" />
@@ -262,7 +273,16 @@
                     <td class="text-right text-slate-700" style="padding: 4px 2px;">{{ formatMetros(registro.METROS) }}</td>
                     <td class="text-center text-slate-700" style="padding: 4px 2px;">{{ registro.PONT }}</td>
                     <td class="text-center text-slate-700" style="padding: 4px 2px;">{{ registro.NUANCE }}</td>
-                    <td class="text-center text-slate-700" style="padding: 4px 2px;">{{ registro.DIREC }}</td>
+                    <td class="text-center text-slate-700" style="padding: 4px 2px;">
+                      <select 
+                        :value="getDirec(registro)" 
+                        @change="updateDirec(registro.SEQ, $event.target.value)"
+                        class="bg-transparent border-none focus:ring-0 text-xs p-0 w-full text-center cursor-pointer outline-none"
+                      >
+                        <option value="">Normal</option>
+                        <option v-for="opt in direcOptions" :key="opt" :value="opt">{{ opt }}</option>
+                      </select>
+                    </td>
                     <td class="text-center text-slate-700" style="padding: 4px 2px;">{{ registro.LARGURA }}</td>
                     <td class="text-center text-slate-700" style="padding: 4px 2px;">{{ registro.EMEND }}</td>
                     <td class="text-center text-slate-700" style="padding: 4px 2px;">
@@ -303,6 +323,122 @@
         </div>
       </div>
     </div>
+
+    <!-- Backups Modal -->
+    <div v-if="showBackupsModal" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 transition-opacity duration-300">
+      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[85vh] flex flex-col overflow-hidden transform transition-all scale-100">
+        
+        <!-- Header -->
+        <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-white">
+          <div class="flex items-center gap-3">
+            <div class="p-2 bg-indigo-50 rounded-lg text-indigo-600">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+              </svg>
+            </div>
+            <div>
+              <h3 class="font-bold text-slate-800 text-lg">Copias de Seguridad</h3>
+              <p class="text-xs text-slate-500">Gestiona tus puntos de restauración locales</p>
+            </div>
+          </div>
+          <button 
+            @click="showBackupsModal = false" 
+            class="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        
+        <div class="p-6 overflow-y-auto flex-1 space-y-6">
+          
+          <!-- Create Action -->
+          <div class="bg-gradient-to-br from-indigo-50 to-white p-5 rounded-xl border border-indigo-100 shadow-sm flex items-center justify-between gap-4">
+            <div class="flex-1">
+              <h4 class="font-semibold text-indigo-900 mb-1">Crear nuevo punto</h4>
+              <p class="text-xs text-indigo-600/80 leading-relaxed">Guarda el estado actual de tu trabajo para recuperarlo más tarde.</p>
+            </div>
+            <button 
+              @click="createBackup" 
+              :disabled="!fileData || isSavingBackup"
+              class="shrink-0 inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg active:scale-95 font-medium text-sm"
+            >
+              <svg v-if="isSavingBackup" class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+              </svg>
+              <span>{{ isSavingBackup ? 'Guardando...' : 'Guardar' }}</span>
+            </button>
+          </div>
+
+          <!-- History List -->
+          <div>
+            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 px-1">Historial Reciente</h4>
+            
+            <div v-if="backups.length === 0" class="flex flex-col items-center justify-center py-10 text-center border-2 border-dashed border-slate-100 rounded-xl bg-slate-50/50">
+              <div class="p-3 bg-slate-100 rounded-full text-slate-300 mb-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <p class="text-sm font-medium text-slate-500">No hay copias guardadas</p>
+              <p class="text-xs text-slate-400 mt-1">Tus backups aparecerán aquí</p>
+            </div>
+
+            <div v-else class="space-y-2">
+              <div 
+                v-for="backup in backups" 
+                :key="backup.id"
+                class="group flex items-center justify-between p-3 bg-white border border-slate-100 rounded-xl hover:border-indigo-200 hover:shadow-md transition-all duration-200"
+              >
+                <div class="flex items-center gap-3 overflow-hidden">
+                  <div class="shrink-0 h-10 w-10 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-500 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  </div>
+                  <div class="flex flex-col min-w-0">
+                    <span class="font-semibold text-slate-700 text-sm truncate">{{ formatDate(backup.date) }}</span>
+                    <span class="text-xs text-slate-400 truncate max-w-[200px]">{{ backup.fileName }}</span>
+                  </div>
+                </div>
+                
+                <div class="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+                  <button 
+                    @click="restoreBackup(backup.id)"
+                    class="p-2 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                    title="Restaurar esta versión"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                  </button>
+                  <div class="w-px h-4 bg-slate-200 mx-1"></div>
+                  <button 
+                    @click="removeBackup(backup.id)"
+                    class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    title="Eliminar permanentemente"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Footer (optional, maybe just padding) -->
+        <div class="bg-slate-50 px-6 py-3 border-t border-slate-100 text-center">
+          <p class="text-[10px] text-slate-400">Los backups se almacenan localmente en tu navegador.</p>
+        </div>
+      </div>
+    </div>
   </main>
 </template>
 
@@ -310,6 +446,7 @@
 import { ref, computed, onMounted, shallowRef, watch, nextTick } from 'vue'
 import { useExcelReader } from '../composables/useExcelReader'
 import { useLocalStorage } from '../composables/useLocalStorage'
+import { saveSnapshot, getSnapshots, loadSnapshot, deleteSnapshot } from '../db'
 
 const { readExcelFile } = useExcelReader()
 const { data, loadData, saveData, clearData } = useLocalStorage()
@@ -327,6 +464,13 @@ const lastUpdate = ref(null)
 const selectedRow = ref(null)
 const selectedPartida = ref(null)
 const clientOverrides = ref({})
+const direcOverrides = ref({})
+const direcOptions = ['34', '43', '99', '70', '53', '04', '19', '03', '01', '10', '02', '05']
+
+// Backups state
+const showBackupsModal = ref(false)
+const backups = ref([])
+const isSavingBackup = ref(false)
 
 // Filtros de checkbox
 const showBloqueados = ref(false)
@@ -367,6 +511,38 @@ const updateCliente = (seq, value) => {
   
   // Trigger recalculation
   triggerRecalculation('overrides')
+}
+
+const updateDirec = (seq, value) => {
+  if (!seq) return
+  
+  // Actualizar overrides
+  direcOverrides.value = {
+    ...direcOverrides.value,
+    [seq]: value
+  }
+  
+  // Guardar cambios
+  if (fileData.value) {
+    const dataToSave = {
+      ...fileData.value,
+      fileName: fileData.value.fileName || selectedFile.value?.name,
+      folderPath: selectedFolderPath.value,
+      clientOverrides: clientOverrides.value,
+      direcOverrides: direcOverrides.value
+    }
+    saveData(dataToSave)
+  }
+  
+  // Trigger recalculation
+  triggerRecalculation('overrides')
+}
+
+const getDirec = (registro) => {
+  if (registro.SEQ && direcOverrides.value[registro.SEQ]) {
+    return direcOverrides.value[registro.SEQ]
+  }
+  return registro.DIREC
 }
 
 // Función orquestadora de recálculos
@@ -431,6 +607,7 @@ const calculateFilteredData = () => {
   const _showDirec70 = showDirec70.value
   const _showDirecNormal = showDirecNormal.value
   const _clientOverrides = clientOverrides.value
+  const _direcOverrides = direcOverrides.value
 
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i]
@@ -438,10 +615,15 @@ const calculateFilteredData = () => {
     
     if (qld != _selectedQLD) continue
 
+    const seq = seqIdx !== -1 ? row[seqIdx] : null
     const direc = row[direcIdx]
     const bloq = bloqIdx !== -1 ? row[bloqIdx] : ''
     
-    const direcStr = String(direc || '').trim()
+    let direcStr = String(direc || '').trim()
+    if (seq && _direcOverrides[seq]) {
+      direcStr = String(_direcOverrides[seq]).trim()
+    }
+
     const bloqStr = String(bloq || '').trim()
     
     const isDirec70 = direcStr === '70'
@@ -457,7 +639,6 @@ const calculateFilteredData = () => {
     const partida = row[partidaIdx] || ''
     const metros = parseFloat(row[metrosIdx]) || 0
     const pont = pontIdx !== -1 ? parseFloat(row[pontIdx]) || 0 : 0
-    const seq = seqIdx !== -1 ? row[seqIdx] : null
 
     const key = `${artigo}|${nomeMercado}`
 
@@ -533,6 +714,7 @@ const calculatePartidaDetail = () => {
   const grouped = {}
   const _selectedRow = selectedRow.value
   const _clientOverrides = clientOverrides.value
+  const _direcOverrides = direcOverrides.value
   
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i]
@@ -544,8 +726,12 @@ const calculatePartidaDetail = () => {
     const qld = row[qldIdx]
     if (qld != 1) continue
 
+    const seq = seqIdx !== -1 ? row[seqIdx] : null
     const direc = row[direcIdx]
-    const direcStr = String(direc || '').trim()
+    let direcStr = String(direc || '').trim()
+    if (seq && _direcOverrides[seq]) {
+      direcStr = String(_direcOverrides[seq]).trim()
+    }
     
     if (direcStr !== '' && direcStr !== '70') continue
 
@@ -554,7 +740,6 @@ const calculatePartidaDetail = () => {
     const status = statusIdx !== -1 ? row[statusIdx] : ''
     const reprocesso = reprocessoIdx !== -1 ? row[reprocessoIdx] : ''
     const pont = pontIdx !== -1 ? parseFloat(row[pontIdx]) || 0 : 0
-    const seq = seqIdx !== -1 ? row[seqIdx] : null
 
     const key = `${partida}|${direcStr}`
 
@@ -601,9 +786,27 @@ const calculatePartidaDetail = () => {
       REPROCESSO: Array.from(item.REPROCESSO_SET).join(',')
     }
   }).sort((a, b) => {
-    if (a.PARTIDA < b.PARTIDA) return -1
-    if (a.PARTIDA > b.PARTIDA) return 1
-    return 0
+    const pA = String(a.PARTIDA || '')
+    const pB = String(b.PARTIDA || '')
+
+    // 1. Extraer "Rolada" (caracteres 3 al 6 -> índices 2 al 6 exclusivo)
+    const roladaA = pA.substring(2, 6)
+    const roladaB = pB.substring(2, 6)
+
+    if (roladaA !== roladaB) {
+      return roladaA.localeCompare(roladaB)
+    }
+
+    // 2. Extraer sufijo completo (caracteres 3 al 8 -> índices 2 al 8 exclusivo)
+    const suffixA = pA.substring(2, 8)
+    const suffixB = pB.substring(2, 8)
+
+    if (suffixA !== suffixB) {
+      return suffixA.localeCompare(suffixB)
+    }
+
+    // 3. Fallback al string completo (numérico/alfabético estándar)
+    return pA.localeCompare(pB)
   })
 }
 
@@ -623,6 +826,7 @@ const calculateRegistrosPartida = () => {
   const direcIdx = headers.findIndex(h => h === 'DIREC')
   const partidaIdx = headers.findIndex(h => h === 'PARTIDA')
   const metrosIdx = headers.findIndex(h => h === 'METROS')
+  const seqIdx = headers.findIndex(h => h === 'SEQ')
 
   if (artigoIdx === -1 || nomeMercadoIdx === -1 || qldIdx === -1 || direcIdx === -1 || partidaIdx === -1 || metrosIdx === -1) {
     registrosPartida.value = []
@@ -632,6 +836,7 @@ const calculateRegistrosPartida = () => {
   const registros = []
   const _selectedRow = selectedRow.value
   const _selectedPartida = selectedPartida.value
+  const _direcOverrides = direcOverrides.value
   
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i]
@@ -640,8 +845,12 @@ const calculateRegistrosPartida = () => {
     const qld = row[qldIdx]
     const direc = row[direcIdx]
     const partida = row[partidaIdx] || ''
+    const seq = seqIdx !== -1 ? row[seqIdx] : null
     
-    const direcStr = String(direc || '').trim()
+    let direcStr = String(direc || '').trim()
+    if (seq && _direcOverrides[seq]) {
+      direcStr = String(_direcOverrides[seq]).trim()
+    }
     
     if (artigo === _selectedRow.ARTIGO && 
         nomeMercado === _selectedRow.NOME_MERCADO && 
@@ -921,6 +1130,9 @@ onMounted(async () => {
     if (savedData.clientOverrides) {
       clientOverrides.value = savedData.clientOverrides
     }
+    if (savedData.direcOverrides) {
+      direcOverrides.value = savedData.direcOverrides
+    }
     // Trigger initial calculation from saved data
     triggerRecalculation('file')
   }
@@ -956,12 +1168,14 @@ const parseAndStore = async (file) => {
     const result = await readExcelFile(file)
     fileData.value = result
     clientOverrides.value = {} // Resetear overrides al cargar nuevo archivo
+    direcOverrides.value = {}
 
     const dataToSave = {
       ...result,
       fileName: file.name,
       folderPath: selectedFolderPath.value,
-      clientOverrides: {}
+      clientOverrides: {},
+      direcOverrides: {}
     }
     const saved = saveData(dataToSave)
     if (saved) {
@@ -983,6 +1197,7 @@ const clearAllData = () => {
     clearData()
     fileData.value = null
     clientOverrides.value = {}
+    direcOverrides.value = {}
     selectedFile.value = null
     selectedFolderPath.value = null
     selectedDirHandle.value = null
@@ -1056,7 +1271,67 @@ const getCliente = (registro) => {
   return ''
 }
 
+// Backup functions
+const openBackupsModal = async () => {
+  showBackupsModal.value = true
+  await loadBackups()
+}
 
+const loadBackups = async () => {
+  backups.value = await getSnapshots()
+}
+
+const createBackup = async () => {
+  if (!selectedFile.value || !fileData.value) return
+  
+  isSavingBackup.value = true
+  try {
+    await saveSnapshot(
+      selectedFile.value,
+      selectedFolderPath.value,
+      fileData.value,
+      clientOverrides.value,
+      direcOverrides.value
+    )
+    await loadBackups()
+  } catch (e) {
+    console.error(e)
+    alert('Error al crear backup')
+  } finally {
+    isSavingBackup.value = false
+  }
+}
+
+const restoreBackup = async (id) => {
+  try {
+    const snapshot = await loadSnapshot(id)
+    if (!snapshot) return
+    
+    fileData.value = snapshot.processedData
+    clientOverrides.value = snapshot.clientOverrides || {}
+    direcOverrides.value = snapshot.direcOverrides || {}
+    selectedFolderPath.value = snapshot.folderPath
+    
+    if (snapshot.fileBlob) {
+        selectedFile.value = new File([snapshot.fileBlob], snapshot.fileName, { type: snapshot.fileBlob.type })
+    }
+    
+    lastUpdate.value = snapshot.date
+    
+    triggerRecalculation('file')
+    
+    showBackupsModal.value = false
+  } catch (e) {
+    console.error(e)
+    alert('Error al restaurar backup')
+  }
+}
+
+const removeBackup = async (id) => {
+  if(!confirm('¿Eliminar este backup?')) return
+  await deleteSnapshot(id)
+  await loadBackups()
+}
 
 </script>
 
