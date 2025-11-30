@@ -6,10 +6,12 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "deploy": "gh-pages -d dist",
     "preview": "vite preview"
   },
   "dependencies": {
     "dexie": "^4.2.1",
+    "sweetalert2": "^11.26.3",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0",
     "xlsx": "^0.18.5",
@@ -19,6 +21,7 @@
     "@tailwindcss/postcss": "^4.1.17",
     "@vitejs/plugin-vue": "^5.0.4",
     "autoprefixer": "^10.4.22",
+    "gh-pages": "^6.3.0",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.17",
     "vite": "^5.1.6",
