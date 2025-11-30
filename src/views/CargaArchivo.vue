@@ -1,5 +1,17 @@
 <template>
-  <main class="w-full h-screen flex flex-col bg-gray-50 overflow-hidden" style="padding: 4px !important;">
+  <main class="w-full h-screen flex flex-col bg-gray-50 overflow-hidden relative" style="padding: 4px !important;">
+    <!-- Banner de recálculo -->
+    <div 
+      v-if="isRecalculating" 
+      class="absolute top-4 left-1/2 transform -translate-x-1/2 z-50 bg-blue-600 text-white px-6 py-2 rounded-full shadow-lg flex items-center gap-3 transition-all duration-300"
+    >
+      <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      <span class="font-medium text-sm">Recalculando datos...</span>
+    </div>
+
     <div class="w-full flex-1 min-h-0 bg-white rounded-lg shadow-xl border border-slate-200 flex flex-col" style="padding: 12px !important;">
       <div class="flex flex-col gap-2 mb-3 flex-shrink-0">
         <div class="flex items-center gap-3 justify-between">
@@ -96,7 +108,7 @@
 
       <div v-if="fileData" class="flex-1 min-h-0 flex flex-col">
         <div class="flex flex-col xl:flex-row gap-4 flex-1 min-h-0">
-          <div class="flex flex-col flex-1 min-h-0" style="max-width: 530px;">
+          <div class="flex flex-col h-auto max-h-full" style="max-width: 530px;">
             <div class="overflow-auto _minimal-scroll rounded border border-slate-200 shadow-sm" style="border-radius: 0.25rem;">
               <table class="w-full table-fixed divide-y divide-slate-200 text-xs">
                 <colgroup>
@@ -111,14 +123,14 @@
                 </colgroup>
                 <thead class="bg-gradient-to-r from-slate-50 to-slate-100 sticky top-0 z-20">
                   <tr>
-                    <th class="text-xs font-semibold text-slate-600 text-left" style="padding: 0.25rem 0.5rem 0.25rem 1rem;">Artículo</th>
-                    <th class="text-xs font-semibold text-slate-600 text-left" style="padding: 0.25rem 0.75rem;">Nombre</th>
-                    <th class="text-xs font-semibold text-slate-600 text-center" style="padding: 0.25rem 0.75rem;">Cal</th>
-                    <th class="text-xs font-semibold text-slate-600 text-center" style="padding: 0.25rem 0.75rem;">Part.</th>
-                    <th class="text-xs font-semibold text-slate-600 align-right" style="padding: 0.25rem 0.75rem;">Metros</th>
-                    <th class="text-xs font-semibold text-slate-600 align-right" style="padding: 0.25rem 0.75rem;">Confe</th>
-                    <th class="text-xs font-semibold text-slate-600 align-right" style="padding: 0.25rem 0.75rem;">Mayo</th>
-                    <th class="text-xs font-semibold text-slate-600 align-right" style="padding: 0.25rem 0.75rem;">70</th>
+                    <th class="text-xs font-semibold text-slate-600 text-left" style="padding: 6px 0.5rem 6px 1rem;">Artículo</th>
+                    <th class="text-xs font-semibold text-slate-600 text-left" style="padding: 6px 0.75rem;">Nombre</th>
+                    <th class="text-xs font-semibold text-slate-600 text-center" style="padding: 6px 0.75rem;">Cal</th>
+                    <th class="text-xs font-semibold text-slate-600 text-center" style="padding: 6px 0.75rem;">Part.</th>
+                    <th class="text-xs font-semibold text-slate-600" style="padding: 6px 0.25rem; text-align: right;">Metros</th>
+                    <th class="text-xs font-semibold text-slate-600" style="padding: 6px 0.25rem; text-align: right;">Confe</th>
+                    <th class="text-xs font-semibold text-slate-600" style="padding: 6px 0.75rem; text-align: right;">Mayo</th>
+                    <th class="text-xs font-semibold text-slate-600" style="padding: 6px 0.75rem; text-align: right;">70</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
@@ -135,10 +147,10 @@
                     <td class="text-left text-slate-700 truncate" style="padding: 0.25rem 0.75rem;" :title="row.NOME_MERCADO">{{ row.NOME_MERCADO }}</td>
                     <td class="text-center text-slate-700" style="padding: 0.25rem 0.75rem;">{{ row.QLD }}</td>
                     <td class="text-center text-slate-700" style="padding: 0.25rem 0.75rem;">{{ row.CANTIDAD_PARTIDAS }}</td>
-                    <td class="text-slate-700 align-right" style="padding: 0.25rem 0.75rem;">{{ formatMetros(row.METROS) }}</td>
-                    <td class="text-slate-700 align-right" style="padding: 0.25rem 0.75rem;">{{ formatMetros(row.CONFECCIONISTA) }}</td>
-                    <td class="text-slate-700 align-right" style="padding: 0.25rem 0.75rem;">{{ formatMetros(row.MAYORISTA) }}</td>
-                    <td class="text-slate-700 align-right" style="padding: 0.25rem 0.75rem;">{{ formatMetros(row.SETENTA) }}</td>
+                    <td class="text-slate-700" style="padding: 0.25rem 0.25rem; text-align: right;">{{ formatMetros(row.METROS) }}</td>
+                    <td class="text-slate-700" style="padding: 0.25rem 0.25rem; text-align: right;">{{ formatMetros(row.CONFECCIONISTA) }}</td>
+                    <td class="text-slate-700" style="padding: 0.25rem 0.75rem; text-align: right;">{{ formatMetros(row.MAYORISTA) }}</td>
+                    <td class="text-slate-700" style="padding: 0.25rem 0.75rem; text-align: right;">{{ formatMetros(row.SETENTA) }}</td>
                   </tr>
                   <tr v-if="filteredData.length === 0">
                     <td colspan="8" class="px-3 py-6 text-center text-slate-500">No se encontraron registros con QLD = {{ selectedQLD }}.</td>
@@ -150,29 +162,39 @@
                     <td class="text-left text-slate-700" style="padding: 0.25rem 0.75rem;">{{ filteredData.length }}</td>
                     <td class="text-center text-slate-700" style="padding: 0.25rem 0.75rem;"></td>
                     <td class="text-center text-slate-700" style="padding: 0.25rem 0.75rem;">{{ totalPartidas }}</td>
-                    <td class="text-slate-700 align-right" style="padding: 0.25rem 0.75rem;">{{ formatMetros(totalMetros) }}</td>
-                    <td class="text-slate-700 align-right" style="padding: 0.25rem 0.75rem;">{{ formatMetros(totalConfeccionista) }}</td>
-                    <td class="text-slate-700 align-right" style="padding: 0.25rem 0.75rem;">{{ formatMetros(totalMayorista) }}</td>
-                    <td class="text-slate-700 align-right" style="padding: 0.25rem 0.75rem;">{{ formatMetros(totalSetenta) }}</td>
+                    <td class="text-slate-700" style="padding: 0.25rem 0.25rem; text-align: right;">{{ formatMetros(totalMetros) }}</td>
+                    <td class="text-slate-700" style="padding: 0.25rem 0.25rem; text-align: right;">{{ formatMetros(totalConfeccionista) }}</td>
+                    <td class="text-slate-700" style="padding: 0.25rem 0.75rem; text-align: right;">{{ formatMetros(totalMayorista) }}</td>
+                    <td class="text-slate-700" style="padding: 0.25rem 0.75rem; text-align: right;">{{ formatMetros(totalSetenta) }}</td>
                   </tr>
                 </tfoot>
               </table>
             </div>
           </div>
 
-          <div v-if="selectedRow" class="w-full max-w-xs flex flex-col">
-            <div class="overflow-auto _minimal-scroll flex-1 rounded-lg border border-slate-200 shadow-sm">
-              <table class="min-w-full table-fixed divide-y divide-slate-200 text-xs">
+          <div v-if="selectedRow" class="flex flex-col h-auto max-h-full flex-none" style="width: 315px;">
+            <div class="overflow-auto _minimal-scroll rounded border border-slate-200 shadow-sm">
+              <table class="w-full table-fixed divide-y divide-slate-200 text-xs">
                 <colgroup>
-                  <col style="width: 8.5rem" />
-                  <col style="width: 3.5rem" />
-                  <col style="width: 5.5rem" />
+                  <col style="width: 85px" />
+                  <col style="width: 15px" />
+                  <col style="width: 45px" />
+                  <col style="width: 15px" />
+                  <col style="width: 15px" />
+                  <col style="width: 40px" />
+                  <col style="width: 40px" />
+                  <col style="width: 40px" />
                 </colgroup>
                 <thead class="bg-gradient-to-r from-slate-50 to-slate-100 sticky top-0 z-10">
                   <tr>
-                    <th class="px-3 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-slate-600 text-center">Partida</th>
-                    <th class="px-3 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-slate-600 text-center">Dir</th>
-                    <th class="px-3 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-slate-600 text-right">Metros</th>
+                    <th class="text-xs font-semibold text-slate-600 text-center" style="padding: 4px 4px;">Partida</th>
+                    <th class="text-xs font-semibold text-slate-600 text-center" style="padding: 4px 4px;">D</th>
+                    <th class="text-xs font-semibold text-slate-600 text-right" style="padding: 4px 4px;">Metros</th>
+                    <th class="text-xs font-semibold text-slate-600 text-center" style="padding: 4px 4px;">S</th>
+                    <th class="text-xs font-semibold text-slate-600 text-center" style="padding: 4px 4px;">R</th>
+                    <th class="text-xs font-semibold text-slate-600 text-right" style="padding: 4px 4px;">Confe</th>
+                    <th class="text-xs font-semibold text-slate-600 text-right" style="padding: 4px 4px;">Mayo</th>
+                    <th class="text-xs font-semibold text-slate-600 text-right" style="padding: 4px 4px;">70</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
@@ -185,44 +207,81 @@
                       selectedPartida && selectedPartida.PARTIDA === detail.PARTIDA && selectedPartida.DIREC === detail.DIREC ? 'bg-blue-50/70 font-semibold text-slate-800' : 'bg-white'
                     ]"
                   >
-                    <td class="px-3 py-2 text-center text-slate-700 truncate">{{ formatPartida(detail.PARTIDA) }}</td>
-                    <td class="px-3 py-2 text-center text-slate-700">{{ detail.DIREC || '—' }}</td>
-                    <td class="px-3 py-2 text-right text-slate-700">{{ formatMetros(detail.METROS) }}</td>
+                    <td class="text-center text-slate-700 truncate" style="padding: 4px 4px;">{{ formatPartida(detail.PARTIDA) }}</td>
+                    <td class="text-center text-slate-700" style="padding: 4px 4px;">{{ detail.DIREC }}</td>
+                    <td class="text-right text-slate-700" style="padding: 4px 4px;">{{ formatMetros(detail.METROS) }}</td>
+                    <td class="text-center text-slate-700 truncate" style="padding: 4px 4px;" :title="detail.STATUS">{{ detail.STATUS }}</td>
+                    <td class="text-center text-slate-700 truncate" style="padding: 4px 4px;" :title="detail.REPROCESSO">{{ detail.REPROCESSO }}</td>
+                    <td class="text-right text-slate-700" style="padding: 4px 4px;">{{ formatMetros(detail.CONFE) }}</td>
+                    <td class="text-right text-slate-700" style="padding: 4px 4px;">{{ formatMetros(detail.MAYO) }}</td>
+                    <td class="text-right text-slate-700" style="padding: 4px 4px;">{{ formatMetros(detail.SETENTA) }}</td>
                   </tr>
                 </tbody>
                 <tfoot class="bg-slate-50">
                   <tr>
-                    <td colspan="2" class="px-3 py-2 text-center text-slate-600 font-semibold uppercase tracking-[0.18em]">Total</td>
-                    <td class="px-3 py-2 text-right text-slate-700 font-semibold">{{ formatMetros(totalMetrosPartida) }}</td>
+                    <td colspan="2" class="text-center text-slate-600 font-semibold uppercase" style="padding: 4px 4px;">Total</td>
+                    <td class="text-right text-slate-700 font-semibold" style="padding: 4px 4px;">{{ formatMetros(totalMetrosPartida) }}</td>
+                    <td colspan="2"></td>
+                    <td class="text-right text-slate-700 font-semibold" style="padding: 4px 4px;">{{ formatMetros(totalConfePartida) }}</td>
+                    <td class="text-right text-slate-700 font-semibold" style="padding: 4px 4px;">{{ formatMetros(totalMayoPartida) }}</td>
+                    <td class="text-right text-slate-700 font-semibold" style="padding: 4px 4px;">{{ formatMetros(totalSetentaPartida) }}</td>
                   </tr>
                 </tfoot>
               </table>
             </div>
           </div>
 
-          <div v-if="selectedPartida" class="w-full max-w-xs flex flex-col">
-            <div class="overflow-auto _minimal-scroll flex-1 rounded-xl border border-slate-200 shadow-sm">
-              <table class="min-w-full table-fixed divide-y divide-slate-200 text-xs">
+          <div v-if="selectedPartida" class="flex flex-col h-auto max-h-full flex-none" style="width: 300px;">
+            <div class="overflow-auto _minimal-scroll rounded border border-slate-200 shadow-sm">
+              <table class="w-full table-fixed divide-y divide-slate-200 text-xs">
                 <colgroup>
-                  <col style="width: 7rem" />
-                  <col style="width: 5.5rem" />
+                  <col style="width: 35px" />
+                  <col style="width: 45px" />
+                  <col style="width: 30px" />
+                  <col style="width: 30px" />
+                  <col style="width: 25px" />
+                  <col style="width: 40px" />
+                  <col style="width: 25px" />
+                  <col style="width: 45px" />
                 </colgroup>
                 <thead class="bg-gradient-to-r from-slate-50 to-slate-100 sticky top-0 z-10">
                   <tr>
-                    <th class="px-3 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-slate-600 text-center">SEQ</th>
-                    <th class="px-3 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-slate-600 text-right">Metros</th>
+                    <th class="text-xs font-semibold text-slate-600 text-center" style="padding: 4px 2px;">Seq</th>
+                    <th class="text-xs font-semibold text-slate-600 text-right" style="padding: 4px 2px;">Metros</th>
+                    <th class="text-xs font-semibold text-slate-600 text-center" style="padding: 4px 2px;">Pts</th>
+                    <th class="text-xs font-semibold text-slate-600 text-center" style="padding: 4px 2px;">Nu</th>
+                    <th class="text-xs font-semibold text-slate-600 text-center" style="padding: 4px 2px;">D</th>
+                    <th class="text-xs font-semibold text-slate-600 text-center" style="padding: 4px 2px;">Ancho</th>
+                    <th class="text-xs font-semibold text-slate-600 text-center" style="padding: 4px 2px;">Em</th>
+                    <th class="text-xs font-semibold text-slate-600 text-center" style="padding: 4px 2px;">Cliente</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                   <tr v-for="(registro, regIndex) in registrosPartida" :key="regIndex" class="bg-white">
-                    <td class="px-3 py-2 text-center text-slate-700">{{ registro.SEQ }}</td>
-                    <td class="px-3 py-2 text-right text-slate-700">{{ formatMetros(registro.METROS) }}</td>
+                    <td class="text-center text-slate-700 truncate" style="padding: 4px 2px;">{{ registro.SEQ }}</td>
+                    <td class="text-right text-slate-700" style="padding: 4px 2px;">{{ formatMetros(registro.METROS) }}</td>
+                    <td class="text-center text-slate-700" style="padding: 4px 2px;">{{ registro.PONT }}</td>
+                    <td class="text-center text-slate-700" style="padding: 4px 2px;">{{ registro.NUANCE }}</td>
+                    <td class="text-center text-slate-700" style="padding: 4px 2px;">{{ registro.DIREC }}</td>
+                    <td class="text-center text-slate-700" style="padding: 4px 2px;">{{ registro.LARGURA }}</td>
+                    <td class="text-center text-slate-700" style="padding: 4px 2px;">{{ registro.EMEND }}</td>
+                    <td class="text-center text-slate-700" style="padding: 4px 2px;">
+                      <select 
+                        :value="getCliente(registro)" 
+                        @change="updateCliente(registro.SEQ, $event.target.value)"
+                        class="bg-transparent border-none focus:ring-0 text-[10px] p-0 w-full text-center cursor-pointer outline-none"
+                      >
+                        <option value="">-</option>
+                        <option value="Confe">Confe</option>
+                        <option value="Mayo">Mayo</option>
+                      </select>
+                    </td>
                   </tr>
                 </tbody>
                 <tfoot class="bg-slate-50">
                   <tr>
-                    <td class="px-3 py-2 text-center text-slate-600 font-semibold uppercase tracking-[0.18em]">Total ({{ registrosPartida.length }})</td>
-                    <td class="px-3 py-2 text-right text-slate-700 font-semibold">{{ formatMetros(totalMetrosRegistros) }}</td>
+                    <td colspan="2" class="text-center text-slate-600 font-semibold uppercase" style="padding: 4px 2px;">Total</td>
+                    <td colspan="6" class="text-left text-slate-700 font-semibold" style="padding: 4px 4px;">{{ formatMetros(totalMetrosRegistros) }}</td>
                   </tr>
                 </tfoot>
               </table>
@@ -247,7 +306,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, shallowRef, watch, nextTick } from 'vue'
 import { useExcelReader } from '../composables/useExcelReader'
 import { useLocalStorage } from '../composables/useLocalStorage'
 
@@ -259,12 +318,14 @@ const selectedFile = ref(null)
 const selectedFolderPath = ref(null)
 const selectedDirHandle = ref(null)
 const hasPersistedHandle = ref(false)
-const fileData = ref(null)
+const fileData = shallowRef(null) // Changed to shallowRef for performance
 const isProcessing = ref(false)
+const isRecalculating = ref(false)
 const error = ref(null)
 const lastUpdate = ref(null)
 const selectedRow = ref(null)
 const selectedPartida = ref(null)
+const clientOverrides = ref({})
 
 // Filtros de checkbox
 const showBloqueados = ref(false)
@@ -272,10 +333,72 @@ const showDirec70 = ref(true)
 const showDirecNormal = ref(true)
 const selectedQLD = ref('1')
 
-// Datos filtrados y agrupados
-const filteredData = computed(() => {
+// Refs para datos calculados (antes computed)
+const filteredData = shallowRef([])
+const partidaDetail = shallowRef([])
+const registrosPartida = shallowRef([])
+
+const updateCliente = (seq, value) => {
+  if (!seq) return
+  
+  // Actualizar overrides
+  if (!value) {
+    const newOverrides = { ...clientOverrides.value }
+    delete newOverrides[seq]
+    clientOverrides.value = newOverrides
+  } else {
+    clientOverrides.value = {
+      ...clientOverrides.value,
+      [seq]: value
+    }
+  }
+  
+  // Guardar cambios
+  if (fileData.value) {
+    const dataToSave = {
+      ...fileData.value,
+      fileName: fileData.value.fileName || selectedFile.value?.name,
+      folderPath: selectedFolderPath.value,
+      clientOverrides: clientOverrides.value
+    }
+    saveData(dataToSave)
+  }
+  
+  // Trigger recalculation
+  triggerRecalculation('overrides')
+}
+
+// Función orquestadora de recálculos
+const triggerRecalculation = (scope = 'all') => {
+  isRecalculating.value = true
+  
+  // Usar setTimeout para permitir que el UI se actualice (muestre el banner)
+  setTimeout(() => {
+    try {
+      if (scope === 'all' || scope === 'filters' || scope === 'overrides' || scope === 'file') {
+        calculateFilteredData()
+      }
+      
+      if (scope === 'all' || scope === 'row' || scope === 'overrides' || scope === 'file') {
+        calculatePartidaDetail()
+      }
+      
+      if (scope === 'all' || scope === 'partida' || scope === 'file') {
+        calculateRegistrosPartida()
+      }
+    } catch (e) {
+      console.error("Error recalculating:", e)
+    } finally {
+      isRecalculating.value = false
+    }
+  }, 50)
+}
+
+// Lógica de cálculo de filteredData (Tabla 1)
+const calculateFilteredData = () => {
   if (!fileData.value || !fileData.value.data || fileData.value.data.length < 2) {
-    return []
+    filteredData.value = []
+    return
   }
 
   const headers = fileData.value.data[0]
@@ -290,88 +413,269 @@ const filteredData = computed(() => {
   const metrosIdx = headers.findIndex(h => h === 'METROS')
   const pontIdx = headers.findIndex(h => h === 'PONT')
   const bloqIdx = headers.findIndex(h => h === 'BLOQ')
+  const seqIdx = headers.findIndex(h => h === 'SEQ')
 
   if (artigoIdx === -1 || nomeMercadoIdx === -1 || qldIdx === -1 || direcIdx === -1 || partidaIdx === -1 || metrosIdx === -1) {
     error.value = 'No se encontraron todas las columnas requeridas: ARTIGO, NOME_MERCADO, QLD, DIREC, PARTIDA, METROS'
-    return []
+    filteredData.value = []
+    return
   }
 
   // Filtrar por QLD = 1, DIREC vacío o 70, BLOQ vacío, y agrupar por ARTIGO + NOME_MERCADO
   const grouped = {}
   
-  rows.forEach(row => {
+  // Cachear valores de refs para evitar lecturas repetidas en el loop
+  const _selectedQLD = selectedQLD.value
+  const _showBloqueados = showBloqueados.value
+  const _showDirec70 = showDirec70.value
+  const _showDirecNormal = showDirecNormal.value
+  const _clientOverrides = clientOverrides.value
+
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i]
     const qld = row[qldIdx]
+    
+    if (qld != _selectedQLD) continue
+
     const direc = row[direcIdx]
     const bloq = bloqIdx !== -1 ? row[bloqIdx] : ''
     
-    // Filtro: QLD debe coincidir con selectedQLD, aplicar filtro BLOQ según checkbox
     const direcStr = String(direc || '').trim()
     const bloqStr = String(bloq || '').trim()
     
-    // Aplicar filtros de checkboxes para DIREC
     const isDirec70 = direcStr === '70'
     const isDirecNormal = direcStr === ''
     
-    // Aplicar filtro BLOQ: si showBloqueados es false, solo mostrar registros no bloqueados
-    const isBloqueado = bloqStr !== ''
-    const passBloqFilter = showBloqueados.value ? true : !isBloqueado
+    if (!((isDirec70 && _showDirec70) || (isDirecNormal && _showDirecNormal))) continue
     
-    if (qld == selectedQLD.value && 
-        passBloqFilter &&
-        ((isDirec70 && showDirec70.value) || (isDirecNormal && showDirecNormal.value))) {
+    const isBloqueado = bloqStr !== ''
+    if (!_showBloqueados && isBloqueado) continue
       
-      const artigo = row[artigoIdx] || ''
-      const nomeMercado = row[nomeMercadoIdx] || ''
-      const partida = row[partidaIdx] || ''
-      const metros = parseFloat(row[metrosIdx]) || 0
-      const pont = pontIdx !== -1 ? parseFloat(row[pontIdx]) || 0 : 0
+    const artigo = row[artigoIdx] || ''
+    const nomeMercado = row[nomeMercadoIdx] || ''
+    const partida = row[partidaIdx] || ''
+    const metros = parseFloat(row[metrosIdx]) || 0
+    const pont = pontIdx !== -1 ? parseFloat(row[pontIdx]) || 0 : 0
+    const seq = seqIdx !== -1 ? row[seqIdx] : null
 
-      // Crear clave única para agrupar (ARTIGO + NOME_MERCADO)
-      const key = `${artigo}|${nomeMercado}`
+    const key = `${artigo}|${nomeMercado}`
 
-      if (!grouped[key]) {
-        grouped[key] = {
-          ARTIGO: artigo,
-          NOME_MERCADO: nomeMercado,
-          QLD: qld,
-          CANTIDAD_PARTIDAS: 0,
-          PARTIDAS: new Set(),
-          METROS: 0,
-          CONFECCIONISTA: 0,  // METROS >= 50 Y PONT <= 20
-          MAYORISTA: 0,        // METROS >= 50 Y PONT > 21
-          SETENTA: 0           // METROS >= 50 Y DIREC = '70'
-        }
-      }
-
-      // Contar partidas únicas
-      grouped[key].PARTIDAS.add(partida)
-      grouped[key].CANTIDAD_PARTIDAS = grouped[key].PARTIDAS.size
-      
-      // Sumar metros totales
-      grouped[key].METROS += metros
-
-      // Calcular columnas condicionales
-      if (metros >= 50) {
-        // Columna 70: solo registros con DIREC = "70" y METROS >= 50
-        if (direcStr === '70') {
-          grouped[key].SETENTA += metros
-        }
-        
-        if (pont <= 20) {
-          grouped[key].CONFECCIONISTA += metros
-        } else if (pont > 21) {
-          grouped[key].MAYORISTA += metros
-        }
+    if (!grouped[key]) {
+      grouped[key] = {
+        ARTIGO: artigo,
+        NOME_MERCADO: nomeMercado,
+        QLD: qld,
+        CANTIDAD_PARTIDAS: 0,
+        PARTIDAS: new Set(),
+        METROS: 0,
+        CONFECCIONISTA: 0,
+        MAYORISTA: 0,
+        SETENTA: 0
       }
     }
-  })
 
-  // Convertir objeto a array y limpiar el Set de partidas
-  return Object.values(grouped).map(item => {
-    const { PARTIDAS, ...rest } = item
-    return rest
+    grouped[key].PARTIDAS.add(partida)
+    grouped[key].METROS += metros
+
+    if (metros >= 50 && direcStr === '70') {
+      grouped[key].SETENTA += metros
+    }
+
+    let cliente = ''
+    if (seq && _clientOverrides[seq]) {
+      cliente = _clientOverrides[seq]
+    } else if (metros >= 50) {
+      if (pont <= 20) cliente = 'Confe'
+      else if (pont > 20) cliente = 'Mayo'
+    }
+
+    if (cliente === 'Confe') {
+      grouped[key].CONFECCIONISTA += metros
+    } else if (cliente === 'Mayo') {
+      grouped[key].MAYORISTA += metros
+    }
+  }
+
+  filteredData.value = Object.values(grouped).map(item => {
+    item.CANTIDAD_PARTIDAS = item.PARTIDAS.size
+    delete item.PARTIDAS
+    return item
   })
-})
+}
+
+// Lógica de cálculo de partidaDetail (Tabla 2)
+const calculatePartidaDetail = () => {
+  if (!selectedRow.value || !fileData.value || !fileData.value.data || fileData.value.data.length < 2) {
+    partidaDetail.value = []
+    return
+  }
+
+  const headers = fileData.value.data[0]
+  const rows = fileData.value.data.slice(1)
+
+  const artigoIdx = headers.findIndex(h => h === 'ARTIGO')
+  const nomeMercadoIdx = headers.findIndex(h => h === 'NOME_MERCADO')
+  const qldIdx = headers.findIndex(h => h === 'QLD')
+  const direcIdx = headers.findIndex(h => h === 'DIREC')
+  const partidaIdx = headers.findIndex(h => h === 'PARTIDA')
+  const metrosIdx = headers.findIndex(h => h === 'METROS')
+  const statusIdx = headers.findIndex(h => h === 'STATUS')
+  const reprocessoIdx = headers.findIndex(h => h === 'REPROCESSO')
+  const pontIdx = headers.findIndex(h => h === 'PONT')
+  const seqIdx = headers.findIndex(h => h === 'SEQ')
+
+  if (artigoIdx === -1 || nomeMercadoIdx === -1 || qldIdx === -1 || direcIdx === -1 || partidaIdx === -1 || metrosIdx === -1) {
+    partidaDetail.value = []
+    return
+  }
+
+  const grouped = {}
+  const _selectedRow = selectedRow.value
+  const _clientOverrides = clientOverrides.value
+  
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i]
+    const artigo = row[artigoIdx] || ''
+    const nomeMercado = row[nomeMercadoIdx] || ''
+    
+    if (artigo !== _selectedRow.ARTIGO || nomeMercado !== _selectedRow.NOME_MERCADO) continue
+
+    const qld = row[qldIdx]
+    if (qld != 1) continue
+
+    const direc = row[direcIdx]
+    const direcStr = String(direc || '').trim()
+    
+    if (direcStr !== '' && direcStr !== '70') continue
+
+    const partida = row[partidaIdx] || ''
+    const metros = parseFloat(row[metrosIdx]) || 0
+    const status = statusIdx !== -1 ? row[statusIdx] : ''
+    const reprocesso = reprocessoIdx !== -1 ? row[reprocessoIdx] : ''
+    const pont = pontIdx !== -1 ? parseFloat(row[pontIdx]) || 0 : 0
+    const seq = seqIdx !== -1 ? row[seqIdx] : null
+
+    const key = `${partida}|${direcStr}`
+
+    if (!grouped[key]) {
+      grouped[key] = {
+        PARTIDA: partida,
+        DIREC: direcStr,
+        METROS: 0,
+        CONFE: 0,
+        MAYO: 0,
+        SETENTA: 0,
+        STATUS_SET: new Set(),
+        REPROCESSO_SET: new Set()
+      }
+    }
+
+    grouped[key].METROS += metros
+    if (status) grouped[key].STATUS_SET.add(status)
+    if (reprocesso) grouped[key].REPROCESSO_SET.add(reprocesso)
+
+    if (metros >= 50 && direcStr === '70') {
+      grouped[key].SETENTA += metros
+    }
+
+    let cliente = ''
+    if (seq && _clientOverrides[seq]) {
+      cliente = _clientOverrides[seq]
+    } else if (metros >= 50) {
+      if (pont <= 20) cliente = 'Confe'
+      else if (pont > 20) cliente = 'Mayo'
+    }
+
+    if (cliente === 'Confe') {
+      grouped[key].CONFE += metros
+    } else if (cliente === 'Mayo') {
+      grouped[key].MAYO += metros
+    }
+  }
+
+  partidaDetail.value = Object.values(grouped).map(item => {
+    return {
+      ...item,
+      STATUS: Array.from(item.STATUS_SET).join(','),
+      REPROCESSO: Array.from(item.REPROCESSO_SET).join(',')
+    }
+  }).sort((a, b) => {
+    if (a.PARTIDA < b.PARTIDA) return -1
+    if (a.PARTIDA > b.PARTIDA) return 1
+    return 0
+  })
+}
+
+// Lógica de cálculo de registrosPartida (Tabla 3)
+const calculateRegistrosPartida = () => {
+  if (!selectedPartida.value || !selectedRow.value || !fileData.value || !fileData.value.data || fileData.value.data.length < 2) {
+    registrosPartida.value = []
+    return
+  }
+
+  const headers = fileData.value.data[0]
+  const rows = fileData.value.data.slice(1)
+
+  const artigoIdx = headers.findIndex(h => h === 'ARTIGO')
+  const nomeMercadoIdx = headers.findIndex(h => h === 'NOME_MERCADO')
+  const qldIdx = headers.findIndex(h => h === 'QLD')
+  const direcIdx = headers.findIndex(h => h === 'DIREC')
+  const partidaIdx = headers.findIndex(h => h === 'PARTIDA')
+  const metrosIdx = headers.findIndex(h => h === 'METROS')
+
+  if (artigoIdx === -1 || nomeMercadoIdx === -1 || qldIdx === -1 || direcIdx === -1 || partidaIdx === -1 || metrosIdx === -1) {
+    registrosPartida.value = []
+    return
+  }
+
+  const registros = []
+  const _selectedRow = selectedRow.value
+  const _selectedPartida = selectedPartida.value
+  
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i]
+    const artigo = row[artigoIdx] || ''
+    const nomeMercado = row[nomeMercadoIdx] || ''
+    const qld = row[qldIdx]
+    const direc = row[direcIdx]
+    const partida = row[partidaIdx] || ''
+    
+    const direcStr = String(direc || '').trim()
+    
+    if (artigo === _selectedRow.ARTIGO && 
+        nomeMercado === _selectedRow.NOME_MERCADO && 
+        qld == _selectedRow.QLD &&
+        partida === _selectedPartida.PARTIDA &&
+        direcStr === _selectedPartida.DIREC &&
+        (direcStr === '' || direcStr === '70')) {
+      
+      const registro = {}
+      headers.forEach((header, idx) => {
+        registro[header] = row[idx]
+      })
+      
+      registros.push(registro)
+    }
+  }
+
+  registrosPartida.value = registros
+}
+
+// Watchers para disparar recálculos
+watch([fileData, selectedQLD, showBloqueados, showDirec70, showDirecNormal], () => {
+  triggerRecalculation('filters')
+}, { deep: false })
+
+const selectRow = (row) => {
+  selectedRow.value = row
+  selectedPartida.value = null
+  triggerRecalculation('row')
+}
+
+const selectPartida = (partida) => {
+  selectedPartida.value = partida
+  triggerRecalculation('partida')
+}
 
 // Total de metros
 const totalMetros = computed(() => {
@@ -398,129 +702,28 @@ const totalSetenta = computed(() => {
   return filteredData.value.reduce((sum, row) => sum + row.SETENTA, 0)
 })
 
-// Detalle por partida de la fila seleccionada
-const partidaDetail = computed(() => {
-  if (!selectedRow.value || !fileData.value || !fileData.value.data || fileData.value.data.length < 2) {
-    return []
-  }
-
-  const headers = fileData.value.data[0]
-  const rows = fileData.value.data.slice(1)
-
-  const artigoIdx = headers.findIndex(h => h === 'ARTIGO')
-  const nomeMercadoIdx = headers.findIndex(h => h === 'NOME_MERCADO')
-  const qldIdx = headers.findIndex(h => h === 'QLD')
-  const direcIdx = headers.findIndex(h => h === 'DIREC')
-  const partidaIdx = headers.findIndex(h => h === 'PARTIDA')
-  const metrosIdx = headers.findIndex(h => h === 'METROS')
-
-  if (artigoIdx === -1 || nomeMercadoIdx === -1 || qldIdx === -1 || direcIdx === -1 || partidaIdx === -1 || metrosIdx === -1) {
-    return []
-  }
-
-  // Filtrar filas que coincidan con la selección y agrupar por PARTIDA y DIREC
-  const grouped = {}
-  
-  rows.forEach(row => {
-    const artigo = row[artigoIdx] || ''
-    const nomeMercado = row[nomeMercadoIdx] || ''
-    const qld = row[qldIdx]
-    const direc = row[direcIdx]
-    const partida = row[partidaIdx] || ''
-    const metros = parseFloat(row[metrosIdx]) || 0
-
-    const direcStr = String(direc || '').trim()
-    
-    // Filtrar por la fila seleccionada (solo ARTIGO y NOME_MERCADO)
-    if (artigo === selectedRow.value.ARTIGO && 
-        nomeMercado === selectedRow.value.NOME_MERCADO && 
-        qld == 1 &&
-        (direcStr === '' || direcStr === '70')) {
-      
-      // Crear clave única para agrupar por PARTIDA + DIREC
-      const key = `${partida}|${direcStr}`
-
-      if (!grouped[key]) {
-        grouped[key] = {
-          PARTIDA: partida,
-          DIREC: direcStr,
-          METROS: 0
-        }
-      }
-
-      grouped[key].METROS += metros
-    }
-  })
-
-  // Convertir a array y ordenar por PARTIDA
-  return Object.values(grouped).sort((a, b) => {
-    if (a.PARTIDA < b.PARTIDA) return -1
-    if (a.PARTIDA > b.PARTIDA) return 1
-    return 0
-  })
-})
+// Detalle por partida de la fila seleccionada (Ahora calculado en calculatePartidaDetail)
+// const partidaDetail = computed(() => { ... })
 
 // Total metros de la partida seleccionada
 const totalMetrosPartida = computed(() => {
   return partidaDetail.value.reduce((sum, row) => sum + row.METROS, 0)
 })
 
-// Detalle de registros individuales de la partida seleccionada
-const registrosPartida = computed(() => {
-  if (!selectedPartida.value || !selectedRow.value || !fileData.value || !fileData.value.data || fileData.value.data.length < 2) {
-    return []
-  }
-
-  const headers = fileData.value.data[0]
-  const rows = fileData.value.data.slice(1)
-
-  const artigoIdx = headers.findIndex(h => h === 'ARTIGO')
-  const nomeMercadoIdx = headers.findIndex(h => h === 'NOME_MERCADO')
-  const qldIdx = headers.findIndex(h => h === 'QLD')
-  const direcIdx = headers.findIndex(h => h === 'DIREC')
-  const partidaIdx = headers.findIndex(h => h === 'PARTIDA')
-  const metrosIdx = headers.findIndex(h => h === 'METROS')
-
-  if (artigoIdx === -1 || nomeMercadoIdx === -1 || qldIdx === -1 || direcIdx === -1 || partidaIdx === -1 || metrosIdx === -1) {
-    return []
-  }
-
-  // Encontrar todas las columnas disponibles
-  const allColumns = headers
-
-  // Filtrar registros que coincidan con la fila y partida seleccionadas
-  const registros = []
-  
-  rows.forEach(row => {
-    const artigo = row[artigoIdx] || ''
-    const nomeMercado = row[nomeMercadoIdx] || ''
-    const qld = row[qldIdx]
-    const direc = row[direcIdx]
-    const partida = row[partidaIdx] || ''
-    const metros = parseFloat(row[metrosIdx]) || 0
-
-    const direcStr = String(direc || '').trim()
-    
-    // Filtrar por la fila y partida seleccionadas
-    if (artigo === selectedRow.value.ARTIGO && 
-        nomeMercado === selectedRow.value.NOME_MERCADO && 
-        qld == selectedRow.value.QLD &&
-        partida === selectedPartida.value.PARTIDA &&
-        direcStr === selectedPartida.value.DIREC &&
-        (direcStr === '' || direcStr === '70')) {
-      
-      // Crear objeto con todas las columnas
-      const registro = {}
-      headers.forEach((header, idx) => {
-        registro[header] = row[idx]
-      })
-      
-      registros.push(registro)
-    }
-  })
-
-  return registros
+const totalConfePartida = computed(() => {
+  return partidaDetail.value.reduce((sum, row) => sum + row.CONFE, 0)
 })
+
+const totalMayoPartida = computed(() => {
+  return partidaDetail.value.reduce((sum, row) => sum + row.MAYO, 0)
+})
+
+const totalSetentaPartida = computed(() => {
+  return partidaDetail.value.reduce((sum, row) => sum + row.SETENTA, 0)
+})
+
+// Detalle de registros individuales de la partida seleccionada (Ahora calculado en calculateRegistrosPartida)
+// const registrosPartida = computed(() => { ... })
 
 // Total metros de los registros de la partida seleccionada
 const totalMetrosRegistros = computed(() => {
@@ -714,6 +917,11 @@ onMounted(async () => {
     if (savedData.folderPath) {
       selectedFolderPath.value = savedData.folderPath
     }
+    if (savedData.clientOverrides) {
+      clientOverrides.value = savedData.clientOverrides
+    }
+    // Trigger initial calculation from saved data
+    triggerRecalculation('file')
   }
   
   // Intentar cargar el handle persistido
@@ -746,16 +954,21 @@ const parseAndStore = async (file) => {
   try {
     const result = await readExcelFile(file)
     fileData.value = result
+    clientOverrides.value = {} // Resetear overrides al cargar nuevo archivo
 
     const dataToSave = {
       ...result,
       fileName: file.name,
-      folderPath: selectedFolderPath.value
+      folderPath: selectedFolderPath.value,
+      clientOverrides: {}
     }
     const saved = saveData(dataToSave)
     if (saved) {
       lastUpdate.value = data.value?.lastUpdate || new Date().toISOString()
     }
+    
+    // Trigger initial calculation
+    triggerRecalculation('file')
   } catch (err) {
     error.value = `Error al procesar el archivo: ${err.message}`
     console.error(err)
@@ -768,6 +981,7 @@ const clearAllData = () => {
   if (confirm('¿Estás seguro de que deseas eliminar todos los datos guardados?')) {
     clearData()
     fileData.value = null
+    clientOverrides.value = {}
     selectedFile.value = null
     selectedFolderPath.value = null
     selectedDirHandle.value = null
@@ -775,6 +989,9 @@ const clearAllData = () => {
     lastUpdate.value = null
     selectedRow.value = null
     selectedPartida.value = null
+    filteredData.value = []
+    partidaDetail.value = []
+    registrosPartida.value = []
     if (fileInputRef.value) {
       fileInputRef.value.value = ''
     }
@@ -807,15 +1024,6 @@ const formatDate = (dateString) => {
   })
 }
 
-const selectRow = (row) => {
-  selectedRow.value = row
-  selectedPartida.value = null // Resetear partida seleccionada al cambiar de fila
-}
-
-const selectPartida = (partida) => {
-  selectedPartida.value = partida
-}
-
 const formatPartida = (partida) => {
   if (!partida) return ''
   const partidaStr = String(partida)
@@ -831,6 +1039,22 @@ const formatPartida = (partida) => {
   }
   return withoutFirst
 }
+
+const getCliente = (registro) => {
+  if (registro.SEQ && clientOverrides.value[registro.SEQ]) {
+    return clientOverrides.value[registro.SEQ]
+  }
+
+  const metros = parseFloat(registro.METROS) || 0
+  const pont = parseFloat(registro.PONT) || 0
+  
+  if (metros >= 50) {
+    if (pont <= 20) return 'Confe'
+    if (pont > 20) return 'Mayo'
+  }
+  return ''
+}
+
 
 
 </script>
