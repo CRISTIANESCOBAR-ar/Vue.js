@@ -231,7 +231,7 @@
             </div>
           </div>
 
-          <div v-if="selectedPartida" class="flex flex-col h-auto max-h-full flex-none" style="width: 300px;">
+          <div v-if="selectedPartida" class="flex flex-col h-auto max-h-full flex-none" style="width: 325px;">
             <div class="overflow-auto _minimal-scroll rounded border border-slate-200 shadow-sm">
               <table class="w-full table-fixed divide-y divide-slate-200 text-xs">
                 <colgroup>
@@ -242,7 +242,7 @@
                   <col style="width: 25px" />
                   <col style="width: 40px" />
                   <col style="width: 25px" />
-                  <col style="width: 45px" />
+                  <col style="width: 70px" />
                 </colgroup>
                 <thead class="bg-gradient-to-r from-slate-50 to-slate-100 sticky top-0 z-10">
                   <tr>
@@ -269,7 +269,7 @@
                       <select 
                         :value="getCliente(registro)" 
                         @change="updateCliente(registro.SEQ, $event.target.value)"
-                        class="bg-transparent border-none focus:ring-0 text-[10px] p-0 w-full text-center cursor-pointer outline-none"
+                        class="bg-transparent border-none focus:ring-0 text-xs p-0 w-full text-center cursor-pointer outline-none"
                       >
                         <option value="">-</option>
                         <option value="Confe">Confe</option>
@@ -280,8 +280,9 @@
                 </tbody>
                 <tfoot class="bg-slate-50">
                   <tr>
-                    <td colspan="2" class="text-center text-slate-600 font-semibold uppercase" style="padding: 4px 2px;">Total</td>
-                    <td colspan="6" class="text-left text-slate-700 font-semibold" style="padding: 4px 4px;">{{ formatMetros(totalMetrosRegistros) }}</td>
+                    <td class="text-center text-slate-600 font-semibold uppercase" style="padding: 4px 2px;">Total</td>
+                    <td class="text-right text-slate-700 font-semibold" style="padding: 4px 2px;">{{ formatMetros(totalMetrosRegistros) }}</td>
+                    <td colspan="6"></td>
                   </tr>
                 </tfoot>
               </table>
