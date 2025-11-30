@@ -89,6 +89,8 @@
         <router-view />
       </div>
     </main>
+    
+    <ReloadPrompt />
   </div>
 </template>
 
@@ -96,6 +98,7 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import SidebarItem from './components/SidebarItem.vue'
+import ReloadPrompt from './components/ReloadPrompt.vue'
 
 const route = useRoute()
 const router = useRouter()
