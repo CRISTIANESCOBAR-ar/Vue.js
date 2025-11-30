@@ -341,7 +341,7 @@
       <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden transform transition-all scale-100 border border-slate-200">
         
         <!-- Header -->
-        <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-white">
+        <div class="px-8 py-6 border-b border-slate-100 flex justify-between items-center bg-white">
           <div class="flex items-center gap-4">
             <div class="h-10 w-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 shadow-sm">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -365,10 +365,10 @@
           </button>
         </div>
         
-        <div class="p-6 overflow-y-auto flex-1 space-y-8 bg-slate-50/50">
+        <div class="p-8 overflow-y-auto flex-1 space-y-8 bg-slate-50/50">
           
           <!-- Create Action -->
-          <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div class="bg-white p-8 rounded-xl border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-6">
             <div class="flex-1">
               <h4 class="font-bold text-slate-800 text-lg mb-2">Crear nuevo punto de restauración</h4>
               <p class="text-sm text-slate-600 leading-relaxed">Guarda el estado actual de tu trabajo (filtros, overrides, archivo) para recuperarlo más tarde en caso de error o para comparar versiones.</p>
@@ -457,7 +457,7 @@
         </div>
         
         <!-- Footer -->
-        <div class="bg-slate-50 px-6 py-4 border-t border-slate-200 flex justify-between items-center">
+        <div class="bg-slate-50 px-8 py-6 border-t border-slate-200 flex justify-between items-center">
           <p class="text-xs text-slate-500">
             <span class="font-semibold">Nota:</span> Los backups se almacenan en la base de datos de tu navegador (IndexedDB).
           </p>
