@@ -98,6 +98,18 @@
                 </svg>
                 Backups
               </button>
+
+              <button 
+                @click="exportToExcel" 
+                :disabled="!filteredData.length"
+                class="inline-flex items-center gap-2 border border-slate-200 bg-white text-slate-700 rounded text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md ml-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                style="padding: 0.25rem 0.5rem;"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Exportar
+              </button>
             </div>
           </div>
         </div>
@@ -447,6 +459,7 @@ import { ref, computed, onMounted, shallowRef, watch, nextTick } from 'vue'
 import { useExcelReader } from '../composables/useExcelReader'
 import { useLocalStorage } from '../composables/useLocalStorage'
 import { saveSnapshot, getSnapshots, loadSnapshot, deleteSnapshot } from '../db'
+import { utils, writeFile } from 'xlsx-js-style'
 
 const { readExcelFile } = useExcelReader()
 const { data, loadData, saveData, clearData } = useLocalStorage()
@@ -1331,6 +1344,259 @@ const removeBackup = async (id) => {
   if(!confirm('¿Eliminar este backup?')) return
   await deleteSnapshot(id)
   await loadBackups()
+}
+
+const exportToExcel = () => {
+  if (!filteredData.value || filteredData.value.length === 0) return
+  if (!fileData.value || !fileData.value.data) return
+
+  const headers = fileData.value.data[0]
+  const rows = fileData.value.data.slice(1)
+  
+  // Indices para búsqueda rápida
+  const artigoIdx = headers.findIndex(h => h === 'ARTIGO')
+  const nomeMercadoIdx = headers.findIndex(h => h === 'NOME_MERCADO')
+  const qldIdx = headers.findIndex(h => h === 'QLD')
+  const direcIdx = headers.findIndex(h => h === 'DIREC')
+  const partidaIdx = headers.findIndex(h => h === 'PARTIDA')
+  const metrosIdx = headers.findIndex(h => h === 'METROS')
+  const pontIdx = headers.findIndex(h => h === 'PONT')
+  const seqIdx = headers.findIndex(h => h === 'SEQ')
+
+  const _clientOverrides = clientOverrides.value
+  const _direcOverrides = direcOverrides.value
+
+  let totalMayorista = 0
+  let totalConfeccionista = 0
+  let totalMetros = 0
+  const nombresComercialesUnicos = new Set()
+
+  const dataToExport = filteredData.value.map(row => {
+    const artigoStr = String(row.ARTIGO || '')
+    
+    // Acumular totales
+    totalMayorista += row.MAYORISTA || 0
+    totalConfeccionista += row.CONFECCIONISTA || 0
+    totalMetros += row.METROS || 0
+    if (row.NOME_MERCADO) {
+      nombresComercialesUnicos.add(row.NOME_MERCADO)
+    }
+
+    // Calcular detalle confeccionista y mayorista
+    // Buscar todas las filas raw que corresponden a este grupo (Artigo + NomeMercado)
+    const partidasMapConfe = {}
+    const partidasMapMayo = {}
+
+    for (let i = 0; i < rows.length; i++) {
+      const r = rows[i]
+      // Filtros básicos del grupo
+      if (r[artigoIdx] !== row.ARTIGO || r[nomeMercadoIdx] !== row.NOME_MERCADO) continue
+      
+      // Filtros globales (QLD, DIREC) - Deben coincidir con lo que se ve en pantalla
+      if (r[qldIdx] != selectedQLD.value) continue
+
+      const seq = seqIdx !== -1 ? r[seqIdx] : null
+      const direc = r[direcIdx]
+      let direcStr = String(direc || '').trim()
+      if (seq && _direcOverrides[seq]) {
+        direcStr = String(_direcOverrides[seq]).trim()
+      }
+      
+      // Filtro DIREC (Normal/70)
+      const isDirec70 = direcStr === '70'
+      const isDirecNormal = direcStr === ''
+      if (!((isDirec70 && showDirec70.value) || (isDirecNormal && showDirecNormal.value))) continue
+
+      const partida = r[partidaIdx]
+      const metros = parseFloat(r[metrosIdx]) || 0
+      const pont = pontIdx !== -1 ? parseFloat(r[pontIdx]) || 0 : 0
+
+      // Calcular cliente
+      let cliente = ''
+      if (seq && _clientOverrides[seq]) {
+        cliente = _clientOverrides[seq]
+      } else if (metros >= 50) {
+        if (pont <= 20) cliente = 'Confe'
+        else if (pont > 20) cliente = 'Mayo'
+      }
+
+      const partidaStr = String(partida || '')
+      // Agrupar por los últimos 6 caracteres
+      const key = partidaStr.length >= 6 ? partidaStr.slice(-6) : partidaStr
+
+      if (cliente === 'Confe') {
+        if (!partidasMapConfe[key]) partidasMapConfe[key] = 0
+        partidasMapConfe[key] += metros
+      } else if (cliente === 'Mayo') {
+        if (!partidasMapMayo[key]) partidasMapMayo[key] = 0
+        partidasMapMayo[key] += metros
+      }
+    }
+
+    // Función helper para formatear detalle
+    const formatDetalle = (map) => {
+      const groups = {}
+      Object.entries(map).forEach(([key, metros]) => {
+        // key ejemplo: 539018. Rolada: 3901 (índices 1,2,3,4)
+        const rolada = key.length >= 5 ? key.substring(1, 5) : 'AAAA'
+        if (!groups[rolada]) groups[rolada] = []
+        groups[rolada].push({ key, metros })
+      })
+
+      const sortedRoladas = Object.keys(groups).sort()
+      const resultParts = []
+
+      sortedRoladas.forEach(rolada => {
+        const items = groups[rolada]
+        // Ordenar por sufijo (índices 5 en adelante)
+        items.sort((a, b) => {
+          const sufA = a.key.substring(5)
+          const sufB = b.key.substring(5)
+          return sufA.localeCompare(sufB)
+        })
+
+        if (items.length > 1) {
+          const sum = items.reduce((acc, curr) => acc + curr.metros, 0)
+          const vals = items.map(i => Math.round(i.metros)).join(' + ')
+          resultParts.push(`(${vals} = ${Math.round(sum)})`)
+        } else {
+          resultParts.push(Math.round(items[0].metros))
+        }
+      })
+
+      return resultParts.join(' + ')
+    }
+
+    const detalleConfe = formatDetalle(partidasMapConfe)
+    const detalleMayo = formatDetalle(partidasMapMayo)
+
+    return {
+      'Articulo': artigoStr.slice(0, 10),
+      'Color': artigoStr.slice(10),
+      'Nombre Comercial': row.NOME_MERCADO,
+      'Mayorista': row.MAYORISTA,
+      'Confeccionista': row.CONFECCIONISTA,
+      'Total': row.METROS,
+      'Detalle Confeccionista': detalleConfe,
+      'Detalle Mayorista': detalleMayo
+    }
+  })
+
+  // Agregar fila de totales
+  dataToExport.push({
+    'Articulo': 'TOTALES',
+    'Color': '',
+    'Nombre Comercial': nombresComercialesUnicos.size,
+    'Mayorista': totalMayorista,
+    'Confeccionista': totalConfeccionista,
+    'Total': totalMetros,
+    'Detalle Confeccionista': '',
+    'Detalle Mayorista': ''
+  })
+
+  const ws = utils.json_to_sheet(dataToExport)
+
+  // Estilos
+  const headerStyle = {
+    font: { bold: true, color: { rgb: "FFFFFF" } },
+    fill: { fgColor: { rgb: "4F46E5" } }, // Indigo 600
+    alignment: { horizontal: "center", vertical: "center" },
+    border: {
+      top: { style: "thin" },
+      bottom: { style: "thin" },
+      left: { style: "thin" },
+      right: { style: "thin" }
+    }
+  }
+
+  const cellStyle = {
+    alignment: { vertical: "center" },
+    border: {
+      top: { style: "thin" },
+      bottom: { style: "thin" },
+      left: { style: "thin" },
+      right: { style: "thin" }
+    }
+  }
+
+  const totalStyle = {
+    font: { bold: true },
+    fill: { fgColor: { rgb: "F3F4F6" } }, // Gray 100
+    alignment: { vertical: "center" },
+    border: {
+      top: { style: "medium" },
+      bottom: { style: "thin" },
+      left: { style: "thin" },
+      right: { style: "thin" }
+    }
+  }
+
+  // Aplicar estilos y anchos
+  const range = utils.decode_range(ws['!ref'])
+  const wscols = []
+
+  for (let R = range.s.r; R <= range.e.r; ++R) {
+    for (let C = range.s.c; C <= range.e.c; ++C) {
+      const cell_address = utils.encode_cell({ r: R, c: C })
+      if (!ws[cell_address]) continue
+
+      const cell = ws[cell_address]
+      const isNumber = typeof cell.v === 'number'
+
+      // Formato numérico para celdas con números
+      if (isNumber) {
+        cell.z = "#,##0"
+      }
+
+      // Header row
+      if (R === 0) {
+        cell.s = headerStyle
+      } 
+      // Total row (last row)
+      else if (R === range.e.r) {
+        cell.s = { ...totalStyle }
+        if (isNumber) {
+          // Alinear a la derecha con sangría (indent: 1)
+          cell.s.alignment = { ...totalStyle.alignment, horizontal: "right", indent: 1 }
+        }
+      } 
+      // Data rows
+      else {
+        cell.s = { ...cellStyle }
+        if (isNumber) {
+          // Alinear a la derecha con sangría (indent: 1)
+          cell.s.alignment = { ...cellStyle.alignment, horizontal: "right", indent: 1 }
+        }
+      }
+    }
+  }
+
+  // Calcular anchos de columna
+  const keys = Object.keys(dataToExport[0])
+  keys.forEach((key, i) => {
+    let maxLen = key.length
+    dataToExport.forEach(row => {
+      const val = String(row[key] || '')
+      if (val.length > maxLen) maxLen = val.length
+    })
+    wscols.push({ wch: maxLen + 2 })
+  })
+  ws['!cols'] = wscols
+
+  const wb = utils.book_new()
+  utils.book_append_sheet(wb, ws, "Stock")
+  
+  const now = new Date()
+  const day = String(now.getDate()).padStart(2, '0')
+  const month = String(now.getMonth() + 1).padStart(2, '0')
+  const year = now.getFullYear()
+  const hours = String(now.getHours()).padStart(2, '0')
+  const minutes = String(now.getMinutes()).padStart(2, '0')
+  const seconds = String(now.getSeconds()).padStart(2, '0')
+  
+  const fileName = `Analisis_Stock_${day}${month}${year}_${hours}${minutes}${seconds}.xlsx`
+  
+  writeFile(wb, fileName)
 }
 
 </script>

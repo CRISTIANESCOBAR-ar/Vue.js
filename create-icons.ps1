@@ -1,6 +1,6 @@
 Add-Type -AssemblyName System.Drawing
 
-function Create-Image {
+function New-Image {
     param (
         [int]$width,
         [int]$height,
@@ -28,6 +28,6 @@ function Create-Image {
     Write-Host "Created $outputPath"
 }
 
-Create-Image -width 192 -height 192 -text "STC" -outputPath "public/pwa-192x192.png"
-Create-Image -width 512 -height 512 -text "STC" -outputPath "public/pwa-512x512.png"
-Create-Image -width 64 -height 64 -text "STC" -outputPath "public/favicon.ico" # Saving as PNG actually, but naming ico for simplicity or convert later. Browsers handle png favicons.
+New-Image -width 192 -height 192 -text "STC" -outputPath "public/pwa-192x192.png"
+New-Image -width 512 -height 512 -text "STC" -outputPath "public/pwa-512x512.png"
+New-Image -width 64 -height 64 -text "STC" -outputPath "public/favicon.ico" # Saving as PNG actually, but naming ico for simplicity or convert later. Browsers handle png favicons.
