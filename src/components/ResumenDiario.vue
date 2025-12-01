@@ -372,9 +372,16 @@
                                     :class="['transition-colors duration-150', modalLoading ? 'bg-slate-50/50' : 'hover:bg-slate-50']">
                                     <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{ row.NO }}</td>
                                     <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{ fmtCell(row.TITULO) }}</td>
-                                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700"
-                                        :class="row.DESVIO_PERCENT && (row.DESVIO_PERCENT.startsWith('+') || row.DESVIO_PERCENT.startsWith('-')) ? (parseFloat(row.DESVIO_PERCENT) > 0 ? 'text-green-600 font-semibold' : 'text-red-600 font-semibold') : 'text-slate-700'">
-                                        {{ row.DESVIO_PERCENT || '—' }}
+                                    <td class="px-3 py-1 text-center border-b border-slate-100 font-semibold" :class="{
+                                        'text-red-600': row.DESVIO_PERCENT && parseFloat(row.DESVIO_PERCENT) > 1.5,
+                                        'text-blue-600': row.DESVIO_PERCENT && parseFloat(row.DESVIO_PERCENT) < -1.5,
+                                        'text-green-600': row.DESVIO_PERCENT && parseFloat(row.DESVIO_PERCENT) >= -1.5 && parseFloat(row.DESVIO_PERCENT) <= 1.5,
+                                        'text-slate-700': !row.DESVIO_PERCENT
+                                    }">
+                                        <template v-if="row.DESVIO_PERCENT && row.DESVIO_PERCENT !== '—'">
+                                            {{ row.DESVIO_PERCENT }}%
+                                        </template>
+                                        <template v-else>{{ row.DESVIO_PERCENT || '—' }}</template>
                                     </td>
                                     <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{ fmtCell(row.CVM_PERCENT) }}</td>
                                     <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{ fmtCell(row.DELG_MINUS30_KM) }}</td>
