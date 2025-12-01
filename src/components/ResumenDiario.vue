@@ -276,6 +276,17 @@
             <div class="bg-white rounded-2xl shadow-2xl max-w-6xl w-full max-h-[95vh] flex flex-col p-3 z-50 relative"
                 role="document">
                 <header class="flex items-start sm:items-center justify-between mb-2 pb-1 gap-3">
+                    <!-- Botón anterior -->
+                    <button @click="modalPrev" :disabled="modalPrevDisabled" type="button"
+                        v-tippy="{ content: 'Anterior ensayo', placement: 'bottom', theme: 'custom' }"
+                        :class="['w-9 h-9 rounded-lg border flex items-center justify-center transition-all duration-200 shadow-sm', modalPrevDisabled ? 'bg-slate-100 border-slate-200 text-slate-300 cursor-not-allowed' : 'bg-white border-slate-200 hover:border-blue-400 hover:bg-blue-50 text-slate-600 hover:text-blue-600 hover:shadow-md']"
+                        aria-label="Anterior ensayo">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                    </button>
+
                     <div id="dataModalTitle" class="flex flex-col sm:flex-row sm:items-center gap-2 mx-8">
                         <div class="text-slate-600 text-sm">Fecha: <span class="text-slate-900 text-lg font-semibold ml-1">{{
                             modalMeta.fechaStr }}</span></div>
@@ -288,6 +299,17 @@
                     </div>
 
                     <div class="flex items-center gap-2">
+                        <!-- Botón siguiente -->
+                        <button @click="modalNext" :disabled="modalNextDisabled" type="button"
+                            v-tippy="{ content: 'Siguiente ensayo', placement: 'bottom', theme: 'custom' }"
+                            :class="['w-9 h-9 rounded-lg border flex items-center justify-center transition-all duration-200 shadow-sm', modalNextDisabled ? 'bg-slate-100 border-slate-200 text-slate-300 cursor-not-allowed' : 'bg-white border-slate-200 hover:border-blue-400 hover:bg-blue-50 text-slate-600 hover:text-blue-600 hover:shadow-md']"
+                            aria-label="Siguiente ensayo">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </button>
+
                         <!-- Copy as image button -->
                         <button @click="copyModalAsImage" type="button"
                             v-tippy="{ content: 'Copiar como imagen para WhatsApp', placement: 'bottom', theme: 'custom' }"
@@ -341,6 +363,7 @@
                                 <tr>
                                     <th class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">Huso</th>
                                     <th class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">Titulo</th>
+                                    <th class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">Desvío %</th>
                                     <th class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">CVm %</th>
                                     <th class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">Delg -30%</th>
                                     <th class="px-3 py-2 text-center font-semibold text-slate-700 border-b border-slate-200">Delg -40%</th>
@@ -360,6 +383,10 @@
                                     :class="['transition-colors duration-150', modalLoading ? 'bg-slate-50/50' : 'hover:bg-slate-50']">
                                     <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{ row.NO }}</td>
                                     <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{ fmtCell(row.TITULO) }}</td>
+                                    <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700"
+                                        :class="row.DESVIO_PERCENT && (row.DESVIO_PERCENT.startsWith('+') || row.DESVIO_PERCENT.startsWith('-')) ? (parseFloat(row.DESVIO_PERCENT) > 0 ? 'text-green-600 font-semibold' : 'text-red-600 font-semibold') : 'text-slate-700'">
+                                        {{ row.DESVIO_PERCENT || '—' }}
+                                    </td>
                                     <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{ fmtCell(row.CVM_PERCENT) }}</td>
                                     <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{ fmtCell(row.DELG_MINUS30_KM) }}</td>
                                     <td class="px-3 py-1 text-center border-b border-slate-100 text-slate-700">{{ fmtCell(row.DELG_MINUS40_KM) }}</td>
@@ -393,6 +420,7 @@
                                         </div>
                                     </td>
                                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TITULO?.avg) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DESVIO_PERCENT?.avg) }}</td>
                                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.CVM_PERCENT?.avg) }}</td>
                                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS30_KM?.avg) }}</td>
                                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS40_KM?.avg) }}</td>
@@ -425,6 +453,7 @@
                                         </div>
                                     </td>
                                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TITULO?.cv) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DESVIO_PERCENT?.cv) }}</td>
                                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.CVM_PERCENT?.cv) }}</td>
                                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS30_KM?.cv) }}</td>
                                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS40_KM?.cv) }}</td>
@@ -457,6 +486,7 @@
                                         </div>
                                     </td>
                                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TITULO?.sd) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DESVIO_PERCENT?.sd) }}</td>
                                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.CVM_PERCENT?.sd) }}</td>
                                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS30_KM?.sd) }}</td>
                                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS40_KM?.sd) }}</td>
@@ -962,10 +992,47 @@ function closeDataModal() {
     selectedTestnr.value = null
 }
 
+// Navegación del modal
+const modalIndex = computed(() => {
+    const testnr = selectedTestnr.value
+    if (!testnr) return -1
+    const list = filteredTests.value || []
+    return list.findIndex(t => String(t.TESTNR || t.testnr) === String(testnr))
+})
+
+const modalPrevDisabled = computed(() => modalIndex.value <= 0)
+const modalNextDisabled = computed(() => {
+    const list = filteredTests.value || []
+    return modalIndex.value === -1 || modalIndex.value >= list.length - 1
+})
+
+function modalPrev() {
+    if (modalPrevDisabled.value) return
+    const list = filteredTests.value || []
+    const prev = list[modalIndex.value - 1]
+    const testnr = prev?.TESTNR || prev?.testnr
+    if (testnr) {
+        openDataModal(testnr)
+    }
+}
+
+function modalNext() {
+    if (modalNextDisabled.value) return
+    const list = filteredTests.value || []
+    const next = list[modalIndex.value + 1]
+    const testnr = next?.TESTNR || next?.testnr
+    if (testnr) {
+        openDataModal(testnr)
+    }
+}
+
 // Merged rows for modal (combine Uster + TensoRapid data)
 const mergedRows = computed(() => {
     const uster = usterTblRows.value || []
     const tensor = tensorTblRows.value || []
+    
+    // Obtener Ne estándar desde modalMeta
+    const neStandard = modalMeta.value?.ne ? parseFloat(String(modalMeta.value.ne).replace('Flame', '').trim()) : 0
     
     // Crear mapa de datos TensoRapid por HUSO_NUMBER
     const tensorMap = {}
@@ -986,9 +1053,20 @@ const mergedRows = computed(() => {
         const tensorByNo = usterNo ? tensorMap[usterNo] : null
         const tData = tensorByNo || tRow
         
+        // Calcular Desvío % para este huso: ((Ne - Titulo) / Ne) * 100
+        const tituloVal = uRow.TITULO ?? uRow.titulo ?? ''
+        let desvioPercent = ''
+        if (neStandard > 0 && tituloVal !== '' && !isNaN(parseFloat(tituloVal))) {
+            const t = parseFloat(tituloVal)
+            const d = ((neStandard - t) / neStandard) * 100
+            const formatted = parseFloat(d.toFixed(2))
+            desvioPercent = (d > 0 ? '+' : '') + formatted
+        }
+        
         merged.push({
             NO: uRow.NO ?? uRow.NO_ ?? tData.HUSO_NUMBER ?? (i + 1),
-            TITULO: uRow.TITULO ?? uRow.titulo ?? '',
+            TITULO: tituloVal,
+            DESVIO_PERCENT: desvioPercent,
             CVM_PERCENT: uRow.CVM_PERCENT ?? uRow['CVM_%'] ?? '',
             DELG_MINUS30_KM: uRow.DELG_MINUS30_KM ?? uRow['DELG_-30%'] ?? '',
             DELG_MINUS40_KM: uRow.DELG_MINUS40_KM ?? uRow['DELG_-40%'] ?? '',
@@ -1013,7 +1091,7 @@ const combinedStats = computed(() => {
     if (merged.length === 0) return {}
     
     const stats = {}
-    const fields = ['TITULO', 'CVM_PERCENT', 'DELG_MINUS30_KM', 'DELG_MINUS40_KM', 'DELG_MINUS50_KM',
+    const fields = ['TITULO', 'DESVIO_PERCENT', 'CVM_PERCENT', 'DELG_MINUS30_KM', 'DELG_MINUS40_KM', 'DELG_MINUS50_KM',
         'GRUE_35_KM', 'GRUE_50_KM', 'NEPS_140_KM', 'NEPS_280_KM',
         'FUERZA_B', 'ELONGACION', 'TENACIDAD', 'TRABAJO']
 
