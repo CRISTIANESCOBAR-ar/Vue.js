@@ -39,7 +39,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7a2 2 0 012-2h3l2 3h6a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
                 </svg>
-                <span class="hidden lg:inline">Seleccionar</span>
+                <span class="btn-text">Seleccionar</span>
               </button>
 
               <input
@@ -63,7 +63,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
-                <span class="hidden lg:inline">Refrescar</span>
+                <span class="btn-text">Refrescar</span>
               </button>
 
               <button 
@@ -75,7 +75,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
                 </svg>
-                <span class="hidden lg:inline">Backups</span>
+                <span class="btn-text">Backups</span>
               </button>
 
               <button 
@@ -88,7 +88,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                 </svg>
-                <span class="hidden lg:inline">Exportar</span>
+                <span class="btn-text">Exportar</span>
               </button>
             </div>
           </div>
@@ -96,9 +96,9 @@
           <!-- Right Side: Filters & Last Update -->
           <div class="flex items-center gap-3">
             <div class="flex items-center gap-2 border border-slate-200 bg-white text-slate-700 rounded shadow-sm" style="padding: 0.375rem 1rem;">
-              <label class="text-sm font-medium shrink-0" v-tippy="{ content: 'Calidad' }">
-                <span class="hidden lg:inline">Calidad:</span>
-                <span class="lg:hidden">C:</span>
+              <label class="text-sm font-medium shrink-0">
+                <span class="hidden xl:inline">Calidad:</span>
+                <span class="xl:hidden">C.:</span>
               </label>
               <select v-model="selectedQLD" class="text-sm border-0 focus:outline-none focus:ring-0 bg-transparent cursor-pointer">
                 <option value="1">1</option>
@@ -107,21 +107,19 @@
               
               <div class="h-4 w-px bg-slate-300 mx-1"></div>
               
-              <label class="inline-flex items-center gap-2 cursor-pointer" v-tippy="{ content: 'Normal' }">
+              <label class="inline-flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" v-model="showDirecNormal" class="h-4 w-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500" />
-                <span class="text-sm hidden lg:inline">Normal</span>
-                <span class="text-sm lg:hidden">N</span>
+                <span class="text-sm">N</span>
               </label>
               
-              <label class="inline-flex items-center gap-2 cursor-pointer" v-tippy="{ content: '70' }">
+              <label class="inline-flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" v-model="showDirec70" class="h-4 w-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500" />
                 <span class="text-sm">70</span>
               </label>
               
-              <label class="inline-flex items-center gap-2 cursor-pointer" v-tippy="{ content: 'Bloqueados' }">
+              <label class="inline-flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" v-model="showBloqueados" class="h-4 w-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500" />
-                <span class="text-sm hidden lg:inline">Bloq</span>
-                <span class="text-sm lg:hidden">B</span>
+                <span class="text-sm">B</span>
               </label>
             </div>
 
@@ -503,7 +501,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, shallowRef, watch, nextTick } from 'vue'
+import { ref, computed, onMounted, shallowRef, watch, nextTick, inject } from 'vue'
 import { useExcelReader } from '../composables/useExcelReader'
 import { useLocalStorage } from '../composables/useLocalStorage'
 import { saveSnapshot, getSnapshots, loadSnapshot, deleteSnapshot } from '../db'
@@ -1782,5 +1780,18 @@ const exportToExcel = () => {
 
 .align-right {
   text-align: right !important;
+}
+
+/* Hide button text when space is constrained */
+@media (max-width: 1200px) {
+  .btn-text {
+    display: none;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .bg-gray-50 {
+    background-color: #1a1a1a;
+  }
 }
 </style>

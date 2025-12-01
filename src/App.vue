@@ -60,11 +60,11 @@
     </aside>
 
     <!-- Mobile / tablet header (visible under 1024px) -->
-    <header class="lg:hidden fixed top-0 left-0 z-50 p-2 pointer-events-none">
+    <header class="lg:hidden fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-3 py-1 bg-white">
       <button 
         aria-label="Toggle menú" 
         :aria-expanded="String(sidebarVisible)"
-        class="bg-blue-600 text-white p-0.5 rounded shadow w-9 h-9 flex items-center justify-center pointer-events-auto opacity-20 hover:opacity-100 transition-opacity duration-300"
+        class="bg-blue-600 text-white p-0.5 rounded shadow w-9 h-9 flex items-center justify-center"
         @click.stop.prevent="mobileToggle"
       >
         <svg v-if="!sidebarVisible" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -74,12 +74,15 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
         </svg>
       </button>
+
+      <div class="text-sm font-semibold">{{ headerTitle }}</div>
+      <div class="h-6 w-6"></div>
     </header>
 
     <!-- Main content -->
     <main 
       @click="maybeHideSidebar"
-      class="flex-1 flex flex-col transition-all duration-500 ease-in-out overflow-x-hidden px-2 md:px-0 pt-0"
+      class="flex-1 flex flex-col transition-all duration-500 ease-in-out overflow-x-hidden px-2 md:px-0 pt-10 md:pt-0"
       :style="{ marginLeft: mainMargin }"
     >
       <div class="w-full flex-1 flex flex-col">
@@ -92,7 +95,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted, watch, onBeforeUnmount, provide, readonly } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import SidebarItem from './components/SidebarItem.vue'
 import ReloadPrompt from './components/ReloadPrompt.vue'
@@ -104,6 +107,11 @@ const sidebarVisible = ref(true)
 const collapsed = ref(false)
 const userHidden = ref(false)
 const windowWidth = ref(typeof window !== 'undefined' ? window.innerWidth : 1200)
+
+// Provide sidebar state to child components (as readonly to prevent mutations)
+provide('sidebarVisible', readonly(sidebarVisible))
+provide('collapsed', readonly(collapsed))
+provide('windowWidth', readonly(windowWidth))
 
 const menuItems = [
   { name: 'Carga de Archivo', path: '/carga-archivo', icon: '📁' },
