@@ -16,6 +16,9 @@
             <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" stroke-width="2">
               <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+          import { ref } from 'vue';
+          import { useStore } from 'vuex';
+          import { useRoute } from 'vue-router';
               <line x1="8" y1="21" x2="16" y2="21"></line>
               <line x1="12" y1="17" x2="12" y2="21"></line>
             </svg>
@@ -263,18 +266,24 @@
                   <td class="px-2 py-[0.3rem] text-center text-slate-700">{{ row['Tenac.'] }}</td>
                   <td class="px-2 py-[0.3rem] text-center text-slate-700">{{ row['Trabajo B'] }}</td>
                   <td class="px-2 py-[0.3rem] text-center">
-                    <button @click="openDetail(row.Ensayo)"
-                      v-tippy="{ content: 'Ver el detalle de los ensayos USTER y TENSORAPID', placement: 'bottom', theme: 'custom' }"
-                      class="inline-flex items-center gap-2 px-2 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-xs font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-600" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" stroke-linecap="round" stroke-linejoin="round">
-                        </path>
-                        <path d="M2.5 12s3.5-7 9.5-7 9.5 7 9.5 7-3.5 7-9.5 7-9.5-7-9.5-7z" stroke-linecap="round"
-                          stroke-linejoin="round"></path>
-                      </svg>
-                      <span class="whitespace-nowrap">Ver detalle</span>
-                    </button>
+                    <div class="flex items-center justify-center gap-1.5">
+                      <button @click="openDetail(row.Ensayo)"
+                        v-tippy="{ content: 'Ver el detalle de los ensayos USTER y TENSORAPID', placement: 'bottom', theme: 'custom' }"
+                        class="inline-flex items-center gap-2 px-2 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-xs font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-600" viewBox="0 0 24 24"
+                          fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+                          <path d="M2.5 12s3.5-7 9.5-7 9.5 7 9.5 7-3.5 7-9.5 7-9.5-7-9.5-7z" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                        <span class="whitespace-nowrap">Ver detalle</span>
+                      </button>
+
+                      <button @click.stop="openHusoGraph(row.Ensayo)"
+                        v-tippy="{ content: 'Ver gráfico por huso (Titulo Ne)', placement: 'bottom', theme: 'custom' }"
+                        class="inline-flex items-center gap-2 px-2 py-1 bg-green-600 hover:bg-green-700 text-white rounded-md text-xs font-medium transition-colors duration-150 shadow-sm">
+                        📈 <span class="hidden xl:inline">Gráficos</span>
+                      </button>
+                    </div>
                   </td>
                 </tr>
               </tbody>
@@ -801,6 +810,23 @@
         </section>
       </div>
     </div>
+
+    <!-- Modal de gráfico por Huso (Titulo Ne) -->
+    <HusoDetailModal
+      :visible="husoModalVisible"
+      :values="husoModalValues"
+      :huso-numbers="husoModalHusos"
+      :testnr="String(selectedTestnr || '')"
+      :timestamp="modalMeta.fechaStr"
+      :oe="modalMeta.oe"
+      variable-label="Titulo Ne"
+      :standard-ne="husoStandardNe"
+      :can-navigate-previous="!modalPrevDisabled"
+      :can-navigate-next="!modalNextDisabled"
+      @close="husoModalVisible = false"
+      @navigate-previous="modalPrev"
+      @navigate-next="modalNext"
+    />
   </div>
 </template>
 
@@ -810,6 +836,7 @@ import Swal from 'sweetalert2'
 import { toPng } from 'html-to-image'
 import ExcelJS from 'exceljs'
 import { fetchAllStatsData, getDataSource } from '../services/dataService'
+import HusoDetailModal from './uster-stats/HusoDetailModal.vue'
 
 const loading = ref(false)
 const rows = ref([])
@@ -1189,6 +1216,42 @@ const usterTblRows = ref([])
 const mergedRows = ref([])
 const combinedStats = ref({})
 const tensorTestnrs = ref([])
+
+// Modal de gráficos por huso (reutiliza HusoDetailModal)
+const husoModalVisible = ref(false)
+
+const husoModalHusos = computed(() => {
+  const arr = (usterTblRows.value || []).map(r => String(r.NO ?? r['NO_'] ?? r.HUSO ?? r.huso ?? ''))
+  return arr
+    .map(v => ({ v, n: parseInt(v) || 0 }))
+    .sort((a, b) => a.n - b.n)
+    .map(x => x.v)
+})
+
+const husoModalValues = computed(() => {
+  // Ordenar de la misma forma que husoModalHusos
+  const list = (usterTblRows.value || []).map(r => ({
+    no: String(r.NO ?? r['NO_'] ?? r.HUSO ?? r.huso ?? ''),
+    titulo: r.TITULO ?? r.titulo ?? ''
+  }))
+  return list
+    .map(x => ({ ...x, n: parseInt(x.no) || 0 }))
+    .sort((a, b) => a.n - b.n)
+    .map(x => Number(x.titulo))
+    .filter(n => Number.isFinite(n))
+})
+
+const husoStandardNe = computed(() => {
+  const neStr = modalMeta.value?.ne ? String(modalMeta.value.ne) : ''
+  const n = parseFloat(neStr.replace('Flame', '').replace(',', '.'))
+  return Number.isFinite(n) ? n : ''
+})
+
+function openHusoGraph(testnr) {
+  // Reutilizamos la carga del watcher de selectedTestnr
+  selectedTestnr.value = testnr
+  husoModalVisible.value = true
+}
 
 // Watch selectedTestnr to load modal data
 watch(selectedTestnr, async (testnr) => {
