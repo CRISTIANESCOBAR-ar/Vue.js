@@ -442,17 +442,26 @@ async function copyAsImage() {
     try {
         if (!modalRef.value) return
 
-        // Hide buttons temporarily
-        const copyBtn = modalRef.value.querySelector('[aria-label="Copiar como imagen"]')
-        const closeBtn = modalRef.value.querySelector('[aria-label="Cerrar"]')
+        // Seleccionar todos los controles a ocultar durante la captura
+        const toHideSelectors = [
+            '[aria-label="Copiar como imagen"]',
+            '[aria-label="Cerrar"]',
+            '[aria-label="Ensayo anterior"]',
+            '[aria-label="Ensayo siguiente"]',
+            'label:has(input[type="checkbox"])' // Mostrar Valores
+        ]
 
-        const originalCopyVis = copyBtn ? copyBtn.style.visibility : ''
-        const originalCloseVis = closeBtn ? closeBtn.style.visibility : ''
+        const hiddenElements = []
+        toHideSelectors.forEach(sel => {
+            const el = modalRef.value.querySelector(sel)
+            if (el) {
+                hiddenElements.push({ el, originalDisplay: el.style.display })
+                el.style.display = 'none'
+            }
+        })
 
-        if (copyBtn) copyBtn.style.visibility = 'hidden'
-        if (closeBtn) closeBtn.style.visibility = 'hidden'
-
-        await new Promise(resolve => setTimeout(resolve, 100))
+        // Pequeño delay para permitir reflow sin los elementos
+        await new Promise(resolve => setTimeout(resolve, 80))
 
         const dataUrl = await toPng(modalRef.value, {
             quality: 1.0,
@@ -460,9 +469,10 @@ async function copyAsImage() {
             backgroundColor: '#ffffff'
         })
 
-        // Restore buttons
-        if (copyBtn) copyBtn.style.visibility = originalCopyVis
-        if (closeBtn) closeBtn.style.visibility = originalCloseVis
+        // Restaurar todos los elementos ocultados
+        hiddenElements.forEach(({ el, originalDisplay }) => {
+            el.style.display = originalDisplay || ''
+        })
 
         // Convert to blob and copy
         const blob = await (await fetch(dataUrl)).blob()
