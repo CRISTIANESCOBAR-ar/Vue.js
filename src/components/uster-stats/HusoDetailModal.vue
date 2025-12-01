@@ -552,19 +552,31 @@ watch(() => props.visible, async (newVal) => {
     }
 })
 
-// ❌ WATCH REMOVIDO: Causaba duplicación de datos al renderizar dos veces
-// El watch de 'visible' ya maneja correctamente los cambios de valores
-// watch(() => props.values, () => {
-//     if (props.visible && chart && !chart.isDisposed()) {
-//         calculateStats()
-//         renderChart()
-//         setTimeout(() => {
-//             if (chart && !chart.isDisposed()) {
-//                 chart.resize()
-//             }
-//         }, 100)
-//     }
-// }, { deep: true })
+// Watch para detectar cambios en testnr (navegación entre ensayos)
+watch(() => props.testnr, async (newTestnr, oldTestnr) => {
+    // Solo actuar si el modal está visible y el testnr cambió
+    if (props.visible && newTestnr !== oldTestnr && chart && !chart.isDisposed()) {
+        console.log('[HusoDetailModal] testnr changed from', oldTestnr, 'to', newTestnr)
+        
+        // Recalcular estadísticas con los nuevos valores
+        calculateStats()
+        
+        // Reiniciar flag de primer render para resetear leyenda (LCL/UCL desactivados)
+        isFirstRender = true
+        legendState.value = {}
+        
+        // Re-renderizar el gráfico
+        await nextTick()
+        renderChart()
+        
+        // Forzar resize después de un delay para asegurar renderizado correcto
+        setTimeout(() => {
+            if (chart && !chart.isDisposed()) {
+                chart.resize()
+            }
+        }, 100)
+    }
+})
 
 onMounted(() => {
     console.log('[HusoDetailModal] Component mounted')
