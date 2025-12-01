@@ -13,33 +13,9 @@
     </div>
 
     <div class="w-full flex-1 min-h-0 bg-white rounded-lg shadow-xl border border-slate-200 flex flex-col" style="padding: 12px !important;">
-      <div class="flex flex-col gap-2 mb-3 flex-shrink-0">
+      <div class="flex flex-col gap-2 flex-shrink-0" style="margin-bottom: 10px !important;">
         <div class="flex items-center gap-3 justify-between">
-          <div class="flex items-center gap-2 border border-slate-200 bg-white text-slate-700 rounded shadow-sm" style="padding: 0.375rem 1rem;">
-            <label class="text-sm font-medium shrink-0">Calidad:</label>
-            <select v-model="selectedQLD" class="text-sm border-0 focus:outline-none focus:ring-0 bg-transparent cursor-pointer">
-              <option value="1">1</option>
-              <option value="2">2</option>
-            </select>
-            
-            <div class="h-4 w-px bg-slate-300 mx-1"></div>
-            
-            <label class="inline-flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" v-model="showDirecNormal" class="h-4 w-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500" />
-              <span class="text-sm">Normal</span>
-            </label>
-            
-            <label class="inline-flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" v-model="showDirec70" class="h-4 w-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500" />
-              <span class="text-sm">70</span>
-            </label>
-            
-            <label class="inline-flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" v-model="showBloqueados" class="h-4 w-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500" />
-              <span class="text-sm">Bloq</span>
-            </label>
-          </div>
-
+          <!-- Left Side: Folder Selection & Actions -->
           <div class="flex items-center gap-3">
             <label class="text-sm font-semibold text-slate-700 shrink-0">Carpeta del archivo de stock:</label>
           
@@ -56,13 +32,14 @@
             <div class="flex items-center gap-2">
               <button 
                 @click="selectFolder" 
+                v-tippy="{ content: 'Seleccionar carpeta' }"
                 class="inline-flex items-center gap-2 border border-slate-200 bg-white text-slate-700 rounded text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md"
                 style="padding: 0.25rem 0.5rem;"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7a2 2 0 012-2h3l2 3h6a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
                 </svg>
-                Seleccionar
+                <span class="hidden lg:inline">Seleccionar</span>
               </button>
 
               <input
@@ -79,46 +56,83 @@
                 v-if="hasPersistedHandle"
                 @click="refreshFolder"
                 :disabled="isProcessing"
+                v-tippy="{ content: 'Refrescar carpeta' }"
                 class="inline-flex items-center gap-2 border border-slate-200 bg-white text-slate-700 rounded text-sm font-medium hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150 shadow-sm hover:shadow-md"
                 style="padding: 0.25rem 0.5rem;"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
-                Refrescar
+                <span class="hidden lg:inline">Refrescar</span>
               </button>
 
               <button 
                 @click="openBackupsModal" 
+                v-tippy="{ content: 'Gestionar backups' }"
                 class="inline-flex items-center gap-2 border border-slate-200 bg-white text-slate-700 rounded text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md ml-2"
                 style="padding: 0.25rem 0.5rem;"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
                 </svg>
-                Backups
+                <span class="hidden lg:inline">Backups</span>
               </button>
 
               <button 
                 @click="exportToExcel" 
                 :disabled="!filteredData.length"
+                v-tippy="{ content: 'Exportar a Excel' }"
                 class="inline-flex items-center gap-2 border border-slate-200 bg-white text-slate-700 rounded text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md ml-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 style="padding: 0.25rem 0.5rem;"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                 </svg>
-                Exportar
+                <span class="hidden lg:inline">Exportar</span>
               </button>
             </div>
           </div>
-        </div>
 
-        <div class="flex flex-wrap items-center gap-2 text-sm text-slate-600 justify-end">
-          <span v-if="lastUpdate" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-200 bg-white text-slate-700">
-            <span class="font-medium">Última actualización:</span>
-            <span>{{ formatDate(lastUpdate) }}</span>
-          </span>
+          <!-- Right Side: Filters & Last Update -->
+          <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2 border border-slate-200 bg-white text-slate-700 rounded shadow-sm" style="padding: 0.375rem 1rem;">
+              <label class="text-sm font-medium shrink-0" v-tippy="{ content: 'Calidad' }">
+                <span class="hidden lg:inline">Calidad:</span>
+                <span class="lg:hidden">C:</span>
+              </label>
+              <select v-model="selectedQLD" class="text-sm border-0 focus:outline-none focus:ring-0 bg-transparent cursor-pointer">
+                <option value="1">1</option>
+                <option value="2">2</option>
+              </select>
+              
+              <div class="h-4 w-px bg-slate-300 mx-1"></div>
+              
+              <label class="inline-flex items-center gap-2 cursor-pointer" v-tippy="{ content: 'Normal' }">
+                <input type="checkbox" v-model="showDirecNormal" class="h-4 w-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500" />
+                <span class="text-sm hidden lg:inline">Normal</span>
+                <span class="text-sm lg:hidden">N</span>
+              </label>
+              
+              <label class="inline-flex items-center gap-2 cursor-pointer" v-tippy="{ content: '70' }">
+                <input type="checkbox" v-model="showDirec70" class="h-4 w-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500" />
+                <span class="text-sm">70</span>
+              </label>
+              
+              <label class="inline-flex items-center gap-2 cursor-pointer" v-tippy="{ content: 'Bloqueados' }">
+                <input type="checkbox" v-model="showBloqueados" class="h-4 w-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500" />
+                <span class="text-sm hidden lg:inline">Bloq</span>
+                <span class="text-sm lg:hidden">B</span>
+              </label>
+            </div>
+
+            <span v-if="lastUpdate" class="inline-flex items-center gap-2 text-slate-600 text-sm">
+              <span class="font-medium">
+                <span class="hidden lg:inline">Última actualización:</span>
+                <span class="lg:hidden">Actualización:</span>
+              </span>
+              <span>{{ formatDate(lastUpdate) }}</span>
+            </span>
+          </div>
         </div>
       </div>
 
@@ -129,9 +143,9 @@
         <span>{{ error }}</span>
       </div>
 
-      <div v-if="fileData" class="flex-1 min-h-0 flex flex-col">
-        <div class="flex flex-col xl:flex-row gap-4 flex-1 min-h-0">
-          <div class="flex flex-col h-auto max-h-full" style="max-width: 530px;">
+      <div v-if="fileData" class="flex-1 min-h-0 flex flex-col overflow-hidden">
+        <div class="flex flex-col lg:flex-row gap-4 flex-1 min-h-0 overflow-auto">
+          <div class="flex flex-col h-auto lg:max-h-full" style="max-width: 530px;">
             <div class="overflow-auto _minimal-scroll rounded border border-slate-200 shadow-sm" style="border-radius: 0.25rem;">
               <table class="w-full table-fixed divide-y divide-slate-200 text-xs">
                 <colgroup>
@@ -337,133 +351,152 @@
     </div>
 
     <!-- Backups Modal -->
-    <div v-if="showBackupsModal" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4 transition-all duration-300">
-      <div class="bg-slate-100 shadow-2xl w-full max-w-5xl max-h-[85vh] border border-slate-200 p-8">
-        <div class="bg-white border border-slate-100 w-full h-full flex flex-col overflow-hidden p-8">
-
-          <!-- Header -->
-          <div class="px-8 py-6 border-b border-slate-100 flex items-center justify-between">
-            <div class="flex items-center gap-4">
-              <div class="h-10 w-10 bg-indigo-50 flex items-center justify-center text-indigo-600 shadow-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
-                </svg>
-              </div>
-              <div>
-                <h3 class="font-bold text-slate-800 text-xl">Copias de Seguridad</h3>
-                <p class="text-sm text-slate-500">Gestiona tus puntos de restauración locales</p>
-              </div>
-            </div>
-            <button 
-              @click="showBackupsModal = false" 
-              class="inline-flex items-center gap-2 border border-slate-200 bg-white text-slate-700 text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md px-3 py-2"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+    <!-- Backups Modal -->
+    <!-- Backups Modal -->
+    <div v-if="showBackupsModal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 100; display: flex; align-items: center; justify-content: center; background-color: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); padding: 20px;">
+      <div style="background-color: white; width: 100%; max-width: 950px; max-height: 85vh; border-radius: 12px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); display: flex; flex-direction: column; overflow: hidden; border: 1px solid rgba(148, 163, 184, 0.1);">
+        
+        <!-- Header -->
+        <div style="padding: 20px 40px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between; background-color: white; flex-shrink: 0;">
+          <div style="display: flex; align-items: center; gap: 16px;">
+            <div style="height: 38px; width: 38px; background-color: #eef2ff; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #4f46e5; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);">
+              <svg xmlns="http://www.w3.org/2000/svg" style="height: 22px; width: 22px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
               </svg>
-              Cerrar
+            </div>
+            <div>
+              <h3 style="font-weight: 700; color: #1e293b; font-size: 18px; margin: 0; line-height: 1.2;">Copias de Seguridad</h3>
+              <p style="color: #64748b; font-size: 13px; margin: 2px 0 0 0; font-weight: 500;">Gestiona tus puntos de restauración locales</p>
+            </div>
+          </div>
+          <button 
+            @click="showBackupsModal = false" 
+            style="padding: 8px; border-radius: 50%; color: #94a3b8; background-color: transparent; border: none; cursor: pointer; transition: all 0.2s;"
+            onmouseover="this.style.backgroundColor='#f1f5f9'; this.style.color='#475569'"
+            onmouseout="this.style.backgroundColor='transparent'; this.style.color='#94a3b8'"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" style="height: 24px; width: 24px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Content -->
+        <div style="flex: 1; overflow-y: auto; background-color: #f8fafc; padding: 20px;">
+          <!-- Create Action -->
+          <div style="background: linear-gradient(135deg, #eef2ff 0%, #ffffff 100%); padding: 12px 20px; border-radius: 10px; border: 1px solid #e0e7ff; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1); display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 25px;">
+            
+            <div style="flex: 1;">
+              <h4 style="font-weight: 700; color: #1e293b; font-size: 16px; margin: 0 0 2px 0;">Crear nuevo punto de restauración</h4>
+              <p style="color: #475569; font-size: 13px; line-height: 1.4; margin: 0; max-width: 600px;">Guarda el estado actual de tu trabajo (filtros, overrides, archivo) para recuperarlo más tarde en caso de error o para comparar versiones.</p>
+            </div>
+            
+            <button 
+              @click="createBackup" 
+              :disabled="!fileData || isSavingBackup"
+              style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; background-color: #4f46e5; color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2); transition: all 0.2s; white-space: nowrap;"
+              onmouseover="this.style.backgroundColor='#4338ca'; this.style.transform='translateY(-1px)'"
+              onmouseout="this.style.backgroundColor='#4f46e5'; this.style.transform='translateY(0)'"
+            >
+              <svg v-if="isSavingBackup" class="animate-spin" style="height: 16px; width: 16px; color: white;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle style="opacity: 0.25;" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path style="opacity: 0.75;" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <svg v-else xmlns="http://www.w3.org/2000/svg" style="height: 16px; width: 16px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+              </svg>
+              <span>{{ isSavingBackup ? 'Guardando...' : 'Guardar Backup' }}</span>
             </button>
           </div>
 
-          <!-- Content -->
-          <div class="flex-1 overflow-y-auto bg-slate-50/70 px-8 py-6 space-y-6">
-            <!-- Create Action -->
-            <div class="bg-white p-6 border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-6">
-              <div class="flex-1">
-                <h4 class="font-bold text-slate-800 text-lg mb-2">Crear nuevo punto de restauración</h4>
-                <p class="text-sm text-slate-600 leading-relaxed">Guarda el estado actual de tu trabajo (filtros, overrides, archivo) para recuperarlo más tarde en caso de error o para comparar versiones.</p>
+          <!-- History List -->
+          <div>
+            <div style="position: sticky; top: -20px; z-index: 10; background-color: #f8fafc; display: flex; align-items: center; justify-content: space-between; padding: 20px 5px 10px 5px; margin-bottom: 10px;">
+              <h4 style="font-size: 13px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; gap: 12px; margin: 0;">
+                Historial de Backups
+                <span style="height: 1px; width: 60px; background-color: #cbd5e1; display: inline-block;"></span>
+              </h4>
+              <span style="font-size: 12px; font-weight: 600; color: #64748b; background-color: #f1f5f9; padding: 6px 12px; border-radius: 6px; border: 1px solid #e2e8f0;">{{ backups.length }} guardados</span>
+            </div>
+            
+            <div v-if="backups.length === 0" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 0; text-align: center; border: 2px dashed #e2e8f0; border-radius: 20px; background-color: rgba(255, 255, 255, 0.5);">
+              <div style="padding: 20px; background-color: white; border-radius: 50%; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); color: #cbd5e1; margin-bottom: 20px; border: 1px solid #f1f5f9;">
+                <svg xmlns="http://www.w3.org/2000/svg" style="height: 40px; width: 40px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
               </div>
-              <button 
-                @click="createBackup" 
-                :disabled="!fileData || isSavingBackup"
-                class="shrink-0 inline-flex items-center gap-2 px-5 py-3 bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg active:scale-95 font-medium text-base"
+              <p style="font-size: 18px; font-weight: 500; color: #475569; margin: 0;">No hay copias de seguridad</p>
+              <p style="font-size: 15px; color: #94a3b8; margin: 8px 0 0 0;">Tus backups aparecerán aquí cuando guardes uno.</p>
+            </div>
+
+            <div v-else style="display: flex; flex-direction: column; gap: 10px;">
+              <div 
+                v-for="backup in backups" 
+                :key="backup.id"
+                style="display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; background-color: white; border: 1px solid #e2e8f0; border-radius: 8px; transition: all 0.2s; position: relative; overflow: hidden;"
+                onmouseover="this.style.borderColor='#a5b4fc'; this.style.boxShadow='0 2px 4px -1px rgba(0, 0, 0, 0.1)'"
+                onmouseout="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'"
               >
-                <svg v-if="isSavingBackup" class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
-                </svg>
-                <span>{{ isSavingBackup ? 'Guardando...' : 'Guardar Backup' }}</span>
-              </button>
-            </div>
-
-            <!-- History List -->
-            <div class="bg-white border border-slate-200 shadow-sm p-6">
-              <div class="flex items-center justify-between mb-4">
-                <h4 class="text-sm font-bold text-slate-500 uppercase tracking-wider">Historial de Backups</h4>
-                <span class="text-xs text-slate-400 bg-slate-100 px-2 py-1">{{ backups.length }} guardados</span>
-              </div>
-              
-              <div v-if="backups.length === 0" class="flex flex-col items-center justify-center py-10 text-center border-2 border-dashed border-slate-200 bg-white">
-                <div class="p-4 bg-slate-50 text-slate-300 mb-4">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <p class="text-base font-medium text-slate-600">No hay copias de seguridad</p>
-                <p class="text-sm text-slate-400 mt-1">Tus backups aparecerán aquí cuando guardes uno.</p>
-              </div>
-
-              <div v-else class="space-y-3">
-                <div 
-                  v-for="backup in backups" 
-                  :key="backup.id"
-                  class="group flex items-center justify-between p-4 bg-white border border-slate-200 hover:border-indigo-300 hover:shadow-md transition-all duration-200"
-                >
-                  <div class="flex items-center gap-4 overflow-hidden">
-                    <div class="shrink-0 h-12 w-12 bg-indigo-50 flex items-center justify-center text-indigo-500 group-hover:bg-indigo-100 group-hover:text-indigo-600 transition-colors">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                      </svg>
-                    </div>
-                    <div class="flex flex-col min-w-0">
-                      <span class="font-bold text-slate-700 text-base truncate">{{ formatDate(backup.date) }}</span>
-                      <span class="text-sm text-slate-500 truncate max-w-[250px] flex items-center gap-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-                          <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd" />
-                        </svg>
-                        {{ backup.fileName }}
-                      </span>
-                    </div>
+                <div style="display: flex; align-items: center; gap: 12px; overflow: hidden; padding-left: 4px;">
+                  <div style="flex-shrink: 0; height: 36px; width: 36px; background-color: #eef2ff; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #6366f1; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="height: 18px; width: 18px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
                   </div>
+                  <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+                    <span style="font-weight: 700; color: #334155; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ formatDate(backup.date) }}</span>
+                    <span style="font-size: 12px; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 400px; display: flex; align-items: center; gap: 6px;">
+                      <svg xmlns="http://www.w3.org/2000/svg" style="height: 12px; width: 12px; color: #94a3b8;" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd" />
+                      </svg>
+                      {{ backup.fileName }}
+                    </span>
+                  </div>
+                </div>
+                
+                <div style="display: flex; align-items: center; gap: 10px; padding-right: 4px;">
+                  <button 
+                    @click="restoreBackup(backup.id)"
+                    style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; font-size: 12px; font-weight: 600; color: #4338ca; background-color: #eef2ff; border: none; border-radius: 6px; cursor: pointer; transition: background-color 0.2s;"
+                    onmouseover="this.style.backgroundColor='#e0e7ff'"
+                    onmouseout="this.style.backgroundColor='#eef2ff'"
+                    title="Restaurar esta versión"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" style="height: 14px; width: 14px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    Restaurar
+                  </button>
                   
-                  <div class="flex items-center gap-2">
-                    <button 
-                      @click="restoreBackup(backup.id)"
-                      class="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100 transition-colors"
-                      title="Restaurar esta versión"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                      </svg>
-                      Restaurar
-                    </button>
-                    
-                    <button 
-                      @click="removeBackup(backup.id)"
-                      class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
-                      title="Eliminar permanentemente"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                      </svg>
-                    </button>
-                  </div>
+                  <div style="height: 20px; width: 1px; background-color: #e2e8f0; margin: 0 2px;"></div>
+
+                  <button 
+                    @click="removeBackup(backup.id)"
+                    style="padding: 6px; color: #94a3b8; background-color: transparent; border: none; border-radius: 6px; cursor: pointer; transition: all 0.2s;"
+                    onmouseover="this.style.backgroundColor='#fef2f2'; this.style.color='#dc2626'"
+                    onmouseout="this.style.backgroundColor='transparent'; this.style.color='#94a3b8'"
+                    title="Eliminar permanentemente"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" style="height: 16px; width: 16px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
                 </div>
               </div>
             </div>
           </div>
-
-          <!-- Footer -->
-          <div class="bg-slate-50 px-8 py-5 border-t border-slate-200 flex justify-between items-center text-xs text-slate-500">
-            <p>
-              <span class="font-semibold">Nota:</span> Los backups se almacenan en la base de datos de tu navegador (IndexedDB).
-            </p>
-          </div>
-
         </div>
+
+        <!-- Footer -->
+        <div style="background-color: #f8fafc; padding: 14px 20px; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; color: #64748b; font-size: 13px;">
+          <p style="display: flex; align-items: center; gap: 10px; margin: 0;">
+            <svg xmlns="http://www.w3.org/2000/svg" style="height: 18px; width: 18px; color: #94a3b8;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>Los backups se almacenan localmente en tu navegador (IndexedDB).</span>
+          </p>
+        </div>
+
       </div>
     </div>
   </main>
@@ -476,6 +509,26 @@ import { useLocalStorage } from '../composables/useLocalStorage'
 import { saveSnapshot, getSnapshots, loadSnapshot, deleteSnapshot } from '../db'
 import { utils, writeFile } from 'xlsx-js-style'
 import Swal from 'sweetalert2'
+import tippy from 'tippy.js'
+import 'tippy.js/dist/tippy.css'
+
+// Tippy directive
+const vTippy = {
+  mounted(el, binding) {
+    tippy(el, {
+      content: binding.value.content || binding.value,
+      placement: binding.value.placement || 'top',
+      arrow: true,
+      theme: 'light-border',
+      delay: [200, 0]
+    })
+  },
+  unmounted(el) {
+    if (el._tippy) {
+      el._tippy.destroy()
+    }
+  }
+}
 
 const { readExcelFile } = useExcelReader()
 const { data, loadData, saveData, clearData } = useLocalStorage()
