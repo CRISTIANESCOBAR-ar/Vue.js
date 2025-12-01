@@ -847,10 +847,6 @@ async function selectRow(testnr) {
   // Select the TESTNR and load associated files (PAR/TBL) so preview and Save are available.
   selectedTestnr.value = testnr
   
-  // Limpiar datos del ensayo anterior inmediatamente
-  tblData.value = []
-  fileText.value = ''
-  
   // Cargar ESTIRAJE y MATCLASS desde scanList si existen
   const item = scanList.value.find(x => x.testnr === testnr)
   if (item && item.estiraje) {
@@ -1536,6 +1532,7 @@ async function saveCurrentTest() {
         }
         // Resetear completamente la UI usando clearSelection() y limpieza adicional
         clearSelection()
+        matclass.value = 'Hilo'  // Reset matclass to default
         // Limpiar también el .PAR y otros datos cargados
         fileText.value = ''
         selectedName.value = ''
@@ -1543,10 +1540,13 @@ async function saveCurrentTest() {
         selectedTblName.value = ''
         tblFile.value = null
         tblText.value = ''
-        matclass.value = 'Hilo'  // Reset matclass to default
         // Forzar múltiples ticks para asegurar que Vue actualiza el DOM completamente
         await nextTick()
         await nextTick()
+        // Forzar actualización de la UI limpiando el archivo de entrada
+        if (folderInput.value) {
+          folderInput.value.value = ''
+        }
       }
     } catch (err) { console.warn('auto-advance after save failed', err) }
 
@@ -1889,8 +1889,6 @@ function focusFirstTitulo() {
 // Función para enfocar el campo Pasador (radio button Si por defecto)
 function focusPasador() {
   if (!selectedTestnr.value) return
-  // Seleccionar automáticamente "Si" cuando se llega desde Estiraje
-  pasador.value = 'Si'
   nextTick(() => {
     if (pasadorSiInput.value) {
       pasadorSiInput.value.focus()
