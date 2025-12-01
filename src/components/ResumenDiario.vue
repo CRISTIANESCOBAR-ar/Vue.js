@@ -992,6 +992,24 @@ function closeDataModal() {
     selectedTestnr.value = null
 }
 
+// Lista plana de ensayos filtrados para navegación del modal
+const filteredTests = computed(() => {
+    const allEnsayos = allEnsayosWithStatus.value
+    
+    if (allEnsayos.length === 0) return []
+    
+    // Apply status filter
+    let filtered = allEnsayos
+    if (statusFilter.value === 'ok') {
+        filtered = allEnsayos.filter(e => e.status === 'ok')
+    } else if (statusFilter.value === 'out-of-range') {
+        filtered = allEnsayos.filter(e => e.status === 'below' || e.status === 'above')
+    }
+    
+    // Mapear a formato con TESTNR para compatibilidad con funciones de navegación
+    return filtered.map(e => ({ TESTNR: e.testnr, ...e }))
+})
+
 // Navegación del modal
 const modalIndex = computed(() => {
     const testnr = selectedTestnr.value
