@@ -457,7 +457,7 @@
                                         </div>
                                     </td>
                                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TITULO?.cv) }}</td>
-                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DESVIO_PERCENT?.cv) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">—</td>
                                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.CVM_PERCENT?.cv) }}</td>
                                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS30_KM?.cv) }}</td>
                                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS40_KM?.cv) }}</td>
@@ -490,7 +490,7 @@
                                         </div>
                                     </td>
                                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TITULO?.sd) }}</td>
-                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DESVIO_PERCENT?.sd) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">—</td>
                                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.CVM_PERCENT?.sd) }}</td>
                                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS30_KM?.sd) }}</td>
                                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS40_KM?.sd) }}</td>
@@ -523,7 +523,7 @@
                                         </div>
                                     </td>
                                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TITULO?.q95) }}</td>
-                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DESVIO_PERCENT?.q95) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">—</td>
                                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.CVM_PERCENT?.q95) }}</td>
                                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS30_KM?.q95) }}</td>
                                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS40_KM?.q95) }}</td>
@@ -556,7 +556,7 @@
                                         </div>
                                     </td>
                                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TITULO?.max) }}</td>
-                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DESVIO_PERCENT?.max) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">—</td>
                                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.CVM_PERCENT?.max) }}</td>
                                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS30_KM?.max) }}</td>
                                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS40_KM?.max) }}</td>
@@ -589,7 +589,7 @@
                                         </div>
                                     </td>
                                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.TITULO?.min) }}</td>
-                                    <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DESVIO_PERCENT?.min) }}</td>
+                                    <td class="px-3 py-1 text-center text-slate-700">—</td>
                                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.CVM_PERCENT?.min) }}</td>
                                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS30_KM?.min) }}</td>
                                     <td class="px-3 py-1 text-center text-slate-700">{{ fmtStat(combinedStats.DELG_MINUS40_KM?.min) }}</td>
