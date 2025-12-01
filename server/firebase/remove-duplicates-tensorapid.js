@@ -20,23 +20,23 @@ const db = admin.firestore()
 
 async function removeDuplicatesFromCollection(collectionName, keyFields) {
   console.log(`\n🔍 Checking ${collectionName} for duplicates...`)
-  
+
   const snapshot = await db.collection(collectionName).get()
   console.log(`   Total documents: ${snapshot.size}`)
 
   // Group documents by key
   const grouped = new Map()
-  
+
   snapshot.docs.forEach(doc => {
     const data = doc.data()
-    
+
     // Generate key from specified fields
     const keyParts = keyFields.map(field => {
       const value = data[field] || data[field.toLowerCase()] || data[field.toUpperCase()] || ''
       return String(value)
     })
     const key = keyParts.join('#')
-    
+
     if (!key || key === '#' || keyParts.some(p => !p)) {
       console.log(`   ⚠️  Skipping document ${doc.id} - missing key fields`)
       return
@@ -45,7 +45,7 @@ async function removeDuplicatesFromCollection(collectionName, keyFields) {
     if (!grouped.has(key)) {
       grouped.set(key, [])
     }
-    
+
     grouped.get(key).push({
       id: doc.id,
       data: data,
@@ -61,14 +61,14 @@ async function removeDuplicatesFromCollection(collectionName, keyFields) {
     if (docs.length > 1) {
       duplicatesFound += docs.length - 1
       console.log(`   🔄 Found ${docs.length} docs with key: ${key}`)
-      
+
       // Sort by timestamp (keep newest)
       docs.sort((a, b) => {
         const timeA = a.timestamp?.toDate ? a.timestamp.toDate() : new Date(a.timestamp)
         const timeB = b.timestamp?.toDate ? b.timestamp.toDate() : new Date(b.timestamp)
         return timeB - timeA
       })
-      
+
       // Mark all but the first (newest) for deletion
       for (let i = 1; i < docs.length; i++) {
         toDelete.push(docs[i].id)
@@ -91,11 +91,11 @@ async function removeDuplicatesFromCollection(collectionName, keyFields) {
   for (let i = 0; i < toDelete.length; i += batchSize) {
     const batch = db.batch()
     const chunk = toDelete.slice(i, i + batchSize)
-    
+
     chunk.forEach(docId => {
       batch.delete(db.collection(collectionName).doc(docId))
     })
-    
+
     await batch.commit()
     console.log(`   ✓ Deleted batch ${Math.floor(i / batchSize) + 1} (${chunk.length} docs)`)
   }
@@ -109,10 +109,10 @@ async function main() {
   try {
     // Clean TENSORAPID_PAR duplicates (by TESTNR only - primary key)
     await removeDuplicatesFromCollection('TENSORAPID_PAR', ['TESTNR'])
-    
+
     // Clean TENSORAPID_TBL duplicates (by TESTNR + HUSO_NUMBER - composite key)
     await removeDuplicatesFromCollection('TENSORAPID_TBL', ['TESTNR', 'HUSO_NUMBER'])
-    
+
     console.log('\n✅ Cleanup complete!')
     process.exit(0)
   } catch (error) {

@@ -85,7 +85,7 @@ async function importCollection(collectionName, filePath) {
       // For PAR tables: use TESTNR as document ID
       docId = doc.TESTNR || db.collection(collectionName).doc().id
     }
-    
+
     const docRef = db.collection(collectionName).doc(docId)
     batch.set(docRef, doc, { merge: true })
     count++

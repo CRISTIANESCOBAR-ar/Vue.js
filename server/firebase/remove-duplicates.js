@@ -39,11 +39,11 @@ try {
       const existing = seenTestnrs.get(testnr)
       const existingData = existing.data()
       const currentData = doc.data()
-      
+
       const existingTime = existingData.TIME_STAMP instanceof admin.firestore.Timestamp
         ? existingData.TIME_STAMP.toDate()
         : new Date(existingData.TIME_STAMP || 0)
-      
+
       const currentTime = currentData.TIME_STAMP instanceof admin.firestore.Timestamp
         ? currentData.TIME_STAMP.toDate()
         : new Date(currentData.TIME_STAMP || 0)
