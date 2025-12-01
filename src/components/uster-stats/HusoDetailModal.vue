@@ -581,18 +581,34 @@ watch(() => props.testnr, async (newTestnr, oldTestnr) => {
 onMounted(() => {
     console.log('[HusoDetailModal] Component mounted')
     // Don't initialize chart here, wait for visible watcher
-    
-    // Add ESC key listener to close modal
-    const handleEscKey = (event) => {
-        if (event.key === 'Escape' && props.visible) {
+
+    // Listener global para teclas: Esc, Flecha Izquierda y Derecha
+    const handleGlobalKey = (event) => {
+        if (!props.visible) return
+
+        const tag = (event.target && event.target.tagName) ? String(event.target.tagName).toLowerCase() : ''
+        if (tag === 'input' || tag === 'textarea' || tag === 'select' || event.isComposing) return
+
+        if (event.key === 'Escape') {
             emit('close')
+            return
+        }
+        if ((event.key === 'ArrowLeft' || event.key === 'Left') && props.canNavigatePrevious) {
+            event.preventDefault()
+            emit('navigate-previous')
+            return
+        }
+        if ((event.key === 'ArrowRight' || event.key === 'Right') && props.canNavigateNext) {
+            event.preventDefault()
+            emit('navigate-next')
+            return
         }
     }
-    window.addEventListener('keydown', handleEscKey)
-    
+    window.addEventListener('keydown', handleGlobalKey)
+
     // Clean up on unmount
     onBeforeUnmount(() => {
-        window.removeEventListener('keydown', handleEscKey)
+        window.removeEventListener('keydown', handleGlobalKey)
         console.log('[HusoDetailModal] Component unmounting')
         if (chart && !chart.isDisposed()) {
             chart.dispose()
