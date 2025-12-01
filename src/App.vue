@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen flex flex-col bg-gray-50 overflow-x-hidden">
-    <!-- Detector invisible para abrir sidebar al hover en desktop -->
+    <!-- invisible detector to open sidebar when hovered on desktop -->
     <div class="fixed top-0 left-0 h-full w-12 z-50" @mouseenter="onLeftEdgeEnter"></div>
 
     <!-- Sidebar -->
@@ -95,7 +95,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, watch, onBeforeUnmount } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import SidebarItem from './components/SidebarItem.vue'
 import ReloadPrompt from './components/ReloadPrompt.vue'
@@ -127,11 +127,19 @@ const headerTitle = computed(() => {
 })
 
 let hideTimer = null
+let introTimer = null
 
 function clearHideTimer() {
   if (hideTimer) {
     clearTimeout(hideTimer)
     hideTimer = null
+  }
+}
+
+function clearIntroTimer() {
+  if (introTimer) {
+    clearTimeout(introTimer)
+    introTimer = null
   }
 }
 
@@ -146,10 +154,14 @@ function scheduleHideSidebar() {
 function scheduleHideSidebarWithDelay(ms = 1000) {
   let delay = ms
   if (ms === 1000) {
-    const w = windowWidth.value
-    if (w < 768) delay = 1500
-    else if (w >= 768 && w < 1024) delay = 3000
-    else delay = 1000
+    try {
+      const w = typeof window !== 'undefined' ? window.innerWidth : windowWidth.value
+      if (w < 768) delay = 1500
+      else if (w >= 768 && w < 1024) delay = 3000
+      else delay = 1000
+    } catch {
+      delay = ms
+    }
   }
   clearHideTimer()
   hideTimer = setTimeout(() => {
@@ -163,14 +175,14 @@ function mobileToggle() {
     return
   }
   sidebarVisible.value = true
-  if (windowWidth.value < 768) {
+  if (window.innerWidth < 768) {
     scheduleHideSidebarWithDelay(1500)
   }
 }
 
 function setActive(path) {
   router.push(path)
-  if (windowWidth.value < 768) {
+  if (window.innerWidth < 768) {
     clearTimeout(hideTimer)
     hideTimer = setTimeout(() => {
       sidebarVisible.value = false
@@ -179,6 +191,7 @@ function setActive(path) {
 }
 
 function desktopToggle() {
+  // If expanded -> user wants to hide everything (X behavior)
   if (sidebarVisible.value && !collapsed.value) {
     userHidden.value = true
     localStorage.setItem('sidebarUserHidden', 'true')
@@ -187,6 +200,7 @@ function desktopToggle() {
     return
   }
 
+  // If minimal visible -> user wants to expand (chevron behavior)
   if (sidebarVisible.value && collapsed.value) {
     userHidden.value = false
     localStorage.setItem('sidebarUserHidden', 'false')
@@ -195,6 +209,7 @@ function desktopToggle() {
     return
   }
 
+  // If currently hidden, show minimal (temporary)
   userHidden.value = false
   localStorage.setItem('sidebarUserHidden', 'false')
   collapsed.value = true
@@ -203,19 +218,18 @@ function desktopToggle() {
 }
 
 function onLeftEdgeEnter() {
-  if (windowWidth.value < 1024) return
+  if (window.innerWidth < 1024) return
+  clearIntroTimer()
   collapsed.value = true
   sidebarVisible.value = true
   scheduleHideSidebar()
 }
 
 function maybeHideSidebar() {
-  if (windowWidth.value < 768 && sidebarVisible.value) {
+  if (window.innerWidth < 768 && sidebarVisible.value) {
     sidebarVisible.value = false
   }
 }
-
-let introTimer = null
 
 onMounted(() => {
   const stored = localStorage.getItem('sidebarCollapsed')
@@ -235,11 +249,12 @@ onMounted(() => {
     }
   })
 
+  // Initial intro: show sidebar expanded for 1.5s then collapse/hide
   const isDesktop = window.innerWidth >= 1024
   if (isDesktop) {
     collapsed.value = false
     sidebarVisible.value = true
-    if (introTimer) clearTimeout(introTimer)
+    clearIntroTimer()
     introTimer = setTimeout(() => {
       collapsed.value = true
       sidebarVisible.value = false
@@ -251,6 +266,11 @@ onMounted(() => {
   if (window.innerWidth < 768 && sidebarVisible.value) {
     scheduleHideSidebarWithDelay(1500)
   }
+})
+
+onBeforeUnmount(() => {
+  clearHideTimer()
+  clearIntroTimer()
 })
 
 watch(sidebarVisible, (v) => {

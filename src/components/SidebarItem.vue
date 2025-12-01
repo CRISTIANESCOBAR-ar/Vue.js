@@ -1,6 +1,7 @@
 <template>
   <div
-    class="flex items-center gap-2 px-3 py-2 rounded cursor-pointer transition-colors duration-200"
+    class="flex items-center gap-2 px-3 rounded cursor-pointer transition-colors duration-200"
+    style="padding-top: 0.75rem; padding-bottom: 0.75rem;"
     :class="[
       active ? 'bg-blue-600 text-white font-medium' : 'hover:bg-blue-700 text-white/80',
       collapsed ? 'justify-center' : 'justify-start'
