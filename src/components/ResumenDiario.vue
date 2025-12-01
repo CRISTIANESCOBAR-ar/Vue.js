@@ -275,18 +275,18 @@
             <!-- modal content -->
             <div class="bg-white rounded-2xl shadow-2xl max-w-6xl w-full max-h-[95vh] flex flex-col p-3 z-50 relative"
                 role="document">
-                <header class="flex items-start sm:items-center justify-between mb-2 pb-1 gap-3">
-                    <!-- Botón anterior -->
-                    <button @click="modalPrev" :disabled="modalPrevDisabled" type="button"
-                        v-tippy="{ content: 'Anterior ensayo', placement: 'bottom', theme: 'custom' }"
-                        :class="['w-9 h-9 rounded-lg border flex items-center justify-center transition-all duration-200 shadow-sm', modalPrevDisabled ? 'bg-slate-100 border-slate-200 text-slate-300 cursor-not-allowed' : 'bg-white border-slate-200 hover:border-blue-400 hover:bg-blue-50 text-slate-600 hover:text-blue-600 hover:shadow-md']"
-                        aria-label="Anterior ensayo">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="15 18 9 12 15 6"></polyline>
-                        </svg>
-                    </button>
+                <!-- Botones de navegación flotantes en los costados del modal -->
+                <button @click="modalPrev" :disabled="modalPrevDisabled" type="button"
+                    v-tippy="{ content: 'Anterior ensayo', placement: 'left', theme: 'custom' }"
+                    class="absolute left-0 top-1/2 -translate-y-1/2 -ml-5 w-10 h-10 rounded-full bg-white border border-slate-200 shadow-sm flex items-center justify-center text-2xl text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed z-50"
+                    aria-label="Anterior ensayo">‹</button>
 
+                <button @click="modalNext" :disabled="modalNextDisabled" type="button"
+                    v-tippy="{ content: 'Siguiente ensayo', placement: 'right', theme: 'custom' }"
+                    class="absolute right-0 top-1/2 -translate-y-1/2 -mr-5 w-10 h-10 rounded-full bg-white border border-slate-200 shadow-sm flex items-center justify-center text-2xl text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed z-50"
+                    aria-label="Siguiente ensayo">›</button>
+
+                <header class="flex items-start sm:items-center justify-between mb-2 pb-1 gap-3">
                     <div id="dataModalTitle" class="flex flex-col sm:flex-row sm:items-center gap-2 mx-8">
                         <div class="text-slate-600 text-sm">Fecha: <span class="text-slate-900 text-lg font-semibold ml-1">{{
                             modalMeta.fechaStr }}</span></div>
@@ -299,17 +299,6 @@
                     </div>
 
                     <div class="flex items-center gap-2">
-                        <!-- Botón siguiente -->
-                        <button @click="modalNext" :disabled="modalNextDisabled" type="button"
-                            v-tippy="{ content: 'Siguiente ensayo', placement: 'bottom', theme: 'custom' }"
-                            :class="['w-9 h-9 rounded-lg border flex items-center justify-center transition-all duration-200 shadow-sm', modalNextDisabled ? 'bg-slate-100 border-slate-200 text-slate-300 cursor-not-allowed' : 'bg-white border-slate-200 hover:border-blue-400 hover:bg-blue-50 text-slate-600 hover:text-blue-600 hover:shadow-md']"
-                            aria-label="Siguiente ensayo">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="9 18 15 12 9 6"></polyline>
-                            </svg>
-                        </button>
-
                         <!-- Copy as image button -->
                         <button @click="copyModalAsImage" type="button"
                             v-tippy="{ content: 'Copiar como imagen para WhatsApp', placement: 'bottom', theme: 'custom' }"
