@@ -183,8 +183,7 @@
                                 <th class="px-4 py-3 text-center font-semibold text-slate-700 w-24">Estiraje</th>
                                 <th class="px-4 py-3 text-center font-semibold text-slate-700 w-24">Estado</th>
                                 <th class="px-4 py-3 text-left font-semibold text-slate-700">Ensayo</th>
-                                <th class="px-4 py-3 text-center font-semibold text-slate-700 w-28">Ver Datos</th>
-                                <th class="px-4 py-3 text-center font-semibold text-slate-700 w-28">Ver Gráficos</th>
+                                <th class="px-4 py-3 text-center font-semibold text-slate-700">Visualizar</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -239,22 +238,22 @@
                                         {{ ensayo.testnr }}
                                     </td>
                                     <td class="px-4 py-3 text-center">
-                                        <button
-                                            @click.stop="openDataModal(ensayo.testnr)"
-                                            class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-lg transition-colors duration-150 shadow-sm hover:shadow-md"
-                                            v-tippy="{ content: 'Ver datos del ensayo', placement: 'top', theme: 'custom' }"
-                                        >
-                                            📊 Datos
-                                        </button>
-                                    </td>
-                                    <td class="px-4 py-3 text-center">
-                                        <button
-                                            @click.stop="openHusoModal(ensayo.testnr)"
-                                            class="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-medium rounded-lg transition-colors duration-150 shadow-sm hover:shadow-md"
-                                            v-tippy="{ content: 'Ver gráfico por huso', placement: 'top', theme: 'custom' }"
-                                        >
-                                            📈 Gráficos
-                                        </button>
+                                        <div class="inline-flex items-center gap-2">
+                                            <button
+                                                @click.stop="openDataModal(ensayo.testnr)"
+                                                class="inline-flex items-center gap-2 px-2 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-xs font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm"
+                                                v-tippy="{ content: 'Ver datos del ensayo', placement: 'top', theme: 'custom' }"
+                                            >
+                                                📊 Datos
+                                            </button>
+                                            <button
+                                                @click.stop="openHusoModal(ensayo.testnr)"
+                                                class="inline-flex items-center gap-2 px-2 py-1 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 rounded-md text-xs font-medium transition-colors duration-150 shadow-sm whitespace-nowrap"
+                                                v-tippy="{ content: 'Ver gráfico por huso', placement: 'top', theme: 'custom' }"
+                                            >
+                                                📈 Gráficos
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             </template>

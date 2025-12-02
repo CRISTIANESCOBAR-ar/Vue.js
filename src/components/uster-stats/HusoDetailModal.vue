@@ -6,7 +6,7 @@
             @click="$emit('close')" aria-hidden="true"></div>
 
         <!-- Modal content -->
-        <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full flex flex-col p-4 z-50 relative"
+        <div class="bg-white rounded-2xl shadow-2xl max-w-5xl w-full flex flex-col p-4 z-50 relative"
             style="height: 600px;" role="document" ref="modalRef">
             <!-- Botón anterior (pegado al lado izquierdo del modal) -->
             <button v-if="canNavigatePrevious" @click="$emit('navigate-previous')"

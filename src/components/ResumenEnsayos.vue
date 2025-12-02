@@ -280,8 +280,8 @@
 
                       <button @click.stop="openHusoGraph(row.Ensayo)"
                         v-tippy="{ content: 'Ver gráfico por huso (Titulo Ne)', placement: 'bottom', theme: 'custom' }"
-                        class="inline-flex items-center gap-2 px-2 py-1 bg-green-600 hover:bg-green-700 text-white rounded-md text-xs font-medium transition-colors duration-150 shadow-sm">
-                        📈 <span class="hidden xl:inline">Gráficos</span>
+                        class="inline-flex items-center justify-center px-2 py-1 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 rounded-md text-xs font-medium transition-colors duration-150 shadow-sm">
+                        📈
                       </button>
                     </div>
                   </td>
