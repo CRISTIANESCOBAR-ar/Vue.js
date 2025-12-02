@@ -211,10 +211,6 @@ function buildOption(selectedLegend = null) {
         : props.values.map((_, i) => String(i + 1))
     const yData = props.values
 
-    console.log('[buildOption] props.values:', props.values?.length, 'props.husoNumbers:', props.husoNumbers?.length)
-    console.log('[buildOption] xData:', xData)
-    console.log('[buildOption] yData:', yData)
-
     // Check if this is Titulo Ne variable
     const isTituloNe = props.variableLabel && props.variableLabel.toLowerCase().includes('titulo')
     const neStandard = props.standardNe ? parseFloat(props.standardNe) : null
@@ -412,15 +408,8 @@ function buildOption(selectedLegend = null) {
 
 function renderChart() {
     if (!chart || chart.isDisposed() || !props.values || props.values.length === 0) {
-        console.log('[HusoDetailModal] renderChart skipped:', { 
-            hasChart: !!chart, 
-            isDisposed: chart ? chart.isDisposed() : 'N/A',
-            valuesLength: props.values?.length || 0 
-        })
         return
     }
-
-    console.log('[HusoDetailModal] Rendering chart with', props.values.length, 'values, showValues:', showValues.value)
 
     // Solo en el primer render, establecer LCL y UCL como desactivados
     if (isFirstRender) {
@@ -502,7 +491,6 @@ async function copyAsImage() {
 }
 
 watch(() => props.visible, async (newVal) => {
-    console.log('[HusoDetailModal] visible changed to:', newVal, 'values length:', props.values?.length, 'husos length:', props.husoNumbers?.length)
     if (newVal) {
         // Reset flag cuando se abre el modal para que LCL/UCL inicien desactivados
         isFirstRender = true
@@ -515,8 +503,6 @@ watch(() => props.visible, async (newVal) => {
             for (let i = 0; i < retries; i++) {
                 await nextTick()
                 if (chartRef.value && chartRef.value.clientWidth > 0 && chartRef.value.clientHeight > 0) {
-                    console.log('[HusoDetailModal] Initializing chart, dimensions:', chartRef.value.clientWidth, 'x', chartRef.value.clientHeight)
-                    
                     // Dispose existing chart if any
                     if (chart) {
                         chart.dispose()
@@ -527,7 +513,6 @@ watch(() => props.visible, async (newVal) => {
                     
                     // Listener para cambios en la selección de leyendas (ajustar eje Y dinámicamente)
                     chart.on('legendselectchanged', (params) => {
-                        console.log('[HusoDetailModal] Legend changed:', params.selected)
                         // Actualizar el estado de las leyendas
                         legendState.value = { ...params.selected }
                         
@@ -554,7 +539,6 @@ watch(() => props.visible, async (newVal) => {
                 }
                 await new Promise(resolve => setTimeout(resolve, 100))
             }
-            console.warn('[HusoDetailModal] Could not initialize chart after retries')
         }
         
         tryInitChart()
@@ -571,8 +555,6 @@ watch(() => props.visible, async (newVal) => {
 watch(() => props.testnr, async (newTestnr, oldTestnr) => {
     // Solo actuar si el modal está visible y el testnr cambió
     if (props.visible && newTestnr !== oldTestnr && chart && !chart.isDisposed()) {
-        console.log('[HusoDetailModal] testnr changed from', oldTestnr, 'to', newTestnr)
-        
         // Recalcular estadísticas con los nuevos valores
         calculateStats()
         
@@ -595,13 +577,10 @@ watch(() => props.testnr, async (newTestnr, oldTestnr) => {
 
 // Watch para detectar cambios en values o husoNumbers (para ResumenDiario)
 watch([() => props.values, () => props.husoNumbers], async () => {
-    console.log('[HusoDetailModal] watch values/husos triggered, visible:', props.visible, 'hasChart:', !!chart, 'values:', props.values?.length, 'husos:', props.husoNumbers?.length)
-    
     // Solo actuar si el modal está visible y hay datos
     if (props.visible && props.values?.length > 0) {
         // Si no hay chart, intentar inicializarlo
         if (!chart || chart.isDisposed()) {
-            console.log('[HusoDetailModal] Initializing chart from values watch')
             await nextTick()
             
             // Esperar a que chartRef tenga dimensiones
@@ -609,7 +588,13 @@ watch([() => props.values, () => props.husoNumbers], async () => {
                 for (let i = 0; i < retries; i++) {
                     await nextTick()
                     if (chartRef.value && chartRef.value.clientWidth > 0 && chartRef.value.clientHeight > 0) {
-                        console.log('[HusoDetailModal] Chart ref ready, dimensions:', chartRef.value.clientWidth, 'x', chartRef.value.clientHeight)
+                        // Verificar de nuevo si ya existe chart (puede haberse creado por otro watch)
+                        if (chart && !chart.isDisposed()) {
+                            // Chart ya existe, solo actualizar
+                            calculateStats()
+                            renderChart()
+                            return
+                        }
                         
                         // Inicializar chart
                         chart = echarts.init(chartRef.value)
@@ -642,8 +627,6 @@ watch([() => props.values, () => props.husoNumbers], async () => {
             tryInitChart()
         } else {
             // Chart ya existe, solo actualizar
-            console.log('[HusoDetailModal] values/husoNumbers changed, values length:', props.values?.length, 'husos length:', props.husoNumbers?.length)
-            
             // Recalcular estadísticas con los nuevos valores
             calculateStats()
             
@@ -662,7 +645,6 @@ watch([() => props.values, () => props.husoNumbers], async () => {
 }, { deep: true })
 
 onMounted(() => {
-    console.log('[HusoDetailModal] Component mounted')
     // Don't initialize chart here, wait for visible watcher
 
     // Listener global para teclas: Esc, Flecha Izquierda y Derecha
@@ -692,7 +674,6 @@ onMounted(() => {
     // Clean up on unmount
     onBeforeUnmount(() => {
         window.removeEventListener('keydown', handleGlobalKey)
-        console.log('[HusoDetailModal] Component unmounting')
         if (chart && !chart.isDisposed()) {
             chart.dispose()
             chart = null
