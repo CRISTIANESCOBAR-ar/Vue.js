@@ -611,11 +611,21 @@
         </div>
 
         <!-- Huso Detail Modal -->
-        <HusoDetailModal
-            v-if="showHusoModal"
-            :testnr="selectedTestnr"
-            @close="showHusoModal = false"
-        />
+            <HusoDetailModal
+                :visible="showHusoModal"
+                :values="husoModalData.values"
+                :huso-numbers="husoModalData.husoNumbers"
+                :testnr="String(husoModalData.testnr || '')"
+                :timestamp="husoModalData.timestamp"
+                :oe="husoModalData.oe"
+                variable-label="Titulo Ne"
+                :standard-ne="husoModalData.standardNe"
+                :can-navigate-previous="!modalPrevDisabled"
+                :can-navigate-next="!modalNextDisabled"
+                @close="showHusoModal = false"
+                @navigate-previous="husoModalPrev"
+                @navigate-next="husoModalNext"
+            />
     </div>
 </template>
 
@@ -644,6 +654,16 @@ const selectedTestnr = ref(null)
 const modalLoading = ref(false)
 const usterTblRows = ref([])
 const tensorTblRows = ref([])
+
+// Huso modal data (siguiendo el patrón de UsterStatsPage)
+const husoModalData = ref({
+    values: [],
+    husoNumbers: [],
+    testnr: null,
+    timestamp: null,
+    oe: null,
+    standardNe: null
+})
 
 // Get today's date in YYYY-MM-DD format
 function getTodayDate() {
@@ -985,6 +1005,86 @@ async function openDataModal(testnr) {
 }
 
 function openHusoModal(testnr) {
+    if (!testnr) return
+    
+    console.log('🔍 openHusoModal - testnr:', testnr)
+    console.log('📊 usterTbl total rows:', usterTbl.value?.length)
+    
+    // Buscar y cargar los datos de Uster para el testnr seleccionado
+    let usterRows = usterTbl.value.filter(r => String(r.TESTNR || r.testnr || '') === String(testnr))
+    
+    console.log('🎯 Filtered usterRows:', usterRows.length)
+    if (usterRows.length > 0) {
+        console.log('📝 First row sample:', usterRows[0])
+    }
+    
+    // Deduplicar por TESTNR+NO
+    const dedupe = (arr, getKey) => {
+        const seen = new Set()
+        const out = []
+        for (const item of arr) {
+            let k
+            try { k = getKey(item) } catch { k = undefined }
+            if (!k) { out.push(item); continue }
+            if (seen.has(k)) continue
+            seen.add(k)
+            out.push(item)
+        }
+        return out
+    }
+    usterRows = dedupe(usterRows, (r) => {
+        const tn = String(r.TESTNR || r.testnr || '')
+        const no = String(r.NO ?? r.NO_ ?? r.HUSO ?? r.huso ?? '')
+        return tn && no ? `${tn}#${no}` : undefined
+    })
+    
+    console.log('✅ Deduplicated usterRows:', usterRows.length)
+    
+    // Ordenar por NO_ y extraer valores y husos
+    const sortedRows = usterRows
+        .map(r => ({
+            no: r.NO ?? r.NO_ ?? r.HUSO ?? r.huso ?? '',
+            titulo: r.TITULO ?? r.titulo ?? r.NE ?? r.ne ?? null,
+            row: r
+        }))
+        .filter(x => x.titulo !== null && x.titulo !== undefined)
+        .map(x => ({ ...x, nNum: parseInt(x.no) || 0 }))
+        .sort((a, b) => a.nNum - b.nNum)
+    
+    const values = sortedRows.map(x => Number(x.titulo)).filter(n => Number.isFinite(n))
+    const husoNumbers = sortedRows.map(x => String(x.no))
+    
+    console.log('📈 Extracted values:', values)
+    console.log('🔢 Extracted husoNumbers:', husoNumbers)
+    
+    // Buscar metadata del ensayo
+    const parMatch = usterPar.value.find(p => 
+        String(p.TESTNR || p.testnr) === String(testnr)
+    )
+    
+    let timestamp = null
+    if (parMatch?.TIME_STAMP || parMatch?.time_stamp || parMatch?.DATUM || parMatch?.datum) {
+        const fecha = parseDate(parMatch.TIME_STAMP || parMatch.time_stamp || parMatch.DATUM || parMatch.datum)
+        if (fecha) {
+            timestamp = `${String(fecha.getDate()).padStart(2, '0')}/${String(fecha.getMonth() + 1).padStart(2, '0')}/${fecha.getFullYear()}`
+        }
+    }
+    
+    const oe = formatOe(parMatch?.MASCHNR || parMatch?.maschnr || parMatch?.OE || parMatch?.oe)
+    const standardNe = parMatch?.NOMCOUNT || parMatch?.nomcount || null
+    
+    // Llenar husoModalData antes de abrir el modal
+    husoModalData.value = {
+        values,
+        husoNumbers,
+        testnr,
+        timestamp,
+        oe,
+        standardNe
+    }
+    
+    console.log('✅ husoModalData filled:', husoModalData.value)
+    
     selectedTestnr.value = testnr
     showHusoModal.value = true
 }
@@ -1051,6 +1151,27 @@ function modalNext() {
     }
 }
 
+// Funciones de navegación para el modal de husos
+function husoModalPrev() {
+    if (modalPrevDisabled.value) return
+    const list = filteredTests.value || []
+    const prev = list[modalIndex.value - 1]
+    const testnr = prev?.TESTNR || prev?.testnr
+    if (testnr) {
+        openHusoModal(testnr)
+    }
+}
+
+function husoModalNext() {
+    if (modalNextDisabled.value) return
+    const list = filteredTests.value || []
+    const next = list[modalIndex.value + 1]
+    const testnr = next?.TESTNR || next?.testnr
+    if (testnr) {
+        openHusoModal(testnr)
+    }
+}
+
 // Merged rows for modal (combine Uster + TensoRapid data)
 const mergedRows = computed(() => {
     const uster = usterTblRows.value || []
@@ -1108,6 +1229,61 @@ const mergedRows = computed(() => {
     }
     
     return merged
+})
+
+// Datos para el modal de gráfico por huso (Titulo Ne)
+const husoModalHusos = computed(() => {
+    // Extrae y ordena los husos para el gráfico
+    console.log('🔢 husoModalHusos - usterTblRows.value length:', usterTblRows.value?.length)
+    const arr = (usterTblRows.value || []).map(r => {
+        // Prioridad: NO, NO_, HUSO, huso
+        if (r.NO !== undefined && r.NO !== null) return String(r.NO)
+        if (r.NO_ !== undefined && r.NO_ !== null) return String(r.NO_)
+        if (r.HUSO !== undefined && r.HUSO !== null) return String(r.HUSO)
+        if (r.huso !== undefined && r.huso !== null) return String(r.huso)
+        return ''
+    })
+    const result = arr
+        .map(v => ({ v, n: parseInt(v) || 0 }))
+        .sort((a, b) => a.n - b.n)
+        .map(x => x.v)
+    console.log('🔢 husoModalHusos result:', result)
+    return result
+})
+
+const husoModalValues = computed(() => {
+    // Extrae y ordena los valores de TITULO/NE para el gráfico
+    console.log('📊 husoModalValues - usterTblRows.value length:', usterTblRows.value?.length)
+    if (usterTblRows.value?.length > 0) {
+        console.log('📊 First row for values:', usterTblRows.value[0])
+    }
+    const list = (usterTblRows.value || []).map(r => {
+        let no = ''
+        if (r.NO !== undefined && r.NO !== null) no = String(r.NO)
+        else if (r.NO_ !== undefined && r.NO_ !== null) no = String(r.NO_)
+        else if (r.HUSO !== undefined && r.HUSO !== null) no = String(r.HUSO)
+        else if (r.huso !== undefined && r.huso !== null) no = String(r.huso)
+        let titulo = null
+        if (r.TITULO !== undefined && r.TITULO !== null) titulo = Number(r.TITULO)
+        else if (r.titulo !== undefined && r.titulo !== null) titulo = Number(r.titulo)
+        else if (r.NE !== undefined && r.NE !== null) titulo = Number(r.NE)
+        else if (r.ne !== undefined && r.ne !== null) titulo = Number(r.ne)
+        return { no, titulo }
+    })
+    console.log('📊 Mapped list:', list)
+    const result = list
+        .map(x => ({ ...x, n: parseInt(x.no) || 0 }))
+        .sort((a, b) => a.n - b.n)
+        .map(x => x.titulo)
+        .filter(n => Number.isFinite(n))
+    console.log('📊 husoModalValues result:', result)
+    return result
+})
+
+const husoStandardNe = computed(() => {
+    const neStr = modalMeta.value?.ne ? String(modalMeta.value.ne) : ''
+    const n = parseFloat(neStr.replace('Flame', '').replace(',', '.'))
+    return Number.isFinite(n) ? n : ''
 })
 
 // Combined statistics for modal

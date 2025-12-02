@@ -211,6 +211,10 @@ function buildOption(selectedLegend = null) {
         : props.values.map((_, i) => String(i + 1))
     const yData = props.values
 
+    console.log('[buildOption] props.values:', props.values?.length, 'props.husoNumbers:', props.husoNumbers?.length)
+    console.log('[buildOption] xData:', xData)
+    console.log('[buildOption] yData:', yData)
+
     // Check if this is Titulo Ne variable
     const isTituloNe = props.variableLabel && props.variableLabel.toLowerCase().includes('titulo')
     const neStandard = props.standardNe ? parseFloat(props.standardNe) : null
@@ -498,6 +502,7 @@ async function copyAsImage() {
 }
 
 watch(() => props.visible, async (newVal) => {
+    console.log('[HusoDetailModal] visible changed to:', newVal, 'values length:', props.values?.length, 'husos length:', props.husoNumbers?.length)
     if (newVal) {
         // Reset flag cuando se abre el modal para que LCL/UCL inicien desactivados
         isFirstRender = true
@@ -587,6 +592,74 @@ watch(() => props.testnr, async (newTestnr, oldTestnr) => {
         }, 100)
     }
 })
+
+// Watch para detectar cambios en values o husoNumbers (para ResumenDiario)
+watch([() => props.values, () => props.husoNumbers], async () => {
+    console.log('[HusoDetailModal] watch values/husos triggered, visible:', props.visible, 'hasChart:', !!chart, 'values:', props.values?.length, 'husos:', props.husoNumbers?.length)
+    
+    // Solo actuar si el modal está visible y hay datos
+    if (props.visible && props.values?.length > 0) {
+        // Si no hay chart, intentar inicializarlo
+        if (!chart || chart.isDisposed()) {
+            console.log('[HusoDetailModal] Initializing chart from values watch')
+            await nextTick()
+            
+            // Esperar a que chartRef tenga dimensiones
+            const tryInitChart = async (retries = 10) => {
+                for (let i = 0; i < retries; i++) {
+                    await nextTick()
+                    if (chartRef.value && chartRef.value.clientWidth > 0 && chartRef.value.clientHeight > 0) {
+                        console.log('[HusoDetailModal] Chart ref ready, dimensions:', chartRef.value.clientWidth, 'x', chartRef.value.clientHeight)
+                        
+                        // Inicializar chart
+                        chart = echarts.init(chartRef.value)
+                        
+                        // Listener para cambios en leyenda
+                        chart.on('legendselectchanged', (params) => {
+                            legendState.value = { ...params.selected }
+                            const newOpt = buildOption(legendState.value)
+                            newOpt.legend.selected = legendState.value
+                            chart.setOption({ yAxis: newOpt.yAxis }, false)
+                        })
+                        
+                        // Calcular stats y renderizar
+                        calculateStats()
+                        renderChart()
+                        
+                        setTimeout(() => {
+                            if (chart && !chart.isDisposed()) {
+                                chart.resize()
+                            }
+                        }, 100)
+                        
+                        return
+                    }
+                    await new Promise(resolve => setTimeout(resolve, 100))
+                }
+                console.warn('[HusoDetailModal] Could not initialize chart after retries')
+            }
+            
+            tryInitChart()
+        } else {
+            // Chart ya existe, solo actualizar
+            console.log('[HusoDetailModal] values/husoNumbers changed, values length:', props.values?.length, 'husos length:', props.husoNumbers?.length)
+            
+            // Recalcular estadísticas con los nuevos valores
+            calculateStats()
+            
+            // Re-renderizar el gráfico
+            await nextTick()
+            renderChart()
+            
+            // Forzar resize después de un delay para asegurar renderizado correcto
+            setTimeout(() => {
+                if (chart && !chart.isDisposed()) {
+                    chart.resize()
+                }
+            }, 100)
+        }
+    }
+}, { deep: true })
 
 onMounted(() => {
     console.log('[HusoDetailModal] Component mounted')
