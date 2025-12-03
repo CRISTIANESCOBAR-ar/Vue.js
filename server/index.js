@@ -88,7 +88,7 @@ app.post('/api/uster/status', async (req, res) => {
 })
 
 // POST /api/uster/husos
-// Returns the list of HUSO numbers (NO column) for a specific USTER test
+// Returns the list of HUSO numbers (NO_ column) for a specific USTER test
 app.post('/api/uster/husos', async (req, res) => {
   const { testnr } = req.body
 
@@ -101,12 +101,13 @@ app.post('/api/uster/husos', async (req, res) => {
     await initPool()
     conn = await getConnection()
 
-    // Query to get all NO (Huso) values for the specified TESTNR
-    const sql = `SELECT NO FROM ${SCHEMA_PREFIX}USTER_TBL WHERE TESTNR = :testnr ORDER BY SEQNO`
+    // Query to get all NO_ (Huso) values for the specified TESTNR
+    // Note: Column is NO_ (with underscore) not NO (which is a reserved word in Oracle)
+    const sql = `SELECT NO_ FROM ${SCHEMA_PREFIX}USTER_TBL WHERE TESTNR = :testnr ORDER BY SEQNO`
     const result = await conn.execute(sql, { testnr }, { outFormat: oracledb.OUT_FORMAT_OBJECT })
 
-    // Extract NO values (Huso numbers)
-    const husos = (result.rows || []).map(row => row.NO).filter(h => h != null && h !== '')
+    // Extract NO_ values (Huso numbers)
+    const husos = (result.rows || []).map(row => row.NO_).filter(h => h != null && h !== '')
     
     res.json({ husos })
   } catch (err) {
