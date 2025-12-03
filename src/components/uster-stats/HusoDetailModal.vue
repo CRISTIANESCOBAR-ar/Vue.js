@@ -6,7 +6,7 @@
             @click="$emit('close')" aria-hidden="true"></div>
 
         <!-- Modal content -->
-        <div class="bg-white rounded-2xl shadow-2xl max-w-5xl w-full flex flex-col p-4 z-50 relative"
+        <div class="bg-white rounded-2xl shadow-2xl max-w-6xl w-full flex flex-col p-4 z-50 relative"
             style="height: 600px;" role="document" ref="modalRef">
             <!-- Botón anterior (pegado al lado izquierdo del modal) -->
             <button v-if="canNavigatePrevious" @click="$emit('navigate-previous')"
@@ -69,11 +69,17 @@
             </header>
 
             <!-- Stats cards - Horizontal layout -->
-            <div class="grid grid-cols-6 gap-2 mb-3 flex-shrink-0">
+            <div class="grid grid-cols-7 gap-2 mb-3 flex-shrink-0">
                 <div class="bg-white rounded-lg px-3 py-2 border border-slate-200 hover:border-blue-300 transition-colors">
                     <div class="flex items-center justify-between gap-2">
                         <span class="text-xs font-medium text-slate-500">Promedio</span>
                         <span class="text-sm font-bold text-slate-900">{{ formatValue(stats.mean) }}</span>
+                    </div>
+                </div>
+                <div v-if="desvioPercent !== null" class="bg-white rounded-lg px-3 py-2 border border-slate-200 transition-colors" :class="desvioPercent !== null && Math.abs(parseFloat(desvioPercent)) <= 1.5 ? 'hover:border-green-300' : 'hover:border-red-300'">
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="text-xs font-medium text-slate-500">Desvío %</span>
+                        <span class="text-sm font-bold" :class="desvioColorClass">{{ desvioPercent }}</span>
                     </div>
                 </div>
                 <div class="bg-white rounded-lg px-3 py-2 border border-slate-200 hover:border-green-300 transition-colors">
@@ -117,7 +123,7 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { ref, watch, onMounted, onBeforeUnmount, nextTick, computed } from 'vue'
 import * as echarts from 'echarts'
 import { toPng } from 'html-to-image'
 import Swal from 'sweetalert2'
@@ -155,6 +161,22 @@ const stats = ref({
     range: 0,
     neMin: null,
     neMax: null
+})
+
+// Computed para el Desvío % entre Promedio y Ne Estándar
+const desvioPercent = computed(() => {
+    const neStandard = props.standardNe ? parseFloat(props.standardNe) : null
+    if (!neStandard || !stats.value.mean) return null
+    const desvio = ((stats.value.mean - neStandard) / neStandard) * 100
+    return desvio.toFixed(2)
+})
+
+// Computed para la clase de color del Desvío %
+const desvioColorClass = computed(() => {
+    if (desvioPercent.value === null) return ''
+    const val = parseFloat(desvioPercent.value)
+    if (Math.abs(val) <= 1.5) return 'text-green-600' // Dentro del rango aceptable
+    return 'text-red-600' // Fuera de rango
 })
 
 function calculateStats() {
