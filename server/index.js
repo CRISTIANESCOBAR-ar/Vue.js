@@ -87,6 +87,42 @@ app.post('/api/uster/status', async (req, res) => {
   }
 })
 
+// POST /api/uster/husos
+// Returns the list of HUSO numbers (NO column) for a specific USTER test
+app.post('/api/uster/husos', async (req, res) => {
+  const { testnr } = req.body
+
+  if (!testnr) {
+    return res.status(400).json({ error: 'testnr is required' })
+  }
+
+  let conn
+  try {
+    await initPool()
+    conn = await getConnection()
+
+    // Query to get all NO (Huso) values for the specified TESTNR
+    const sql = `SELECT NO FROM ${SCHEMA_PREFIX}USTER_TBL WHERE TESTNR = :testnr ORDER BY SEQNO`
+    const result = await conn.execute(sql, { testnr }, { outFormat: oracledb.OUT_FORMAT_OBJECT })
+
+    // Extract NO values (Huso numbers)
+    const husos = (result.rows || []).map(row => row.NO).filter(h => h != null && h !== '')
+    
+    res.json({ husos })
+  } catch (err) {
+    globalThis.console.error('Husos check error', err)
+    res.status(500).json({ error: 'Failed to get Husos' })
+  } finally {
+    if (conn) {
+      try {
+        await conn.close()
+      } catch (e) {
+        globalThis.console.error('close conn err', e)
+      }
+    }
+  }
+})
+
 // GET /api/uster/list
 // Returns a list of recent USTER_PAR rows with a subset of columns used by the UI
 app.get('/api/uster/list', async (req, res) => {

@@ -424,6 +424,92 @@ function recalcStatus() {
 watch(filterMode, () => recalcStatus())
 watch(tensoScanList, () => recalcStatus(), { deep: true })
 
+// **VALIDACIÓN 1: Verificar que el ensayo Uster existe en la base de datos**
+async function validateUsterExists(usterTestnr) {
+	try {
+		const backendUrl = (typeof window !== 'undefined' && window.location.hostname === 'localhost')
+			? 'http://localhost:3001'
+			: ''
+		const endpoint = backendUrl + '/api/uster/status'
+		
+		const resp = await fetch(endpoint, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ testnrs: [usterTestnr] }),
+			credentials: 'include'
+		})
+		
+		if (!resp.ok) {
+			console.warn('validateUsterExists: error HTTP', resp.status)
+			return false
+		}
+		
+		const data = await resp.json()
+		// Si existing incluye el testnr, significa que existe
+		return data && Array.isArray(data.existing) && data.existing.includes(usterTestnr)
+	} catch (err) {
+		console.error('validateUsterExists error:', err)
+		return false
+	}
+}
+
+// **VALIDACIÓN 2: Verificar que los números de Huso coincidan entre Uster y TensoRapid**
+async function validateHusoMatch(usterTestnr, tensoTblData) {
+	try {
+		// Obtener los números de Huso del ensayo Uster desde la BD
+		const backendUrl = (typeof window !== 'undefined' && window.location.hostname === 'localhost')
+			? 'http://localhost:3001'
+			: ''
+		const endpoint = backendUrl + '/api/uster/husos'
+		
+		const resp = await fetch(endpoint, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ testnr: usterTestnr }),
+			credentials: 'include'
+		})
+		
+		if (!resp.ok) {
+			return { valid: false, error: 'No se pudo verificar la coincidencia de Husos con el ensayo Uster' }
+		}
+		
+		const data = await resp.json()
+		if (!data || !Array.isArray(data.husos)) {
+			return { valid: false, error: 'No se encontraron datos de Husos para el ensayo Uster' }
+		}
+		
+		// Extraer números de Huso del TBL de TensoRapid
+		const tensoHusos = tensoTblData
+			.map(row => {
+				const husoEnsayos = row[1] && row[1].trim() !== '' ? row[1].trim() : null
+				if (husoEnsayos) {
+					const match = husoEnsayos.match(/^(\d+)\//)
+					if (match && match[1]) {
+						return parseInt(match[1], 10)
+					}
+				}
+				return null
+			})
+			.filter(h => h !== null)
+		
+		// Verificar que todos los husos de TensoRapid existan en Uster
+		const usterHusos = data.husos.map(h => parseInt(h, 10))
+		const missingHusos = tensoHusos.filter(h => !usterHusos.includes(h))
+		
+		if (missingHusos.length > 0) {
+			return {
+				valid: false,
+				error: `Los siguientes números de Huso no coinciden con el ensayo Uster ${usterTestnr}: ${missingHusos.join(', ')}`
+			}
+		}
+		
+		return { valid: true }
+	} catch (err) {
+		console.error('validateHusoMatch error:', err)
+		return { valid: false, error: 'Error al validar coincidencia de Husos: ' + (err.message || String(err)) }
+	}
+}
+
 // Función para cargar archivos al hacer clic en una fila
 async function loadTensoTestFiles(testnr) {
 	if (!testnr) {
@@ -455,6 +541,18 @@ async function saveToOracle(item) {
 		}
 		if (!parsedTblData.value || parsedTblData.value.length === 0) {
 			throw new Error('No se pudieron cargar los datos del archivo .TBL')
+		}
+
+		// **VALIDACIÓN 1: Verificar que el USTER_TESTNR existe en la BD**
+		const usterExists = await validateUsterExists(item.usterTestnr)
+		if (!usterExists) {
+			throw new Error(`El ensayo Uster ${item.usterTestnr} no existe en la base de datos. Debe cargarse primero en la página Uster.`)
+		}
+
+		// **VALIDACIÓN 2: Verificar que los números de Huso coincidan**
+		const husoValidation = await validateHusoMatch(item.usterTestnr, parsedTblData.value)
+		if (!husoValidation.valid) {
+			throw new Error(husoValidation.error)
 		}
 
 		// Agregar el TESTNR de USTER a los datos PAR
