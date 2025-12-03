@@ -463,6 +463,8 @@ async function validateHusoMatch(usterTestnr, tensoTblData) {
 			: ''
 		const endpoint = backendUrl + '/api/uster/husos'
 		
+		console.log('validateHusoMatch: Solicitando husos para Uster:', usterTestnr)
+		
 		const resp = await fetch(endpoint, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
@@ -471,12 +473,21 @@ async function validateHusoMatch(usterTestnr, tensoTblData) {
 		})
 		
 		if (!resp.ok) {
-			return { valid: false, error: 'No se pudo verificar la coincidencia de Husos con el ensayo Uster' }
+			const errorData = await resp.json().catch(() => null)
+			const errorMsg = errorData && errorData.error ? errorData.error : `HTTP ${resp.status}`
+			console.error('validateHusoMatch: Error del servidor:', errorMsg)
+			return { valid: false, error: `No se pudo verificar la coincidencia de Husos: ${errorMsg}` }
 		}
 		
 		const data = await resp.json()
+		console.log('validateHusoMatch: Husos recibidos de Uster:', data.husos)
+		
 		if (!data || !Array.isArray(data.husos)) {
 			return { valid: false, error: 'No se encontraron datos de Husos para el ensayo Uster' }
+		}
+		
+		if (data.husos.length === 0) {
+			return { valid: false, error: `El ensayo Uster ${usterTestnr} no tiene husos registrados en USTER_TBL` }
 		}
 		
 		// Extraer números de Huso del TBL de TensoRapid
@@ -493,9 +504,17 @@ async function validateHusoMatch(usterTestnr, tensoTblData) {
 			})
 			.filter(h => h !== null)
 		
+		console.log('validateHusoMatch: Husos extraídos de TensoRapid:', tensoHusos)
+		
+		if (tensoHusos.length === 0) {
+			return { valid: false, error: 'No se pudieron extraer números de Huso del archivo TensoRapid' }
+		}
+		
 		// Verificar que todos los husos de TensoRapid existan en Uster
 		const usterHusos = data.husos.map(h => parseInt(h, 10))
 		const missingHusos = tensoHusos.filter(h => !usterHusos.includes(h))
+		
+		console.log('validateHusoMatch: Comparación - Uster:', usterHusos, 'TensoRapid:', tensoHusos, 'Faltantes:', missingHusos)
 		
 		if (missingHusos.length > 0) {
 			return {
