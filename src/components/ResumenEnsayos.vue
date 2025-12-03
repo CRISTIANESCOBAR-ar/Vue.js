@@ -3,10 +3,10 @@
     <main class="w-full flex-1 min-h-0 bg-white rounded-2xl shadow-xl px-4 py-3 border border-slate-200 flex flex-col">
       <div class="flex flex-col gap-2 mb-3 flex-shrink-0">
         <!-- Single top row: title, search, filters (center), refresh -->
-        <div class="flex items-center gap-1.5">
+        <div class="@container flex items-center gap-1.5">
           <!-- Data source indicator -->
           <div v-tippy="{ content: dataSourceTooltip, placement: 'bottom', theme: 'custom' }"
-            class="flex items-center justify-center w-8 h-8 rounded-full"
+            class="flex items-center justify-center w-8 h-8 rounded-full ml-12 lg:ml-0 transition-all duration-300"
             :class="dataSource === 'firebase' ? 'bg-orange-100 text-orange-600' : 'bg-blue-100 text-blue-600'">
             <svg v-if="dataSource === 'firebase'" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24"
               fill="currentColor">
@@ -30,15 +30,16 @@
             <label for="searchInput" class="sr-only">Buscar ensayos</label>
             <input id="searchInput" v-model="q" @input="onInput" type="search"
               placeholder="Buscar..." aria-label="Buscar ensayos"
-              class="px-3 py-1.5 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all w-28 xl:w-auto" />
-            <button v-if="q || neQuery || oeQuery" @click="clearSearch" title="Limpiar filtros"
-              class="inline-flex items-center gap-1.5 px-2 xl:px-3 py-1.5 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md">
+              class="px-3 py-1.5 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all w-24 @[1150px]:w-auto" />
+            <button v-if="q || neQuery || oeQuery" @click="clearSearch"
+              v-tippy="{ content: 'Limpiar filtros', placement: 'bottom', theme: 'custom' }"
+              class="inline-flex items-center gap-1 px-1.5 @[1150px]:px-1.5 py-1.5 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
                 <line x1="6" y1="6" x2="18" y2="18"></line>
               </svg>
-              <span class="hidden xl:inline">Limpiar</span>
+              <span class="hidden @[1150px]:inline">Limpiar</span>
             </button>
           </div>
 
@@ -74,7 +75,7 @@
                 <button
                   @click="filterAll"
                   v-tippy="{ content: statusFilter === 'all' ? 'Mostrando todos' : 'Mostrar todos los ensayos', placement: 'bottom', theme: 'custom' }"
-                  class="inline-flex items-center gap-2 px-2.5 py-1 border border-slate-200 rounded-md text-sm font-medium transition-colors duration-150 shadow-sm hover:shadow-md"
+                  class="inline-flex items-center gap-1 px-2 @[1150px]:px-1.5 py-1 border border-slate-200 rounded-md text-sm font-medium transition-colors duration-150 shadow-sm hover:shadow-md"
                   :class="statusFilter === 'all' ? 'bg-blue-50 text-blue-700 border-blue-500' : 'bg-white text-slate-700 hover:bg-slate-50'"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -83,28 +84,28 @@
                     <rect x="14" y="14" width="7" height="7" stroke-linecap="round" stroke-linejoin="round"></rect>
                     <rect x="3" y="14" width="7" height="7" stroke-linecap="round" stroke-linejoin="round"></rect>
                   </svg>
-                  <span class="hidden xl:inline">Todos</span>
+                  <span class="hidden @[1150px]:inline">Todos</span>
                 </button>
 
                 <!-- Dentro de rango -->
                 <button
                   @click="filterOk"
                   v-tippy="{ content: statusFilter === 'ok' ? 'Clic para quitar filtro' : 'Solo ensayos dentro de ±1.5%', placement: 'bottom', theme: 'custom' }"
-                  class="inline-flex items-center gap-2 px-2.5 py-1 border border-slate-200 rounded-md text-sm font-medium transition-colors duration-150 shadow-sm hover:shadow-md"
+                  class="inline-flex items-center gap-1 px-2 @[1150px]:px-1.5 py-1 border border-slate-200 rounded-md text-sm font-medium transition-colors duration-150 shadow-sm hover:shadow-md"
                   :class="statusFilter === 'ok' ? 'bg-green-50 text-green-700 border-green-500' : 'bg-white text-slate-700 hover:bg-slate-50'"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke-linecap="round" stroke-linejoin="round"></path>
                     <polyline points="22 4 12 14.01 9 11.01" stroke-linecap="round" stroke-linejoin="round"></polyline>
                   </svg>
-                  <span class="hidden xl:inline">Dentro</span>
+                  <span class="hidden @[1150px]:inline">Dentro</span>
                 </button>
 
                 <!-- Fuera de rango -->
                 <button
                   @click="filterOutOfRange"
                   v-tippy="{ content: statusFilter === 'out-of-range' ? 'Clic para quitar filtro' : 'Solo ensayos fuera de ±1.5%', placement: 'bottom', theme: 'custom' }"
-                  class="inline-flex items-center gap-2 px-2.5 py-1 border border-slate-200 rounded-md text-sm font-medium transition-colors duration-150 shadow-sm hover:shadow-md"
+                  class="inline-flex items-center gap-1 px-2 @[1150px]:px-1.5 py-1 border border-slate-200 rounded-md text-sm font-medium transition-colors duration-150 shadow-sm hover:shadow-md"
                   :class="statusFilter === 'out-of-range' ? 'bg-red-50 text-red-700 border-red-500' : 'bg-white text-slate-700 hover:bg-slate-50'"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -112,7 +113,7 @@
                     <line x1="12" y1="8" x2="12" y2="12" stroke-linecap="round" stroke-linejoin="round"></line>
                     <line x1="12" y1="16" x2="12.01" y2="16" stroke-linecap="round" stroke-linejoin="round"></line>
                   </svg>
-                  <span class="hidden xl:inline">Fuera</span>
+                  <span class="hidden @[1150px]:inline">Fuera</span>
                 </button>
               </div>
             </div>
@@ -124,19 +125,19 @@
 
             <!-- Minimal modern refresh button with icon -->
             <button @click="loadRows" v-tippy="{ content: 'Refrescar datos', placement: 'bottom', theme: 'custom' }"
-              class="inline-flex items-center gap-2 px-2.5 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md">
+              class="inline-flex items-center gap-1 px-2 @[1150px]:px-1.5 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" aria-hidden="true">
                 <path d="M21 12a9 9 0 1 1-3-6.7" stroke-linecap="round" stroke-linejoin="round"></path>
                 <polyline points="21 3 21 9 15 9" stroke-linecap="round" stroke-linejoin="round"></polyline>
               </svg>
-              <span class="hidden xl:inline">Refrescar</span>
+              <span class="hidden @[1150px]:inline">Refrescar</span>
             </button>
 
             <!-- Export to Excel (CSV) button -->
             <button @click="exportToExcel"
               v-tippy="{ content: 'Exportar a Excel (XLSX)', placement: 'bottom', theme: 'custom' }"
-              class="inline-flex items-center gap-2 px-2.5 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md">
+              class="inline-flex items-center gap-1 px-2 @[1150px]:px-1.5 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" aria-hidden="true">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke-linecap="round" stroke-linejoin="round">
@@ -144,7 +145,7 @@
                 <polyline points="7 10 12 15 17 10" stroke-linecap="round" stroke-linejoin="round"></polyline>
                 <line x1="12" y1="15" x2="12" y2="3" stroke-linecap="round" stroke-linejoin="round"></line>
               </svg>
-              <span class="hidden xl:inline">Exportar</span>
+              <span class="hidden @[1150px]:inline">Exportar</span>
             </button>
           </div>
         </div>

@@ -60,21 +60,17 @@
     </aside>
 
     <!-- Mobile / tablet header (visible under 1024px) -->
-    <header class="lg:hidden fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-3 py-1 bg-white">
-      <button aria-label="Toggle menú" :aria-expanded="String(sidebarVisible)"
-        class="bg-blue-600 text-white p-0.5 rounded shadow w-9 h-9 flex items-center justify-center"
-        @click.stop.prevent="mobileToggle">
-        <svg v-if="!sidebarVisible" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-        <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
-
-      <div class="text-sm font-semibold">{{ headerTitle }}</div>
-      <img src="/favicon.ico" alt="favicon" class="h-6 w-6 opacity-40 pointer-events-none" />
-    </header>
+    <!-- Mobile / tablet floating menu button (visible under 1024px) -->
+    <button aria-label="Toggle menú" :aria-expanded="String(sidebarVisible)"
+      class="lg:hidden fixed top-3 left-3 z-50 text-blue-600 bg-blue-100 p-1.5 rounded-md hover:bg-blue-600 hover:text-white transition-colors shadow-sm"
+      @click.stop.prevent="mobileToggle">
+      <svg v-if="!sidebarVisible" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+      <svg v-else class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
 
     <!-- Update banner (aparece cuando SW tiene nueva versión) -->
     <div v-if="updateAvailable"
@@ -87,7 +83,7 @@
 
     <!-- Main content -->
     <main @click="maybeHideSidebar"
-      class="flex-1 transition-all duration-500 ease-in-out overflow-x-hidden px-2 md:px-0 pt-10 md:pt-0"
+      class="flex-1 transition-all duration-500 ease-in-out overflow-x-hidden px-2 md:px-0 pt-2 md:pt-0"
       :style="{ marginLeft: mainMargin }">
       <div class="w-full">
         <transition name="fade" mode="out-in">
