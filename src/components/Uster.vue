@@ -188,14 +188,15 @@
                 ref="estirajeInput"
                 v-model="estiraje" 
                 type="text" 
-                placeholder="150.9"
                 maxlength="5"
                 :disabled="!selectedTestnr"
-                @keydown.enter.prevent="focusPasador"
-                @keydown.down.prevent="focusPasador"
+                @input="handleEstirajeInput"
+                @keydown.enter.prevent="handleEstirajeEnter"
+                @keydown="handleEstirajeKeydown"
+                @keydown.down.prevent="focusPasadorAndSelectSi"
                 :class="[
-                  'w-16 px-2 py-0.5 text-sm text-right border border-slate-300 rounded focus:outline-none transition-all',
-                  !selectedTestnr ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'bg-white hover:bg-slate-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+                  'w-16 px-2 py-0.5 text-sm text-center border border-slate-300 rounded focus:outline-none transition-all',
+                  !selectedTestnr ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'bg-white hover:bg-slate-50 focus:ring-2 focus:ring-yellow-300 focus:border-yellow-300 focus:bg-yellow-50'
                 ]"
               />
             </div>
@@ -1887,6 +1888,71 @@ function focusFirstTitulo() {
 }
 
 // Función para enfocar el campo Pasador (radio button Si por defecto)
+// Función para manejar input en el campo Estiraje
+function handleEstirajeInput(event) {
+  const input = event.target
+  let value = input.value
+
+  // Eliminar cualquier carácter que no sea dígito o punto
+  value = value.replace(/[^0-9.]/g, '')
+
+  // Permitir solo un punto y eliminar puntos duplicados
+  const parts = value.split('.')
+  if (parts.length > 2) {
+    // Si hay más de un punto, mantener solo el primero
+    value = parts[0] + '.' + parts.slice(1).join('')
+  }
+
+  // Limitar a 3 dígitos antes del punto y 1 después
+  if (value.includes('.')) {
+    const [integer, decimal] = value.split('.')
+    value = integer.slice(0, 3) + '.' + (decimal || '').slice(0, 1)
+  } else {
+    value = value.slice(0, 3)
+  }
+
+  // Auto-insertar punto después de 3 dígitos si no hay punto
+  if (value.length === 3 && !value.includes('.')) {
+    value = value + '.'
+  }
+
+  // Actualizar el valor
+  estiraje.value = value
+
+  // Si el formato está completo (###.# o #.#, ##.#), saltar automáticamente
+  if (/^\d{1,3}\.\d$/.test(value)) {
+    focusPasadorAndSelectSi()
+  }
+}
+
+// Función para manejar Enter en Estiraje
+function handleEstirajeEnter() {
+  // Si el usuario ingresó solo ###. (con punto pero sin decimal), completar a ###.0
+  if (/^\d{3}\.$/.test(estiraje.value)) {
+    estiraje.value = estiraje.value + '0'
+  }
+  focusPasadorAndSelectSi()
+}
+
+// Función para prevenir entrada de punto duplicado
+function handleEstirajeKeydown(event) {
+  // Si presiona punto y ya hay uno, prevenir
+  if (event.key === '.' && estiraje.value.includes('.')) {
+    event.preventDefault()
+  }
+}
+
+// Función para enfocar Pasador y pre-seleccionar "Sí"
+function focusPasadorAndSelectSi() {
+  if (!selectedTestnr.value) return
+  pasador.value = 'Si'
+  nextTick(() => {
+    if (pasadorSiInput.value) {
+      pasadorSiInput.value.focus()
+    }
+  })
+}
+
 function focusPasador() {
   if (!selectedTestnr.value) return
   nextTick(() => {
