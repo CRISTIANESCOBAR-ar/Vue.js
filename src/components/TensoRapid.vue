@@ -153,8 +153,9 @@
 												@focus="handleUsterInputFocus(item)"
 												@input="formatUsterTestnr(item, $event)"
 												@keydown.enter="focusSaveButton(item)" :class="[
-													'w-full px-2 py-1 text-xs text-center border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono transition-colors',
-													item.saved && !item.isEditing ? 'bg-slate-100 cursor-not-allowed' : ''
+													'w-full px-2 py-1 text-xs text-center border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400 font-mono transition-colors',
+													item.saved && !item.isEditing ? 'bg-slate-100 cursor-not-allowed' : '',
+													selectedTensoTestnr === item.testnr ? 'bg-yellow-50 ring-2 ring-yellow-400' : 'hover:bg-slate-50 focus:bg-yellow-50'
 												]" />
 										</td>
 										<td class="px-2 py-[0.3rem] border border-slate-200 text-center text-xs"
