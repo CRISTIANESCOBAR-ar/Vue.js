@@ -510,16 +510,24 @@ async function validateHusoMatch(usterTestnr, tensoTblData) {
 			return { valid: false, error: 'No se pudieron extraer números de Huso del archivo TensoRapid' }
 		}
 		
-		// Verificar que todos los husos de TensoRapid existan en Uster
+		// Verificar coincidencia entre ambos conjuntos
 		const usterHusos = data.husos.map(h => parseInt(h, 10))
-		const missingHusos = tensoHusos.filter(h => !usterHusos.includes(h))
+		const husosInTensoNotInUster = tensoHusos.filter(h => !usterHusos.includes(h))
+		const husosInUsterNotInTenso = usterHusos.filter(h => !tensoHusos.includes(h))
 		
-		console.log('validateHusoMatch: Comparación - Uster:', usterHusos, 'TensoRapid:', tensoHusos, 'Faltantes:', missingHusos)
+		console.log('validateHusoMatch: Comparación - Uster:', usterHusos, 'TensoRapid:', tensoHusos, 
+			'En Tenso pero no en Uster:', husosInTensoNotInUster, 'En Uster pero no en Tenso:', husosInUsterNotInTenso)
 		
-		if (missingHusos.length > 0) {
+		// Si hay discrepancias, retornar información detallada para que el usuario decida
+		if (husosInTensoNotInUster.length > 0 || husosInUsterNotInTenso.length > 0) {
 			return {
 				valid: false,
-				error: `Los siguientes números de Huso no coinciden con el ensayo Uster ${usterTestnr}: ${missingHusos.join(', ')}`
+				hasDiscrepancies: true,
+				usterHusos,
+				tensoHusos,
+				husosInTensoNotInUster,
+				husosInUsterNotInTenso,
+				canAutoFix: true
 			}
 		}
 		
@@ -572,7 +580,68 @@ async function saveToOracle(item) {
 		// **VALIDACIÓN 2: Verificar que los números de Huso coincidan**
 		const husoValidation = await validateHusoMatch(item.usterTestnr, parsedTblData.value)
 		if (!husoValidation.valid) {
-			throw new Error(husoValidation.error)
+			// Si hay discrepancias pero podemos auto-corregir, mostrar modal con opciones
+			if (husoValidation.hasDiscrepancies && husoValidation.canAutoFix) {
+				// Cerrar toast de guardando
+				Swal.close()
+				
+				// Construir mensaje informativo
+				let message = '<div style="text-align: left; font-size: 14px;">'
+				message += '<p><strong>Se detectaron diferencias en los números de Huso:</strong></p>'
+				
+				if (husoValidation.husosInTensoNotInUster.length > 0) {
+					message += `<p>• Husos en TensoRapid que <strong>NO están</strong> en Uster: <code>${husoValidation.husosInTensoNotInUster.join(', ')}</code></p>`
+				}
+				if (husoValidation.husosInUsterNotInTenso.length > 0) {
+					message += `<p>• Husos en Uster que <strong>NO están</strong> en TensoRapid: <code>${husoValidation.husosInUsterNotInTenso.join(', ')}</code></p>`
+				}
+				
+				message += '<br><p><strong>¿Qué deseas hacer?</strong></p></div>'
+				
+				const result = await Swal.fire({
+					icon: 'warning',
+					title: 'Discrepancia en Husos',
+					html: message,
+					showDenyButton: true,
+					showCancelButton: true,
+					confirmButtonText: '✓ Usar Husos de Uster',
+					confirmButtonColor: '#10b981',
+					denyButtonText: 'Guardar de todas formas',
+					denyButtonColor: '#f59e0b',
+					cancelButtonText: 'Cancelar',
+					cancelButtonColor: '#6b7280',
+					width: '600px'
+				})
+				
+				if (result.isDismissed) {
+					// Usuario canceló, no guardar
+					isSaving.value = false
+					return
+				}
+				
+				if (result.isConfirmed) {
+					// Usuario eligió usar Husos de Uster - reemplazar en parsedTblData
+					console.log('Usuario eligió usar Husos de Uster. Reemplazando...')
+					// Reemplazar los Husos de TensoRapid con los de Uster
+					for (let i = 0; i < parsedTblData.value.length && i < husoValidation.usterHusos.length; i++) {
+						const usterHuso = husoValidation.usterHusos[i]
+						// Actualizar columna 1 (formato "321/5" por ejemplo)
+						if (parsedTblData.value[i][1]) {
+							const match = parsedTblData.value[i][1].match(/^(\d+)\/(.+)$/)
+							if (match) {
+								parsedTblData.value[i][1] = `${usterHuso}/${match[2]}`
+							}
+						}
+					}
+					console.log('Husos reemplazados. Continuando con guardado...')
+				} else if (result.isDenied) {
+					// Usuario eligió guardar con los Husos actuales de TensoRapid
+					console.log('Usuario eligió guardar con Husos actuales de TensoRapid')
+				}
+			} else {
+				// Error que no se puede auto-corregir
+				throw new Error(husoValidation.error)
+			}
 		}
 
 		// Agregar el TESTNR de USTER a los datos PAR
@@ -689,6 +758,20 @@ async function saveToOracle(item) {
 			confirmButtonColor: '#3b82f6',
 			width: '500px'
 		})
+		
+		// Después del error, regresar el foco al input USTER y seleccionar el contenido
+		await nextTick()
+		const input = inputRefs.value[item.testnr]
+		if (input && typeof input.focus === 'function') {
+			input.focus()
+			try {
+				if (typeof input.select === 'function') {
+					input.select()
+				}
+			} catch (e) {
+				console.warn('Could not select input content', e)
+			}
+		}
 	} finally {
 		isSaving.value = false
 	}
