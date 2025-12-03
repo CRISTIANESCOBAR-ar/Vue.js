@@ -334,6 +334,7 @@
 
 <script setup>
 import { ref, onMounted, computed, watch, nextTick } from 'vue'
+import Swal from 'sweetalert2'
 
 // UI state
 const tensoFolderInputLocal = ref(null)
@@ -591,17 +592,15 @@ async function saveToOracle(item) {
 			})
 
 		// Toast de progreso
-		if (typeof Swal !== 'undefined') {
-			Swal.fire({
-				toast: true,
-				position: 'top-end',
-				icon: 'info',
-				title: 'Guardando...',
-				showConfirmButton: false,
-				timer: 30000,
-				timerProgressBar: true
-			})
-		}
+		Swal.fire({
+			toast: true,
+			position: 'top-end',
+			icon: 'info',
+			title: 'Guardando...',
+			showConfirmButton: false,
+			timer: 30000,
+			timerProgressBar: true
+		})
 
 		// Determinar URL del backend
 		const backendUrl = (typeof window !== 'undefined' && window.location.hostname === 'localhost')
@@ -648,35 +647,29 @@ async function saveToOracle(item) {
 		try { await focusNextEmptyUster(item.testnr) } catch (e) { console.warn('focusNextEmptyUster failed', e) }
 
 		// Toast de éxito
-		if (typeof Swal !== 'undefined') {
-			Swal.fire({
-				toast: true,
-				position: 'top-end',
-				icon: 'success',
-				title: `Ensayo ${item.testnr} guardado`,
-				text: `Vinculado con USTER ${item.usterTestnr}`,
-				showConfirmButton: false,
-				timer: 3000,
-				timerProgressBar: true
-			})
-		}
+		Swal.fire({
+			toast: true,
+			position: 'top-end',
+			icon: 'success',
+			title: `Ensayo ${item.testnr} guardado`,
+			text: `Vinculado con USTER ${item.usterTestnr}`,
+			showConfirmButton: false,
+			timer: 3000,
+			timerProgressBar: true
+		})
 	} catch (err) {
 		console.error('saveToOracle error', err)
 		// Cerrar toast de "Guardando..." si existe
-		if (typeof Swal !== 'undefined') {
-			Swal.close()
-		}
+		Swal.close()
 		// Modal de error (no toast, para que el usuario pueda leerlo bien)
-		if (typeof Swal !== 'undefined') {
-			await Swal.fire({
-				icon: 'error',
-				title: 'Error al guardar',
-				html: `<div style="text-align: left;">${String(err && err.message ? err.message : err)}</div>`,
-				confirmButtonText: 'Entendido',
-				confirmButtonColor: '#3b82f6',
-				width: '500px'
-			})
-		}
+		await Swal.fire({
+			icon: 'error',
+			title: 'Error al guardar',
+			html: `<div style="text-align: left;">${String(err && err.message ? err.message : err)}</div>`,
+			confirmButtonText: 'Entendido',
+			confirmButtonColor: '#3b82f6',
+			width: '500px'
+		})
 	} finally {
 		isSaving.value = false
 	}
@@ -687,21 +680,15 @@ async function deleteTensorapid(item) {
 	if (!item || !item.testnr) return
 	if (!item.saved) return
 	// Confirmación
-	let confirmed = false
-	if (typeof Swal !== 'undefined') {
-		const res = await Swal.fire({
-			title: `Eliminar ensayo ${item.testnr}?`,
-			text: 'Esto eliminará los registros en TENSORAPID_PAR y TENSORAPID_TBL. Esta acción no afecta USTER.',
-			icon: 'warning',
-			showCancelButton: true,
-			confirmButtonText: 'Eliminar',
-			cancelButtonText: 'Cancelar'
-		})
-		confirmed = res && res.isConfirmed
-	} else {
-		confirmed = typeof window !== 'undefined' ? window.confirm(`Eliminar ensayo ${item.testnr}? Esta acción eliminará datos TensoRapid.`) : false
-	}
-	if (!confirmed) return
+	const res = await Swal.fire({
+		title: `Eliminar ensayo ${item.testnr}?`,
+		text: 'Esto eliminará los registros en TENSORAPID_PAR y TENSORAPID_TBL. Esta acción no afecta USTER.',
+		icon: 'warning',
+		showCancelButton: true,
+		confirmButtonText: 'Eliminar',
+		cancelButtonText: 'Cancelar'
+	})
+	if (!res.isConfirmed) return
 	if (isDeleting.value) return
 	isDeleting.value = true
 	try {
@@ -724,14 +711,10 @@ async function deleteTensorapid(item) {
 			selectedTensoTestnr.value = ''
 		}
 
-		if (typeof Swal !== 'undefined') {
-			Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: `Ensayo ${item.testnr} eliminado`, showConfirmButton: false, timer: 3000 })
-		}
+		Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: `Ensayo ${item.testnr} eliminado`, showConfirmButton: false, timer: 3000 })
 	} catch (err) {
 		console.error('deleteTensorapid error', err)
-		if (typeof Swal !== 'undefined') {
-			await Swal.fire({ icon: 'error', title: 'Error al eliminar', text: String(err && err.message ? err.message : err), confirmButtonText: 'Cerrar' })
-		}
+		await Swal.fire({ icon: 'error', title: 'Error al eliminar', text: String(err && err.message ? err.message : err), confirmButtonText: 'Cerrar' })
 	} finally {
 		isDeleting.value = false
 	}
