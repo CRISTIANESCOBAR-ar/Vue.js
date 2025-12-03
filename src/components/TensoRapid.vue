@@ -441,7 +441,6 @@ async function validateUsterExists(usterTestnr) {
 		})
 		
 		if (!resp.ok) {
-			console.warn('validateUsterExists: error HTTP', resp.status)
 			return false
 		}
 		
@@ -449,7 +448,6 @@ async function validateUsterExists(usterTestnr) {
 		// Si existing incluye el testnr, significa que existe
 		return data && Array.isArray(data.existing) && data.existing.includes(usterTestnr)
 	} catch (err) {
-		console.error('validateUsterExists error:', err)
 		return false
 	}
 }
@@ -463,8 +461,6 @@ async function validateHusoMatch(usterTestnr, tensoTblData) {
 			: ''
 		const endpoint = backendUrl + '/api/uster/husos'
 		
-		console.log('validateHusoMatch: Solicitando husos para Uster:', usterTestnr)
-		
 		const resp = await fetch(endpoint, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
@@ -475,12 +471,10 @@ async function validateHusoMatch(usterTestnr, tensoTblData) {
 		if (!resp.ok) {
 			const errorData = await resp.json().catch(() => null)
 			const errorMsg = errorData && errorData.error ? errorData.error : `HTTP ${resp.status}`
-			console.error('validateHusoMatch: Error del servidor:', errorMsg)
 			return { valid: false, error: `No se pudo verificar la coincidencia de Husos: ${errorMsg}` }
 		}
 		
 		const data = await resp.json()
-		console.log('validateHusoMatch: Husos recibidos de Uster:', data.husos)
 		
 		if (!data || !Array.isArray(data.husos)) {
 			return { valid: false, error: 'No se encontraron datos de Husos para el ensayo Uster' }
@@ -504,8 +498,6 @@ async function validateHusoMatch(usterTestnr, tensoTblData) {
 			})
 			.filter(h => h !== null)
 		
-		console.log('validateHusoMatch: Husos extraídos de TensoRapid:', tensoHusos)
-		
 		if (tensoHusos.length === 0) {
 			return { valid: false, error: 'No se pudieron extraer números de Huso del archivo TensoRapid' }
 		}
@@ -514,9 +506,6 @@ async function validateHusoMatch(usterTestnr, tensoTblData) {
 		const usterHusos = data.husos.map(h => parseInt(h, 10))
 		const husosInTensoNotInUster = tensoHusos.filter(h => !usterHusos.includes(h))
 		const husosInUsterNotInTenso = usterHusos.filter(h => !tensoHusos.includes(h))
-		
-		console.log('validateHusoMatch: Comparación - Uster:', usterHusos, 'TensoRapid:', tensoHusos, 
-			'En Tenso pero no en Uster:', husosInTensoNotInUster, 'En Uster pero no en Tenso:', husosInUsterNotInTenso)
 		
 		// Si hay discrepancias, retornar información detallada para que el usuario decida
 		if (husosInTensoNotInUster.length > 0 || husosInUsterNotInTenso.length > 0) {
@@ -533,7 +522,6 @@ async function validateHusoMatch(usterTestnr, tensoTblData) {
 		
 		return { valid: true }
 	} catch (err) {
-		console.error('validateHusoMatch error:', err)
 		return { valid: false, error: 'Error al validar coincidencia de Husos: ' + (err.message || String(err)) }
 	}
 }
@@ -541,16 +529,12 @@ async function validateHusoMatch(usterTestnr, tensoTblData) {
 // Función para cargar archivos al hacer clic en una fila
 async function loadTensoTestFiles(testnr) {
 	if (!testnr) {
-		console.log('loadTensoTestFiles: testnr vacío')
 		return
 	}
-	console.log('loadTensoTestFiles: cargando archivos para testnr:', testnr)
 	selectedTensoTestnr.value = testnr
 	try {
 		await loadSelectedTensoFiles(testnr)
-		console.log('loadTensoTestFiles: archivos cargados exitosamente')
 	} catch (err) {
-		console.error('loadTensoTestFiles: error al cargar archivos', err)
 	}
 }
 
@@ -621,7 +605,6 @@ async function saveToOracle(item) {
 				
 				if (result.isConfirmed) {
 					// Usuario eligió usar Husos de Uster - reemplazar en parsedTblData
-					console.log('Usuario eligió usar Husos de Uster. Reemplazando...')
 					// Reemplazar los Husos de TensoRapid con los de Uster
 					for (let i = 0; i < parsedTblData.value.length && i < husoValidation.usterHusos.length; i++) {
 						const usterHuso = husoValidation.usterHusos[i]
@@ -633,10 +616,8 @@ async function saveToOracle(item) {
 							}
 						}
 					}
-					console.log('Husos reemplazados. Continuando con guardado...')
 				} else if (result.isDenied) {
 					// Usuario eligió guardar con los Husos actuales de TensoRapid
-					console.log('Usuario eligió guardar con Husos actuales de TensoRapid')
 				}
 			} else {
 				// Error que no se puede auto-corregir
@@ -697,16 +678,6 @@ async function saveToOracle(item) {
 		const endpoint = backendUrl + '/api/tensorapid/upload'
 
 		// Enviar datos al backend
-		// Log payload summary before sending (helps diagnose missing fields)
-		try {
-			console.log('Saving to backend. payload summary:', {
-				TESTNR: parDataToSave.TESTNR,
-				USTER_TESTNR: parDataToSave.USTER_TESTNR,
-				parKeys: Object.keys(parDataToSave || {}).slice(0, 50),
-				tblCount: tblDataToSave.length,
-				tblFirst: tblDataToSave.length > 0 ? tblDataToSave[0] : null
-			})
-		} catch (e) { console.warn('Could not log payload summary', e) }
 		const response = await fetch(endpoint, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
@@ -720,9 +691,6 @@ async function saveToOracle(item) {
 		let data = null
 		try { data = await response.json() } catch { data = null }
 
-		// Log server response for debugging
-		try { console.log('Server response for saveToOracle:', { ok: response.ok, status: response.status, body: data }) } catch (e) { console.warn('Could not log server response', e) }
-
 		if (!response.ok) {
 			throw new Error(data && data.error ? data.error : (data && data.message) || `HTTP ${response.status}`)
 		}
@@ -732,7 +700,7 @@ async function saveToOracle(item) {
 		item.isEditing = false
 
 		// Enfocar siguiente input vacío en la columna USTER
-		try { await focusNextEmptyUster(item.testnr) } catch (e) { console.warn('focusNextEmptyUster failed', e) }
+		try { await focusNextEmptyUster(item.testnr) } catch (e) { /* ignore */ }
 
 		// Toast de éxito
 		Swal.fire({
@@ -746,7 +714,6 @@ async function saveToOracle(item) {
 			timerProgressBar: true
 		})
 	} catch (err) {
-		console.error('saveToOracle error', err)
 		// Cerrar toast de "Guardando..." si existe
 		Swal.close()
 		// Modal de error (no toast, para que el usuario pueda leerlo bien)
@@ -769,7 +736,7 @@ async function saveToOracle(item) {
 					input.select()
 				}
 			} catch (e) {
-				console.warn('Could not select input content', e)
+				/* ignore */
 			}
 		}
 	} finally {
