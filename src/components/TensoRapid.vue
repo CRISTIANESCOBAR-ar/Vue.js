@@ -150,6 +150,7 @@
 												:placeholder="item.saved ? '05410' : ''" maxlength="5"
 												inputmode="numeric" :disabled="item.saved && !item.isEditing"
 												:ref="el => setInputRef(el, item.testnr)"
+												@focus="handleUsterInputFocus(item)"
 												@input="formatUsterTestnr(item, $event)"
 												@keydown.enter="focusSaveButton(item)" :class="[
 													'w-full px-2 py-1 text-xs text-center border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono transition-colors',
@@ -664,8 +665,24 @@ function setSaveButtonRef(el, testnr) {
 	}
 }
 
+// Manejar focus en el input USTER: cargar archivos .TBL automáticamente
+async function handleUsterInputFocus(item) {
+	if (!item || !item.testnr) return
+	
+	// Si ya está seleccionado, no hacer nada
+	if (selectedTensoTestnr.value === item.testnr) return
+	
+	// Cargar archivos .TBL para mostrar la tabla "Datos .TBL — TESTNR"
+	try {
+		await loadSelectedTensoFiles(item.testnr)
+		selectedTensoTestnr.value = item.testnr
+	} catch (err) {
+		console.warn('Error loading TBL data on input focus', err)
+	}
+}
+
 // Formatear USTER_TESTNR con padding de ceros (5 dígitos) y solo números
-function formatUsterTestnr(item, event) {
+async function formatUsterTestnr(item, event) {
 	if (!item) return
 
 	// Extraer solo números
