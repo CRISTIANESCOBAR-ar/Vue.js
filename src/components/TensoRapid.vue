@@ -662,13 +662,19 @@ async function saveToOracle(item) {
 		}
 	} catch (err) {
 		console.error('saveToOracle error', err)
-		// Modal de error
+		// Cerrar toast de "Guardando..." si existe
+		if (typeof Swal !== 'undefined') {
+			Swal.close()
+		}
+		// Modal de error (no toast, para que el usuario pueda leerlo bien)
 		if (typeof Swal !== 'undefined') {
 			await Swal.fire({
 				icon: 'error',
 				title: 'Error al guardar',
-				text: String(err && err.message ? err.message : err),
-				confirmButtonText: 'Cerrar'
+				html: `<div style="text-align: left;">${String(err && err.message ? err.message : err)}</div>`,
+				confirmButtonText: 'Entendido',
+				confirmButtonColor: '#3b82f6',
+				width: '500px'
 			})
 		}
 	} finally {
