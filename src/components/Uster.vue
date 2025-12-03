@@ -424,16 +424,22 @@ watch(() => {
   
   return items.length
 }, (count) => {
-  // Si no hay ensayos reales en la lista filtrada, limpiar todo
+  // Si no hay ensayos reales en la lista filtrada, limpiar COMPLETAMENTE igual que TensoRapid
   if (count === 0 && selectedTestnr.value) {
-    clearSelection()
+    // Limpiar TODAS las variables sin usar clearSelection() (que es incompleto)
+    selectedTestnr.value = ''
     fileText.value = ''
     selectedName.value = ''
     selectedFile.value = null
     selectedTblName.value = ''
     tblFile.value = null
     tblText.value = ''
+    tblData.value = []
+    tblTestnr.value = ''
+    estiraje.value = ''
+    pasador.value = ''
     matclass.value = 'Hilo'
+    isFocusedIndex.value = null
   }
 })
 
@@ -1525,26 +1531,25 @@ async function saveCurrentTest() {
         // after selectRow, focus will be placed on first titulo input
       } else {
         // No hay siguiente ensayo (ej. se guardó el último no-guardado y la lista filtrada quedó vacía)
-        // Limpiar todos los campos TITULO primero
-        if (Array.isArray(tblData.value)) {
-          for (const row of tblData.value) {
-            if (row) row['TITULO'] = ''
-          }
-        }
-        // Resetear completamente la UI usando clearSelection() y limpieza adicional
-        clearSelection()
-        matclass.value = 'Hilo'  // Reset matclass to default
-        // Limpiar también el .PAR y otros datos cargados
+        // Limpiar TODOS los datos igual que TensoRapid.vue (líneas 719-723)
+        // NO usar clearSelection() porque no limpia todas las variables
+        selectedTestnr.value = ''
         fileText.value = ''
         selectedName.value = ''
         selectedFile.value = null
         selectedTblName.value = ''
         tblFile.value = null
         tblText.value = ''
-        // Forzar múltiples ticks para asegurar que Vue actualiza el DOM completamente
+        tblData.value = []
+        tblTestnr.value = ''
+        estiraje.value = ''
+        pasador.value = ''
+        matclass.value = 'Hilo'
+        isFocusedIndex.value = null
+        // Forzar actualización del DOM
         await nextTick()
         await nextTick()
-        // Forzar actualización de la UI limpiando el archivo de entrada
+        // Limpiar el input de carpeta
         if (folderInput.value) {
           folderInput.value.value = ''
         }
