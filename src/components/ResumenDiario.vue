@@ -176,8 +176,8 @@
                             <tr>
                                 <th class="px-4 py-3 text-left font-semibold text-slate-700 w-24">OE</th>
                                 <th class="px-4 py-3 text-left font-semibold text-slate-700 w-28">Ne Estándar</th>
-                                <th class="px-4 py-3 text-center font-semibold text-slate-700 w-28">Ne Min (-1.5%)</th>
-                                <th class="px-4 py-3 text-center font-semibold text-slate-700 w-28">Ne Max (+1.5%)</th>
+                                <th class="px-4 py-3 text-center font-semibold text-slate-700 w-28">Ne Min (+1.5%)</th>
+                                <th class="px-4 py-3 text-center font-semibold text-slate-700 w-28">Ne Max (-1.5%)</th>
                                 <th class="px-4 py-3 text-center font-semibold text-slate-700 w-32">Valor Medido</th>
                                 <th class="px-4 py-3 text-center font-semibold text-slate-700 w-28">Desviación %</th>
                                 <th class="px-4 py-3 text-center font-semibold text-slate-700 w-24">Estiraje</th>

@@ -148,13 +148,14 @@
 											@click.stop>
 											<input v-if="item.testnr" type="text" v-model="item.usterTestnr"
 												:placeholder="item.saved ? '05410' : ''" maxlength="5"
-												inputmode="numeric" :disabled="item.saved && !item.isEditing"
+												inputmode="numeric" :readonly="item.saved && !item.isEditing"
 												:ref="el => setInputRef(el, item.testnr)"
 												@focus="handleUsterInputFocus(item)"
 												@input="formatUsterTestnr(item, $event)"
-												@keydown.enter="focusSaveButton(item)" :class="[
+												@keydown.enter="focusActionButtons(item)"
+												@keydown.right.prevent="focusActionButtons(item)" :class="[
 													'w-full px-2 py-1 text-xs text-center border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400 font-mono transition-colors',
-													item.saved && !item.isEditing ? 'bg-slate-100 cursor-not-allowed' : '',
+													item.saved && !item.isEditing ? 'bg-slate-100 text-slate-600 cursor-default' : '',
 													selectedTensoTestnr === item.testnr ? 'bg-yellow-50 ring-2 ring-yellow-400' : 'hover:bg-slate-50 focus:bg-yellow-50'
 												]" />
 										</td>
@@ -165,6 +166,9 @@
 												<div v-if="item.testnr && item.saved && !item.isEditing"
 													class="flex items-center gap-1 justify-center">
 													<button @click.stop="startEditing(item)"
+														:ref="el => setEditButtonRef(el, item.testnr)"
+														@keydown.left.prevent="focusUsterInput(item)"
+														@keydown.right.prevent="focusDeleteButton(item)"
 														class="inline-flex items-center justify-center w-28 gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md">
 														<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
 															fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -176,6 +180,8 @@
 													</button>
 													<button v-if="!item.isEditing" @click.stop="deleteTensorapid(item)"
 														:disabled="isDeleting"
+														:ref="el => setDeleteButtonRef(el, item.testnr)"
+														@keydown.left.prevent="focusEditButton(item)"
 														class="inline-flex items-center justify-center w-28 gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md disabled:opacity-50">
 														<svg xmlns="http://www.w3.org/2000/svg"
 															class="h-4 w-4 text-red-600" fill="none" viewBox="0 0 24 24"
@@ -192,6 +198,8 @@
 													class="flex gap-1 justify-center">
 													<button @click="saveToOracle(item)" :disabled="isSaving"
 														:ref="el => setSaveButtonRef(el, item.testnr)"
+														@keydown.left.prevent="focusUsterInput(item)"
+														@keydown.right.prevent="focusDeleteButton(item)"
 														class="inline-flex items-center justify-center w-28 gap-2 px-3 py-1 border border-slate-200 bg-white text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md disabled:opacity-50">
 														<svg xmlns="http://www.w3.org/2000/svg"
 															class="h-4 w-4 text-indigo-600" fill="none"
@@ -213,6 +221,8 @@
 													</button>
 													<button v-if="!item.isEditing" @click.stop="deleteTensorapid(item)"
 														:disabled="isDeleting"
+														:ref="el => setDeleteButtonRef(el, item.testnr)"
+														@keydown.left.prevent="focusSaveButton(item)"
 														class="inline-flex items-center justify-center w-28 px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700 text-xs font-medium disabled:opacity-50 transition-colors duration-200 shadow-sm hover:shadow-md">
 														{{ isDeleting ? 'Eliminando...' : 'Eliminar' }}
 													</button>
@@ -355,6 +365,8 @@ const filterMode = ref('not')
 // Refs para inputs y botones (para auto-focus)
 const inputRefs = ref({})
 const saveButtonRefs = ref({})
+const editButtonRefs = ref({})
+const deleteButtonRefs = ref({})
 
 // compute display list padded to maxRows and filtered by checkboxes
 const tensoDisplayList = computed(() => {
@@ -822,6 +834,41 @@ function setSaveButtonRef(el, testnr) {
 	}
 }
 
+// Guardar referencia al botón Editar
+function setEditButtonRef(el, testnr) {
+	if (el) {
+		editButtonRefs.value[testnr] = el
+	}
+}
+
+// Guardar referencia al botón Eliminar para poder enfocarlo
+function setDeleteButtonRef(el, testnr) {
+	if (el) {
+		deleteButtonRefs.value[testnr] = el
+	}
+}
+
+// Enfocar el input USTER
+function focusUsterInput(item) {
+	if (!item || !item.testnr) return
+	const input = inputRefs.value[item.testnr]
+	if (input && typeof input.focus === 'function') {
+		input.focus()
+	}
+}
+
+// Enfocar el botón Eliminar
+function focusDeleteButton(item) {
+	if (!item || !item.testnr) return
+	// Solo intentar enfocar si no está editando (porque si edita, el botón eliminar no está o es Cancelar)
+	if (item.isEditing) return 
+	
+	const button = deleteButtonRefs.value[item.testnr]
+	if (button && typeof button.focus === 'function') {
+		button.focus()
+	}
+}
+
 // Manejar focus en el input USTER: cargar archivos .TBL automáticamente
 async function handleUsterInputFocus(item) {
 	if (!item || !item.testnr) return
@@ -868,6 +915,25 @@ function focusSaveButton(item) {
 	const button = saveButtonRefs.value[item.testnr]
 	if (button && typeof button.focus === 'function') {
 		button.focus()
+	}
+}
+
+// Enfocar el botón Editar
+function focusEditButton(item) {
+	if (!item || !item.testnr) return
+	const button = editButtonRefs.value[item.testnr]
+	if (button && typeof button.focus === 'function') {
+		button.focus()
+	}
+}
+
+// Decidir qué botón enfocar (Guardar o Editar) según el estado
+function focusActionButtons(item) {
+	if (!item) return
+	if (item.saved && !item.isEditing) {
+		focusEditButton(item)
+	} else {
+		focusSaveButton(item)
 	}
 }
 

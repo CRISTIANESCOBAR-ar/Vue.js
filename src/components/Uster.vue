@@ -424,22 +424,11 @@ watch(() => {
   
   return items.length
 }, (count) => {
-  // Si no hay ensayos reales en la lista filtrada, limpiar COMPLETAMENTE igual que TensoRapid
+  console.log('🔍 Watcher ejecutado: count =', count, 'selectedTestnr =', selectedTestnr.value)
+  // Si no hay ensayos reales en la lista filtrada, limpiar COMPLETAMENTE
   if (count === 0 && selectedTestnr.value) {
-    // Limpiar TODAS las variables sin usar clearSelection() (que es incompleto)
-    selectedTestnr.value = ''
-    fileText.value = ''
-    selectedName.value = ''
-    selectedFile.value = null
-    selectedTblName.value = ''
-    tblFile.value = null
-    tblText.value = ''
-    tblData.value = []
-    tblTestnr.value = ''
-    estiraje.value = ''
-    pasador.value = ''
-    matclass.value = 'Hilo'
-    isFocusedIndex.value = null
+    console.log('✅ Limpiando interfaz porque no hay ensayos en la lista filtrada')
+    clearSelection()
   }
 })
 
@@ -841,13 +830,17 @@ onMounted(() => {
 function clearSelection() {
   selectedTestnr.value = ''
   fileText.value = ''
-  // NO limpiar campos TITULO aquí porque tblData.value = [] ya limpia todo
-  // y si limpiamos antes, perdemos los valores del archivo TBL cuando se carga
+  selectedName.value = ''
+  selectedFile.value = null
+  selectedTblName.value = ''
+  tblFile.value = null
+  tblText.value = ''
   tblData.value = []
   tblTestnr.value = ''
-  isFocusedIndex.value = null
   estiraje.value = ''
   pasador.value = ''
+  matclass.value = 'Hilo'
+  isFocusedIndex.value = null
 }
 
 async function selectRow(testnr) {
@@ -1447,6 +1440,17 @@ async function saveCurrentTest() {
     try { data = await resp.json() } catch { data = null }
     if (!resp.ok) throw new Error(data && data.error ? data.error : (data && data.message) || `HTTP ${resp.status}`)
 
+    // Actualizar el archivo .TBL con los valores de Titulo editados ANTES de hacer cualquier otra cosa
+    // Esto es CRÍTICO: debe ejecutarse antes de marcar imp=true y antes de limpiar cualquier dato
+    try {
+      const tblUpdated = await updateTblFileWithTitulos()
+      if (tblUpdated) {
+        console.log('Archivo .TBL actualizado con éxito')
+      }
+    } catch (err) {
+      console.warn('No se pudo actualizar el archivo .TBL (esto es normal en modo fallback):', err)
+    }
+
     const savedItem = scanList.value.find(item => item.testnr === par.TESTNR)
     if (savedItem) {
       savedItem.imp = true
@@ -1462,16 +1466,6 @@ async function saveCurrentTest() {
       }
       // Forzar a Vue a esperar la actualización del DOM
       await nextTick();
-    }
-
-    // Actualizar el archivo .TBL con los valores de Titulo editados ANTES de limpiar los campos en memoria
-    try {
-      const tblUpdated = await updateTblFileWithTitulos()
-      if (tblUpdated) {
-        console.log('Archivo .TBL actualizado con éxito')
-      }
-    } catch (err) {
-      console.warn('No se pudo actualizar el archivo .TBL (esto es normal en modo fallback):', err)
     }
 
     // Limpia los inputs de TITULO correspondientes al TESTNR guardado
@@ -1490,28 +1484,35 @@ async function saveCurrentTest() {
     // En otro caso, elegimos el siguiente ensayo en la lista (rotando si es necesario).
     try {
       let nextTestnr = null
-      const list = Array.isArray(scanList.value) ? scanList.value.filter(i => i && i.testnr) : []
-
-      if (filterShowNotSaved.value) {
-        const nextItem = list.find(i => i.imp !== true)
-        if (nextItem) nextTestnr = nextItem.testnr
-      }
-
-      if (!nextTestnr) {
-        // buscar el índice del actual y avanzar
-        const idx = list.findIndex(i => String(i.testnr) === String(par.TESTNR))
-        if (idx !== -1) {
-          for (let j = idx + 1; j < list.length; j++) {
-            if (list[j] && list[j].testnr) { nextTestnr = list[j].testnr; break }
-          }
-          // si no hay siguiente, buscar desde el inicio
-          if (!nextTestnr) {
-            for (let j = 0; j < idx; j++) {
-              if (list[j] && list[j].testnr) { nextTestnr = list[j].testnr; break }
+      const list = Array.isArray(scanList.value) ? scanList.value : []
+      
+      // Encontrar el índice del ensayo actual
+      const currentIdx = list.findIndex(i => String(i.testnr) === String(par.TESTNR))
+      
+      if (currentIdx !== -1) {
+        // Buscar hacia adelante desde la posición actual
+        for (let j = currentIdx + 1; j < list.length; j++) {
+          const item = list[j]
+          if (!item || !item.testnr) continue
+          
+          // Verificar si cumple con el filtro actual
+          if (filterShowNotSaved.value) {
+            // Si filtramos no guardados, buscamos el siguiente que NO esté guardado
+            if (item.imp !== true) {
+              nextTestnr = item.testnr
+              break
             }
+          } else if (filterShowSaved.value) {
+            // Si filtramos guardados, buscamos el siguiente que SI esté guardado
+            if (item.imp === true) {
+              nextTestnr = item.testnr
+              break
+            }
+          } else {
+            // Si mostramos todos, tomamos el siguiente
+            nextTestnr = item.testnr
+            break
           }
-        } else if (list.length > 0) {
-          nextTestnr = list[0].testnr
         }
       }
 
@@ -1524,28 +1525,14 @@ async function saveCurrentTest() {
         }
         // Limpiar la selección anterior antes de cargar el siguiente
         clearSelection()
-        matclass.value = 'Hilo'  // Reset matclass to default
         await nextTick()
         // Esperar un tick para que el DOM esté estable y luego seleccionar
         await selectRow(nextTestnr)
         // after selectRow, focus will be placed on first titulo input
       } else {
         // No hay siguiente ensayo (ej. se guardó el último no-guardado y la lista filtrada quedó vacía)
-        // Limpiar TODOS los datos igual que TensoRapid.vue (líneas 719-723)
-        // NO usar clearSelection() porque no limpia todas las variables
-        selectedTestnr.value = ''
-        fileText.value = ''
-        selectedName.value = ''
-        selectedFile.value = null
-        selectedTblName.value = ''
-        tblFile.value = null
-        tblText.value = ''
-        tblData.value = []
-        tblTestnr.value = ''
-        estiraje.value = ''
-        pasador.value = ''
-        matclass.value = 'Hilo'
-        isFocusedIndex.value = null
+        // Usar clearSelection() que ahora limpia TODAS las variables correctamente
+        clearSelection()
         // Forzar actualización del DOM
         await nextTick()
         await nextTick()

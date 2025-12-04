@@ -102,13 +102,13 @@
                 </div>
                 <div class="bg-white rounded-lg px-3 py-2 border border-slate-200 hover:border-cyan-300 transition-colors">
                     <div class="flex items-center justify-between gap-2">
-                        <span class="text-xs font-medium text-slate-500">Ne Min (-1.5%)</span>
+                        <span class="text-xs font-medium text-slate-500">Ne Min (+1.5%)</span>
                         <span class="text-sm font-bold text-slate-900">{{ formatNeValue(stats.neMin) }}</span>
                     </div>
                 </div>
                 <div class="bg-white rounded-lg px-3 py-2 border border-slate-200 hover:border-amber-300 transition-colors">
                     <div class="flex items-center justify-between gap-2">
-                        <span class="text-xs font-medium text-slate-500">Ne Max (+1.5%)</span>
+                        <span class="text-xs font-medium text-slate-500">Ne Max (-1.5%)</span>
                         <span class="text-sm font-bold text-slate-900">{{ formatNeValue(stats.neMax) }}</span>
                     </div>
                 </div>
@@ -167,8 +167,21 @@ const stats = ref({
 const desvioPercent = computed(() => {
     const neStandard = props.standardNe ? parseFloat(props.standardNe) : null
     if (!neStandard || !stats.value.mean) return null
-    const desvio = ((stats.value.mean - neStandard) / neStandard) * 100
-    return desvio.toFixed(2)
+    
+    // Para Titulo Ne, la relación es inversa: Menor valor = Más grueso (+)
+    const isTituloNe = props.variableLabel && props.variableLabel.toLowerCase().includes('titulo')
+    
+    let diff
+    if (isTituloNe) {
+        diff = neStandard - stats.value.mean
+    } else {
+        diff = stats.value.mean - neStandard
+    }
+    
+    const desvio = (diff / neStandard) * 100
+    const formatted = desvio.toFixed(2)
+    // Agregar el signo + explícitamente cuando es positivo
+    return desvio >= 0 ? `+${formatted}` : formatted
 })
 
 // Computed para la clase de color del Desvío %
@@ -240,7 +253,7 @@ function buildOption(selectedLegend = null) {
     // Build legend data
     const legendData = ['Valor', 'Promedio', 'LCL (-3σ)', 'UCL (+3σ)']
     if (isTituloNe && neStandard) {
-        legendData.push('Ne Estándar', 'Ne Min (-1.5%)', 'Ne Max (+1.5%)')
+        legendData.push('Ne Estándar', 'Ne Min (+1.5%)', 'Ne Max (-1.5%)')
     }
 
     // Construir series
@@ -321,7 +334,7 @@ function buildOption(selectedLegend = null) {
                 z: 3
             },
             {
-                name: 'Ne Min (-1.5%)',
+                name: 'Ne Min (+1.5%)',
                 type: 'line',
                 data: Array(xData.length).fill(neStandard * 0.985),
                 lineStyle: { type: 'dashed', color: '#f59e0b', width: 1.5 },
@@ -329,7 +342,7 @@ function buildOption(selectedLegend = null) {
                 z: 2
             },
             {
-                name: 'Ne Max (+1.5%)',
+                name: 'Ne Max (-1.5%)',
                 type: 'line',
                 data: Array(xData.length).fill(neStandard * 1.015),
                 lineStyle: { type: 'dashed', color: '#f59e0b', width: 1.5 },
@@ -481,7 +494,8 @@ async function copyAsImage() {
         const dataUrl = await toPng(modalRef.value, {
             quality: 1.0,
             pixelRatio: 2,
-            backgroundColor: '#ffffff'
+            backgroundColor: '#ffffff',
+            skipFonts: true // Evita errores CORS con Google Fonts
         })
 
         // Restaurar todos los elementos ocultados
