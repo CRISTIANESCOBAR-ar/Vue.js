@@ -4,42 +4,59 @@
         <header class="flex items-center justify-between mb-4 pb-3 border-b border-slate-300">
             <div class="flex items-center gap-4">
                 <h1 class="text-2xl font-bold text-slate-800">📊 Resumen Diario - Control de Calidad</h1>
-                <div v-if="selectedDate" class="px-3 py-1 bg-blue-100 text-blue-800 rounded-lg text-sm font-semibold">
+                <div v-if="selectedDate && !showAllPendingReviews" class="px-3 py-1 bg-blue-100 text-blue-800 rounded-lg text-sm font-semibold">
                     {{ formatDateDisplay(selectedDate) }}
+                </div>
+                <div v-if="showAllPendingReviews" class="px-3 py-1 bg-orange-100 text-orange-800 rounded-lg text-sm font-semibold flex items-center gap-2">
+                    <span class="relative flex h-2 w-2">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-2 w-2 bg-orange-500"></span>
+                    </span>
+                    Modo: Revisión Global
                 </div>
             </div>
             
-            <div class="flex items-center gap-3">
-                <!-- Date selector with navigation buttons -->
-                <div class="flex items-center gap-2">
-                    <!-- Previous day button -->
-                    <button
-                        @click="previousDay"
-                        v-tippy="{ content: 'Día anterior', placement: 'bottom', theme: 'custom' }"
-                        class="inline-flex items-center justify-center w-8 h-8 border border-slate-200 bg-white text-slate-700 rounded-md hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md"
+            <div class="flex items-center gap-2">
+                <button 
+                    @click="toggleGlobalPendingReviews"
+                    class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors border"
+                    :class="showAllPendingReviews 
+                        ? 'bg-slate-800 text-white border-slate-800 hover:bg-slate-700' 
+                        : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'"
+                >
+                    <svg v-if="!showAllPendingReviews" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                    </svg>
+                    <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    {{ showAllPendingReviews ? 'Salir de Revisión Global' : 'Ver Todos los Pendientes' }}
+                </button>
+                
+                <div class="flex items-center gap-2" v-if="!showAllPendingReviews">
+                    <button 
+                        @click="previousDay" 
+                        class="p-2 hover:bg-slate-200 rounded-full text-slate-600 transition-colors"
+                        title="Día anterior"
                     >
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                         </svg>
                     </button>
-                    
-                    <!-- Next day button -->
-                    <button
-                        @click="nextDay"
-                        v-tippy="{ content: 'Día siguiente', placement: 'bottom', theme: 'custom' }"
-                        class="inline-flex items-center justify-center w-8 h-8 border border-slate-200 bg-white text-slate-700 rounded-md hover:bg-slate-50 transition-colors duration-150 shadow-sm hover:shadow-md"
-                    >
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                        </svg>
-                    </button>
-                    
-                    <label class="text-sm font-medium text-slate-700">Fecha:</label>
                     <input 
                         type="date" 
                         v-model="selectedDate"
-                        class="px-3 py-1.5 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    />
+                        class="border-slate-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
+                    >
+                    <button 
+                        @click="nextDay" 
+                        class="p-2 hover:bg-slate-200 rounded-full text-slate-600 transition-colors"
+                        title="Día siguiente"
+                    >
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
                 </div>
             </div>
         </header>
@@ -77,69 +94,99 @@
         <!-- Main content -->
         <div v-else class="flex-1 min-h-0 overflow-hidden flex flex-col">
             <!-- Summary stats -->
-            <div class="grid grid-cols-4 gap-3 mb-4">
+            <div class="grid grid-cols-5 gap-2 mb-4">
                 <!-- Total Ensayos - clickeable -->
                 <button
                     @click="filterAll"
-                    v-tippy="{ content: statusFilter === 'all' ? 'Mostrando todos los ensayos' : 'Clic para ver todos los ensayos', placement: 'bottom', theme: 'custom' }"
-                    class="bg-white rounded-lg border-2 p-3 shadow-sm text-left transition-all hover:shadow-md hover:scale-105 active:scale-95"
-                    :class="statusFilter === 'all' ? 'border-blue-500 bg-blue-50' : 'border-slate-200'"
+                    :disabled="showAllPendingReviews"
+                    v-tippy="{ content: showAllPendingReviews ? 'No disponible en modo Revisión Global' : (statusFilter === 'all' ? 'Mostrando todos los ensayos' : 'Clic para ver todos los ensayos'), placement: 'bottom', theme: 'custom' }"
+                    class="bg-white rounded-lg border-2 p-2 shadow-sm text-left transition-all"
+                    :class="[
+                        statusFilter === 'all' ? 'border-blue-500 bg-blue-50' : 'border-slate-200',
+                        showAllPendingReviews ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-md hover:scale-105 active:scale-95'
+                    ]"
                 >
                     <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs text-slate-600">Total Ensayos</span>
-                            <svg v-if="statusFilter === 'all'" class="w-3.5 h-3.5 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                        <div class="flex items-center gap-1">
+                            <span class="text-xs text-slate-600 truncate">Total</span>
+                            <svg v-if="statusFilter === 'all'" class="w-3 h-3 text-blue-600 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
                             </svg>
                         </div>
-                        <div class="text-2xl font-bold text-slate-900">{{ totalEnsayos }}</div>
+                        <div class="text-xl font-bold text-slate-900">{{ totalEnsayos }}</div>
                     </div>
                 </button>
                 
                 <!-- Dentro de Rango - clickeable -->
                 <button
                     @click="filterOk"
-                    v-tippy="{ content: statusFilter === 'ok' ? 'Clic para quitar filtro' : 'Clic para filtrar solo ensayos dentro de rango', placement: 'bottom', theme: 'custom' }"
-                    class="bg-white rounded-lg border-2 p-3 shadow-sm text-left transition-all hover:shadow-md hover:scale-105 active:scale-95"
-                    :class="statusFilter === 'ok' ? 'border-green-500 bg-green-50' : 'border-slate-200'"
+                    :disabled="showAllPendingReviews"
+                    v-tippy="{ content: showAllPendingReviews ? 'No disponible en modo Revisión Global' : (statusFilter === 'ok' ? 'Clic para quitar filtro' : 'Clic para filtrar solo ensayos dentro de rango'), placement: 'bottom', theme: 'custom' }"
+                    class="bg-white rounded-lg border-2 p-2 shadow-sm text-left transition-all"
+                    :class="[
+                        statusFilter === 'ok' ? 'border-green-500 bg-green-50' : 'border-slate-200',
+                        showAllPendingReviews ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-md hover:scale-105 active:scale-95'
+                    ]"
                 >
                     <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs text-slate-600">Dentro de Rango</span>
-                            <svg v-if="statusFilter === 'ok'" class="w-3.5 h-3.5 text-green-600" fill="currentColor" viewBox="0 0 24 24">
+                        <div class="flex items-center gap-1">
+                            <span class="text-xs text-slate-600 truncate">En Rango</span>
+                            <svg v-if="statusFilter === 'ok'" class="w-3 h-3 text-green-600 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
                             </svg>
                         </div>
-                        <div class="text-2xl font-bold text-green-700">{{ withinRange }}</div>
+                        <div class="text-xl font-bold text-green-700">{{ withinRange }}</div>
                     </div>
                 </button>
                 
                 <!-- Fuera de Rango - clickeable -->
                 <button
                     @click="filterOutOfRange"
-                    v-tippy="{ content: statusFilter === 'out-of-range' ? 'Clic para quitar filtro' : 'Clic para filtrar solo ensayos fuera de rango', placement: 'bottom', theme: 'custom' }"
-                    class="bg-white rounded-lg border-2 p-3 shadow-sm text-left transition-all hover:shadow-md hover:scale-105 active:scale-95"
-                    :class="statusFilter === 'out-of-range' ? 'border-red-500 bg-red-50' : 'border-slate-200'"
+                    :disabled="showAllPendingReviews"
+                    v-tippy="{ content: showAllPendingReviews ? 'No disponible en modo Revisión Global' : (statusFilter === 'out-of-range' ? 'Clic para quitar filtro' : 'Clic para filtrar solo ensayos fuera de rango'), placement: 'bottom', theme: 'custom' }"
+                    class="bg-white rounded-lg border-2 p-2 shadow-sm text-left transition-all"
+                    :class="[
+                        statusFilter === 'out-of-range' ? 'border-red-500 bg-red-50' : 'border-slate-200',
+                        showAllPendingReviews ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-md hover:scale-105 active:scale-95'
+                    ]"
                 >
                     <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs text-slate-600">Fuera de Rango</span>
-                            <svg v-if="statusFilter === 'out-of-range'" class="w-3.5 h-3.5 text-red-600" fill="currentColor" viewBox="0 0 24 24">
+                        <div class="flex items-center gap-1">
+                            <span class="text-xs text-slate-600 truncate">Fuera Rango</span>
+                            <svg v-if="statusFilter === 'out-of-range'" class="w-3 h-3 text-red-600 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
                             </svg>
                         </div>
-                        <div class="text-2xl font-bold text-red-600">{{ outOfRange }}</div>
+                        <div class="text-xl font-bold text-red-600">{{ outOfRange }}</div>
+                    </div>
+                </button>
+
+                <!-- No Revisados - clickeable -->
+                <button
+                    @click="filterNotReviewed"
+                    v-tippy="{ content: statusFilter === 'not-reviewed' ? 'Clic para quitar filtro' : 'Clic para ver ensayos pendientes de revisión', placement: 'bottom', theme: 'custom' }"
+                    class="bg-white rounded-lg border-2 p-2 shadow-sm text-left transition-all hover:shadow-md hover:scale-105 active:scale-95"
+                    :class="statusFilter === 'not-reviewed' ? 'border-orange-500 bg-orange-50' : 'border-slate-200'"
+                >
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-1">
+                            <span class="text-xs text-slate-600 truncate">No Revisados</span>
+                            <svg v-if="statusFilter === 'not-reviewed'" class="w-3 h-3 text-orange-600 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                            </svg>
+                        </div>
+                        <div class="text-xl font-bold text-orange-600">{{ pendingReviewCount }}</div>
                     </div>
                 </button>
                 
                 <!-- % Conformidad - no clickeable -->
                 <div 
-                    class="bg-white rounded-lg border border-slate-200 p-3 shadow-sm"
+                    class="bg-white rounded-lg border border-slate-200 p-2 shadow-sm"
                     v-tippy="{ content: 'Porcentaje de ensayos dentro del rango ±1.5%', placement: 'bottom', theme: 'custom' }"
                 >
                     <div class="flex items-center justify-between">
-                        <span class="text-xs text-slate-600">% Conformidad</span>
-                        <div class="text-2xl font-bold" :class="conformityPercentage >= 95 ? 'text-green-600' : 'text-orange-600'">
+                        <span class="text-xs text-slate-600 truncate">% Conf.</span>
+                        <div class="text-xl font-bold" :class="conformityPercentage >= 95 ? 'text-green-600' : 'text-orange-600'">
                             {{ conformityPercentage.toFixed(1) }}%
                         </div>
                     </div>
@@ -160,6 +207,7 @@
                             <p class="text-slate-500 text-sm">En esta fecha todos los ensayos están 
                                 <span v-if="statusFilter === 'ok'" class="font-medium">fuera de rango</span>
                                 <span v-else-if="statusFilter === 'out-of-range'" class="font-medium">dentro del rango</span>
+                                <span v-else-if="statusFilter === 'not-reviewed'" class="font-medium">revisados</span>
                             </p>
                             <button 
                                 @click="filterAll"
@@ -174,6 +222,12 @@
                     <table v-else class="w-full text-sm">
                         <thead class="bg-slate-100 sticky top-0 z-10 border-b border-slate-200">
                             <tr>
+                                <th class="px-4 py-3 text-center font-semibold text-slate-700 w-10">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-500 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </th>
+                                <th v-if="showAllPendingReviews" class="px-4 py-3 text-left font-semibold text-slate-700 w-24">Fecha</th>
                                 <th class="px-4 py-3 text-left font-semibold text-slate-700 w-24">OE</th>
                                 <th class="px-4 py-3 text-left font-semibold text-slate-700 w-28">Ne Estándar</th>
                                 <th class="px-4 py-3 text-center font-semibold text-slate-700 w-28">Ne Min (+1.5%)</th>
@@ -195,6 +249,16 @@
                                     class="border-b border-slate-100 hover:bg-blue-50 transition-colors cursor-pointer"
                                     @click="openEnsayoDetail(ensayo.testnr)"
                                 >
+                                    <td class="px-4 py-3 text-center" @click.stop>
+                                        <input 
+                                            type="checkbox" 
+                                            :checked="reviewedTestnrs.has(ensayo.testnr)"
+                                            @change="toggleReview(ensayo.testnr)"
+                                            class="w-4 h-4 text-blue-600 bg-white border-slate-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer transition-colors"
+                                            :class="{'border-red-400 ring-2 ring-red-100': !reviewedTestnrs.has(ensayo.testnr) && ensayo.status !== 'ok'}"
+                                        />
+                                    </td>
+                                    <td v-if="showAllPendingReviews" class="px-4 py-3 text-slate-600 text-xs">{{ ensayo.dateStr }}</td>
                                     <td class="px-4 py-3 text-slate-600">{{ group.oe }}</td>
                                     <td class="px-4 py-3 font-semibold text-slate-800">{{ group.ne }}</td>
                                     <td class="px-4 py-3 text-center text-orange-600 font-medium">
@@ -644,7 +708,9 @@ const usterTbl = ref([])
 const usterPar = ref([])
 const tensorapidTbl = ref([])
 const tensorapidPar = ref([])
-const statusFilter = ref('all') // 'all', 'ok', 'out-of-range'
+const statusFilter = ref('all') // 'all', 'ok', 'out-of-range', 'not-reviewed'
+const reviewedTestnrs = ref(new Set())
+const showAllPendingReviews = ref(false)
 
 // Modal control
 const showDataModal = ref(false)
@@ -766,12 +832,13 @@ async function fetchData() {
 
 // Get all ensayos with status (unfiltered, for statistics)
 const allEnsayosWithStatus = computed(() => {
-    if (!selectedDate.value || !usterPar.value.length) return []
+    if (!usterPar.value.length) return []
+    if (!showAllPendingReviews.value && !selectedDate.value) return []
     
-    // Filter ensayos by selected date
-    const ensayosForDate = usterPar.value.filter(par => {
-        return dateMatches(par.TIME_STAMP, selectedDate.value)
-    })
+    // Filter ensayos by selected date OR take all if global review mode
+    const ensayosForDate = showAllPendingReviews.value 
+        ? usterPar.value 
+        : usterPar.value.filter(par => dateMatches(par.TIME_STAMP, selectedDate.value))
     
     if (ensayosForDate.length === 0) return []
     
@@ -809,8 +876,15 @@ const allEnsayosWithStatus = computed(() => {
             }
         }
         
+        // Formatear fecha correctamente
+        const parsedDate = parseDate(par.TIME_STAMP || par.DATE)
+        const dateStr = parsedDate 
+            ? `${String(parsedDate.getDate()).padStart(2, '0')}/${String(parsedDate.getMonth() + 1).padStart(2, '0')}/${parsedDate.getFullYear()}`
+            : '-'
+        
         return {
             testnr,
+            dateStr,
             oe: formatOe(par.MASCHNR || par.OE),
             ne: formatNe(par.NOMCOUNT, par.MATCLASS),
             avgTitulo,
@@ -826,6 +900,33 @@ const allEnsayosWithStatus = computed(() => {
     return ensayosWithAvg
 })
 
+// Inicializar revisados cuando cambian los datos
+watch(allEnsayosWithStatus, (ensayos) => {
+    // Mantener los que ya estaban revisados manualmente
+    const newSet = new Set(reviewedTestnrs.value)
+    
+    ensayos.forEach(e => {
+        // Si está OK, lo marcamos como revisado automáticamente (si no estaba ya)
+        if (e.status === 'ok') {
+            newSet.add(e.testnr)
+        }
+        // Si está fuera de rango, NO lo agregamos (queda pendiente de revisión manual)
+        // A menos que ya estuviera en el set (revisado previamente en esta sesión)
+    })
+    
+    reviewedTestnrs.value = newSet
+}, { immediate: true })
+
+function toggleReview(testnr) {
+    const newSet = new Set(reviewedTestnrs.value)
+    if (newSet.has(testnr)) {
+        newSet.delete(testnr)
+    } else {
+        newSet.add(testnr)
+    }
+    reviewedTestnrs.value = newSet
+}
+
 // Filter and group data by OE and Ne
 const groupedData = computed(() => {
     const allEnsayos = allEnsayosWithStatus.value
@@ -838,6 +939,8 @@ const groupedData = computed(() => {
         filteredEnsayos = allEnsayos.filter(e => e.status === 'ok')
     } else if (statusFilter.value === 'out-of-range') {
         filteredEnsayos = allEnsayos.filter(e => e.status === 'below' || e.status === 'above')
+    } else if (statusFilter.value === 'not-reviewed') {
+        filteredEnsayos = allEnsayos.filter(e => !reviewedTestnrs.value.has(e.testnr))
     }
     
     // Group by OE and Ne
@@ -884,6 +987,10 @@ const withinRange = computed(() => {
 
 const outOfRange = computed(() => {
     return allEnsayosWithStatus.value.filter(e => e.status === 'below' || e.status === 'above').length
+})
+
+const pendingReviewCount = computed(() => {
+    return allEnsayosWithStatus.value.filter(e => !reviewedTestnrs.value.has(e.testnr)).length
 })
 
 const conformityPercentage = computed(() => {
@@ -1095,6 +1202,8 @@ const filteredTests = computed(() => {
         filtered = allEnsayos.filter(e => e.status === 'ok')
     } else if (statusFilter.value === 'out-of-range') {
         filtered = allEnsayos.filter(e => e.status === 'below' || e.status === 'above')
+    } else if (statusFilter.value === 'not-reviewed') {
+        filtered = allEnsayos.filter(e => !reviewedTestnrs.value.has(e.testnr))
     }
     
     // Mapear a formato con TESTNR para compatibilidad con funciones de navegación
@@ -1463,6 +1572,21 @@ function filterOk() {
 function filterOutOfRange() {
     // Toggle: if already filtering by 'out-of-range', clear the filter
     statusFilter.value = statusFilter.value === 'out-of-range' ? 'all' : 'out-of-range'
+}
+
+function filterNotReviewed() {
+    statusFilter.value = statusFilter.value === 'not-reviewed' ? 'all' : 'not-reviewed'
+}
+
+function toggleGlobalPendingReviews() {
+    showAllPendingReviews.value = !showAllPendingReviews.value
+    if (showAllPendingReviews.value) {
+        // Al activar, forzar filtro de no revisados
+        statusFilter.value = 'not-reviewed'
+    } else {
+        // Al desactivar, volver a ver todo (pero filtrado por fecha actual)
+        statusFilter.value = 'all'
+    }
 }
 
 // Date navigation functions
