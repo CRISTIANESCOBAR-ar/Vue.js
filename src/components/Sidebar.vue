@@ -1,203 +1,277 @@
 <template>
-  <aside class="sidebar" :class="{ collapsed: isCollapsed }">
-    <div class="sidebar-header">
-      <h2 v-if="!isCollapsed">Análisis Stock STC</h2>
-      <button class="toggle-btn" @click="toggleSidebar" title="Colapsar menú">
-        <span>{{ isCollapsed ? '☰' : '←' }}</span>
+  <!-- Invisible detector to open sidebar when hovered on desktop -->
+  <div 
+    class="fixed top-0 left-0 h-full w-12 z-40"
+    @mouseenter="onLeftEdgeEnter"
+  ></div>
+
+  <!-- Sidebar -->
+  <aside 
+    @mouseleave="scheduleHideSidebar"
+    @mouseenter="clearHideTimer"
+    :class="[
+      'fixed top-0 left-0 h-full bg-blue-800 text-white z-[9999] transition-all duration-500 ease-in-out',
+      sidebarVisible ? 'translate-x-0' : '-translate-x-full',
+      collapsed ? 'w-16' : 'w-64'
+    ]"
+    aria-hidden="false"
+  >
+    <div class="flex items-center justify-between px-4 py-3 border-b border-blue-600">
+      <h2 class="text-lg font-bold" v-if="!collapsed">Menú</h2>
+      <!-- Desktop collapse/expand button -->
+      <button 
+        class="hidden lg:inline-flex items-center justify-center p-1 rounded hover:bg-blue-700 ml-2"
+        :aria-label="collapsed ? 'Abrir menú' : 'Colapsar menú'"
+        @click="desktopToggle"
+        title="Colapsar/abrir menú"
+      >
+        <template v-if="!collapsed">
+          <!-- X icon to collapse/hide -->
+          <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </template>
+        <template v-else>
+          <!-- Chevron-right icon to expand -->
+          <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </template>
+      </button>
+      <!-- Mobile close button -->
+      <button class="lg:hidden" @click="sidebarVisible = false" aria-label="Cerrar menú móvil">
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
       </button>
     </div>
-    
-    <nav class="sidebar-nav">
-      <router-link 
-        v-for="item in menuItems" 
+
+    <nav class="px-2 py-2 space-y-2">
+      <SidebarItem 
+        v-for="item in menuItems"
         :key="item.path"
-        :to="item.path"
-        class="nav-item"
-        :title="isCollapsed ? item.name : ''"
-      >
-        <span class="nav-icon">{{ item.icon }}</span>
-        <span v-if="!isCollapsed" class="nav-text">{{ item.name }}</span>
-      </router-link>
+        :icon="item.icon" 
+        :label="item.name" 
+        :active="route.path === item.path" 
+        :collapsed="collapsed"
+        @click="navigate(item.path)" 
+      />
     </nav>
   </aside>
+
+  <!-- Mobile floating menu button (visible under 1024px) -->
+  <button 
+    aria-label="Toggle menú" 
+    :aria-expanded="String(sidebarVisible)"
+    class="lg:hidden fixed top-3 left-3 z-50 text-blue-600 bg-blue-100 p-1.5 rounded-md hover:bg-blue-600 hover:text-white transition-colors shadow-sm"
+    @click.stop.prevent="mobileToggle"
+  >
+    <svg v-if="!sidebarVisible" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+    </svg>
+    <svg v-else class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  </button>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import SidebarItem from './SidebarItem.vue'
 
-const isCollapsed = ref(false)
+const router = useRouter()
+const route = useRoute()
+
+// --- State (matching carga-datos-vue exactly) ---
+const sidebarVisible = ref(true)
+const collapsed = ref(false)
+const userHidden = ref(false) // true when user explicitly hid the sidebar with X
+const windowWidth = ref(window.innerWidth)
+
+let hideTimer = null
+let introTimer = null
+
+// --- Computed ---
+const isMobile = computed(() => windowWidth.value < 1024)
+
+// Margin for main content (exposed for App.vue if needed)
+const mainMargin = computed(() => {
+  if (windowWidth.value >= 1024 && sidebarVisible.value) {
+    return collapsed.value ? '4rem' : '16rem'
+  }
+  return '0px'
+})
 
 const menuItems = [
   { name: 'Carga de Archivo', path: '/carga-archivo', icon: '📁' },
-  { name: 'Página 2', path: '/pagina2', icon: '📊' },
-  { name: 'Página 3', path: '/pagina3', icon: '⚙️' }
+  // Add more menu items as needed
 ]
 
-const toggleSidebar = () => {
-  isCollapsed.value = !isCollapsed.value
+// --- Timer functions ---
+const clearHideTimer = () => {
+  if (hideTimer) {
+    clearTimeout(hideTimer)
+    hideTimer = null
+  }
 }
+
+const clearIntroTimer = () => {
+  if (introTimer) {
+    clearTimeout(introTimer)
+    introTimer = null
+  }
+}
+
+const scheduleHideSidebar = () => {
+  clearHideTimer()
+  const delay = 1000 // 1 second like carga-datos-vue
+  hideTimer = setTimeout(() => {
+    sidebarVisible.value = false
+  }, delay)
+}
+
+// --- Actions (matching carga-datos-vue exactly) ---
+
+const onLeftEdgeEnter = () => {
+  // Show minimized (icons-only) when hovering left edge on desktop
+  if (windowWidth.value < 1024) return
+  clearIntroTimer()
+  collapsed.value = true
+  sidebarVisible.value = true
+  // Schedule auto-hide
+  scheduleHideSidebar()
+}
+
+const desktopToggle = () => {
+  // If expanded -> user wants to hide everything (X behavior)
+  if (sidebarVisible.value && !collapsed.value) {
+    userHidden.value = true
+    localStorage.setItem('sidebarUserHidden', 'true')
+    sidebarVisible.value = false
+    collapsed.value = true
+    return
+  }
+
+  // If minimal visible -> user wants to expand (chevron behavior)
+  if (sidebarVisible.value && collapsed.value) {
+    userHidden.value = false
+    localStorage.setItem('sidebarUserHidden', 'false')
+    collapsed.value = false
+    sidebarVisible.value = true
+    return
+  }
+
+  // If currently hidden, show minimal (temporary)
+  userHidden.value = false
+  localStorage.setItem('sidebarUserHidden', 'false')
+  collapsed.value = true
+  sidebarVisible.value = true
+  scheduleHideSidebar()
+}
+
+const mobileToggle = () => {
+  // Toggle mobile menu and auto-hide after 1500ms if opened
+  if (sidebarVisible.value) {
+    sidebarVisible.value = false
+    return
+  }
+  // opening
+  sidebarVisible.value = true
+  // only auto-hide on small screens
+  if (windowWidth.value < 768) {
+    clearHideTimer()
+    hideTimer = setTimeout(() => {
+      sidebarVisible.value = false
+    }, 1500)
+  }
+}
+
+const navigate = (path) => {
+  router.push(path)
+  localStorage.setItem('activeSection', path)
+  // On mobile, close after navigation
+  if (windowWidth.value < 768) {
+    clearHideTimer()
+    hideTimer = setTimeout(() => {
+      sidebarVisible.value = false
+    }, 1200)
+  }
+}
+
+const handleResize = () => {
+  const isNowMobile = windowWidth.value < 1024
+  windowWidth.value = window.innerWidth
+  if (collapsed.value !== isNowMobile) {
+    collapsed.value = isNowMobile
+  }
+}
+
+// --- Lifecycle ---
+onMounted(() => {
+  window.addEventListener('resize', handleResize)
+  
+  // Restore user preference from localStorage
+  const stored = localStorage.getItem('sidebarCollapsed')
+  collapsed.value = stored === 'true'
+  
+  const storedHidden = localStorage.getItem('sidebarUserHidden')
+  if (storedHidden === 'true') {
+    userHidden.value = true
+    sidebarVisible.value = false
+  }
+
+  // Intro Animation on desktop: Expanded -> Hidden after 1.5s
+  // Like carga-datos-vue: show expanded briefly then hide
+  const isDesktop = windowWidth.value >= 1024
+  if (isDesktop) {
+    collapsed.value = false
+    sidebarVisible.value = true
+    clearIntroTimer()
+    introTimer = setTimeout(() => {
+      collapsed.value = true
+      sidebarVisible.value = false
+      localStorage.setItem('sidebarCollapsed', 'true')
+      localStorage.setItem('sidebarSeen', 'true')
+      introTimer = null
+    }, 1500)
+  }
+
+  // Mobile: auto-hide after 1.5s if visible on load
+  if (windowWidth.value < 768 && sidebarVisible.value) {
+    clearHideTimer()
+    hideTimer = setTimeout(() => {
+      sidebarVisible.value = false
+    }, 1500)
+  }
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize)
+  clearHideTimer()
+  clearIntroTimer()
+})
+
+// Expose mainMargin for parent components
+defineExpose({ mainMargin, sidebarVisible, collapsed })
 </script>
 
 <style scoped>
-.sidebar {
-  width: 260px;
-  background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
-  color: white;
-  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
-  flex-direction: column;
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
-  position: relative;
-  z-index: 100;
+/* Custom scrollbar for nav */
+nav::-webkit-scrollbar {
+  width: 4px;
 }
-
-.sidebar.collapsed {
-  width: 65px;
-}
-
-.sidebar-header {
-  padding: 1.25rem 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  min-height: 70px;
-}
-
-.sidebar-header h2 {
-  font-size: 1.1rem;
-  margin: 0;
-  white-space: nowrap;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-}
-
-.toggle-btn {
+nav::-webkit-scrollbar-track {
   background: transparent;
-  border: none;
-  color: white;
-  font-size: 1.3rem;
-  cursor: pointer;
-  padding: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-  border-radius: 4px;
-  min-width: 32px;
-  min-height: 32px;
 }
-
-.toggle-btn:hover {
-  background-color: rgba(255, 255, 255, 0.15);
-  transform: scale(1.1);
-}
-
-.toggle-btn:active {
-  transform: scale(0.95);
-}
-
-.sidebar-nav {
-  flex: 1;
-  padding: 0.5rem 0;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-.sidebar-nav::-webkit-scrollbar {
-  width: 6px;
-}
-
-.sidebar-nav::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.sidebar-nav::-webkit-scrollbar-thumb {
+nav::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.2);
-  border-radius: 3px;
+  border-radius: 2px;
 }
-
-.sidebar-nav::-webkit-scrollbar-thumb:hover {
+nav::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.3);
-}
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  padding: 1rem 1.5rem;
-  color: rgba(255, 255, 255, 0.85);
-  text-decoration: none;
-  transition: all 0.2s ease;
-  cursor: pointer;
-  gap: 1rem;
-  position: relative;
-}
-
-.nav-item:hover {
-  background-color: rgba(255, 255, 255, 0.08);
-  color: white;
-  padding-left: 1.7rem;
-}
-
-.nav-item.router-link-active {
-  background-color: rgba(52, 152, 219, 0.3);
-  color: white;
-  border-left: 4px solid #3498db;
-  padding-left: calc(1.5rem - 4px);
-  font-weight: 500;
-}
-
-.nav-item.router-link-active:hover {
-  padding-left: calc(1.7rem - 4px);
-}
-
-.collapsed .nav-item {
-  justify-content: center;
-  padding: 1rem 0.5rem;
-}
-
-.collapsed .nav-item:hover {
-  padding-left: 0.5rem;
-}
-
-.collapsed .nav-item.router-link-active {
-  padding-left: calc(0.5rem - 4px);
-}
-
-.collapsed .nav-item.router-link-active:hover {
-  padding-left: calc(0.5rem - 4px);
-}
-
-.nav-icon {
-  font-size: 1.5rem;
-  min-width: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.nav-text {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  flex: 1;
-  font-size: 0.95rem;
-}
-
-.collapsed .nav-text {
-  display: none;
-}
-
-@media (max-width: 768px) {
-  .sidebar {
-    position: fixed;
-    height: 100vh;
-    z-index: 1000;
-  }
-  
-  .sidebar.collapsed {
-    transform: translateX(-100%);
-    width: 260px;
-  }
 }
 </style>

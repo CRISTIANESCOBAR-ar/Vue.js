@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Exports (CSV files - too large for git)
+exports/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
