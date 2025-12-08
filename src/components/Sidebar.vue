@@ -16,11 +16,15 @@
     ]"
     aria-hidden="false"
   >
-    <div class="flex items-center justify-between px-4 py-3 border-b border-blue-600">
+    <div 
+      class="flex items-center min-h-[48px] py-3 border-b-2 border-blue-600"
+      :class="collapsed ? 'justify-center px-2' : 'justify-between pl-4 pr-2'"
+    >
       <h2 class="text-lg font-bold" v-if="!collapsed">Menú</h2>
       <!-- Desktop collapse/expand button -->
       <button 
-        class="hidden lg:inline-flex items-center justify-center p-1 rounded hover:bg-blue-700 ml-2"
+        class="hidden lg:inline-flex items-center justify-center w-7 h-7 rounded bg-blue-700 hover:bg-blue-600"
+        :class="{ 'mr-2': !collapsed }"
         :aria-label="collapsed ? 'Abrir menú' : 'Colapsar menú'"
         @click="desktopToggle"
         title="Colapsar/abrir menú"
