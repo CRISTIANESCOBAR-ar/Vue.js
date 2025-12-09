@@ -1,9 +1,9 @@
 <template>
-  <main class="w-full h-screen flex flex-col bg-gray-50 overflow-hidden relative" style="padding: 4px !important;">
+  <div class="w-full h-screen flex flex-col bg-gray-100" style="padding: 4px;">
     <!-- Banner de recálculo -->
     <div 
       v-if="isRecalculating" 
-      class="absolute top-4 left-1/2 transform -translate-x-1/2 z-50 bg-blue-600 text-white px-6 py-2 rounded-full shadow-lg flex items-center gap-3 transition-all duration-300"
+      class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-blue-600 text-white px-6 py-2 rounded-full shadow-lg flex items-center gap-3 transition-all duration-300"
     >
       <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -12,7 +12,7 @@
       <span class="font-medium text-sm">Recalculando datos...</span>
     </div>
 
-    <div class="w-full flex-1 min-h-0 bg-white rounded-lg shadow-xl border border-slate-200 flex flex-col" style="padding: 12px !important;">
+    <main class="w-full flex-1 min-h-0 bg-white shadow-xl border border-slate-200 flex flex-col overflow-hidden" style="border-radius: 6px; padding: 4px;">
       <div class="flex flex-col gap-2 flex-shrink-0" style="margin-bottom: 10px !important;">
         <div class="flex items-center gap-3 justify-between">
           <!-- Left Side: Folder Selection & Actions -->
@@ -346,7 +346,7 @@
           <p class="text-sm text-slate-500">Los datos se guardan automáticamente en tu navegador.</p>
         </div>
       </div>
-    </div>
+    </main>
 
     <!-- Backups Modal -->
     <!-- Backups Modal -->
@@ -497,7 +497,7 @@
 
       </div>
     </div>
-  </main>
+  </div>
 </template>
 
 <script setup>

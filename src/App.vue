@@ -61,14 +61,8 @@ body {
 
 .main-content {
   flex: 1;
-  padding: 2rem;
+  padding: 0;
   overflow-y: auto;
   overflow-x: hidden;
-}
-
-@media (max-width: 768px) {
-  .main-content {
-    padding: 1rem;
-  }
 }
 </style>
