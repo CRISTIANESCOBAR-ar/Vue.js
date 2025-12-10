@@ -11,20 +11,17 @@ const routes = [
   {
     path: '/carga-archivo',
     name: 'CargaArchivo',
-    component: CargaArchivo,
-    meta: { title: 'Carga de Archivo' }
+    component: CargaArchivo
   },
   {
     path: '/pagina2',
     name: 'Pagina2',
-    component: Pagina2,
-    meta: { title: 'Página 2' }
+    component: Pagina2
   },
   {
     path: '/pagina3',
     name: 'Pagina3',
-    component: Pagina3,
-    meta: { title: 'Página 3' }
+    component: Pagina3
   }
 ]
 
@@ -34,3 +31,4 @@ const router = createRouter({
 })
 
 export default router
+

@@ -70,7 +70,7 @@
   <button 
     aria-label="Toggle menú" 
     :aria-expanded="String(sidebarVisible)"
-    class="lg:hidden fixed top-3 left-3 z-50 text-blue-600 bg-blue-100 p-1.5 rounded-md hover:bg-blue-600 hover:text-white transition-colors shadow-sm"
+    class="lg:hidden fixed top-3 left-3 z-50 text-blue-600 bg-blue-100/80 p-1.5 rounded-md opacity-50 hover:opacity-100 hover:bg-blue-600 hover:text-white transition-all duration-200 shadow-sm backdrop-blur-sm"
     @click.stop.prevent="mobileToggle"
   >
     <svg v-if="!sidebarVisible" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -244,8 +244,8 @@ onMounted(() => {
     }, 1500)
   }
 
-  // Mobile: auto-hide after 1.5s if visible on load
-  if (windowWidth.value < 768 && sidebarVisible.value) {
+  // Mobile & Tablet: auto-hide after 1.5s if visible on load
+  if (windowWidth.value < 1024 && sidebarVisible.value) {
     clearHideTimer()
     hideTimer = setTimeout(() => {
       sidebarVisible.value = false

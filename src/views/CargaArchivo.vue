@@ -142,7 +142,7 @@
       </div>
 
       <div v-if="fileData" class="flex-1 min-h-0 flex flex-col overflow-hidden">
-        <div class="flex flex-col lg:flex-row gap-4 flex-1 min-h-0 overflow-auto">
+        <div class="flex flex-row flex-wrap gap-4 flex-1 min-h-0 overflow-auto">
           <div class="flex flex-col h-auto lg:max-h-full" style="max-width: 530px;">
             <div class="overflow-auto _minimal-scroll rounded border border-slate-200 shadow-sm" style="border-radius: 0.25rem;">
               <table class="w-full table-fixed divide-y divide-slate-200 text-xs">
