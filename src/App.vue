@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen flex flex-col bg-gray-50 overflow-x-hidden">
+  <div class="h-full flex flex-col bg-gray-50 overflow-x-hidden">
     <!-- invisible detector to open sidebar when hovered on desktop -->
     <!-- área izquierda ampliada para detectar hover y reabrir el sidebar en escritorio -->
     <div class="fixed top-0 left-0 h-full w-12 z-50" @mouseenter="onLeftEdgeEnter"></div>
@@ -83,9 +83,9 @@
 
     <!-- Main content -->
     <main @click="maybeHideSidebar"
-      class="flex-1 transition-all duration-500 ease-in-out overflow-x-hidden px-2 md:px-0 pt-2 md:pt-0"
+      class="flex-1 transition-all duration-500 ease-in-out overflow-x-hidden px-2 md:px-0 pt-2 md:pt-0 flex flex-col"
       :style="{ marginLeft: mainMargin }">
-      <div class="w-full">
+      <div class="w-full h-full flex flex-col">
         <transition name="fade" mode="out-in">
           <div>
             <FormRegistro ref="formRegistroRef" v-if="active === 'form'" :registros="registros" />
@@ -103,7 +103,7 @@
             <div v-else-if="active === 'uster'">
               <Uster />
             </div>
-            <div v-else-if="active === 'tenso'">
+            <div v-else-if="active === 'tenso'" class="h-full">
               <TensoRapid />
             </div>
             <div v-else-if="active === 'config'">

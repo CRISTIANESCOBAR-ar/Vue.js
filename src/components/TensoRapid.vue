@@ -5,11 +5,11 @@
 			Esta página de carga (TensoRapid) está disponible solo en escritorio (pantallas medianas o mayores).
 		</div>
 	</div>
-	<div class="hidden md:block w-full pt-2 px-2 space-y-4 tenso-component">
-		<div
-			class="bg-white rounded-2xl shadow-xl pt-4 pb-4 px-4 md:pt-5 md:pb-5 md:px-5 mt-2 mb-4 border border-slate-200">
+	<div class="hidden md:flex w-full h-screen flex-col p-1 tenso-component">
+		<main
+			class="w-full flex-1 min-h-0 bg-white rounded-2xl shadow-xl px-4 py-3 border border-slate-200 flex flex-col overflow-y-auto">
 			<!-- Selector de carpeta (con título principal delante) -->
-			<div class="mt-3 flex items-center gap-3">
+			<div class="flex-shrink-0 mb-3 flex items-center gap-3">
 				<div class="text-2xl font-semibold text-slate-800 mr-4">Datos TensoRapid</div>
 				<label class="text-sm font-semibold text-slate-700 mr-2 shrink-0">Carpeta TensoRapid:</label>
 				<div class="w-64 min-w-0">
@@ -43,9 +43,9 @@
 			</div>
 
 			<!-- Contenedor que agrupa filtros, tablas y estado -->
-			<div class="mt-2 bg-white rounded-2xl shadow-sm p-4 border border-slate-200">
+			<div class="flex-1 flex flex-col mt-2 bg-white rounded-2xl shadow-sm p-4 border border-slate-200 min-h-0">
 				<!-- Top row: filtros a la izquierda y título Datos .TBL a la derecha (si hay datos) -->
-				<div class="mt-2 flex items-center justify-between gap-4">
+				<div class="flex-shrink-0 mt-2 flex items-center justify-between gap-4">
 					<div class="flex items-center gap-4">
 						<label class="inline-flex items-center text-sm cursor-pointer">
 							<input type="radio" name="tenso-filter" v-model="filterMode" value="all"
@@ -71,10 +71,10 @@
 
 				<!-- Grid de dos columnas: tabla de ensayos a la izquierda y datos TBL a la derecha -->
 				<!-- Left column fixed, right column flexible to avoid TBL dropping below -->
-				<div class="mt-4 grid grid-cols-1 xl:grid-cols-2 gap-4 items-start tenso-grid">
+				<div class="flex-1 min-h-0 mt-4 grid grid-cols-1 xl:grid-cols-2 gap-4 items-start tenso-grid">
 					<!-- Columna izquierda: Tabla de ensayos encontrados -->
-					<div>
-						<div class="max-h-64 overflow-y-auto _minimal-scroll">
+					<div class="flex flex-col h-full">
+						<div class="flex-1 overflow-y-auto _minimal-scroll">
 							<table class="text-xs border-collapse fixed-table scan-table w-full">
 								<colgroup>
 									<col class="col-ensayo" />
@@ -233,7 +233,7 @@
 								</tbody>
 							</table>
 						</div>
-						<div class="flex items-center gap-2 mt-3">
+						<div class="flex-shrink-0 flex items-center gap-2 mt-3">
 							<div class="text-sm font-medium text-slate-600">{{ tensoScanStatus }}</div>
 							<div v-if="isScanning" class="text-sm text-slate-500 flex items-center gap-2">
 								<svg class="w-4 h-4 animate-spin text-slate-600" viewBox="0 0 24 24" fill="none">
@@ -335,11 +335,11 @@
 			</div>
 			<!-- Fin grid dos columnas -->
 
-		</div>
-		<!-- Fin div bg-white -->
+		</main>
+		<!-- Fin main -->
 
 	</div>
-	<!-- Fin div w-full -->
+	<!-- Fin contenedor principal tenso-component -->
 </template>
 
 <script setup>
