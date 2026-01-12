@@ -612,9 +612,18 @@ async function saveToOracle(item) {
 				if (result.isDismissed) {
 					// Usuario canceló, no guardar
 					isSaving.value = false
+				
+					// Seleccionar el contenido del input de USTER para facilitar corrección
+					await nextTick()
+					const input = inputRefs.value[item.testnr]
+					if (input && typeof input.select === 'function') {
+						input.focus()
+						input.select()
+					}
+				
 					return
 				}
-				
+			
 				if (result.isConfirmed) {
 					// Usuario eligió usar Husos de Uster - reemplazar en parsedTblData
 					// Reemplazar los Husos de TensoRapid con los de Uster
