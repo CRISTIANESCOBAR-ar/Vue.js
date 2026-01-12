@@ -2234,9 +2234,10 @@ async function exportToExcel() {
       displayFecha(getPreferredFecha(r)),
       r['OE'] || '',
       r['Ne'] || '',
-      r['Desvío %'] || '', // Mantener el string con el signo + incluido
+      // Convertir el decimal a coma para que Excel (locale ES) lo trate como número
+      (r['Desvío %'] == null ? '' : String(r['Desvío %']).replace(/\./g, ',')),
       coerce(r['Titulo']),
-      r['Estiraje'] || '-',
+      coerce(r['Estiraje']),
       r['Pasador'] || '-',
       coerce(r['CVm %']),
       coerce(r['Delg -30%']),
@@ -2326,7 +2327,7 @@ async function exportToExcel() {
         }
       })
       // Columns to force 2 decimals (Desvío % excluido porque usa formato de texto con signo)
-      const twoDecCols = ['Titulo', 'CVm %', 'Elong. %', 'Tenac.', 'Trabajo B']
+      const twoDecCols = ['Titulo', 'Estiraje', 'CVm %', 'Elong. %', 'Tenac.', 'Trabajo B']
       twoDecCols.forEach(name => {
         const idx = headers.indexOf(name)
         if (idx !== -1) {
@@ -2365,9 +2366,14 @@ async function exportToExcel() {
         const cell = row.getCell(desvioIdx + 1)
         let val = cell.value
         
-        // Convertir string a número si es necesario (ej: "+5.10" → 5.10)
+        // Convertir string a número si es necesario (ej: "+5.10" → 5.10, "+5,10" → 5.10)
         if (typeof val === 'string') {
-          val = parseFloat(val)
+          const cleaned = val.replace(',', '.').replace(/\s+/g, '')
+          val = parseFloat(cleaned)
+        }
+        // Si es numérico, escribirlo como número para que Excel lo trate como tal
+        if (typeof val === 'number' && !isNaN(val)) {
+          cell.value = val
         }
         
         if (typeof val === 'number' && !isNaN(val)) {
