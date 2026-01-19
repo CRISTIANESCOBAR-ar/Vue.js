@@ -389,6 +389,8 @@ const isAbsolutePath = ref(false)
 
 // Campo editable para ESTIRAJE (ingreso manual del usuario)
 const estiraje = ref('')
+// Flag to avoid reinsertar el punto cuando el usuario está borrando
+const estirajeWasDeleting = ref(false)
 
 // Campo para PASADOR (Si/No)
 const pasador = ref('')
@@ -1904,7 +1906,7 @@ function handleEstirajeInput(event) {
   }
 
   // Auto-insertar punto después de 3 dígitos si no hay punto
-  if (value.length === 3 && !value.includes('.')) {
+  if (!estirajeWasDeleting.value && value.length === 3 && !value.includes('.')) {
     value = value + '.'
   }
 
@@ -1915,6 +1917,9 @@ function handleEstirajeInput(event) {
   if (/^\d{1,3}\.\d$/.test(value)) {
     focusPasadorAndSelectSi()
   }
+
+  // Resetear el flag de borrado después de aplicar la máscara
+  estirajeWasDeleting.value = false
 }
 
 // Función para manejar Enter en Estiraje
@@ -1928,6 +1933,9 @@ function handleEstirajeEnter() {
 
 // Función para prevenir entrada de punto duplicado
 function handleEstirajeKeydown(event) {
+  // Marcar si el usuario está borrando para no reinsertar el punto automáticamente
+  estirajeWasDeleting.value = event.key === 'Backspace' || event.key === 'Delete'
+
   // Si presiona punto y ya hay uno, prevenir
   if (event.key === '.' && estiraje.value.includes('.')) {
     event.preventDefault()

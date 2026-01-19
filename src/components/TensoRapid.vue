@@ -71,10 +71,10 @@
 
 				<!-- Grid de dos columnas: tabla de ensayos a la izquierda y datos TBL a la derecha -->
 				<!-- Left column fixed, right column flexible to avoid TBL dropping below -->
-				<div class="flex-1 min-h-0 mt-4 grid grid-cols-1 xl:grid-cols-2 gap-4 items-start tenso-grid">
+				<div class="flex-1 min-h-0 mt-4 grid grid-cols-1 xl:grid-cols-2 gap-4 items-stretch tenso-grid">
 					<!-- Columna izquierda: Tabla de ensayos encontrados -->
-					<div class="flex flex-col h-full">
-						<div class="flex-1 overflow-y-auto _minimal-scroll">
+					<div class="flex flex-col h-full min-h-0">
+						<div class="flex-1 min-h-0 overflow-y-auto _minimal-scroll">
 							<table class="text-xs border-collapse fixed-table scan-table w-full">
 								<colgroup>
 									<col class="col-ensayo" />
