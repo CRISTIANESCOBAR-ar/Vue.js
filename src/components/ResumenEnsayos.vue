@@ -169,8 +169,9 @@
             <table class="min-w-full w-full table-auto divide-y divide-slate-200 text-xs">
               <colgroup>
                 <col style="width:6%" /> <!-- Ensayo -->
+                <col style="width:5%" /> <!-- Lote -->
                 <col style="width:6%" /> <!-- Fecha -->
-                <col style="width:12%" /> <!-- OE (doble) -->
+                <col style="width:11%" /> <!-- OE (doble) -->
                 <col style="width:5%" /> <!-- Ne -->
                 <col style="width:6%" /> <!-- Desvío % -->
                 <col style="width:11%" /> <!-- Titulo -->
@@ -193,6 +194,8 @@
               <thead class="bg-gradient-to-r from-slate-50 to-slate-100 sticky top-0 z-20">
                 <tr>
                   <th class="px-2 py-[0.3rem] text-center font-semibold text-slate-700 border-b border-slate-200">Ensayo
+                  </th>
+                  <th class="px-2 py-[0.3rem] text-center font-semibold text-slate-700 border-b border-slate-200">Lote
                   </th>
                   <th class="px-2 py-[0.3rem] text-center font-semibold text-slate-700 border-b border-slate-200">Fecha
                   </th>
@@ -236,6 +239,7 @@
                 <tr v-for="(row, idx) in pagedRows" :key="idx"
                   :class="['border-t border-slate-100 hover:bg-blue-50/30 transition-colors duration-150', row._isFlame ? 'font-bold' : '']">
                   <td class="px-2 py-[0.3rem] text-center text-slate-700">{{ row.Ensayo }}</td>
+                  <td class="px-2 py-[0.3rem] text-center text-slate-700">{{ row.Lote }}</td>
                   <td class="px-2 py-[0.3rem] text-center text-slate-700 whitespace-nowrap">{{
                     displayFecha(getPreferredFecha(row)) }}</td>
                   <td class="px-2 py-[0.3rem] text-center text-slate-700">{{ row.OE }}</td>
@@ -1968,6 +1972,17 @@ function formatOE(val) {
   return letterPart ? `${numPart} ${letterPart}` : String(numPart)
 }
 
+// Extrae el número del lote del campo OE
+// Examples: "HD-107-25" -> "107", "HD 107 25" -> "107", "HD 107-25" -> "107", "HD-107 25" -> "107"
+function extractLote(oe) {
+  if (!oe) return ''
+  const str = String(oe).trim()
+  if (!str) return ''
+  // Buscar patrón: letras + separador (espacio o guión) + número + separador
+  const match = str.match(/^[A-Z]+[\s-]+(\d+)[\s-]+/i)
+  return match ? match[1] : ''
+}
+
 async function loadRows() {
   loading.value = true
 
@@ -2103,11 +2118,17 @@ async function loadRows() {
         desvioPercent = (desvio > 0 ? '+' : '') + formatted
       }
 
+      // Valor crudo de OE para formateo
+      const oeRaw = row.MASCHNR ?? row.OE ?? row.OE_NRO ?? row.OE_NRO_1 ?? row.oe ?? row.OE_NRO_PAR ?? ''
+      // Valor crudo de LOTE para extraer el número
+      const loteRaw = row.LOTE ?? row.Lote ?? row.lote ?? ''
+
       return {
         Ensayo: testnr,
+        Lote: extractLote(loteRaw),
         TIME_STAMP: timeStamp,  // Guardar el timestamp original
         Fecha: row.Fecha || row.fecha || row.FECHA || '',  // Mantener Fecha si existe, pero priorizar TIME_STAMP
-        OE: formatOE(row.MASCHNR ?? row.OE ?? row.OE_NRO ?? row.OE_NRO_1 ?? row.oe ?? row.OE_NRO_PAR ?? ''),
+        OE: formatOE(oeRaw),
         Ne: formatNe(row.NOMCOUNT ?? row.Ne ?? row.NE ?? row.titulo ?? row.TITULO ?? '', row.MATCLASS),
         'Desvío %': desvioPercent,
         Titulo: calcAvg(tblRows, 'TITULO'),
@@ -2196,6 +2217,7 @@ async function exportToExcel() {
     const headers = [
       'Fecha',
       'OE',
+      'Lote',
       'Ne',
       'Desvío %',
       'Titulo',
@@ -2233,6 +2255,7 @@ async function exportToExcel() {
     const bodyRows = filteredRows.value.map(r => [
       displayFecha(getPreferredFecha(r)),
       r['OE'] || '',
+      r['Lote'] || '',
       r['Ne'] || '',
       // Convertir el decimal a coma para que Excel (locale ES) lo trate como número
       (r['Desvío %'] == null ? '' : String(r['Desvío %']).replace(/\./g, ',')),
